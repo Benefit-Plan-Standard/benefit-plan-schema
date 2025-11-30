@@ -1,0 +1,42 @@
+{
+  "plan_id": "HUMANA_HMO_GOLD_PLUS",
+  "plan_name": "Humana Gold Plus HMO",
+  "carrier": "Humana",
+  "plan_type": "HMO",
+  "effective_date": "2025-01-01",
+  "expiry_date": "2025-12-31",
+  "network_tiers": [
+    { "tier_id": "IN", "name": "In Network", "description": "HMO network" }
+  ],
+  "accumulators": {
+    "individual_oop_max": { "amount": 3000, "currency": "USD" },
+    "family_oop_max": { "amount": 6000, "currency": "USD" }
+  },
+  "benefits": [
+    {
+      "benefit_id": "ER_VISIT",
+      "category": "EMERGENCY_CARE",
+      "service_name": "Emergency room visit",
+      "place_of_service": ["hospital"],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            { "type": "copay", "sequence": 1, "amount": 100, "basis": "per_visit", "applies_to_moop": true }
+          ],
+          "notes": "Copay waived if admitted."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        { "type": "authorization", "description": "Prior authorization not required for emergency services." }
+      ],
+      "moop_applicability": "plan_default"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "source_references": [
+    { "page_number": 2, "page_range": "L30-L60", "excerpt": "Humana Gold Plus EOC excerpt" }
+  ]
+}
