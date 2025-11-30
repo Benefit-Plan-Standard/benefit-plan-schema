@@ -1,0 +1,52 @@
+{
+  "plan_id": "BCBS_FL_PPO_505",
+  "plan_name": "BlueOptions 505 with Rx $300 Rx Deductible $10/40%/50% with $35 Maternity Copay",
+  "carrier": "Blue Cross",
+  "plan_type": "PPO",
+  "effective_date": "2025-01-01",
+  "expiry_date": "2025-12-31",
+  "network_tiers": [
+    { "tier_id": "IN", "name": "In Network", "description": "Preferred providers" },
+    { "tier_id": "OUT", "name": "Out of Network", "description": "Non‑contracted providers" }
+  ],
+  "accumulators": {
+    "individual_deductible": { "amount": 3500, "currency": "USD", "applies_to": "medical" },
+    "family_deductible": { "amount": 10500, "currency": "USD", "applies_to": "medical" },
+    "individual_oop_max": { "amount": 3500, "currency": "USD" },
+    "family_oop_max": { "amount": 10500, "currency": "USD" }
+  },
+  "benefits": [
+    {
+      "benefit_id": "PCP_VISIT",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Primary care visit",
+      "place_of_service": ["office"],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            { "type": "copay", "sequence": 1, "amount": 35, "basis": "per_visit", "applies_to_deductible": false, "applies_to_moop": true }
+          ],
+          "notes": "Value choice provider visits are covered at no charge."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            { "type": "deductible", "sequence": 1, "rate": 1.0, "basis": "allowed_amount", "applies_to_deductible": true, "applies_to_moop": true },
+            { "type": "coinsurance", "sequence": 2, "rate": 0.40, "basis": "allowed_amount", "applies_to_moop": true }
+          ],
+          "notes": "Virtual visits not covered out of network."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "source_references": [
+    { "page_number": 1, "page_range": "L1-L90", "excerpt": "SBC excerpt for BlueOptions 505" }
+  ]
+}
