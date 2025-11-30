@@ -1,0 +1,220 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://benefitplanstandard.org/schema/v1.0.0/benefit-plan.schema.json",
+  "title": "Benefit Plan Standard Schema",
+  "description": "Canonical JSON schema for representing normalized health benefit plans across carriers.",
+  "type": "object",
+  "properties": {
+    "plan_id": {
+      "type": "string",
+      "description": "Unique identifier for the benefit plan."
+    },
+    "plan_name": {
+      "type": "string",
+      "description": "Marketing or descriptive name of the plan."
+    },
+    "carrier": {
+      "type": "string",
+      "description": "Name of the issuing carrier or plan sponsor."
+    },
+    "plan_type": {
+      "type": "string",
+      "description": "High‑level classification of the plan (e.g. PPO, HMO, POS, Medicare Advantage)."
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date on which the plan becomes effective."
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date on which the plan expires or renews."
+    },
+    "network_tiers": {
+      "type": "array",
+      "description": "List of network tiers available for this plan.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tier_id": {
+            "type": "string",
+            "description": "Identifier for the network tier."
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name for the network tier."
+          },
+          "description": {
+            "type": ["string", "null"],
+            "description": "Human‑friendly description of the tier."
+          }
+        },
+        "required": ["tier_id", "name"],
+        "additionalProperties": false
+      }
+    },
+    "accumulators": {
+      "type": "object",
+      "description": "Plan‑level deductible and out‑of‑pocket maximum values.",
+      "properties": {
+        "individual_deductible": {
+          "type": "object",
+          "properties": {
+            "amount": { "type": "number" },
+            "currency": { "type": "string", "default": "USD" },
+            "applies_to": { "type": "string", "description": "Coverage line the deductible applies to (e.g. medical, pharmacy)." }
+          },
+          "required": ["amount"],
+          "additionalProperties": false
+        },
+        "family_deductible": {
+          "type": "object",
+          "properties": {
+            "amount": { "type": "number" },
+            "currency": { "type": "string", "default": "USD" },
+            "applies_to": { "type": "string" }
+          },
+          "required": ["amount"],
+          "additionalProperties": false
+        },
+        "individual_oop_max": {
+          "type": "object",
+          "properties": {
+            "amount": { "type": "number" },
+            "currency": { "type": "string", "default": "USD" }
+          },
+          "required": ["amount"],
+          "additionalProperties": false
+        },
+        "family_oop_max": {
+          "type": "object",
+          "properties": {
+            "amount": { "type": "number" },
+            "currency": { "type": "string", "default": "USD" }
+          },
+          "required": ["amount"],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "benefits": {
+      "type": "array",
+      "description": "List of individual benefit items included in the plan.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "benefit_id": { "type": "string", "description": "Unique identifier for this benefit item." },
+          "category": { "type": "string", "description": "High‑level category of the benefit (e.g. physician services, emergency care)." },
+          "service_name": { "type": "string", "description": "Human‑readable name for the service." },
+          "place_of_service": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Place(s) where the service is typically rendered (e.g. office, hospital)."
+          },
+          "network_cost_shares": {
+            "type": "array",
+            "description": "Cost sharing details for each network tier.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "tier_id": { "type": "string", "description": "Identifier of the network tier this cost share applies to." },
+                "covered": { "type": "boolean", "description": "Indicates whether the service is covered under this tier." },
+                "cost_shares": {
+                  "type": "array",
+                  "description": "Sequence of cost sharing components applicable to this tier.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": { "type": "string", "description": "Type of cost share component (e.g. copay, coinsurance, deductible)." },
+                      "sequence": { "type": "integer", "description": "Order in which this cost share is applied." },
+                      "amount": { "type": ["number", "null"], "description": "Dollar amount for copay or flat deductible; null if not applicable." },
+                      "rate": { "type": ["number", "null"], "description": "Percentage rate for coinsurance; null if not applicable." },
+                      "basis": { "type": ["string", "null"], "description": "Basis for cost share calculation (e.g. per_visit, allowed_amount)." },
+                      "applies_to_deductible": { "type": "boolean", "default": false },
+                      "applies_to_moop": { "type": "boolean", "default": true }
+                    },
+                    "required": ["type", "sequence"],
+                    "additionalProperties": false
+                  }
+                },
+                "notes": { "type": ["string", "null"], "description": "Additional notes or qualifiers for this tier’s cost share." }
+              },
+              "required": ["tier_id", "covered"],
+              "additionalProperties": false
+            }
+          },
+          "limits": {
+            "type": "array",
+            "description": "Visit, day, or dollar limits applicable to this benefit.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "description": "Type of limit (e.g. visits, days, dollars)." },
+                "value": { "type": "number", "description": "Numeric value of the limit." },
+                "period": { "type": ["string", "null"], "description": "Period over which the limit applies (e.g. per_year, per_episode)." }
+              },
+              "required": ["type", "value"],
+              "additionalProperties": false
+            }
+          },
+          "conditions": {
+            "type": "array",
+            "description": "Special conditions or qualifiers for this benefit (e.g. prior authorization required).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "description": "Condition category (e.g. authorization, referral, clinical)." },
+                "code": { "type": ["string", "null"], "description": "Optional code identifying the condition." },
+                "description": { "type": "string", "description": "Human‑readable description of the condition." }
+              },
+              "required": ["type", "description"],
+              "additionalProperties": false
+            }
+          },
+          "moop_applicability": {
+            "type": ["string", "null"],
+            "description": "Specifies whether cost sharing for this benefit counts toward the maximum out‑of‑pocket (MOOP). Values may include plan_default, include, or exclude."
+          },
+          "coding_hints": {
+            "type": "object",
+            "description": "Optional hints for mapping the benefit to coding systems like CPT or revenue codes.",
+            "properties": {
+              "cpt_ranges": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "revenue_codes": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": ["benefit_id", "category", "service_name", "network_cost_shares"],
+        "additionalProperties": false
+      }
+    },
+    "source_references": {
+      "type": "array",
+      "description": "Optional citations back to the source document used to populate this plan.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "page_number": { "type": "integer" },
+          "page_range": { "type": "string" },
+          "excerpt": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "schema_version": {
+      "type": "string",
+      "description": "Version of the Benefit Plan Standard schema used to validate this document."
+    }
+  },
+  "required": ["plan_id", "plan_name", "carrier", "network_tiers", "benefits"],
+  "additionalProperties": false
+}
