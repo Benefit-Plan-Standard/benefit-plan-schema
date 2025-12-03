@@ -1,0 +1,52 @@
+{
+  "plan_id": "GATORCARE_PRIME_PLUS_2025",
+  "plan_name": "GatorCare Prime Plus",
+  "carrier": "GatorCare",
+  "plan_type": "PPO",
+  "effective_date": "2025-01-01",
+  "expiry_date": "2025-12-31",
+  "network_tiers": [
+    { "tier_id": "IN", "name": "In Network", "description": "GatorCare contracted providers" },
+    { "tier_id": "OUT", "name": "Out of Network", "description": "Non‑contracted providers" }
+  ],
+  "accumulators": {
+    "individual_deductible": { "amount": 2000, "currency": "USD", "applies_to": "medical" },
+    "family_deductible": { "amount": 6000, "currency": "USD", "applies_to": "medical" },
+    "individual_oop_max": { "amount": 5500, "currency": "USD" },
+    "family_oop_max": { "amount": 11000, "currency": "USD" }
+  },
+  "benefits": [
+    {
+      "benefit_id": "SPECIALIST_VISIT",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Specialist office visit",
+      "place_of_service": ["office"],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            { "type": "copay", "sequence": 1, "amount": 45, "basis": "per_visit", "applies_to_deductible": false, "applies_to_moop": true }
+          ],
+          "notes": "No referral required."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            { "type": "deductible", "sequence": 1, "rate": 1.0, "basis": "allowed_amount", "applies_to_deductible": true, "applies_to_moop": true },
+            { "type": "coinsurance", "sequence": 2, "rate": 0.50, "basis": "allowed_amount", "applies_to_moop": true }
+          ],
+          "notes": "Out‑of‑network services subject to higher cost share."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "source_references": [
+    { "page_number": 1, "page_range": "L1-L80", "excerpt": "GatorCare Prime Plus SBC excerpt" }
+  ]
+}

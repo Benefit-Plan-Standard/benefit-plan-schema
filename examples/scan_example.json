@@ -1,0 +1,42 @@
+{
+  "plan_id": "SCAN_CLASSIC_2025",
+  "plan_name": "SCAN Classic Medicare Advantage Plan",
+  "carrier": "SCAN",
+  "plan_type": "HMO",
+  "effective_date": "2025-01-01",
+  "expiry_date": "2025-12-31",
+  "network_tiers": [
+    { "tier_id": "IN", "name": "In Network", "description": "SCAN provider network" }
+  ],
+  "accumulators": {
+    "individual_oop_max": { "amount": 3500, "currency": "USD" }
+  },
+  "benefits": [
+    {
+      "benefit_id": "HOSPITAL_STAY",
+      "category": "HOSPITAL_SERVICES",
+      "service_name": "Inpatient hospital stay",
+      "place_of_service": ["hospital"],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            { "type": "copay", "sequence": 1, "amount": 200, "basis": "per_day", "applies_to_moop": true },
+            { "type": "copay", "sequence": 2, "amount": 0, "basis": "per_day", "applies_to_moop": true, "notes": "Copay waived after day 5." }
+          ],
+          "notes": "Prior authorization required for elective admissions."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        { "type": "authorization", "description": "Prior authorization required except in emergencies." }
+      ],
+      "moop_applicability": "plan_default"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "source_references": [
+    { "page_number": 2, "page_range": "L50-L90", "excerpt": "SCAN Classic EOC excerpt" }
+  ]
+}
