@@ -1,0 +1,52 @@
+{
+  "plan_id": "AETNA_PPO_1500_80_50",
+  "plan_name": "Aetna PPO 1500 80/50 Coinsurance Plan",
+  "carrier": "Aetna",
+  "plan_type": "PPO",
+  "effective_date": "2025-01-01",
+  "expiry_date": "2025-12-31",
+  "network_tiers": [
+    { "tier_id": "IN", "name": "In Network", "description": "Aetna network providers" },
+    { "tier_id": "OUT", "name": "Out of Network", "description": "Providers without contract" }
+  ],
+  "accumulators": {
+    "individual_deductible": { "amount": 1500, "currency": "USD", "applies_to": "medical" },
+    "family_deductible": { "amount": 4500, "currency": "USD", "applies_to": "medical" },
+    "individual_oop_max": { "amount": 5500, "currency": "USD" },
+    "family_oop_max": { "amount": 11000, "currency": "USD" }
+  },
+  "benefits": [
+    {
+      "benefit_id": "URGENT_CARE",
+      "category": "URGENT_CARE",
+      "service_name": "Urgent care visit",
+      "place_of_service": ["urgent_care"],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            { "type": "copay", "sequence": 1, "amount": 50, "basis": "per_visit", "applies_to_deductible": false, "applies_to_moop": true }
+          ],
+          "notes": "Copay waived if immediately admitted to hospital."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            { "type": "deductible", "sequence": 1, "rate": 1.0, "basis": "allowed_amount", "applies_to_deductible": true, "applies_to_moop": true },
+            { "type": "coinsurance", "sequence": 2, "rate": 0.50, "basis": "allowed_amount", "applies_to_moop": true }
+          ],
+          "notes": "Higher cost share for out‑of‑network urgent care visits."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "source_references": [
+    { "page_number": 3, "page_range": "L100-L150", "excerpt": "Aetna PPO 1500 SBC excerpt" }
+  ]
+}
