@@ -1,5 +1,5 @@
-# 📦 Benefit Plan Standard — JSON Schema
-Official JSON Schema for the **Benefit Plan Standard**, a unified, vendor-neutral data model for representing U.S. health insurance benefit plans.
+# 📦 Benefit Plan Standard — JSON Schema  
+The canonical, vendor-neutral JSON Schema for representing U.S. health insurance benefit plans in a consistent, machine-readable format.
 
 <p align="left">
   <a href="https://benefitplanstandard.org">
@@ -14,47 +14,44 @@ Official JSON Schema for the **Benefit Plan Standard**, a unified, vendor-neutra
 
 ## 🔎 Quick Links
 
-- Documentation: [https://benefitplanstandard.org](https://benefitplanstandard.org)
-- Canonical schema: `schema/v1.0.0/benefit-plan.schema.json`
-- Examples: `examples/`
-- Modules overview: `modules/README.md`
-- Governance: `docs/governance.md`
-- Roadmap: `docs/roadmap.md`
+- Documentation: https://benefitplanstandard.org  
+- Canonical schema file: `schema/v1.0.0/benefit-plan.schema.json`  
+- Example plans: `examples/`  
+- Modules: `modules/README.md`  
+- Governance: `docs/governance.md`  
+- Roadmap: `docs/roadmap.md`  
 
 ---
 
 ## 📘 Overview
 
-The **Benefit Plan Standard (BPS)** defines a machine-readable format for normalizing medical benefit plans across U.S. carriers, including:
+The **Benefit Plan Standard (BPS)** defines a normalized, machine-readable structure for health insurance plan benefits across U.S. carriers.  
+It is designed to support:
 
-- Blue Cross Blue Shield  
-- Aetna  
-- Cigna  
-- UnitedHealthcare  
-- Humana  
-- SCAN  
-- GatorCare  
-- And additional carriers coming soon…
+- Interoperability  
+- Regulatory and transparency initiatives  
+- Analytics and automation  
+- Standardized terminology  
+- Consistent cross-carrier comparison  
 
 This repository contains:
 
 - The **canonical JSON Schema (v1.0.0)**  
 - Example normalized plans  
 - Module definitions (pharmacy, behavioral health, dental/vision, etc.)  
-- Roadmap and governance documentation  
+- Governance guidelines and roadmap  
 
-All public documentation is hosted at:
-
-👉 **[benefitplanstandard.org](https://benefitplanstandard.org)**
+For complete documentation, visit:  
+👉 https://benefitplanstandard.org
 
 ---
 
-## 🧩 Repository Structure
+## 📁 Repository Structure
 
 ```text
 schema/
   └── v1.0.0/
-        benefit-plan.schema.json   # Canonical schema
+        benefit-plan.schema.json
 docs/
   ├── governance.md
   ├── roadmap.md
@@ -67,91 +64,100 @@ examples/
   ├── scan_example.json
   └── united_example.json
 modules/
-  └── README.md  # Module system overview
+  └── README.md
 ```
 
-## 📐 JSON Schema Versioning
+---
 
-The schema uses semantic versioning:
+## 📐 Versioning Policy
 
-- MAJOR → Breaking changes
-- MINOR → Backward-compatible additions
-- PATCH → Fixes & clarifications
+The schema follows **semantic versioning**:
 
-Current version: v1.0.0
+- **MAJOR** → Breaking changes  
+- **MINOR** → Backward-compatible additions  
+- **PATCH** → Fixes & clarifications  
 
-All schemas are validated using:
+Current version: **v1.0.0**
 
-- JSON Schema Draft 2020–12
-- Standard tooling (AJV, JSON Schema Validator, etc.)
+Validation uses:
 
-Note: Draft 2020–12 is supported by Ajv v8+. Ensure your plan JSON includes a `$schema` declaration or that your validator is configured with the canonical schema.
+- **JSON Schema Draft 2020-12**  
+- Ajv v8+ or any compatible implementation  
+
+Include `$schema` or configure your validator to load this canonical schema.
 
 ---
 
 ## 📄 Example Plans
 
-Real-world examples normalized to the BPS schema can be found at:
+Example normalized files are provided in:
 
-```text
+```
 /examples
 ```
 
-These examples help carriers, TPAs, brokers, and integrators understand how real benefit plans map to the canonical structure.
+These examples demonstrate how real-world SBC/EOC plan structures map into the standardized model.
 
 ---
 
-## 🤝 Validation Rules
+## 🧪 Schema-Level Validation
 
-Validation covers:
+The schema enforces:
 
-✔ Schema-level validation
+### ✔ Structural requirements
+- Required fields  
+- Field types  
+- Object/array structure  
+- Enum values  
+- Format constraints (e.g., dates)
 
-- Types
-- Required fields
-- Enum enforcement
-- Structure compliance
+### ✔ Core benefit model consistency
+- Valid network tier references  
+- Required accumulator fields  
+- Proper use of cost-share fields (copay, coinsurance, etc.)  
 
-✔ Business rules
+### ✔ Allowed field formats  
+- Monetary values  
+- Percentages  
+- Identifiers  
+- Metadata fields  
 
-- Deductible ≥ 0
-- OOP max ≥ deductible
-- Coinsurance within valid range
-- Required accumulators present
+---
 
-✔ Cross-section consistency
+### ⚠️ What This Repository Does *Not* Provide
 
-- Summary vs detailed tables
-- SBC vs EOC values
-- Network tier mapping
+To remain vendor-neutral, this repository **does not** include:
 
-Full validation logic is defined here:
-👉 See the Validation Framework in the docs repo.
+- PDF/SBC/EOC ingestion logic  
+- AI extraction or OCR models  
+- Semantic or interpretation-based validation  
+- Proprietary business-rule engines  
+- Cross-document reconciliation logic  
 
-If you need business-rule validation beyond structural schema checks (e.g., deductible and OOP relationships), refer to the Validation Framework for rule sets and scripts.
+These are implementation-specific choices that depend on downstream systems.  
+This repository strictly defines the **open schema**, not ingestion behavior.
+
+---
 
 ## 🔌 Usage
 
-Validate a plan JSON
+### Validate a plan file using Ajv CLI
 
-```powershell
-# Install Ajv CLI (requires Node.js)
+```bash
 npm install -g ajv-cli
 
-# Validate a plan against the canonical schema (PowerShell / pwsh)
-ajv validate `
-  -s schema/v1.0.0/benefit-plan.schema.json `
-  -d myplan.json `
+ajv validate \
+  -s schema/v1.0.0/benefit-plan.schema.json \
+  -d myplan.json \
   --strict=false
 ```
 
-Programmatic validation (Node)
+### Programmatic validation (Node.js)
 
 ```javascript
-// Ajv v8+ recommended for Draft 2020-12
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
-import fs from "node:fs";
+import fs from "fs";
 import schema from "./schema/v1.0.0/benefit-plan.schema.json" assert { type: "json" };
 
 const ajv = new Ajv({ strict: false });
@@ -160,40 +166,41 @@ addFormats(ajv);
 const validate = ajv.compile(schema);
 const plan = JSON.parse(fs.readFileSync("myplan.json", "utf8"));
 
-const valid = validate(plan);
-if (!valid) {
-  console.error("Validation errors:", validate.errors);
-  process.exitCode = 1;
+if (!validate(plan)) {
+  console.error(validate.errors);
 } else {
-  console.log("Plan is valid against BPS v1.0.0");
+  console.log("Valid according to Benefit Plan Standard v1.0.0");
 }
 ```
 
-Tip: For CommonJS, use `const Ajv = require('ajv')` and `require('./schema/v1.0.0/benefit-plan.schema.json')`.
+---
 
 ## 🤝 Contributing
 
-We welcome contributions!
+We welcome contributions from the community.
 
 Please read:
 
-- CONTRIBUTING.md
-- CODE_OF_CONDUCT.md
+- `CONTRIBUTING.md`  
+- `CODE_OF_CONDUCT.md`  
 
-Issues and proposals should reference the governance model and include example payloads when applicable.
+Schema updates must follow the governance model and include example payloads where relevant.
 
-Schema changes follow the governance model established by the Benefit Plan Standard.
+Issues:  
+https://github.com/Benefit-Plan-Standard/benefit-plan-schema/issues
+
+Discussions:  
+https://github.com/Benefit-Plan-Standard/benefit-plan-docs/discussions
 
 ---
 
 ## 📄 License
 
-MIT License — open for commercial and academic use.
+MIT License — open for academic, commercial, and regulatory use.
 
 ---
 
 ## 🏛 Maintained By
 
-Benefit Plan Standard Organization
-
-[https://benefitplanstandard.org](https://benefitplanstandard.org)
+**Benefit Plan Standard Organization**  
+https://benefitplanstandard.org
