@@ -23,9 +23,9 @@
           "covered": true,
           "cost_shares": [
             { "type": "copay", "sequence": 1, "amount": 200, "basis": "per_day", "applies_to_moop": true },
-            { "type": "copay", "sequence": 2, "amount": 0, "basis": "per_day", "applies_to_moop": true, "notes": "Copay waived after day 5." }
+            { "type": "copay", "sequence": 2, "amount": 0, "basis": "per_day", "applies_to_moop": true }
           ],
-          "notes": "Prior authorization required for elective admissions."
+          "notes": "Prior authorization required for elective admissions. Copay waived after day 5."
         }
       ],
       "limits": [],
