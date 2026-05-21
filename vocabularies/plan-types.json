@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "vocabulary_id": "https://benefitplanstandard.org/vocabularies/v1.1.0/plan-types.json",
+  "title": "BPS Recommended Plan Type Vocabulary",
+  "version": "1.1.0",
+  "description": "Non-normative recommended values for the `plan_type` field. These are the U.S.-standard plan-design classifications. Adopters MAY use additional values when needed.",
+  "license": "MIT",
+  "plan_types": [
+    { "code": "HMO",  "label": "HMO",               "description": "Health Maintenance Organization. Closed network; typically requires PCP referrals." },
+    { "code": "PPO",  "label": "PPO",               "description": "Preferred Provider Organization. In- and out-of-network coverage with different cost shares." },
+    { "code": "EPO",  "label": "EPO",               "description": "Exclusive Provider Organization. Closed network without referrals." },
+    { "code": "POS",  "label": "POS",               "description": "Point of Service. Hybrid HMO/PPO." },
+    { "code": "HDHP", "label": "HDHP",              "description": "High-Deductible Health Plan, commonly HSA-eligible." },
+    { "code": "MA",   "label": "Medicare Advantage", "description": "Medicare Part C plan." },
+    { "code": "MA-PD", "label": "Medicare Advantage with Part D", "description": "MA plan with integrated prescription drug coverage." },
+    { "code": "PDP",  "label": "Prescription Drug Plan", "description": "Standalone Medicare Part D plan." },
+    { "code": "PFFS", "label": "Private Fee-for-Service", "description": "Medicare PFFS plan." },
+    { "code": "SNP",  "label": "Special Needs Plan", "description": "Medicare Special Needs Plan (D-SNP, I-SNP, C-SNP)." },
+    { "code": "INDEMNITY", "label": "Indemnity",    "description": "Fee-for-service indemnity plan." },
+    { "code": "CDHP", "label": "Consumer-Directed", "description": "Consumer-directed plan (HSA, HRA, or FSA-linked)." }
+  ]
+}
