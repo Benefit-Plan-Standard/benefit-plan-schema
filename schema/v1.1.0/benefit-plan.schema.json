@@ -1,0 +1,359 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://benefitplanstandard.org/schema/v1.1.0/benefit-plan.schema.json",
+  "title": "Benefit Plan Standard Schema",
+  "description": "Canonical JSON schema for representing normalized health benefit plans across carriers. v1.1.0 is a backward-compatible minor release that adds plan_year, coverage_period, market, out-of-network accumulators, accumulator period/network_tier/embedded flags, benefit_type discriminator, and cost_share notes.",
+  "type": "object",
+  "properties": {
+    "plan_id": {
+      "type": "string",
+      "description": "Unique identifier for the benefit plan."
+    },
+    "plan_name": {
+      "type": "string",
+      "description": "Marketing or descriptive name of the plan."
+    },
+    "carrier": {
+      "type": "string",
+      "description": "Name of the issuing carrier or plan sponsor."
+    },
+    "plan_type": {
+      "type": "string",
+      "description": "High-level classification of the plan (e.g. PPO, HMO, POS, EPO, HDHP, Medicare Advantage)."
+    },
+    "plan_year": {
+      "type": "integer",
+      "description": "Coverage year for the plan (e.g., 2025). Useful when effective_date is absent or when grouping plans across years (a 'plan family').",
+      "minimum": 1900,
+      "maximum": 2100
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date on which the plan becomes effective (ISO 8601, YYYY-MM-DD)."
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date on which the plan expires or renews (ISO 8601, YYYY-MM-DD)."
+    },
+    "coverage_period": {
+      "type": "object",
+      "description": "Explicit coverage start and end dates as a pair. May differ from effective_date / expiry_date when those reflect the plan-document lifecycle rather than the coverage window.",
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "format": "date",
+          "description": "First date coverage applies (ISO 8601)."
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Last date coverage applies (ISO 8601)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "market": {
+      "type": "string",
+      "description": "Market segment (e.g., 'individual', 'individual_on_exchange', 'small_group', 'large_group', 'medicare_advantage', 'medicaid'). Not enforced as enum to allow adopter extension; see vocabularies/markets.json for the recommended values."
+    },
+    "network_tiers": {
+      "type": "array",
+      "description": "List of network tiers available for this plan.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tier_id": {
+            "type": "string",
+            "description": "Identifier for the network tier."
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name for the network tier."
+          },
+          "description": {
+            "type": ["string", "null"],
+            "description": "Human-friendly description of the tier."
+          }
+        },
+        "required": ["tier_id", "name"],
+        "additionalProperties": false
+      }
+    },
+    "accumulators": {
+      "type": "object",
+      "description": "Plan-level deductible and out-of-pocket maximum values. The four legacy slots (individual_deductible / family_deductible / individual_oop_max / family_oop_max) are implicitly in-network. v1.1.0 adds explicit out-of-network counterparts (oon_*). Use the `network_tier` field on each slot to be explicit.",
+      "properties": {
+        "individual_deductible": { "$ref": "#/$defs/deductible_accumulator" },
+        "family_deductible":     { "$ref": "#/$defs/deductible_accumulator" },
+        "individual_oop_max":    { "$ref": "#/$defs/oop_max_accumulator" },
+        "family_oop_max":        { "$ref": "#/$defs/oop_max_accumulator" },
+        "oon_individual_deductible": { "$ref": "#/$defs/deductible_accumulator" },
+        "oon_family_deductible":     { "$ref": "#/$defs/deductible_accumulator" },
+        "oon_individual_oop_max":    { "$ref": "#/$defs/oop_max_accumulator" },
+        "oon_family_oop_max":        { "$ref": "#/$defs/oop_max_accumulator" }
+      },
+      "additionalProperties": false
+    },
+    "benefits": {
+      "type": "array",
+      "description": "List of individual benefit items included in the plan.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "benefit_id": {
+            "type": "string",
+            "description": "Unique identifier for this benefit item."
+          },
+          "benefit_type": {
+            "type": "string",
+            "description": "Domain discriminator for this benefit, used to support modules. Recommended values: 'medical', 'pharmacy', 'dental', 'vision', 'behavioral_health', 'maternity', 'pediatric'. Not enforced as enum to allow adopter extension.",
+            "default": "medical"
+          },
+          "category": {
+            "type": "string",
+            "description": "High-level category of the benefit (e.g. PHYSICIAN_SERVICES, EMERGENCY_CARE). See vocabularies/categories.json for the recommended vocabulary."
+          },
+          "service_name": {
+            "type": "string",
+            "description": "Human-readable name for the service."
+          },
+          "canonical_key": {
+            "type": "string",
+            "description": "Optional machine-readable canonical identifier for the service (e.g. 'primary_care', 'imaging_advanced'). See vocabularies/canonical-benefits.json for the recommended vocabulary."
+          },
+          "raw_label": {
+            "type": ["string", "null"],
+            "description": "Optional verbatim label from the source document (SBC/EOC) before normalization. Useful for traceability and dispute resolution."
+          },
+          "place_of_service": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Place(s) where the service is typically rendered (e.g. office, hospital)."
+          },
+          "network_cost_shares": {
+            "type": "array",
+            "description": "Cost sharing details for each network tier.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "tier_id": {
+                  "type": "string",
+                  "description": "Identifier of the network tier this cost share applies to."
+                },
+                "covered": {
+                  "type": "boolean",
+                  "description": "Indicates whether the service is covered under this tier."
+                },
+                "cost_shares": {
+                  "type": "array",
+                  "description": "Sequence of cost sharing components applicable to this tier.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "description": "Type of cost share component (e.g. copay, coinsurance, deductible)."
+                      },
+                      "sequence": {
+                        "type": "integer",
+                        "description": "Order in which this cost share is applied."
+                      },
+                      "amount": {
+                        "type": ["number", "null"],
+                        "description": "Dollar amount for copay or flat deductible; null if not applicable."
+                      },
+                      "rate": {
+                        "type": ["number", "null"],
+                        "description": "Percentage rate (0.0–1.0) for coinsurance; null if not applicable."
+                      },
+                      "basis": {
+                        "type": ["string", "null"],
+                        "description": "Basis for cost share calculation (e.g. per_visit, per_day, per_test, allowed_amount)."
+                      },
+                      "applies_to_deductible": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "applies_to_moop": {
+                        "type": "boolean",
+                        "default": true
+                      },
+                      "notes": {
+                        "type": ["string", "null"],
+                        "description": "Free-text qualifier for this cost-share step (e.g. 'copay waived after day 5')."
+                      }
+                    },
+                    "required": ["type", "sequence"],
+                    "additionalProperties": false
+                  }
+                },
+                "notes": {
+                  "type": ["string", "null"],
+                  "description": "Additional notes or qualifiers for this tier's cost share."
+                }
+              },
+              "required": ["tier_id", "covered"],
+              "additionalProperties": false
+            }
+          },
+          "limits": {
+            "type": "array",
+            "description": "Visit, day, or dollar limits applicable to this benefit.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Type of limit (e.g. visits, days, dollars)."
+                },
+                "value": {
+                  "type": "number",
+                  "description": "Numeric value of the limit."
+                },
+                "period": {
+                  "type": ["string", "null"],
+                  "description": "Period over which the limit applies (e.g. per_year, per_episode, per_lifetime)."
+                }
+              },
+              "required": ["type", "value"],
+              "additionalProperties": false
+            }
+          },
+          "conditions": {
+            "type": "array",
+            "description": "Special conditions or qualifiers for this benefit (e.g. prior authorization required).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Condition category (e.g. authorization, referral, clinical)."
+                },
+                "code": {
+                  "type": ["string", "null"],
+                  "description": "Optional code identifying the condition."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Human-readable description of the condition."
+                }
+              },
+              "required": ["type", "description"],
+              "additionalProperties": false
+            }
+          },
+          "moop_applicability": {
+            "type": ["string", "null"],
+            "description": "Specifies whether cost sharing for this benefit counts toward the maximum out-of-pocket (MOOP). Values may include plan_default, include, or exclude."
+          },
+          "coding_hints": {
+            "type": "object",
+            "description": "Optional hints for mapping the benefit to coding systems like CPT or revenue codes.",
+            "properties": {
+              "cpt_ranges": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "revenue_codes": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": ["benefit_id", "category", "service_name", "network_cost_shares"],
+        "additionalProperties": false
+      }
+    },
+    "source_references": {
+      "type": "array",
+      "description": "Optional citations back to the source document used to populate this plan.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "page_number": { "type": "integer" },
+          "page_range":  { "type": "string" },
+          "excerpt":     { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "schema_version": {
+      "type": "string",
+      "description": "Version of the Benefit Plan Standard schema used to validate this document (e.g. '1.1.0')."
+    }
+  },
+  "required": ["plan_id", "plan_name", "carrier", "network_tiers", "benefits"],
+  "additionalProperties": false,
+  "$defs": {
+    "deductible_accumulator": {
+      "type": "object",
+      "description": "A deductible accumulator (individual or family, in-network or out-of-network).",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "description": "Dollar amount of the deductible."
+        },
+        "currency": {
+          "type": "string",
+          "default": "USD",
+          "description": "ISO 4217 currency code."
+        },
+        "period": {
+          "type": ["string", "null"],
+          "description": "Accumulation period (e.g. 'per_year', 'per_calendar_year', 'per_plan_year'). Many real SBCs specify this explicitly."
+        },
+        "network_tier": {
+          "type": ["string", "null"],
+          "description": "Network scope: 'in-network', 'out-of-network', or a custom tier_id. The legacy slots default to 'in-network'; the oon_* slots default to 'out-of-network'."
+        },
+        "applies_to": {
+          "type": ["string", "null"],
+          "description": "Coverage line the deductible applies to (e.g. medical, pharmacy)."
+        },
+        "embedded": {
+          "type": ["boolean", "null"],
+          "description": "For family deductibles: whether each family member has an embedded individual sub-deductible that contributes to the family max. Common in real plans."
+        }
+      },
+      "required": ["amount"],
+      "additionalProperties": false
+    },
+    "oop_max_accumulator": {
+      "type": "object",
+      "description": "An out-of-pocket maximum accumulator (individual or family, in-network or out-of-network).",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "description": "Dollar amount of the out-of-pocket maximum."
+        },
+        "currency": {
+          "type": "string",
+          "default": "USD",
+          "description": "ISO 4217 currency code."
+        },
+        "period": {
+          "type": ["string", "null"],
+          "description": "Accumulation period (e.g. 'per_year', 'per_calendar_year', 'per_plan_year')."
+        },
+        "network_tier": {
+          "type": ["string", "null"],
+          "description": "Network scope: 'in-network', 'out-of-network', or a custom tier_id."
+        },
+        "applies_to": {
+          "type": ["string", "null"],
+          "description": "Coverage line the OOP max applies to (e.g. medical, pharmacy, integrated)."
+        },
+        "embedded": {
+          "type": ["boolean", "null"],
+          "description": "For family OOP maxes: whether each family member has an embedded individual sub-max that contributes to the family max."
+        }
+      },
+      "required": ["amount"],
+      "additionalProperties": false
+    }
+  }
+}

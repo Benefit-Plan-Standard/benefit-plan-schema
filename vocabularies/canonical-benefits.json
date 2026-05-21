@@ -1,0 +1,1421 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "vocabulary_id": "https://benefitplanstandard.org/vocabularies/v1.1.0/canonical-benefits.json",
+  "title": "BPS Recommended Canonical Benefit Vocabulary",
+  "version": "1.1.0",
+  "description": "Non-normative recommended vocabulary of canonical benefit types for use in BPS `canonical_key` and `category` fields. Derived from production extraction across multiple U.S. carrier SBC and EOC documents. Adopters MAY extend with additional terms but SHOULD prefer these where applicable for cross-platform interoperability.",
+  "license": "MIT",
+  "categories": {
+    "behavioral_health": {
+      "description": "Mental health, substance use, autism, and behavioral therapy services.",
+      "count": 8
+    },
+    "dental": {
+      "description": "Dental services (commonly pediatric on medical plans; full dental typically on a dental module).",
+      "count": 1
+    },
+    "diagnostic": {
+      "description": "Diagnostic tests, laboratory, and imaging (standard and advanced).",
+      "count": 5
+    },
+    "facility_services": {
+      "description": "Inpatient hospital, outpatient surgical facilities, skilled nursing, observation, and other facility-based services.",
+      "count": 10
+    },
+    "home_health": {
+      "description": "Home-based skilled care, home health aides, home therapies, and hospice.",
+      "count": 5
+    },
+    "maternity": {
+      "description": "Prenatal, delivery, postnatal, and newborn care.",
+      "count": 9
+    },
+    "other": {
+      "description": "Other services (emergency, urgent care, ambulance, excluded/non-covered placeholders).",
+      "count": 5
+    },
+    "pharmacy": {
+      "description": "Prescription drugs by formulary tier (generic, preferred brand, non-preferred brand, specialty, preventive).",
+      "count": 10
+    },
+    "preventive": {
+      "description": "Preventive care including well visits, immunizations, mammograms, colonoscopies, and well-woman exams.",
+      "count": 7
+    },
+    "professional_services": {
+      "description": "Office and professional-fee services (PCP, specialist, chiropractic, acupuncture, telehealth, surgeon professional fees).",
+      "count": 11
+    },
+    "rehabilitation": {
+      "description": "Physical, occupational, speech, cardiac, and pulmonary rehabilitation; habilitative services.",
+      "count": 10
+    },
+    "specialty_care": {
+      "description": "Specialty treatments (chemotherapy, radiation, dialysis, DME, prosthetics, infertility, bariatric, nutrition).",
+      "count": 17
+    },
+    "vision": {
+      "description": "Vision services (commonly pediatric on medical plans; full vision typically on a vision module).",
+      "count": 2
+    }
+  },
+  "benefits": [
+    {
+      "canonical_key": "aba_therapy",
+      "label": "ABA therapy",
+      "description": "Applied Behavior Analysis therapy for behavioral health and autism.",
+      "category": "behavioral_health",
+      "aliases": [
+        "Applied Behavior Analysis (ABA)",
+        "ABA therapy",
+        "autism behavior therapy",
+        "behavioral therapy for autism"
+      ],
+      "sbc_label_patterns": [
+        "Applied behavior analysis (ABA)",
+        "ABA therapy"
+      ]
+    },
+    {
+      "canonical_key": "autism_services",
+      "label": "Autism services",
+      "description": "Autism spectrum disorder evaluation and treatment services.",
+      "category": "behavioral_health",
+      "aliases": [
+        "autism services",
+        "autism spectrum disorder (ASD) services",
+        "autism treatment"
+      ],
+      "sbc_label_patterns": [
+        "Autism services",
+        "ASD services"
+      ]
+    },
+    {
+      "canonical_key": "behavioral_health_intensive_outpatient",
+      "label": "Behavioral health IOP",
+      "description": "Intensive outpatient program for mental health or substance use treatment.",
+      "category": "behavioral_health",
+      "aliases": [
+        "intensive outpatient program",
+        "IOP",
+        "behavioral health IOP",
+        "mental health IOP"
+      ],
+      "sbc_label_patterns": [
+        "Intensive outpatient program (IOP)",
+        "Behavioral health IOP"
+      ]
+    },
+    {
+      "canonical_key": "behavioral_health_partial_hospitalization",
+      "label": "Behavioral health PHP",
+      "description": "Partial hospitalization program for mental health or substance use treatment.",
+      "category": "behavioral_health",
+      "aliases": [
+        "partial hospitalization program",
+        "PHP",
+        "behavioral health PHP",
+        "mental health PHP"
+      ],
+      "sbc_label_patterns": [
+        "Partial hospitalization program (PHP)",
+        "Behavioral health PHP"
+      ]
+    },
+    {
+      "canonical_key": "mental_health_inpatient",
+      "label": "Mental health inpatient",
+      "description": "Inpatient mental and behavioral health services.",
+      "category": "behavioral_health",
+      "aliases": [
+        "inpatient mental health",
+        "inpatient behavioral health"
+      ],
+      "sbc_label_patterns": [
+        "Inpatient mental health",
+        "Behavioral health inpatient"
+      ]
+    },
+    {
+      "canonical_key": "mental_health_outpatient",
+      "label": "Mental health outpatient",
+      "description": "Outpatient mental and behavioral health services.",
+      "category": "behavioral_health",
+      "aliases": [
+        "outpatient mental health",
+        "outpatient behavioral health"
+      ],
+      "sbc_label_patterns": [
+        "Outpatient mental health",
+        "Behavioral health outpatient"
+      ]
+    },
+    {
+      "canonical_key": "substance_use_inpatient",
+      "label": "Substance use inpatient",
+      "description": "Inpatient substance use disorder services.",
+      "category": "behavioral_health",
+      "aliases": [
+        "inpatient substance use",
+        "inpatient SUD"
+      ],
+      "sbc_label_patterns": [
+        "Substance use inpatient"
+      ]
+    },
+    {
+      "canonical_key": "substance_use_outpatient",
+      "label": "Substance use outpatient",
+      "description": "Outpatient substance use disorder services.",
+      "category": "behavioral_health",
+      "aliases": [
+        "outpatient substance use",
+        "outpatient SUD"
+      ],
+      "sbc_label_patterns": [
+        "Substance use outpatient"
+      ]
+    },
+    {
+      "canonical_key": "pediatric_dental_checkup",
+      "label": "Pediatric dental checkup",
+      "description": "Pediatric dental routine checkup.",
+      "category": "dental",
+      "aliases": [
+        "pediatric dental checkup",
+        "child dental checkup"
+      ],
+      "sbc_label_patterns": [
+        "Pediatric dental checkup"
+      ]
+    },
+    {
+      "canonical_key": "allergy_testing",
+      "label": "Allergy testing",
+      "description": "Allergy diagnostic testing.",
+      "category": "diagnostic",
+      "aliases": [
+        "allergy testing",
+        "allergy tests",
+        "skin prick testing"
+      ],
+      "sbc_label_patterns": [
+        "Allergy testing"
+      ]
+    },
+    {
+      "canonical_key": "diagnostic_lab",
+      "label": "Diagnostic lab",
+      "description": "Laboratory services and testing.",
+      "category": "diagnostic",
+      "aliases": [
+        "lab services",
+        "laboratory services"
+      ],
+      "sbc_label_patterns": [
+        "Lab services",
+        "Laboratory services"
+      ]
+    },
+    {
+      "canonical_key": "diagnostic_test",
+      "label": "Diagnostic test",
+      "description": "Basic diagnostic tests such as lab tests or blood work.",
+      "category": "diagnostic",
+      "aliases": [
+        "diagnostic test",
+        "diagnostic tests",
+        "blood work"
+      ],
+      "sbc_label_patterns": [
+        "Diagnostic test",
+        "Lab tests"
+      ]
+    },
+    {
+      "canonical_key": "imaging_advanced",
+      "label": "Advanced imaging",
+      "description": "Advanced imaging such as MRI, CT, or PET.",
+      "category": "diagnostic",
+      "aliases": [
+        "advanced imaging",
+        "MRI",
+        "CT scan",
+        "PET scan"
+      ],
+      "sbc_label_patterns": [
+        "MRI",
+        "CT scan",
+        "PET scan",
+        "Advanced imaging"
+      ]
+    },
+    {
+      "canonical_key": "imaging_standard",
+      "label": "Standard imaging",
+      "description": "Standard imaging such as X-ray or ultrasound.",
+      "category": "diagnostic",
+      "aliases": [
+        "x-ray",
+        "ultrasound",
+        "standard imaging"
+      ],
+      "sbc_label_patterns": [
+        "X-ray",
+        "Ultrasound"
+      ]
+    },
+    {
+      "canonical_key": "infusion_center_services",
+      "label": "Infusion center services",
+      "description": "Facility-based infusion center services.",
+      "category": "facility_services",
+      "aliases": [
+        "infusion center",
+        "hospital outpatient infusion"
+      ],
+      "sbc_label_patterns": [
+        "Infusion center"
+      ]
+    },
+    {
+      "canonical_key": "inpatient_hospital",
+      "label": "Inpatient hospital",
+      "description": "Inpatient hospital services (global).",
+      "category": "facility_services",
+      "aliases": [
+        "inpatient hospital stay",
+        "inpatient hospital services",
+        "hospital stay"
+      ],
+      "sbc_label_patterns": [
+        "Inpatient hospital stay",
+        "Inpatient hospital services"
+      ]
+    },
+    {
+      "canonical_key": "inpatient_hospital_facility",
+      "label": "Inpatient hospital facility",
+      "description": "Facility charges for inpatient stay.",
+      "category": "facility_services",
+      "aliases": [
+        "inpatient facility fee"
+      ],
+      "sbc_label_patterns": [
+        "Inpatient facility fee"
+      ]
+    },
+    {
+      "canonical_key": "ltac_facility",
+      "label": "LTAC facility",
+      "description": "Long-term acute care facility services.",
+      "category": "facility_services",
+      "aliases": [
+        "long-term acute care",
+        "LTAC"
+      ],
+      "sbc_label_patterns": [
+        "Long-term acute care (LTAC)"
+      ]
+    },
+    {
+      "canonical_key": "observation_care",
+      "label": "Observation care",
+      "description": "Hospital observation services.",
+      "category": "facility_services",
+      "aliases": [
+        "observation care",
+        "observation services"
+      ],
+      "sbc_label_patterns": [
+        "Observation care"
+      ]
+    },
+    {
+      "canonical_key": "outpatient_surgery",
+      "label": "Outpatient surgery",
+      "description": "Outpatient surgical procedures (global).",
+      "category": "facility_services",
+      "aliases": [
+        "outpatient surgery",
+        "ambulatory surgery center",
+        "outpatient hospital services"
+      ],
+      "sbc_label_patterns": [
+        "Outpatient surgery",
+        "Ambulatory surgery center"
+      ]
+    },
+    {
+      "canonical_key": "outpatient_surgery_facility",
+      "label": "Outpatient surgery facility",
+      "description": "Facility charges for outpatient surgery.",
+      "category": "facility_services",
+      "aliases": [
+        "outpatient hospital facility fee",
+        "surgery center facility"
+      ],
+      "sbc_label_patterns": [
+        "Outpatient facility fee",
+        "Facility fee"
+      ]
+    },
+    {
+      "canonical_key": "skilled_nursing_facility",
+      "label": "Skilled nursing facility",
+      "description": "Skilled nursing facility stay.",
+      "category": "facility_services",
+      "aliases": [
+        "skilled nursing facility",
+        "SNF"
+      ],
+      "sbc_label_patterns": [
+        "Skilled nursing facility"
+      ]
+    },
+    {
+      "canonical_key": "skilled_nursing_readmission",
+      "label": "Skilled nursing readmission",
+      "description": "Readmission to a skilled nursing facility.",
+      "category": "facility_services",
+      "aliases": [
+        "SNF readmission",
+        "skilled nursing facility readmission"
+      ],
+      "sbc_label_patterns": [
+        "Skilled nursing readmission"
+      ]
+    },
+    {
+      "canonical_key": "surgery_facility",
+      "label": "Surgery facility",
+      "description": "Facility charges related to a surgical procedure.",
+      "category": "facility_services",
+      "aliases": [
+        "surgical facility fee",
+        "hospital/ASC facility charge"
+      ],
+      "sbc_label_patterns": [
+        "Surgery facility fee"
+      ]
+    },
+    {
+      "canonical_key": "home_health_aide_services",
+      "label": "Home health aide services",
+      "description": "Personal care assistance provided by a home health aide.",
+      "category": "home_health",
+      "aliases": [
+        "home health aide",
+        "personal care aide"
+      ],
+      "sbc_label_patterns": [
+        "Home health aide"
+      ]
+    },
+    {
+      "canonical_key": "home_health_care",
+      "label": "Home health care",
+      "description": "Home health care services.",
+      "category": "home_health",
+      "aliases": [
+        "home health care"
+      ],
+      "sbc_label_patterns": [
+        "Home health care"
+      ]
+    },
+    {
+      "canonical_key": "home_health_nursing",
+      "label": "Home health nursing",
+      "description": "Skilled nursing services provided in the home.",
+      "category": "home_health",
+      "aliases": [
+        "skilled nursing at home",
+        "home nursing"
+      ],
+      "sbc_label_patterns": [
+        "Home health nursing"
+      ]
+    },
+    {
+      "canonical_key": "home_health_therapies",
+      "label": "Home health therapies",
+      "description": "Therapy services (PT/OT/ST) provided in the home.",
+      "category": "home_health",
+      "aliases": [
+        "home PT/OT/ST",
+        "home therapy"
+      ],
+      "sbc_label_patterns": [
+        "Home health therapies"
+      ]
+    },
+    {
+      "canonical_key": "hospice_care",
+      "label": "Hospice care",
+      "description": "Hospice end-of-life care services.",
+      "category": "home_health",
+      "aliases": [
+        "hospice care"
+      ],
+      "sbc_label_patterns": [
+        "Hospice care"
+      ]
+    },
+    {
+      "canonical_key": "delivery_facility",
+      "label": "Delivery facility",
+      "description": "Facility charges for labor and delivery.",
+      "category": "maternity",
+      "aliases": [
+        "hospital delivery facility",
+        "labor and delivery facility"
+      ],
+      "sbc_label_patterns": [
+        "Delivery facility",
+        "Labor & delivery facility"
+      ]
+    },
+    {
+      "canonical_key": "delivery_inpatient",
+      "label": "Delivery inpatient",
+      "description": "Inpatient hospital delivery services.",
+      "category": "maternity",
+      "aliases": [
+        "inpatient delivery",
+        "hospital delivery"
+      ],
+      "sbc_label_patterns": [
+        "Delivery inpatient"
+      ]
+    },
+    {
+      "canonical_key": "delivery_professional",
+      "label": "Delivery professional",
+      "description": "Professional fees for obstetrical delivery.",
+      "category": "maternity",
+      "aliases": [
+        "delivery professional fees",
+        "obstetrician fees"
+      ],
+      "sbc_label_patterns": [
+        "Delivery professional",
+        "OB delivery professional"
+      ]
+    },
+    {
+      "canonical_key": "newborn_care",
+      "label": "Newborn care",
+      "description": "Care for newborn during and after delivery.",
+      "category": "maternity",
+      "aliases": [
+        "newborn care"
+      ],
+      "sbc_label_patterns": [
+        "Newborn care"
+      ]
+    },
+    {
+      "canonical_key": "postnatal_care",
+      "label": "Postnatal care",
+      "description": "Postnatal maternity care after delivery.",
+      "category": "maternity",
+      "aliases": [
+        "postnatal care"
+      ],
+      "sbc_label_patterns": [
+        "Postnatal care"
+      ]
+    },
+    {
+      "canonical_key": "prenatal_care",
+      "label": "Prenatal care",
+      "description": "Prenatal maternity care before delivery.",
+      "category": "maternity",
+      "aliases": [
+        "prenatal care"
+      ],
+      "sbc_label_patterns": [
+        "Prenatal care"
+      ]
+    },
+    {
+      "canonical_key": "prenatal_labs",
+      "label": "Prenatal labs",
+      "description": "Laboratory testing during prenatal care.",
+      "category": "maternity",
+      "aliases": [
+        "obstetrical labs",
+        "prenatal labs"
+      ],
+      "sbc_label_patterns": [
+        "Prenatal labs"
+      ]
+    },
+    {
+      "canonical_key": "prenatal_office_visits",
+      "label": "Prenatal office visits",
+      "description": "Routine obstetrical prenatal office visits.",
+      "category": "maternity",
+      "aliases": [
+        "prenatal obstetric visits",
+        "OB prenatal visits"
+      ],
+      "sbc_label_patterns": [
+        "Prenatal office visits"
+      ]
+    },
+    {
+      "canonical_key": "prenatal_ultrasound",
+      "label": "Prenatal ultrasound",
+      "description": "Obstetrical ultrasound during prenatal care.",
+      "category": "maternity",
+      "aliases": [
+        "OB ultrasound",
+        "prenatal ultrasound"
+      ],
+      "sbc_label_patterns": [
+        "Prenatal ultrasound"
+      ]
+    },
+    {
+      "canonical_key": "ambulance",
+      "label": "Ambulance services",
+      "description": "Transport by ambulance.",
+      "category": "other",
+      "aliases": [
+        "ambulance",
+        "ambulance transport",
+        "emergency ambulance"
+      ],
+      "sbc_label_patterns": [
+        "Ambulance"
+      ]
+    },
+    {
+      "canonical_key": "emergency_room",
+      "label": "Emergency room",
+      "description": "Emergency department services for urgent or life-threatening conditions.",
+      "category": "other",
+      "aliases": [
+        "emergency room",
+        "ER visit",
+        "emergency department"
+      ],
+      "sbc_label_patterns": [
+        "Emergency room",
+        "ER visit"
+      ]
+    },
+    {
+      "canonical_key": "excluded_service",
+      "label": "Excluded service",
+      "description": "Benefit explicitly excluded from coverage.",
+      "category": "other",
+      "aliases": [
+        "excluded service",
+        "benefit not covered"
+      ],
+      "sbc_label_patterns": [
+        "Benefit not covered"
+      ]
+    },
+    {
+      "canonical_key": "not_covered_service",
+      "label": "Not covered service",
+      "description": "Service not covered by the plan.",
+      "category": "other",
+      "aliases": [
+        "not covered",
+        "no coverage"
+      ],
+      "sbc_label_patterns": [
+        "Not covered",
+        "You pay all costs"
+      ]
+    },
+    {
+      "canonical_key": "urgent_care",
+      "label": "Urgent care",
+      "description": "Urgent care center services for non-emergency conditions.",
+      "category": "other",
+      "aliases": [
+        "urgent care visit",
+        "urgent care center"
+      ],
+      "sbc_label_patterns": [
+        "Urgent care visit",
+        "Urgent care center"
+      ]
+    },
+    {
+      "canonical_key": "generic_drugs",
+      "label": "Generic drugs",
+      "description": "Generic prescription medications.",
+      "category": "pharmacy",
+      "aliases": [
+        "generic drugs",
+        "generic prescription drugs",
+        "tier 1 generic",
+        "preferred generic",
+        "preferred generics"
+      ],
+      "sbc_label_patterns": [
+        "Generic drugs",
+        "Tier 1 generic"
+      ]
+    },
+    {
+      "canonical_key": "nonpreferred_brand_drugs",
+      "label": "Non-preferred brand drugs",
+      "description": "Non-preferred brand-name prescription medications.",
+      "category": "pharmacy",
+      "aliases": [
+        "non-preferred brand drugs",
+        "nonpreferred brand drugs",
+        "tier 3 non-preferred brand"
+      ],
+      "sbc_label_patterns": [
+        "Non-preferred brand drugs",
+        "Tier 3 non-preferred brand"
+      ]
+    },
+    {
+      "canonical_key": "nonpreferred_specialty_drugs",
+      "label": "Non-preferred specialty drugs",
+      "description": "Non-preferred specialty medications.",
+      "category": "pharmacy",
+      "aliases": [
+        "non-preferred specialty",
+        "nonpreferred specialty medications",
+        "tier 4 non-preferred specialty"
+      ],
+      "sbc_label_patterns": [
+        "Non-preferred specialty drugs",
+        "Tier 4 non-preferred specialty"
+      ]
+    },
+    {
+      "canonical_key": "preferred_brand_drugs",
+      "label": "Preferred brand drugs",
+      "description": "Preferred brand-name prescription medications.",
+      "category": "pharmacy",
+      "aliases": [
+        "preferred brand drugs",
+        "preferred brand-name drugs",
+        "tier 2 preferred brand"
+      ],
+      "sbc_label_patterns": [
+        "Preferred brand drugs",
+        "Tier 2 preferred brand"
+      ]
+    },
+    {
+      "canonical_key": "preferred_generic_drugs",
+      "label": "Preferred generic drugs",
+      "description": "Preferred generic medications.",
+      "category": "pharmacy",
+      "aliases": [
+        "preferred generic",
+        "tier 1 preferred generic"
+      ],
+      "sbc_label_patterns": [
+        "Preferred generic"
+      ]
+    },
+    {
+      "canonical_key": "preferred_specialty_drugs",
+      "label": "Preferred specialty drugs",
+      "description": "Preferred specialty medications.",
+      "category": "pharmacy",
+      "aliases": [
+        "preferred specialty medications",
+        "tier 4 preferred specialty",
+        "preferred specialty"
+      ],
+      "sbc_label_patterns": [
+        "Preferred specialty drugs",
+        "Tier 4 preferred specialty"
+      ]
+    },
+    {
+      "canonical_key": "preventive_drugs",
+      "label": "Preventive drugs",
+      "description": "Preventive medications covered under ACA preventive care.",
+      "category": "pharmacy",
+      "aliases": [
+        "preventive drugs"
+      ],
+      "sbc_label_patterns": [
+        "Preventive drugs"
+      ]
+    },
+    {
+      "canonical_key": "specialty_drugs",
+      "label": "Specialty drugs",
+      "description": "Specialty medications typically requiring special handling.",
+      "category": "pharmacy",
+      "aliases": [
+        "specialty drugs",
+        "specialty medications",
+        "specialty pharmacy",
+        "tier 4 specialty"
+      ],
+      "sbc_label_patterns": [
+        "Specialty drugs",
+        "Tier 4 specialty"
+      ]
+    },
+    {
+      "canonical_key": "tier_5_drugs",
+      "label": "Tier 5 drugs",
+      "description": "Tier 5 prescription medications (plan-defined high-cost tier).",
+      "category": "pharmacy",
+      "aliases": [
+        "Tier 5",
+        "ultra specialty",
+        "high cost drugs"
+      ],
+      "sbc_label_patterns": [
+        "Tier 5 drugs"
+      ]
+    },
+    {
+      "canonical_key": "tier_6_drugs",
+      "label": "Tier 6 drugs",
+      "description": "Tier 6 prescription medications (plan-defined highest tier).",
+      "category": "pharmacy",
+      "aliases": [
+        "Tier 6",
+        "specialty-select",
+        "highest tier medications"
+      ],
+      "sbc_label_patterns": [
+        "Tier 6 drugs"
+      ]
+    },
+    {
+      "canonical_key": "immunizations",
+      "label": "Immunizations",
+      "description": "Routine immunizations and vaccinations.",
+      "category": "preventive",
+      "aliases": [
+        "immunizations",
+        "vaccinations"
+      ],
+      "sbc_label_patterns": [
+        "Immunizations",
+        "Vaccinations"
+      ]
+    },
+    {
+      "canonical_key": "preventive_care",
+      "label": "Preventive care",
+      "description": "Routine preventive services like screenings and immunizations.",
+      "category": "preventive",
+      "aliases": [
+        "preventive services",
+        "routine preventive care"
+      ],
+      "sbc_label_patterns": [
+        "Preventive care",
+        "Preventive services"
+      ]
+    },
+    {
+      "canonical_key": "preventive_colonoscopy",
+      "label": "Preventive colonoscopy",
+      "description": "Screening colonoscopy under preventive services.",
+      "category": "preventive",
+      "aliases": [
+        "screening colonoscopy",
+        "preventive colonoscopy"
+      ],
+      "sbc_label_patterns": [
+        "Screening colonoscopy"
+      ]
+    },
+    {
+      "canonical_key": "preventive_immunizations",
+      "label": "Preventive immunizations",
+      "description": "Preventive immunizations and vaccines.",
+      "category": "preventive",
+      "aliases": [
+        "preventive vaccines",
+        "ACA immunizations"
+      ],
+      "sbc_label_patterns": [
+        "Preventive immunizations"
+      ]
+    },
+    {
+      "canonical_key": "preventive_mammogram",
+      "label": "Preventive mammogram",
+      "description": "Screening mammogram under preventive services.",
+      "category": "preventive",
+      "aliases": [
+        "screening mammogram",
+        "preventive mammogram"
+      ],
+      "sbc_label_patterns": [
+        "Screening mammogram"
+      ]
+    },
+    {
+      "canonical_key": "preventive_well_woman_exam",
+      "label": "Preventive well-woman exam",
+      "description": "Annual well-woman preventive exam.",
+      "category": "preventive",
+      "aliases": [
+        "well-woman exam",
+        "annual gynecological exam"
+      ],
+      "sbc_label_patterns": [
+        "Well-woman exam"
+      ]
+    },
+    {
+      "canonical_key": "well_child_visit",
+      "label": "Well-child visit",
+      "description": "Routine pediatric well-child visit.",
+      "category": "preventive",
+      "aliases": [
+        "well child visit"
+      ],
+      "sbc_label_patterns": [
+        "Well child visit"
+      ]
+    },
+    {
+      "canonical_key": "acupuncture",
+      "label": "Acupuncture",
+      "description": "Acupuncture services.",
+      "category": "professional_services",
+      "aliases": [
+        "acupuncture",
+        "acupuncture therapy",
+        "acupuncture treatment"
+      ],
+      "sbc_label_patterns": [
+        "Acupuncture"
+      ]
+    },
+    {
+      "canonical_key": "allergy_injections",
+      "label": "Allergy injections",
+      "description": "Allergy shots and injections.",
+      "category": "professional_services",
+      "aliases": [
+        "allergy injections",
+        "allergy shots",
+        "immunotherapy injections"
+      ],
+      "sbc_label_patterns": [
+        "Allergy injections"
+      ]
+    },
+    {
+      "canonical_key": "chiropractic_care",
+      "label": "Chiropractic care",
+      "description": "Chiropractic services.",
+      "category": "professional_services",
+      "aliases": [
+        "chiropractic care",
+        "chiropractic services"
+      ],
+      "sbc_label_patterns": [
+        "Chiropractic care"
+      ]
+    },
+    {
+      "canonical_key": "inpatient_hospital_physician",
+      "label": "Inpatient hospital physician",
+      "description": "Physician professional services during inpatient stay.",
+      "category": "professional_services",
+      "aliases": [
+        "inpatient physician services"
+      ],
+      "sbc_label_patterns": [
+        "Inpatient physician services"
+      ]
+    },
+    {
+      "canonical_key": "inpatient_hospital_professional",
+      "label": "Inpatient hospital professional",
+      "description": "Professional fees during inpatient hospital stay (e.g., surgeon, hospitalist).",
+      "category": "professional_services",
+      "aliases": [
+        "inpatient professional services",
+        "inpatient surgeon fees",
+        "hospitalist"
+      ],
+      "sbc_label_patterns": [
+        "Inpatient hospital professional"
+      ]
+    },
+    {
+      "canonical_key": "outpatient_surgery_professional",
+      "label": "Outpatient surgery professional",
+      "description": "Professional fees for outpatient surgery (e.g., surgeon).",
+      "category": "professional_services",
+      "aliases": [
+        "outpatient surgeon fees",
+        "ASC surgeon"
+      ],
+      "sbc_label_patterns": [
+        "Outpatient surgeon",
+        "Surgery professional"
+      ]
+    },
+    {
+      "canonical_key": "outpatient_surgery_surgeon",
+      "label": "Outpatient surgeon",
+      "description": "Surgeon professional fees for outpatient surgery.",
+      "category": "professional_services",
+      "aliases": [
+        "outpatient surgeon",
+        "surgeon fee"
+      ],
+      "sbc_label_patterns": [
+        "Surgeon fee"
+      ]
+    },
+    {
+      "canonical_key": "primary_care",
+      "label": "Primary care visit",
+      "description": "Office visit to a primary care provider for injury or illness.",
+      "category": "professional_services",
+      "aliases": [
+        "primary care visit",
+        "primary care office visit",
+        "primary care provider visit",
+        "pcp visit",
+        "pcp office visit",
+        "primary doctor visit",
+        "primary care physician visit"
+      ],
+      "sbc_label_patterns": [
+        "Primary care visit to treat an injury or illness",
+        "Primary care office visit"
+      ]
+    },
+    {
+      "canonical_key": "specialist",
+      "label": "Specialist visit",
+      "description": "Office visit to a medical specialist.",
+      "category": "professional_services",
+      "aliases": [
+        "specialist visit",
+        "specialist office visit",
+        "visit to specialist"
+      ],
+      "sbc_label_patterns": [
+        "Specialist office visit",
+        "Visit to specialist"
+      ]
+    },
+    {
+      "canonical_key": "surgery_professional",
+      "label": "Surgery professional",
+      "description": "Professional fees related to a surgical procedure.",
+      "category": "professional_services",
+      "aliases": [
+        "surgeon professional fees",
+        "surgical physician fees"
+      ],
+      "sbc_label_patterns": [
+        "Surgery professional"
+      ]
+    },
+    {
+      "canonical_key": "telehealth_visit",
+      "label": "Telehealth visit",
+      "description": "Virtual visit with a provider via telephone or video.",
+      "category": "professional_services",
+      "aliases": [
+        "telemedicine",
+        "virtual visit"
+      ],
+      "sbc_label_patterns": [
+        "Telehealth visit",
+        "Telemedicine visit"
+      ]
+    },
+    {
+      "canonical_key": "cardiac_rehab",
+      "label": "Cardiac rehab",
+      "description": "Cardiac rehabilitation services.",
+      "category": "rehabilitation",
+      "aliases": [
+        "cardiac rehab",
+        "cardiac rehabilitation"
+      ],
+      "sbc_label_patterns": [
+        "Cardiac rehab",
+        "Cardiac rehabilitation"
+      ]
+    },
+    {
+      "canonical_key": "cardiac_rehabilitation",
+      "label": "Cardiac rehabilitation",
+      "description": "Structured cardiac rehabilitation program sessions.",
+      "category": "rehabilitation",
+      "aliases": [
+        "cardiac rehabilitation",
+        "cardiac rehab program"
+      ],
+      "sbc_label_patterns": [
+        "Cardiac rehabilitation"
+      ]
+    },
+    {
+      "canonical_key": "habilitative_services",
+      "label": "Habilitative services",
+      "description": "Habilitative therapy services to help keep, learn, or improve skills.",
+      "category": "rehabilitation",
+      "aliases": [
+        "habilitative services",
+        "habilitative therapy"
+      ],
+      "sbc_label_patterns": [
+        "Habilitative services"
+      ]
+    },
+    {
+      "canonical_key": "occupational_therapy",
+      "label": "Occupational therapy",
+      "description": "Occupational therapy services.",
+      "category": "rehabilitation",
+      "aliases": [
+        "occupational therapy"
+      ],
+      "sbc_label_patterns": [
+        "Occupational therapy"
+      ]
+    },
+    {
+      "canonical_key": "physical_therapy",
+      "label": "Physical therapy",
+      "description": "Physical therapy services.",
+      "category": "rehabilitation",
+      "aliases": [
+        "physical therapy"
+      ],
+      "sbc_label_patterns": [
+        "Physical therapy"
+      ]
+    },
+    {
+      "canonical_key": "pulmonary_rehab",
+      "label": "Pulmonary rehab",
+      "description": "Pulmonary rehabilitation services.",
+      "category": "rehabilitation",
+      "aliases": [
+        "pulmonary rehab",
+        "pulmonary rehabilitation"
+      ],
+      "sbc_label_patterns": [
+        "Pulmonary rehab",
+        "Pulmonary rehabilitation"
+      ]
+    },
+    {
+      "canonical_key": "pulmonary_rehabilitation",
+      "label": "Pulmonary rehabilitation",
+      "description": "Structured pulmonary rehabilitation program sessions.",
+      "category": "rehabilitation",
+      "aliases": [
+        "pulmonary rehabilitation",
+        "pulmonary rehab program"
+      ],
+      "sbc_label_patterns": [
+        "Pulmonary rehabilitation"
+      ]
+    },
+    {
+      "canonical_key": "rehabilitation_inpatient",
+      "label": "Inpatient rehabilitation",
+      "description": "Inpatient rehabilitation services.",
+      "category": "rehabilitation",
+      "aliases": [
+        "rehabilitation inpatient"
+      ],
+      "sbc_label_patterns": [
+        "Inpatient rehabilitation"
+      ]
+    },
+    {
+      "canonical_key": "rehabilitation_services",
+      "label": "Rehabilitation services",
+      "description": "Outpatient rehabilitation services (e.g., PT/OT/ST).",
+      "category": "rehabilitation",
+      "aliases": [
+        "rehabilitation services"
+      ],
+      "sbc_label_patterns": [
+        "Rehabilitation services"
+      ]
+    },
+    {
+      "canonical_key": "speech_therapy",
+      "label": "Speech therapy",
+      "description": "Speech and language therapy services.",
+      "category": "rehabilitation",
+      "aliases": [
+        "speech therapy"
+      ],
+      "sbc_label_patterns": [
+        "Speech therapy"
+      ]
+    },
+    {
+      "canonical_key": "bariatric_surgery",
+      "label": "Bariatric surgery",
+      "description": "Weight loss surgery.",
+      "category": "specialty_care",
+      "aliases": [
+        "bariatric surgery",
+        "weight loss surgery"
+      ],
+      "sbc_label_patterns": [
+        "Bariatric surgery"
+      ]
+    },
+    {
+      "canonical_key": "chemotherapy",
+      "label": "Chemotherapy",
+      "description": "Chemotherapy infusion or injections.",
+      "category": "specialty_care",
+      "aliases": [
+        "chemotherapy",
+        "chemo infusion",
+        "chemo injections"
+      ],
+      "sbc_label_patterns": [
+        "Chemotherapy"
+      ]
+    },
+    {
+      "canonical_key": "diabetes_management",
+      "label": "Diabetes management",
+      "description": "Diabetes self-management training and education.",
+      "category": "specialty_care",
+      "aliases": [
+        "diabetes self-management training (DSMT)",
+        "diabetes education"
+      ],
+      "sbc_label_patterns": [
+        "Diabetes management"
+      ]
+    },
+    {
+      "canonical_key": "diabetic_supplies",
+      "label": "Diabetic supplies",
+      "description": "Diabetic testing supplies.",
+      "category": "specialty_care",
+      "aliases": [
+        "diabetic supplies",
+        "diabetes testing supplies"
+      ],
+      "sbc_label_patterns": [
+        "Diabetic supplies"
+      ]
+    },
+    {
+      "canonical_key": "dialysis",
+      "label": "Dialysis",
+      "description": "Dialysis treatment for kidney failure.",
+      "category": "specialty_care",
+      "aliases": [
+        "dialysis",
+        "hemodialysis",
+        "peritoneal dialysis"
+      ],
+      "sbc_label_patterns": [
+        "Dialysis"
+      ]
+    },
+    {
+      "canonical_key": "dme_orthotics",
+      "label": "DME orthotics",
+      "description": "Orthotic devices under the medical benefit.",
+      "category": "specialty_care",
+      "aliases": [
+        "orthotic devices",
+        "orthotics"
+      ],
+      "sbc_label_patterns": [
+        "Orthotics"
+      ]
+    },
+    {
+      "canonical_key": "dme_oxygen_equipment",
+      "label": "DME oxygen equipment",
+      "description": "Home oxygen equipment under the medical benefit.",
+      "category": "specialty_care",
+      "aliases": [
+        "oxygen equipment",
+        "oxygen concentrator"
+      ],
+      "sbc_label_patterns": [
+        "Oxygen equipment"
+      ]
+    },
+    {
+      "canonical_key": "dme_prosthetics",
+      "label": "DME prosthetics",
+      "description": "Prosthetic devices under the medical benefit.",
+      "category": "specialty_care",
+      "aliases": [
+        "prosthetic devices",
+        "prosthetics"
+      ],
+      "sbc_label_patterns": [
+        "Prosthetics"
+      ]
+    },
+    {
+      "canonical_key": "durable_medical_equipment",
+      "label": "Durable medical equipment",
+      "description": "Durable medical equipment (DME).",
+      "category": "specialty_care",
+      "aliases": [
+        "durable medical equipment",
+        "DME"
+      ],
+      "sbc_label_patterns": [
+        "Durable medical equipment"
+      ]
+    },
+    {
+      "canonical_key": "home_infusion_therapy",
+      "label": "Home infusion therapy",
+      "description": "Infusion therapy administered in the home.",
+      "category": "specialty_care",
+      "aliases": [
+        "home infusion",
+        "home IV therapy"
+      ],
+      "sbc_label_patterns": [
+        "Home infusion therapy"
+      ]
+    },
+    {
+      "canonical_key": "infertility_treatment",
+      "label": "Infertility treatment",
+      "description": "Infertility evaluation and treatment services.",
+      "category": "specialty_care",
+      "aliases": [
+        "infertility treatment",
+        "fertility treatment"
+      ],
+      "sbc_label_patterns": [
+        "Infertility treatment"
+      ]
+    },
+    {
+      "canonical_key": "injectable_medications_medical",
+      "label": "Injectable medications (medical)",
+      "description": "Office-administered injectable medications covered under the medical benefit.",
+      "category": "specialty_care",
+      "aliases": [
+        "medical benefit injectables",
+        "office-administered injectables"
+      ],
+      "sbc_label_patterns": [
+        "Office-administered injectables"
+      ]
+    },
+    {
+      "canonical_key": "kidney_dialysis",
+      "label": "Kidney dialysis",
+      "description": "Dialysis services for kidney failure.",
+      "category": "specialty_care",
+      "aliases": [
+        "kidney dialysis",
+        "renal dialysis"
+      ],
+      "sbc_label_patterns": [
+        "Kidney dialysis"
+      ]
+    },
+    {
+      "canonical_key": "nutritional_counseling",
+      "label": "Nutritional counseling",
+      "description": "Nutrition counseling services.",
+      "category": "specialty_care",
+      "aliases": [
+        "nutritional counseling",
+        "nutrition counseling"
+      ],
+      "sbc_label_patterns": [
+        "Nutritional counseling"
+      ]
+    },
+    {
+      "canonical_key": "prosthetics",
+      "label": "Prosthetics",
+      "description": "Prosthetics and orthotics.",
+      "category": "specialty_care",
+      "aliases": [
+        "prosthetics"
+      ],
+      "sbc_label_patterns": [
+        "Prosthetics"
+      ]
+    },
+    {
+      "canonical_key": "radiation_therapy",
+      "label": "Radiation therapy",
+      "description": "Radiation therapy for cancer treatment.",
+      "category": "specialty_care",
+      "aliases": [
+        "radiation therapy",
+        "radiation treatment"
+      ],
+      "sbc_label_patterns": [
+        "Radiation therapy"
+      ]
+    },
+    {
+      "canonical_key": "surgery_global",
+      "label": "Surgery (global)",
+      "description": "Global surgical services including facility and professional components.",
+      "category": "specialty_care",
+      "aliases": [
+        "global surgery",
+        "surgical procedure (global)"
+      ],
+      "sbc_label_patterns": [
+        "Surgery (global)"
+      ]
+    },
+    {
+      "canonical_key": "pediatric_eye_exam",
+      "label": "Pediatric eye exam",
+      "description": "Pediatric vision eye examination.",
+      "category": "vision",
+      "aliases": [
+        "pediatric eye exam",
+        "child eye exam"
+      ],
+      "sbc_label_patterns": [
+        "Pediatric eye exam"
+      ]
+    },
+    {
+      "canonical_key": "pediatric_glasses",
+      "label": "Pediatric glasses",
+      "description": "Pediatric vision glasses or lenses.",
+      "category": "vision",
+      "aliases": [
+        "pediatric glasses",
+        "child glasses"
+      ],
+      "sbc_label_patterns": [
+        "Pediatric glasses"
+      ]
+    }
+  ]
+}

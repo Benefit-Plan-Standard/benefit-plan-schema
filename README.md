@@ -5,7 +5,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
   <a href="https://benefitplanstandard.org">
     <img src="https://img.shields.io/badge/Documentation-Live-blue?style=for-the-badge" />
   </a>
-  <img src="https://img.shields.io/badge/Schema-v1.0.0-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Schema-v1.1.0-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Status-Stable-blueviolet?style=for-the-badge" />
   <img src="https://img.shields.io/github/license/Benefit-Plan-Standard/benefit-plan-schema?style=for-the-badge" />
 </p>
@@ -15,11 +15,15 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 ## 🔎 Quick Links
 
 - Documentation: https://benefitplanstandard.org  
-- Canonical schema file: `schema/v1.0.0/benefit-plan.schema.json`  
+- Canonical schema file (current): `schema/v1.1.0/benefit-plan.schema.json`  
+- Previous schema (v1.0.0): `schema/v1.0.0/benefit-plan.schema.json`  
 - Example plans: `examples/`  
+- Vocabularies (canonical benefits, categories, markets, plan types): `vocabularies/`  
+- FHIR alignment: `docs/fhir-alignment.md`  
 - Modules: `modules/README.md`  
 - Governance: `docs/governance.md`  
 - Roadmap: `docs/roadmap.md`  
+- Changelog: `docs/changelog.md`  
 
 ---
 
@@ -36,8 +40,10 @@ It is designed to support:
 
 This repository contains:
 
-- The **canonical JSON Schema (v1.0.0)**  
-- Example normalized plans  
+- The **canonical JSON Schema (v1.1.0)** — backward-compatible with v1.0.0  
+- Example normalized plans across 7 carriers  
+- Recommended vocabularies (canonical benefits, categories, markets, plan types)  
+- FHIR R4 `InsurancePlan` alignment guide  
 - Module definitions (pharmacy, behavioral health, dental/vision, etc.)  
 - Governance guidelines and roadmap  
 
@@ -50,11 +56,15 @@ For complete documentation, visit:
 
 ```text
 schema/
-  └── v1.0.0/
-        benefit-plan.schema.json
+  ├── v1.0.0/
+  │   └── benefit-plan.schema.json
+  └── v1.1.0/
+      └── benefit-plan.schema.json   ← current
 docs/
+  ├── changelog.md
+  ├── fhir-alignment.md
   ├── governance.md
-  ├── roadmap.md
+  └── roadmap.md
 examples/
   ├── aetna_example.json
   ├── bluecross_example.json
@@ -63,8 +73,15 @@ examples/
   ├── humana_example.json
   ├── scan_example.json
   └── united_example.json
+vocabularies/
+  ├── canonical-benefits.json
+  ├── categories.json
+  ├── markets.json
+  ├── plan-types.json
+  └── README.md
 modules/
   └── README.md
+LICENSE
 ```
 
 ---
@@ -77,7 +94,7 @@ The schema follows **semantic versioning**:
 - **MINOR** → Backward-compatible additions  
 - **PATCH** → Fixes & clarifications  
 
-Current version: **v1.0.0**
+Current version: **v1.1.0** (backward-compatible with v1.0.0)
 
 Validation uses:
 
@@ -147,7 +164,7 @@ This repository strictly defines the **open schema**, not ingestion behavior.
 npm install -g ajv-cli
 
 ajv validate \
-  -s schema/v1.0.0/benefit-plan.schema.json \
+  -s schema/v1.1.0/benefit-plan.schema.json \
   -d myplan.json \
   --strict=false
 ```
@@ -158,7 +175,7 @@ ajv validate \
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import fs from "fs";
-import schema from "./schema/v1.0.0/benefit-plan.schema.json" assert { type: "json" };
+import schema from "./schema/v1.1.0/benefit-plan.schema.json" assert { type: "json" };
 
 const ajv = new Ajv({ strict: false });
 addFormats(ajv);
@@ -169,7 +186,7 @@ const plan = JSON.parse(fs.readFileSync("myplan.json", "utf8"));
 if (!validate(plan)) {
   console.error(validate.errors);
 } else {
-  console.log("Valid according to Benefit Plan Standard v1.0.0");
+  console.log("Valid according to Benefit Plan Standard v1.1.0");
 }
 ```
 
