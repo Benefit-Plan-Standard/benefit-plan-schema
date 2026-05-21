@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "vocabulary_id": "https://benefitplanstandard.org/vocabularies/v1.1.0/markets.json",
+  "title": "BPS Recommended Market Vocabulary",
+  "version": "1.1.0",
+  "description": "Non-normative recommended values for the `market` field at the top level of a benefit plan.",
+  "license": "MIT",
+  "markets": [
+    { "code": "individual",             "label": "Individual",                 "description": "Off-exchange individual market plan." },
+    { "code": "individual_on_exchange", "label": "Individual (on-exchange)",   "description": "Individual market plan offered through the ACA marketplace." },
+    { "code": "small_group",            "label": "Small group",                "description": "Employer-sponsored plan for groups under the small-group size threshold (varies by state)." },
+    { "code": "large_group",            "label": "Large group",                "description": "Employer-sponsored plan for groups above the small-group threshold." },
+    { "code": "self_funded",            "label": "Self-funded employer plan",  "description": "Employer self-funded (ASO) plan, typically ERISA-governed." },
+    { "code": "medicare_advantage",     "label": "Medicare Advantage",         "description": "Medicare Part C plan." },
+    { "code": "medicare_supplement",    "label": "Medicare Supplement",        "description": "Medigap plan." },
+    { "code": "medicaid",               "label": "Medicaid",                   "description": "State Medicaid plan (managed care or fee-for-service)." },
+    { "code": "chip",                   "label": "CHIP",                       "description": "Children's Health Insurance Program plan." },
+    { "code": "tricare",                "label": "TRICARE",                    "description": "Military/uniformed services plan." },
+    { "code": "fehb",                   "label": "FEHB",                       "description": "Federal Employees Health Benefits plan." },
+    { "code": "student",                "label": "Student",                    "description": "Student health insurance plan." }
+  ]
+}
