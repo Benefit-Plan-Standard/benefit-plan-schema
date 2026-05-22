@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://benefitplanstandard.org/modules/pharmacy/v0.1.0/pharmacy.schema.json",
+  "title": "Benefit Plan Standard — Pharmacy Module",
+  "description": "Sketch (v0.1.0, DRAFT) of the pharmacy benefits module for BPS v1.1.0+. This is NOT yet normative — it is published for community review and feedback. The module adds (a) an optional top-level `pharmacy` object that defines the formulary structure, pharmacy networks, and Medicare Part D coverage stages, and (b) optional extension fields on `benefits[]` items whose `benefit_type` is 'pharmacy' that reference into the pharmacy structure. Both additions are backward-compatible — a v1.1.0 document without any pharmacy content continues to validate.",
+  "type": "object",
+  "properties": {
+    "pharmacy": {
+      "type": "object",
+      "description": "Plan-level pharmacy benefit definitions. Optional. When present, `benefits[]` items with `benefit_type: \"pharmacy\"` may reference its formulary_tiers, pharmacy_networks, and coverage_stages.",
+      "properties": {
+        "formulary_tiers": {
+          "type": "array",
+          "description": "Drug formulary tiers (e.g., generic, preferred brand, non-preferred brand, specialty). Order is preserved.",
+          "items": { "$ref": "#/$defs/formulary_tier" }
+        },
+        "pharmacy_networks": {
+          "type": "array",
+          "description": "Pharmacy network tiers (e.g., preferred retail, standard retail, mail order, specialty pharmacy). A separate concept from the medical `network_tiers[]`.",
+          "items": { "$ref": "#/$defs/pharmacy_network" }
+        },
+        "coverage_stages": {
+          "type": "array",
+          "description": "Coverage stages, primarily for Medicare Part D plans (Initial Coverage, Coverage Gap, Catastrophic Coverage). Commercial plans may omit this.",
+          "items": { "$ref": "#/$defs/coverage_stage" }
+        },
+        "deductible": {
+          "type": "object",
+          "description": "Pharmacy-specific deductible (separate from the medical deductible). Common in Medicare Part D and tiered commercial plans.",
+          "properties": {
+            "amount":    { "type": "number" },
+            "currency":  { "type": "string", "default": "USD" },
+            "period":    { "type": ["string", "null"], "description": "per_calendar_year, per_plan_year" },
+            "applies_to_tiers": {
+              "type": "array",
+              "description": "List of formulary tier_ids the deductible applies to. If omitted, applies to all tiers.",
+              "items": { "type": "string" }
+            }
+          },
+          "required": ["amount"],
+          "additionalProperties": false
+        },
+        "out_of_pocket_max": {
+          "type": "object",
+          "description": "Pharmacy-specific OOP max, if separate from the integrated medical OOP max. Most plans use an integrated OOP max; this field is for plans that don't.",
+          "properties": {
+            "amount":   { "type": "number" },
+            "currency": { "type": "string", "default": "USD" },
+            "period":   { "type": ["string", "null"] }
+          },
+          "required": ["amount"],
+          "additionalProperties": false
+        },
+        "mail_order_supply_multiplier": {
+          "type": "number",
+          "description": "When mail-order is a 90-day supply for the cost of N retail copays, this is N. Common values: 2.0 (90 for 2x30) or 2.5. Use day_supply on individual benefit entries for exact representations."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "formulary_tier": {
+      "type": "object",
+      "properties": {
+        "tier_id": {
+          "type": "string",
+          "description": "Plan-defined identifier (e.g., 'T1', 'tier_1', 'generic')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Tier 1 — Preferred Generic')."
+        },
+        "drug_class": {
+          "type": "string",
+          "description": "Canonical drug class. Recommended values: 'preferred_generic', 'generic', 'preferred_brand', 'nonpreferred_brand', 'preferred_specialty', 'nonpreferred_specialty', 'preventive'. See vocabularies/canonical-benefits.json pharmacy category for the cross-reference."
+        },
+        "description": {
+          "type": ["string", "null"]
+        }
+      },
+      "required": ["tier_id", "name"],
+      "additionalProperties": false
+    },
+    "pharmacy_network": {
+      "type": "object",
+      "properties": {
+        "network_id": {
+          "type": "string",
+          "description": "Plan-defined identifier (e.g., 'PREFERRED_RETAIL', 'MAIL_ORDER', 'SPECIALTY_PHARMACY')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name."
+        },
+        "network_type": {
+          "type": "string",
+          "description": "Recommended values: 'preferred_retail', 'standard_retail', 'mail_order', 'specialty_pharmacy', 'long_term_care'."
+        },
+        "default_day_supply": {
+          "type": ["integer", "null"],
+          "description": "Default day supply for this network (e.g., 30 retail, 90 mail-order)."
+        }
+      },
+      "required": ["network_id", "name"],
+      "additionalProperties": false
+    },
+    "coverage_stage": {
+      "type": "object",
+      "properties": {
+        "stage_id": {
+          "type": "string",
+          "description": "Plan-defined identifier. Medicare Part D canonical values: 'INITIAL', 'COVERAGE_GAP', 'CATASTROPHIC'."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Initial Coverage', 'Coverage Gap (Donut Hole)', 'Catastrophic Coverage')."
+        },
+        "stage_type": {
+          "type": "string",
+          "description": "Recommended Medicare Part D values: 'initial', 'coverage_gap', 'catastrophic'. Commercial plans may use other values."
+        },
+        "applies_before_total_drug_cost": {
+          "type": ["number", "null"],
+          "description": "Total-drug-cost ceiling at which this stage ends (Medicare Part D)."
+        },
+        "applies_after_total_out_of_pocket": {
+          "type": ["number", "null"],
+          "description": "Total-OOP threshold at which this stage begins (Medicare Part D catastrophic)."
+        }
+      },
+      "required": ["stage_id", "name"],
+      "additionalProperties": false
+    },
+    "pharmacy_benefit_extension": {
+      "type": "object",
+      "description": "Optional extension fields on `benefits[]` items when `benefit_type` is 'pharmacy'. These reference into the top-level `pharmacy` object. To use, add these fields directly to a benefit item alongside the standard core-schema fields.",
+      "properties": {
+        "formulary_tier_id": {
+          "type": "string",
+          "description": "References `pharmacy.formulary_tiers[].tier_id`."
+        },
+        "pharmacy_network_id": {
+          "type": "string",
+          "description": "References `pharmacy.pharmacy_networks[].network_id`. Useful when the same drug tier has different cost shares at different pharmacy networks."
+        },
+        "coverage_stage_id": {
+          "type": "string",
+          "description": "References `pharmacy.coverage_stages[].stage_id`. For Medicare Part D plans, you typically have one benefit entry per (tier, network, stage) combination."
+        },
+        "day_supply": {
+          "type": "integer",
+          "description": "Day supply this cost-share applies to (e.g., 30, 90)."
+        },
+        "drug_examples": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Optional list of example drug names commonly in this tier. For documentation only; not authoritative."
+        },
+        "step_therapy_required": {
+          "type": ["boolean", "null"],
+          "description": "Whether step therapy applies before this drug is covered."
+        },
+        "quantity_limit": {
+          "type": ["object", "null"],
+          "description": "Quantity limit (e.g., 60 tablets per 30 days). Distinct from `limits[]` because units are pharmacy-specific.",
+          "properties": {
+            "value":     { "type": "number" },
+            "units":     { "type": "string", "description": "e.g., 'tablets', 'capsules', 'mL', 'doses'" },
+            "period":    { "type": ["string", "null"], "description": "e.g., 'per_30_days', 'per_90_days', 'per_fill'" }
+          },
+          "required": ["value", "units"],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
