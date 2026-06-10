@@ -1,0 +1,133 @@
+{
+  "_comment": "ILLUSTRATIVE example for the pharmacy module v0.2.0 — NOT a real plan and NOT any specific carrier's coverage policy. It demonstrates the drug-level formulary layer (pharmacy.formulary_items[]) and indication-dependent coverage (coverage_exceptions[]). Semaglutide is used because it is the public textbook case of indication-dependent coverage (covered for type 2 diabetes, excluded for weight management, conditional for cardiovascular risk reduction). All coverage values, identifiers, and restrictions here are generic illustrations authored for module review; they are not extracted from any carrier's prior-authorization bulletin. The module is structure, not data — adopters supply their own formularies.",
+  "plan_id": "ILLUSTRATIVE_COMMERCIAL_RX_2026",
+  "plan_name": "Illustrative Commercial Plan — Pharmacy (v0.2.0 demo)",
+  "carrier": "Example Health (illustrative)",
+  "plan_type": "PPO",
+  "plan_year": 2026,
+  "effective_date": "2026-01-01",
+  "expiry_date": "2026-12-31",
+  "coverage_period": { "start_date": "2026-01-01", "end_date": "2026-12-31" },
+  "market": "large_group",
+  "network_tiers": [
+    { "tier_id": "IN", "name": "In Network" }
+  ],
+  "pharmacy": {
+    "formulary_reference": {
+      "formulary_id": "ILLUSTRATIVE-FORMULARY-2026",
+      "pharmacy_benefit_manager": "Example PBM (illustrative)",
+      "completeness": "partial",
+      "source_plan_identifiers": {
+        "hios_id": "12345AB1234567"
+      },
+      "data_sources": [
+        {
+          "source_type": "manual_entry",
+          "import_timestamp": "2026-01-01T00:00:00Z",
+          "notes": "Illustrative data authored for module review; not extracted from a real formulary file."
+        }
+      ]
+    },
+    "formulary_tiers": [
+      { "tier_id": "T1", "name": "Tier 1 — Generic",              "drug_class": "generic",            "tier_code": "generic" },
+      { "tier_id": "T2", "name": "Tier 2 — Preferred Brand",      "drug_class": "preferred_brand",    "tier_code": "preferred-brand" },
+      { "tier_id": "T3", "name": "Tier 3 — Non-preferred Brand",  "drug_class": "nonpreferred_brand", "tier_code": "non-preferred-brand" },
+      { "tier_id": "TS", "name": "Specialty Tier",                "drug_class": "specialty",          "tier_code": "specialty" }
+    ],
+    "formulary_items": [
+      {
+        "rxcui": "314076",
+        "drug_name": "lisinopril 10 mg oral tablet",
+        "generic_name": "lisinopril",
+        "dose_form": "oral tablet",
+        "formulary_tier_id": "T1",
+        "covered": true,
+        "prior_authorization": false,
+        "step_therapy": false
+      },
+      {
+        "rxcui": "1991306",
+        "drug_name": "semaglutide subcutaneous solution",
+        "brand_name": "(illustrative brand)",
+        "generic_name": "semaglutide",
+        "dose_form": "subcutaneous solution pen injector",
+        "formulary_tier_id": "T3",
+        "covered": true,
+        "prior_authorization": true,
+        "step_therapy": true,
+        "step_therapy_drugs": ["metformin"],
+        "quantity_limit": { "value": 4, "units": "pens", "period": "per_28_days" },
+        "specialty_pharmacy_required": false,
+        "coverage_exceptions": [
+          {
+            "indication_code": "E11.9",
+            "indication_description": "Type 2 diabetes mellitus",
+            "coverage_status": "covered",
+            "conditions": "Illustrative: covered on Tier 3 with step therapy through metformin."
+          },
+          {
+            "indication_description": "Chronic weight management",
+            "coverage_status": "excluded",
+            "conditions": "Illustrative: excluded from the pharmacy benefit for weight management in this example plan."
+          },
+          {
+            "indication_code": "I25.10",
+            "indication_description": "Cardiovascular risk reduction (established ASCVD)",
+            "coverage_status": "conditional",
+            "formulary_tier_id_override": "TS",
+            "restrictions_override": {
+              "prior_authorization": true,
+              "step_therapy": false
+            },
+            "conditions": "Illustrative: documented ASCVD required; conditional coverage on the specialty tier."
+          }
+        ],
+        "alternatives": [
+          { "rxcui": "1551291", "drug_name": "dulaglutide subcutaneous solution", "formulary_tier_id": "T3" }
+        ]
+      }
+    ]
+  },
+  "benefits": [
+    {
+      "benefit_id":        "RX_T1_GENERIC_30",
+      "benefit_type":      "pharmacy",
+      "category":          "PHARMACY",
+      "service_name":      "Tier 1 (Generic) — 30-day",
+      "canonical_key":     "generic_drugs",
+      "formulary_tier_id": "T1",
+      "day_supply":        30,
+      "place_of_service":  ["pharmacy"],
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": true,
+          "cost_shares": [
+            { "type": "copay", "sequence": 1, "amount": 10, "basis": "per_prescription",
+              "applies_to_deductible": false, "applies_to_moop": true }
+          ] }
+      ]
+    },
+    {
+      "benefit_id":        "RX_T3_PREF_BRAND_30",
+      "benefit_type":      "pharmacy",
+      "category":          "PHARMACY",
+      "service_name":      "Tier 3 (Non-preferred Brand) — 30-day",
+      "canonical_key":     "nonpreferred_brand_drugs",
+      "formulary_tier_id": "T3",
+      "day_supply":        30,
+      "step_therapy_required": true,
+      "place_of_service":  ["pharmacy"],
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": true,
+          "cost_shares": [
+            { "type": "coinsurance", "sequence": 1, "rate": 0.40, "basis": "per_prescription",
+              "applies_to_deductible": true, "applies_to_moop": true,
+              "notes": "Illustrative: 40% coinsurance; PA and step therapy may apply per formulary_items[]." }
+          ] }
+      ]
+    }
+  ],
+  "source_references": [
+    { "page_number": 1, "excerpt": "Illustrative example authored for BPS pharmacy module v0.2.0 review. Not a real plan." }
+  ],
+  "schema_version": "1.1.0"
+}
