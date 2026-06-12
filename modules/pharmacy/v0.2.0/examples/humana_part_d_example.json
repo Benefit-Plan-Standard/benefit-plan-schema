@@ -1,20 +1,20 @@
 {
-  "_comment": "DRAFT example carried forward into the pharmacy module v0.2.0 (structural example, unchanged from v0.1.0). Illustrates a Medicare Part D plan with 5 formulary tiers, 3 pharmacy networks (preferred retail, standard retail, mail order), and 3 coverage stages (initial, coverage gap, catastrophic). The benefits[] array uses the pharmacy extension fields (formulary_tier_id, pharmacy_network_id, coverage_stage_id, day_supply) defined in modules/pharmacy/v0.2.0/pharmacy.schema.json. This file is NOT a real Humana plan — values are illustrative.",
-  "plan_id": "HUMANA_PARTD_PREMIER_2025",
+  "_comment": "DRAFT example carried forward into the pharmacy module v0.2.0 and updated to the post-IRA Part D design (CY2026). Illustrates a Medicare Part D plan with 5 formulary tiers, 3 pharmacy networks (preferred retail, standard retail, mail order), and the three post-redesign coverage stages (deductible, initial coverage, catastrophic; the pre-2025 coverage gap no longer exists). CY2026 parameters: $615 standard maximum deductible (this illustrative plan uses a lower $300 deductible), $2,100 annual out-of-pocket cap, $0 cost share in the catastrophic stage. The benefits[] array uses the pharmacy extension fields (formulary_tier_id, pharmacy_network_id, coverage_stage_id, day_supply) defined in modules/pharmacy/v0.2.0/pharmacy.schema.json. This file is NOT a real Humana plan — values are illustrative.",
+  "plan_id": "HUMANA_PARTD_PREMIER_2026",
   "plan_name": "Humana Premier Rx Plan (PDP) — Illustrative",
   "carrier": "Humana",
   "plan_type": "PDP",
-  "plan_year": 2025,
-  "effective_date": "2025-01-01",
-  "expiry_date": "2025-12-31",
-  "coverage_period": { "start_date": "2025-01-01", "end_date": "2025-12-31" },
+  "plan_year": 2026,
+  "effective_date": "2026-01-01",
+  "expiry_date": "2026-12-31",
+  "coverage_period": { "start_date": "2026-01-01", "end_date": "2026-12-31" },
   "market": "medicare_advantage",
   "network_tiers": [
     { "tier_id": "IN", "name": "In Network", "description": "Standalone PDP — pharmacy benefit only" }
   ],
   "accumulators": {
     "individual_oop_max": {
-      "amount": 2000,
+      "amount": 2100,
       "currency": "USD",
       "period": "per_calendar_year",
       "network_tier": "in-network",
@@ -42,23 +42,21 @@
     ],
     "coverage_stages": [
       {
-        "stage_id": "INITIAL",
-        "name": "Initial Coverage",
-        "stage_type": "initial",
-        "applies_before_total_drug_cost": 5030
+        "stage_id": "DEDUCTIBLE",
+        "name": "Deductible",
+        "stage_type": "deductible",
+        "applies_before_total_drug_cost": 300
       },
       {
-        "stage_id": "COVERAGE_GAP",
-        "name": "Coverage Gap (Donut Hole)",
-        "stage_type": "coverage_gap",
-        "applies_before_total_drug_cost": 8000,
-        "applies_after_total_out_of_pocket": 2000
+        "stage_id": "INITIAL",
+        "name": "Initial Coverage",
+        "stage_type": "initial"
       },
       {
         "stage_id": "CATASTROPHIC",
         "name": "Catastrophic Coverage",
         "stage_type": "catastrophic",
-        "applies_after_total_out_of_pocket": 2000
+        "applies_after_total_out_of_pocket": 2100
       }
     ],
     "mail_order_supply_multiplier": 2.5
@@ -150,22 +148,22 @@
       ]
     },
     {
-      "benefit_id":          "RX_T3_PREF_RETAIL_30_GAP",
+      "benefit_id":          "RX_T3_PREF_RETAIL_30_DED",
       "benefit_type":        "pharmacy",
       "category":            "PHARMACY",
-      "service_name":        "Tier 3 (Preferred Brand) — Preferred Retail — 30-day — Coverage Gap",
+      "service_name":        "Tier 3 (Preferred Brand) — Preferred Retail — 30-day — Deductible Stage",
       "canonical_key":       "preferred_brand_drugs",
       "formulary_tier_id":   "T3",
       "pharmacy_network_id": "PREF_RETAIL",
-      "coverage_stage_id":   "COVERAGE_GAP",
+      "coverage_stage_id":   "DEDUCTIBLE",
       "day_supply":          30,
       "place_of_service":    ["pharmacy"],
       "network_cost_shares": [
         { "tier_id": "IN", "covered": true,
           "cost_shares": [
-            { "type": "coinsurance", "sequence": 1, "rate": 0.25, "basis": "per_prescription",
-              "applies_to_deductible": false, "applies_to_moop": true,
-              "notes": "Coverage Gap discount applies." }
+            { "type": "coinsurance", "sequence": 1, "rate": 1.0, "basis": "per_prescription",
+              "applies_to_deductible": true, "applies_to_moop": true,
+              "notes": "Member pays the full negotiated price until the $300 pharmacy deductible is met (deductible applies to tiers T2-T5 only)." }
           ] }
       ]
     },
@@ -185,13 +183,13 @@
           "cost_shares": [
             { "type": "copay", "sequence": 1, "amount": 0, "basis": "per_prescription",
               "applies_to_deductible": false, "applies_to_moop": true,
-              "notes": "Catastrophic stage — $0 cost share after OOP max reached." }
+              "notes": "Catastrophic stage — $0 cost share after the $2,100 annual OOP cap (CY2026) is reached." }
           ] }
       ]
     }
   ],
   "source_references": [
-    { "page_number": 1, "page_range": "L1-L120", "excerpt": "Illustrative Medicare Part D example for BPS pharmacy module v0.1.0 review." }
+    { "page_number": 1, "page_range": "L1-L120", "excerpt": "Illustrative Medicare Part D example (CY2026 post-IRA design) for BPS pharmacy module v0.2.0 review." }
   ],
   "schema_version": "1.1.0"
 }

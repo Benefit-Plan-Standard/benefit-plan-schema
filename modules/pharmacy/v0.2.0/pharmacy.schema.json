@@ -21,7 +21,7 @@
         },
         "coverage_stages": {
           "type": "array",
-          "description": "Coverage stages, primarily for Medicare Part D plans (Initial Coverage, Coverage Gap, Catastrophic Coverage). Commercial plans may omit this.",
+          "description": "Coverage stages, primarily for Medicare Part D plans. Post-2025 (IRA redesign): Deductible, Initial Coverage, Catastrophic Coverage. The pre-2025 Coverage Gap (donut hole) remains representable for historical plan years. Commercial plans may omit this.",
           "items": { "$ref": "#/$defs/coverage_stage" }
         },
         "formulary_items": {
@@ -156,15 +156,15 @@
       "properties": {
         "stage_id": {
           "type": "string",
-          "description": "Plan-defined identifier. Medicare Part D canonical values: 'INITIAL', 'COVERAGE_GAP', 'CATASTROPHIC'."
+          "description": "Plan-defined identifier. Medicare Part D canonical values (post-2025 redesign): 'DEDUCTIBLE', 'INITIAL', 'CATASTROPHIC'. 'COVERAGE_GAP' remains valid for plan years before 2025."
         },
         "name": {
           "type": "string",
-          "description": "Display name (e.g., 'Initial Coverage', 'Coverage Gap (Donut Hole)', 'Catastrophic Coverage')."
+          "description": "Display name (e.g., 'Deductible', 'Initial Coverage', 'Catastrophic Coverage')."
         },
         "stage_type": {
           "type": "string",
-          "description": "Recommended Medicare Part D values: 'initial', 'coverage_gap', 'catastrophic'. Commercial plans may use other values."
+          "description": "Recommended Medicare Part D values (post-2025 redesign): 'deductible', 'initial', 'catastrophic'. 'coverage_gap' remains valid for plan years before 2025. Commercial plans may use other values."
         },
         "applies_before_total_drug_cost": {
           "type": ["number", "null"],
