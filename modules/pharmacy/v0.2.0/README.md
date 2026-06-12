@@ -12,7 +12,7 @@ But real pharmacy benefits — especially Medicare Part D and tiered commercial 
 
 - **Formulary tiers.** A drug's tier (T1/T2/T3/T4/T5) is the dominant cost-share determinant. The tier list is a plan-level definition; benefit entries reference it.
 - **Pharmacy networks.** Separate from medical `network_tiers[]` — preferred retail, standard retail, mail order, specialty pharmacy.
-- **Coverage stages.** Medicare Part D has Initial Coverage, Coverage Gap (donut hole), and Catastrophic Coverage.
+- **Coverage stages.** Medicare Part D moves members through phases with different cost shares for the same drug. Post-2025 (IRA redesign): Deductible, Initial Coverage, and Catastrophic Coverage (annual out-of-pocket cap; $2,100 in CY2026). The pre-2025 Coverage Gap (donut hole) remains representable for historical plan years.
 - **Day supply.** A 30-day retail fill and a 90-day mail-order fill of the same drug are different prices.
 - **Pharmacy-specific deductible and OOP max.**
 - **Step therapy, quantity limits, prior auth** — pharmacy-specific utilization controls.
@@ -25,7 +25,7 @@ But real pharmacy benefits — especially Medicare Part D and tiered commercial 
 1. An **optional top-level `pharmacy` object** defining the formulary structure, pharmacy networks, coverage stages, and pharmacy-specific accumulators.
 2. **Optional extension fields** on `benefits[]` items (when `benefit_type: "pharmacy"`) that reference into the pharmacy structure: `formulary_tier_id`, `pharmacy_network_id`, `coverage_stage_id`, `day_supply`, `step_therapy_required`, `quantity_limit`.
 
-See `examples/humana_part_d_example.json` (a Medicare Part D plan exercising tiers, networks, stages, a pharmacy deductible, and day-supply variation).
+See `examples/humana_part_d_example.json` (a Medicare Part D plan, CY2026 post-IRA design, exercising tiers, networks, the deductible / initial / catastrophic stages, a pharmacy deductible, and day-supply variation).
 
 ### Layer 2 — drug-level formulary and indication-dependent coverage *(new in v0.2.0)*
 
