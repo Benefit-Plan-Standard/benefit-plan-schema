@@ -242,6 +242,10 @@ If your pipeline goes FHIR → BPS:
 
 ---
 
+## 5a. CARIN Digital Insurance Card IG (June 2026 update)
+
+Three `InsurancePlan` changes originating from BPS implementation experience merged into the CARIN Digital Insurance Card IG's SBC InsurancePlan profile on June 25, 2026 (FHIR-57525 multi-tier cost sharing, FHIR-57526 deductible applicability, FHIR-57527 structured benefit limitation), targeting the September 2026 ballot. They give several of the "lossy" rows above a proper structured home in that profile: designation/modality cost tiers map to `cost.qualifiers` plus the `CostAppliesToNetwork` extension, `applies_to_deductible` maps to the `DeductibleApplies` extension, and typed limits map to the structured `BenefitLimitation` extension. The full field-by-field reconciliation, including the BPS v1.2.0 draft additions (`tier_class`, `parent_tier_id`, `provider_set`, `limits[].raw_text`), lives in [`carin-dic-reconciliation.md`](carin-dic-reconciliation.md).
+
 ## 6. Related profiles and reading
 
 - HL7 FHIR R4 `InsurancePlan`: https://hl7.org/fhir/R4/insuranceplan.html
