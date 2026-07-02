@@ -3,6 +3,38 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] – DRAFT (2026-07-02)
+
+Backward-compatible minor release, in draft. Existing v1.0.0 and v1.1.0 documents continue to validate against v1.2.0 unchanged. Origin: reconciliation of the three `InsurancePlan` changes merged into the HL7 CARIN Digital Insurance Card IG on June 25, 2026 (FHIR-57525 multi-tier cost sharing, FHIR-57526 deductible applicability, FHIR-57527 structured benefit limitation). Full analysis and field-by-field mapping: `docs/carin-dic-reconciliation.md`.
+
+### Added
+
+- **Network-tier classification** (from FHIR-57525)
+  - `tier_class` (string, nullable, default `"network"`) on `network_tiers[]` items — distinguishes an actual provider network (`network`) from a cost-sharing designation within one network (`cost_designation`, e.g. a carrier's "Value Choice" rate) and from a delivery channel (`modality`, e.g. virtual care). Recommended values, not enum-enforced. Absent means `network`, the pre-v1.2.0 meaning.
+  - `parent_tier_id` (string, nullable) on `network_tiers[]` items — for designation/modality tiers, the network tier they live within.
+  - `provider_set` (object, nullable: `name` required; `description`, `reference` optional) on `network_tiers[]` items — the set of providers a cost designation applies to, joinable to a provider directory (e.g. a Plan-Net Organization). Maps to the CARIN `CostAppliesToNetwork` extension.
+- **Limit enhancements** (from FHIR-57527)
+  - `raw_text` (string, nullable) on `benefits[].limits[]` items — verbatim limitation text from the source document. Maps to the CARIN `BenefitLimitation.limitText`.
+  - `limits[].period` description now recommends `per_plan_year`, `per_calendar_year`, `per_benefit_period`, `per_lifetime` (legacy `per_year`, `per_episode` remain valid), aligning with the CARIN Limit Period value set.
+- **Documentation**
+  - `docs/carin-dic-reconciliation.md` — reconciliation of the three merged CARIN Digital Insurance Card IG changes into BPS, with field-by-field mappings.
+
+### Not changed (already covered)
+
+- Per-cost-share deductible applicability (FHIR-57526) was already expressed by `cost_shares[].applies_to_deductible` (since v1.0.0); reconciled as a mapping note only.
+- Typed limits (FHIR-57527's `limitType` / `limitValue` / `limitPeriod`) were already expressed by `limits[].type` / `value` / `period` (since v1.0.0).
+
+### Backward compatibility
+
+- All v1.1.0 required fields remain required in v1.2.0; no field types change; all additions are optional.
+- All seven carrier examples validate unchanged against both v1.1.0 and the v1.2.0 draft.
+- `additionalProperties: false` boundaries are respected.
+
+### Schema URL
+
+- v1.2.0 draft: `https://benefitplanstandard.org/schema/v1.2.0/benefit-plan.schema.json`
+- v1.1.0 remains the current released version.
+
 ## [1.1.0] – 2026-05-21
 
 Backward-compatible minor release. Existing v1.0.0 documents continue to validate against v1.1.0 unchanged.
