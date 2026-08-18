@@ -125,8 +125,13 @@ The schema enforces:
 - Required fields  
 - Field types  
 - Object/array structure  
-- Enum values  
 - Format constraints (e.g., dates)
+
+> **Note on vocabularies:** the schema deliberately does **not** hard-code the
+> controlled vocabularies as enums, so adopters can extend without forking
+> (see the field descriptions, e.g. `benefit_type`, `market`). Vocabulary
+> conformance is a second, advisory layer checked against the published lists
+> in [`/vocabularies`](vocabularies/) — see **Validating a plan** below.
 
 ### ✔ Core benefit model consistency
 - Valid network tier references  
@@ -157,6 +162,32 @@ This repository strictly defines the **open schema**, not ingestion behavior.
 ---
 
 ## 🔌 Usage
+
+### Validating a plan: two layers
+
+Validation of a Benefit Plan Standard file has two layers:
+
+1. **Schema validation (normative).** Structure, required fields, and types,
+   checked with any JSON Schema Draft 2020-12 validator. Pass or fail.
+2. **Vocabulary conformance (advisory).** The values of `category`,
+   `canonical_key`, `market`, and `plan_type` compared against the published
+   vocabularies in [`/vocabularies`](vocabularies/). Warnings, not failures,
+   because the vocabularies are non-normative and extensible.
+
+The included script runs both:
+
+```bash
+npm install ajv ajv-formats     # one time
+
+node scripts/validate.js examples/aetna_example.json
+# PASS  examples/aetna_example.json — valid against schema/v1.1.0/benefit-plan.schema.json
+#       vocabulary: all category/canonical_key/market/plan_type values are canonical
+
+node scripts/validate.js myplan.json                    # your own file
+node scripts/validate.js --no-vocab myplan.json         # layer 1 only
+node scripts/validate.js --strict-vocab myplan.json     # vocabulary warnings also fail
+node scripts/validate.js --schema schema/v1.2.0/benefit-plan.schema.json myplan.json
+```
 
 ### Validate a plan file using Ajv CLI
 
