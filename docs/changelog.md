@@ -16,6 +16,14 @@ Backward-compatible minor release, in draft. Existing v1.0.0 and v1.1.0 document
 - **Limit enhancements** (from FHIR-57527)
   - `raw_text` (string, nullable) on `benefits[].limits[]` items — verbatim limitation text from the source document. Maps to the CARIN `BenefitLimitation.limitText`.
   - `limits[].period` description now recommends `per_plan_year`, `per_calendar_year`, `per_benefit_period`, `per_lifetime` (legacy `per_year`, `per_episode` remain valid), aligning with the CARIN Limit Period value set.
+- **Vocabulary updates (non-normative, apply to all schema versions)**
+  - `vocabularies/canonical-benefits.json`: added UnitedHealthcare's descriptor-style
+    drug-tier phrasings ("Tier 1 - Your Lowest-Cost Option", "Tier 2/3 - Your
+    Midrange-Cost Option", "Tier 4 - Additional High-Cost Options") to the aliases and
+    `sbc_label_patterns` of `generic_drugs`, `preferred_brand_drugs`,
+    `nonpreferred_brand_drugs`, and `specialty_drugs`. Found while regenerating the
+    example corpus: UHC SBCs name drug tiers without the words "generic"/"brand", so
+    label-driven mappers missed every prescription-drug row.
 - **Documentation**
   - `docs/carin-dic-reconciliation.md` — reconciliation of the three merged CARIN Digital Insurance Card IG changes into BPS, with field-by-field mappings.
 
