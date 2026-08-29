@@ -659,11 +659,13 @@
         "generic prescription drugs",
         "tier 1 generic",
         "preferred generic",
-        "preferred generics"
+        "preferred generics",
+        "tier 1 your lowest-cost option"
       ],
       "sbc_label_patterns": [
         "Generic drugs",
-        "Tier 1 generic"
+        "Tier 1 generic",
+        "Tier 1 - Your Lowest-Cost Option"
       ]
     },
     {
@@ -674,11 +676,13 @@
       "aliases": [
         "non-preferred brand drugs",
         "nonpreferred brand drugs",
-        "tier 3 non-preferred brand"
+        "tier 3 non-preferred brand",
+        "tier 3 your midrange-cost option"
       ],
       "sbc_label_patterns": [
         "Non-preferred brand drugs",
-        "Tier 3 non-preferred brand"
+        "Tier 3 non-preferred brand",
+        "Tier 3 - Your Midrange-Cost Option"
       ]
     },
     {
@@ -704,11 +708,13 @@
       "aliases": [
         "preferred brand drugs",
         "preferred brand-name drugs",
-        "tier 2 preferred brand"
+        "tier 2 preferred brand",
+        "tier 2 your midrange-cost option"
       ],
       "sbc_label_patterns": [
         "Preferred brand drugs",
-        "Tier 2 preferred brand"
+        "Tier 2 preferred brand",
+        "Tier 2 - Your Midrange-Cost Option"
       ]
     },
     {
@@ -760,11 +766,13 @@
         "specialty drugs",
         "specialty medications",
         "specialty pharmacy",
-        "tier 4 specialty"
+        "tier 4 specialty",
+        "tier 4 additional high-cost options"
       ],
       "sbc_label_patterns": [
         "Specialty drugs",
-        "Tier 4 specialty"
+        "Tier 4 specialty",
+        "Tier 4 - Additional High-Cost Options"
       ]
     },
     {

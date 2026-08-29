@@ -20,6 +20,46 @@ Dates are indicative and subject to change based on community feedback and imple
 3. **Utilization management conditions** — Richer modeling of prior authorization, referral requirements, and step-therapy rules.
 4. **HealthPlanAPI reference-implementation alignment** — Bring the HealthPlanAPI BIME output into full BPS v1.1.0 conformance (snake_case, top-level fields, `cost_shares[]` array structure, ISO 8601 dates).
 
+## Evidence from implementation (2026-08)
+
+Verifying a seven-carrier SBC corpus through the reference implementation
+(HealthPlanAPI/BIME), value by value against the source PDFs, produced direct
+evidence for why BPS models cost sharing the way it does:
+
+- **Carriers price sub-services inside a single SBC row.** Kaiser's 2026 CA HMO
+  prints `X-ray: $75 / encounter` and `Lab tests: $40 / encounter` in one
+  "Diagnostic test" cell. An extraction or storage model with a single copay slot
+  per benefit per tier cannot be faithful to that document — it must either drop a
+  value or misstate one. BPS represents it exactly, because the canonical
+  vocabulary separates `diagnostic_lab`, `diagnostic_test`, `imaging_standard`,
+  and `imaging_advanced` into distinct benefits, each carrying its own
+  `cost_shares[]`. The schema is shaped the way the source documents actually are.
+- **Cost sharing is a sequence, not a pair.** Real cells like "20% coinsurance
+  after $300 copay/visit" (Aetna ER) and "$300 Pharmacy Deductible + 40%
+  Coinsurance" (Florida Blue brand drugs) confirm the ordered `cost_shares[]`
+  component list (copay, then coinsurance, with per-component deductible/MOOP
+  flags) over any flat copay/coinsurance field pair.
+- **Caps need a home.** "20% coinsurance up to $250 / prescription"
+  (Kaiser specialty tier) is a coinsurance with a per-fill maximum. Candidate for
+  a first-class cap field on cost-share components in a future minor version;
+  representable today via `limits[]`/notes.
+
+- **Sponsor and administrator are different parties.** GatorCare's 2026 medical SBC
+  is produced by Florida Blue as plan administrator: the document titles itself
+  "BlueOptions 03768 - Prime EPO Plan" under Florida Blue branding, while the plan
+  sponsor (GatorCare) appears nowhere in the header. A single `carrier` field cannot
+  say both things, and name-based grouping would file this self-funded plan under its
+  administrator, next to Florida Blue's own BlueOptions products. FHIR R4
+  `InsurancePlan` models this as `ownedBy` (sponsor) vs `administeredBy`; BPS should
+  consider `plan_sponsor` / `administered_by` fields in a future minor version so ASO
+  and self-funded plans carry both identities explicitly. Until then, the convention
+  in the examples is: `carrier` = the sponsor, `plan_name` = the document's own title,
+  verbatim.
+
+The corresponding extraction gaps are tracked in the reference implementation
+(`HealthPlanAPI: Docs/development/BIME-KNOWN-LIMITATIONS.md`); the split
+multi-service case is its top-priority item.
+
 ## Long-term vision
 
 The Benefit Plan Standard aims to become the de facto model for publishing, sharing, and comparing health benefit plans across carriers and markets.

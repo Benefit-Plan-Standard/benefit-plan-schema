@@ -1,21 +1,19 @@
 {
-  "plan_id": "FLBLUE_BLUEOPTIONS_505",
-  "plan_name": "Florida Blue BlueOptions 505",
-  "carrier": "FloridaBlue",
-  "plan_type": "PPO",
-  "plan_year": 2023,
-  "effective_date": "2023-07-01",
-  "expiry_date": "2024-06-30",
+  "plan_id": "AMBETTER_CA_SILVER_94_HMO",
+  "plan_name": "Health Net of CA: Silver 94 Ambetter HMO",
+  "carrier": "Ambetter",
+  "plan_type": "HMO",
+  "plan_year": 2026,
+  "effective_date": "2026-01-01",
   "coverage_period": {
-    "start_date": "2023-07-01",
-    "end_date": "2024-06-30"
+    "start_date": "2026-01-01"
   },
   "market": "individual",
   "network_tiers": [
     {
       "tier_id": "IN",
       "name": "In Network",
-      "description": "FloridaBlue network providers"
+      "description": "Ambetter network providers"
     },
     {
       "tier_id": "OUT",
@@ -24,97 +22,20 @@
     }
   ],
   "accumulators": {
-    "individual_deductible": {
-      "amount": 3500,
-      "currency": "USD",
-      "period": "per_year",
-      "network_tier": "in-network"
-    },
-    "family_deductible": {
-      "amount": 10500,
-      "currency": "USD",
-      "period": "per_year",
-      "network_tier": "in-network"
-    },
-    "oon_individual_deductible": {
-      "amount": 5500,
-      "currency": "USD",
-      "period": "per_year",
-      "network_tier": "out-of-network"
-    },
-    "oon_family_deductible": {
-      "amount": 11000,
-      "currency": "USD",
-      "period": "per_year",
-      "network_tier": "out-of-network"
-    },
     "individual_oop_max": {
-      "amount": 3500,
+      "amount": 1400,
       "currency": "USD",
       "period": "per_year",
       "network_tier": "in-network"
     },
     "family_oop_max": {
-      "amount": 10500,
+      "amount": 2800,
       "currency": "USD",
       "period": "per_year",
       "network_tier": "in-network"
-    },
-    "oon_individual_oop_max": {
-      "amount": 8500,
-      "currency": "USD",
-      "period": "per_year",
-      "network_tier": "out-of-network"
-    },
-    "oon_family_oop_max": {
-      "amount": 17000,
-      "currency": "USD",
-      "period": "per_year",
-      "network_tier": "out-of-network"
     }
   },
   "benefits": [
-    {
-      "benefit_id": "PREVENTIVE_CARE",
-      "benefit_type": "medical",
-      "category": "PREVENTIVE_CARE",
-      "service_name": "Preventive care",
-      "canonical_key": "preventive_care",
-      "raw_label": "Yes. Preventive care.",
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
-              "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
-            }
-          ]
-        },
-        {
-          "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
-        }
-      ],
-      "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
     {
       "benefit_id": "PRIMARY_CARE",
       "benefit_type": "medical",
@@ -130,7 +51,7 @@
             {
               "type": "copay",
               "sequence": 1,
-              "amount": 35,
+              "amount": 5,
               "basis": "per_visit",
               "applies_to_deductible": false,
               "applies_to_moop": true
@@ -139,17 +60,8 @@
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -171,7 +83,7 @@
             {
               "type": "copay",
               "sequence": 1,
-              "amount": 50,
+              "amount": 8,
               "basis": "per_visit",
               "applies_to_deductible": false,
               "applies_to_moop": true
@@ -180,17 +92,40 @@
         },
         {
           "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PREVENTIVE_CARE",
+      "benefit_type": "medical",
+      "category": "PREVENTIVE_CARE",
+      "service_name": "Preventive care",
+      "canonical_key": "preventive_care",
+      "raw_label": "Preventive care/screening/ immunization",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
           "covered": true,
           "cost_shares": [
             {
-              "type": "coinsurance",
+              "type": "copay",
               "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
+              "amount": 0,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -212,7 +147,7 @@
             {
               "type": "copay",
               "sequence": 1,
-              "amount": 75,
+              "amount": 10,
               "basis": "per_visit",
               "applies_to_deductible": false,
               "applies_to_moop": true
@@ -221,17 +156,8 @@
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -253,7 +179,7 @@
             {
               "type": "copay",
               "sequence": 1,
-              "amount": 250,
+              "amount": 50,
               "basis": "per_visit",
               "applies_to_deductible": false,
               "applies_to_moop": true
@@ -262,17 +188,8 @@
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -285,7 +202,39 @@
       "category": "PHARMACY",
       "service_name": "Generic drugs",
       "canonical_key": "generic_drugs",
-      "raw_label": "Generic drugs",
+      "raw_label": "Generic drugs (Tier 1)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 3,
+              "basis": "per_prescription",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PREFERRED_BRAND_DRUGS",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Preferred brand drugs",
+      "canonical_key": "preferred_brand_drugs",
+      "raw_label": "Preferred brand drugs (Tier 2)",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -303,58 +252,8 @@
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.5,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
-        }
-      ],
-      "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
-    {
-      "benefit_id": "PREFERRED_BRAND_DRUGS",
-      "benefit_type": "pharmacy",
-      "category": "PHARMACY",
-      "service_name": "Preferred brand drugs",
-      "canonical_key": "preferred_brand_drugs",
-      "raw_label": "Preferred brand drugs",
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
-        },
-        {
-          "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.5,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -367,35 +266,26 @@
       "category": "PHARMACY",
       "service_name": "Non-preferred brand drugs",
       "canonical_key": "nonpreferred_brand_drugs",
-      "raw_label": "Non-preferred brand drugs",
+      "raw_label": "Non-preferred brand drugs (Tier 3)",
       "network_cost_shares": [
         {
           "tier_id": "IN",
           "covered": true,
           "cost_shares": [
             {
-              "type": "coinsurance",
+              "type": "copay",
               "sequence": 1,
-              "rate": 0.5,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
+              "amount": 15,
+              "basis": "per_prescription",
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.5,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -408,16 +298,25 @@
       "category": "PHARMACY",
       "service_name": "Specialty drugs",
       "canonical_key": "specialty_drugs",
-      "raw_label": "Specialty drugs",
+      "raw_label": "Specialty drugs (Tier 4)",
       "network_cost_shares": [
         {
           "tier_id": "IN",
           "covered": true,
-          "cost_shares": []
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.1,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ]
         },
         {
           "tier_id": "OUT",
-          "covered": true,
+          "covered": false,
           "cost_shares": []
         }
       ],
@@ -438,10 +337,10 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "copay",
+              "type": "coinsurance",
               "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
+              "rate": 0.1,
+              "basis": "allowed_amount",
               "applies_to_deductible": true,
               "applies_to_moop": true
             }
@@ -449,17 +348,8 @@
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -479,10 +369,10 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "copay",
+              "type": "coinsurance",
               "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
+              "rate": 0.1,
+              "basis": "allowed_amount",
               "applies_to_deductible": true,
               "applies_to_moop": true
             }
@@ -490,7 +380,7 @@
         },
         {
           "tier_id": "OUT",
-          "covered": true,
+          "covered": false,
           "cost_shares": []
         }
       ],
@@ -513,9 +403,9 @@
             {
               "type": "copay",
               "sequence": 1,
-              "amount": 0,
+              "amount": 50,
               "basis": "per_visit",
-              "applies_to_deductible": true,
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
@@ -523,16 +413,7 @@
         {
           "tier_id": "OUT",
           "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
-              "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
-            }
-          ]
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -554,21 +435,7 @@
             {
               "type": "copay",
               "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
-        },
-        {
-          "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
-              "sequence": 1,
-              "amount": 0,
+              "amount": 30,
               "basis": "per_visit",
               "applies_to_deductible": false,
               "applies_to_moop": true
@@ -595,23 +462,9 @@
             {
               "type": "copay",
               "sequence": 1,
-              "amount": 60,
+              "amount": 5,
               "basis": "per_visit",
               "applies_to_deductible": false,
-              "applies_to_moop": true
-            }
-          ]
-        },
-        {
-          "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
-              "sequence": 1,
-              "amount": 60,
-              "basis": "per_visit",
-              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -634,10 +487,10 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "copay",
+              "type": "coinsurance",
               "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
+              "rate": 0.1,
+              "basis": "allowed_amount",
               "applies_to_deductible": true,
               "applies_to_moop": true
             }
@@ -645,17 +498,8 @@
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -677,7 +521,7 @@
             {
               "type": "copay",
               "sequence": 1,
-              "amount": 0,
+              "amount": 5,
               "basis": "per_visit",
               "applies_to_deductible": false,
               "applies_to_moop": true
@@ -686,17 +530,8 @@
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -716,18 +551,18 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "copay",
+              "type": "coinsurance",
               "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
+              "rate": 0.1,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
         },
         {
           "tier_id": "OUT",
-          "covered": true,
+          "covered": false,
           "cost_shares": []
         }
       ],
@@ -748,28 +583,19 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "copay",
+              "type": "coinsurance",
               "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
+              "rate": 0.1,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
-              "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -789,28 +615,19 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "copay",
+              "type": "coinsurance",
               "sequence": 1,
-              "amount": 150,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
+              "rate": 0.1,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
-              "sequence": 1,
-              "amount": 150,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -832,26 +649,17 @@
             {
               "type": "copay",
               "sequence": 1,
-              "amount": 0,
+              "amount": 3,
               "basis": "per_visit",
-              "applies_to_deductible": true,
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -873,7 +681,7 @@
             {
               "type": "copay",
               "sequence": 1,
-              "amount": 50,
+              "amount": 5,
               "basis": "per_visit",
               "applies_to_deductible": false,
               "applies_to_moop": true
@@ -882,17 +690,8 @@
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -909,8 +708,17 @@
       "network_cost_shares": [
         {
           "tier_id": "IN",
-          "covered": false,
-          "cost_shares": []
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
         },
         {
           "tier_id": "OUT",
@@ -928,17 +736,17 @@
       "category": "SKILLED_NURSING",
       "service_name": "Skilled nursing facility",
       "canonical_key": "skilled_nursing_facility",
-      "raw_label": "Skilled nursing care",
+      "raw_label": "Skilled nursing center",
       "network_cost_shares": [
         {
           "tier_id": "IN",
           "covered": true,
           "cost_shares": [
             {
-              "type": "copay",
+              "type": "coinsurance",
               "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
+              "rate": 0.1,
+              "basis": "allowed_amount",
               "applies_to_deductible": true,
               "applies_to_moop": true
             }
@@ -946,17 +754,8 @@
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -976,10 +775,10 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "copay",
+              "type": "coinsurance",
               "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
+              "rate": 0.1,
+              "basis": "allowed_amount",
               "applies_to_deductible": true,
               "applies_to_moop": true
             }
@@ -987,17 +786,8 @@
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -1021,24 +811,15 @@
               "sequence": 1,
               "amount": 0,
               "basis": "per_visit",
-              "applies_to_deductible": true,
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
         },
         {
           "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.4,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -1055,8 +836,17 @@
       "network_cost_shares": [
         {
           "tier_id": "IN",
-          "covered": false,
-          "cost_shares": []
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
         },
         {
           "tier_id": "OUT",
@@ -1078,8 +868,17 @@
       "network_cost_shares": [
         {
           "tier_id": "IN",
-          "covered": false,
-          "cost_shares": []
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
         },
         {
           "tier_id": "OUT",
@@ -1097,7 +896,39 @@
       "category": "DENTAL_PEDIATRIC",
       "service_name": "Pediatric dental checkup",
       "canonical_key": "pediatric_dental_checkup",
-      "raw_label": "Children's dental check-up",
+      "raw_label": "Children's dental check- up",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "CHIROPRACTIC_CARE",
+      "benefit_type": "medical",
+      "category": "CHIROPRACTIC",
+      "service_name": "Chiropractic care",
+      "canonical_key": "chiropractic_care",
+      "raw_label": "Chiropractic care",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -1120,71 +951,9 @@
       "category": "ACUPUNCTURE",
       "service_name": "Acupuncture",
       "canonical_key": "acupuncture",
-      "raw_label": "Acupuncture",
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": false,
-          "cost_shares": []
-        },
-        {
-          "tier_id": "OUT",
-          "covered": false,
-          "cost_shares": []
-        }
-      ],
+      "raw_label": "Abortion-termination of pregnancy and related services are covered in full \u00b7 Acupuncture-covered when medically necessary",
+      "network_cost_shares": [],
       "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
-    {
-      "benefit_id": "BARIATRIC_SURGERY",
-      "benefit_type": "medical",
-      "category": "BARIATRIC_SURGERY",
-      "service_name": "Bariatric surgery",
-      "canonical_key": "bariatric_surgery",
-      "raw_label": "Bariatric surgery",
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": false,
-          "cost_shares": []
-        },
-        {
-          "tier_id": "OUT",
-          "covered": false,
-          "cost_shares": []
-        }
-      ],
-      "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
-    {
-      "benefit_id": "CHIROPRACTIC_CARE",
-      "benefit_type": "medical",
-      "category": "CHIROPRACTIC",
-      "service_name": "Chiropractic care",
-      "canonical_key": "chiropractic_care",
-      "raw_label": ". Chiropractic care - Limited to 25 visits",
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": true,
-          "cost_shares": []
-        },
-        {
-          "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": []
-        }
-      ],
-      "limits": [
-        {
-          "type": "visits",
-          "value": 25
-        }
-      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     }
@@ -1192,107 +961,96 @@
   "source_references": [
     {
       "page_number": 1,
-      "excerpt": "BlueOptions 505 | Coverage Period: 07/01/2023 - 06/30/2024 | with Rx $300 Rx Deductible $10/40%/50% with $35 Maternity Copay | Coverage for: Individual and/or Family | Plan Type: PPO"
+      "excerpt": "Health Net of CA: Silver 94 Ambetter HMO | Beginning on or after 01/01/2026 | Coverage for: All Covered Members | Plan Type: HMO"
     },
     {
       "page_number": 1,
-      "excerpt": "What is the overall deductible? In-Network: $3,500 Per Person/$10,500 Family. Out-of-Network: $5,500 Per Person/$11,000 Family."
-    },
-    {
-      "page_number": 1,
-      "excerpt": "Are there other deductibles for specific services? Yes. $300 Pharmacy Deductible; $500 Out-of-Network Per Admission Deductible."
-    },
-    {
-      "page_number": 1,
-      "excerpt": "What is the out-of-pocket limit for this plan? In-Network: $3,500 Per Person/$10,500 Family. Out-Of-Network: $8,500 Per Person/$17,000 Family."
+      "excerpt": "What is the out-of-pocket limit for this plan? $1,400 member/$2,800 family per calendar year."
     },
     {
       "page_number": 2,
-      "excerpt": "Primary care visit to treat an injury or illness: Primary Care Visits: $35 Copay per Visit; Out-of-Network: Deductible + 40% Coinsurance"
+      "excerpt": "Primary care visit to treat an injury or illness: $5 copay/visit; Out-of-Network Provider: Not covered"
     },
     {
       "page_number": 2,
-      "excerpt": "Specialist visit: Specialist: $50 Copay per Visit; Out-of-Network: Deductible + 40% Coinsurance"
+      "excerpt": "Specialist visit: $8 copay/visit"
     },
     {
       "page_number": 2,
-      "excerpt": "Preventive care/screening/immunization: No Charge, Deductible does not apply; Out-of-Network: 40% Coinsurance"
+      "excerpt": "Preventive care/screening/immunization: No charge"
     },
     {
       "page_number": 2,
-      "excerpt": "Diagnostic test (x-ray, blood work): Independent Diagnostic Testing Center: $75 Copay per Visit; Out-of-Network: Deductible + 40% Coinsurance"
+      "excerpt": "Diagnostic test (x-ray, blood work): Lab/X-ray-$10 copay/visit"
     },
     {
       "page_number": 2,
-      "excerpt": "Imaging (CT/PET scans, MRIs): $250 Copay per Visit; Out-of-Network: Deductible + 40% Coinsurance"
+      "excerpt": "Imaging (CT/PET scans, MRIs): $50 copay/procedure"
+    },
+    {
+      "page_number": 2,
+      "excerpt": "Generic drugs (Tier 1): $3 copay/retail order"
+    },
+    {
+      "page_number": 2,
+      "excerpt": "Preferred brand drugs (Tier 2): $10 copay/retail order"
+    },
+    {
+      "page_number": 2,
+      "excerpt": "Non-preferred brand drugs (Tier 3): $15 copay/retail order"
+    },
+    {
+      "page_number": 2,
+      "excerpt": "Specialty drugs (Tier 4): 10% coinsurance up to $150 per prescription. (The per-fill cap is stated in the document; the pipeline records the coinsurance and omits rather than misstates the cap.)"
     },
     {
       "page_number": 3,
-      "excerpt": "Generic drugs: $10 Copay per Prescription at retail; Out-of-Network: 50% Coinsurance"
+      "excerpt": "Outpatient surgery - Facility fee: Hospital/ASC-10% coinsurance. Physician/surgeon fees: 10% coinsurance"
     },
     {
       "page_number": 3,
-      "excerpt": "Preferred brand drugs: $300 Pharmacy Deductible + 40% Coinsurance at retail; Out-of-Network: $300 Pharmacy Deductible + 50% Coinsurance"
+      "excerpt": "Emergency room care: Facility-$50 copay/visit. Copay waived if admitted into the hospital."
     },
     {
       "page_number": 3,
-      "excerpt": "Non-preferred brand drugs: $300 Pharmacy Deductible + 50% Coinsurance at retail"
+      "excerpt": "Emergency medical transportation: $30 copay/transport"
     },
     {
       "page_number": 3,
-      "excerpt": "Specialty drugs are subject to the cost share based on the applicable drug tier."
+      "excerpt": "Urgent care: $5 copay/visit"
     },
     {
       "page_number": 3,
-      "excerpt": "Outpatient surgery - Facility fee: No Charge after Deductible; Physician/surgeon fees: No Charge after Deductible; Out-of-Network: Deductible + 40% Coinsurance"
+      "excerpt": "Hospital stay - Facility fee: 10% coinsurance. Physician/surgeon fees: 10% coinsurance"
     },
     {
       "page_number": 3,
-      "excerpt": "Emergency room care: No Charge after Deductible; Out-of-Network: No Charge after In-Network Deductible"
-    },
-    {
-      "page_number": 3,
-      "excerpt": "Emergency medical transportation: No Charge after Deductible; Out-of-Network: No Charge after In-Network Deductible"
-    },
-    {
-      "page_number": 3,
-      "excerpt": "Urgent care: $60 Copay per Visit; Out-of-Network: Deductible + $60 Copay per Visit"
+      "excerpt": "Mental health outpatient services: Office visit-individual therapy session-$5 copay/visit. Inpatient services: 10% coinsurance"
     },
     {
       "page_number": 4,
-      "excerpt": "Hospital stay - Facility fee: No Charge after Deductible + Per Admission Deductible; Out-of-Network: Deductible + 40% Coinsurance"
+      "excerpt": "Childbirth/delivery professional services: 10% coinsurance. Childbirth/delivery facility services: 10% coinsurance"
     },
     {
       "page_number": 4,
-      "excerpt": "Mental health outpatient services: No Charge, Deductible does not apply; Out-of-Network: Deductible + 40% Coinsurance"
+      "excerpt": "Home health care: $3 copay/visit. Limited to 100 visits per calendar year."
     },
     {
       "page_number": 4,
-      "excerpt": "Maternity: Childbirth/delivery professional services: No Charge, Deductible does not apply. Childbirth/delivery facility services: $150 Copay per Day / $750 maximum"
+      "excerpt": "Rehabilitation services: $5 copay/visit. Habilitation services: $5 copay/visit"
     },
     {
       "page_number": 4,
-      "excerpt": "Home health care: No Charge after Deductible. Coverage limited to 10 visits."
+      "excerpt": "Skilled nursing center: 10% coinsurance. Durable medical equipment: 10% coinsurance. Hospice services: No charge"
     },
     {
       "page_number": 4,
-      "excerpt": "Rehabilitation services: $50 Copay per Visit. Coverage limited to 25 visits. Habilitation services: Not Covered."
+      "excerpt": "Children's eye exam: No charge. Children's glasses: No charge. Children's dental check-up: No charge."
     },
     {
       "page_number": 4,
-      "excerpt": "Skilled nursing care: No Charge after Deductible. Coverage limited to 60 days."
-    },
-    {
-      "page_number": 5,
-      "excerpt": "Durable medical equipment: No Charge after Deductible; Out-of-Network: Deductible + 40% Coinsurance. Hospice services: No Charge after Deductible."
-    },
-    {
-      "page_number": 5,
-      "excerpt": "Children's eye exam: Not Covered. Children's glasses: Not Covered. Children's dental check-up: Not Covered."
-    },
-    {
-      "page_number": 5,
-      "excerpt": "Services Your Plan Generally Does NOT Cover: Acupuncture, Bariatric surgery, Habilitation services. Other Covered Services: Chiropractic care - Limited to 25 visits"
+      "page_range": "4-5",
+      "excerpt": "Services Your Plan Generally Does NOT Cover: Chiropractic care. Other Covered Services: Acupuncture-covered when medically necessary"
     }
   ],
   "schema_version": "1.1.0"

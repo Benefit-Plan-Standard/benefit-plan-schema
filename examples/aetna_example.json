@@ -1,21 +1,21 @@
 {
   "plan_id": "AETNA_PPO_1500_80_50",
-  "plan_name": "Aetna PPO 1500 80/50 Coinsurance Plan",
+  "plan_name": "Aetna FL PPO 1500 80/50 CY V25",
   "carrier": "Aetna",
   "plan_type": "PPO",
-  "plan_year": 2025,
-  "effective_date": "2025-01-01",
-  "expiry_date": "2025-12-31",
+  "plan_year": 2026,
+  "effective_date": "2026-01-01",
+  "expiry_date": "2026-12-31",
   "coverage_period": {
-    "start_date": "2025-01-01",
-    "end_date": "2025-12-31"
+    "start_date": "2026-01-01",
+    "end_date": "2026-12-31"
   },
   "market": "large_group",
   "network_tiers": [
     {
       "tier_id": "IN",
       "name": "In Network",
-      "description": "Aetna preferred providers"
+      "description": "Aetna network providers"
     },
     {
       "tier_id": "OUT",
@@ -27,69 +27,101 @@
     "individual_deductible": {
       "amount": 1500,
       "currency": "USD",
-      "applies_to": "medical",
-      "period": "per_calendar_year",
-      "network_tier": "in-network",
-      "embedded": true
-    },
-    "family_deductible": {
-      "amount": 4500,
-      "currency": "USD",
-      "applies_to": "medical",
-      "period": "per_calendar_year",
-      "network_tier": "in-network",
-      "embedded": true
-    },
-    "individual_oop_max": {
-      "amount": 5500,
-      "currency": "USD",
-      "applies_to": "medical",
-      "period": "per_calendar_year",
+      "period": "per_year",
       "network_tier": "in-network"
     },
-    "family_oop_max": {
-      "amount": 11000,
+    "family_deductible": {
+      "amount": 3000,
       "currency": "USD",
-      "applies_to": "medical",
-      "period": "per_calendar_year",
-      "network_tier": "in-network",
-      "embedded": true
+      "period": "per_year",
+      "network_tier": "in-network"
     },
     "oon_individual_deductible": {
       "amount": 3000,
       "currency": "USD",
-      "period": "per_calendar_year",
+      "period": "per_year",
       "network_tier": "out-of-network"
     },
     "oon_family_deductible": {
       "amount": 9000,
       "currency": "USD",
-      "period": "per_calendar_year",
+      "period": "per_year",
       "network_tier": "out-of-network"
     },
-    "oon_individual_oop_max": {
+    "individual_oop_max": {
+      "amount": 5500,
+      "currency": "USD",
+      "period": "per_year",
+      "network_tier": "in-network"
+    },
+    "family_oop_max": {
       "amount": 11000,
       "currency": "USD",
-      "period": "per_calendar_year",
+      "period": "per_year",
+      "network_tier": "in-network"
+    },
+    "oon_individual_oop_max": {
+      "amount": 13000,
+      "currency": "USD",
+      "period": "per_year",
       "network_tier": "out-of-network"
     },
     "oon_family_oop_max": {
-      "amount": 22000,
+      "amount": 39000,
       "currency": "USD",
-      "period": "per_calendar_year",
+      "period": "per_year",
       "network_tier": "out-of-network"
     }
   },
   "benefits": [
     {
-      "benefit_id": "PCP_VISIT",
+      "benefit_id": "PREVENTIVE_CARE",
+      "benefit_type": "medical",
+      "category": "PREVENTIVE_CARE",
+      "service_name": "Preventive care",
+      "canonical_key": "preventive_care",
+      "raw_label": "Yes. Certain office visits, preventive care, urgent care and prescription drugs in-network.",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PRIMARY_CARE",
       "benefit_type": "medical",
       "category": "PHYSICIAN_SERVICES",
       "service_name": "Primary care visit",
       "canonical_key": "primary_care",
-      "place_of_service": [
-        "office"
-      ],
+      "raw_label": "Primary care visit to treat an injury or illness",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -110,16 +142,8 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
               "type": "coinsurance",
-              "sequence": 2,
+              "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -133,14 +157,12 @@
       "moop_applicability": "plan_default"
     },
     {
-      "benefit_id": "SPECIALIST_VISIT",
+      "benefit_id": "SPECIALIST",
       "benefit_type": "medical",
       "category": "PHYSICIAN_SERVICES",
-      "service_name": "Specialist office visit",
+      "service_name": "Specialist visit",
       "canonical_key": "specialist",
-      "place_of_service": [
-        "office"
-      ],
+      "raw_label": "Specialist visit",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -149,7 +171,7 @@
             {
               "type": "copay",
               "sequence": 1,
-              "amount": 50,
+              "amount": 75,
               "basis": "per_visit",
               "applies_to_deductible": false,
               "applies_to_moop": true
@@ -161,16 +183,8 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
               "type": "coinsurance",
-              "sequence": 2,
+              "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -184,103 +198,12 @@
       "moop_applicability": "plan_default"
     },
     {
-      "benefit_id": "PREVENTIVE_CARE",
-      "benefit_type": "medical",
-      "category": "PREVENTIVE_CARE",
-      "service_name": "Preventive care / screening / immunization",
-      "canonical_key": "preventive_care",
-      "place_of_service": [
-        "office"
-      ],
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
-              "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
-            }
-          ],
-          "notes": "No charge in-network; ACA preventive."
-        },
-        {
-          "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
-              "type": "coinsurance",
-              "sequence": 2,
-              "rate": 0.5,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
-        }
-      ],
-      "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
-    {
-      "benefit_id": "TELEHEALTH",
-      "benefit_type": "medical",
-      "category": "TELEHEALTH",
-      "service_name": "Telehealth virtual visit",
-      "canonical_key": "telehealth_visit",
-      "place_of_service": [
-        "virtual"
-      ],
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
-              "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
-            }
-          ],
-          "notes": "No charge for in-network telehealth."
-        },
-        {
-          "tier_id": "OUT",
-          "covered": false,
-          "cost_shares": [],
-          "notes": "Not covered out-of-network."
-        }
-      ],
-      "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
-    {
-      "benefit_id": "DIAGNOSTIC_LAB",
+      "benefit_id": "DIAGNOSTIC_TEST",
       "benefit_type": "medical",
       "category": "DIAGNOSTIC_SERVICES",
-      "service_name": "Laboratory tests",
-      "canonical_key": "diagnostic_lab",
-      "place_of_service": [
-        "laboratory",
-        "office"
-      ],
+      "service_name": "Diagnostic test",
+      "canonical_key": "diagnostic_test",
+      "raw_label": "Diagnostic test (x-ray, blood work)",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -301,68 +224,8 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
-              "type": "coinsurance",
-              "sequence": 2,
-              "rate": 0.5,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
-        }
-      ],
-      "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
-    {
-      "benefit_id": "IMAGING_STANDARD",
-      "benefit_type": "medical",
-      "category": "DIAGNOSTIC_SERVICES",
-      "service_name": "Diagnostic imaging (X-ray, ultrasound)",
-      "canonical_key": "imaging_standard",
-      "place_of_service": [
-        "office",
-        "outpatient"
-      ],
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": true,
-          "cost_shares": [
-            {
               "type": "coinsurance",
               "sequence": 1,
-              "rate": 0.2,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
-        },
-        {
-          "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
-              "type": "coinsurance",
-              "sequence": 2,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -379,12 +242,9 @@
       "benefit_id": "IMAGING_ADVANCED",
       "benefit_type": "medical",
       "category": "DIAGNOSTIC_SERVICES",
-      "service_name": "Advanced imaging (CT, MRI, PET)",
+      "service_name": "Advanced imaging",
       "canonical_key": "imaging_advanced",
-      "place_of_service": [
-        "outpatient",
-        "office"
-      ],
+      "raw_label": "Imaging (CT/PET scans, MRIs)",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -405,23 +265,14 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
               "type": "coinsurance",
-              "sequence": 2,
+              "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
               "applies_to_moop": true
             }
-          ],
-          "notes": "Prior authorization required."
+          ]
         }
       ],
       "limits": [],
@@ -429,14 +280,12 @@
       "moop_applicability": "plan_default"
     },
     {
-      "benefit_id": "RX_GENERIC",
+      "benefit_id": "GENERIC_DRUGS",
       "benefit_type": "pharmacy",
       "category": "PHARMACY",
       "service_name": "Generic drugs",
       "canonical_key": "generic_drugs",
-      "place_of_service": [
-        "pharmacy"
-      ],
+      "raw_label": "Preferred generic drugs",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -445,7 +294,7 @@
             {
               "type": "copay",
               "sequence": 1,
-              "amount": 10,
+              "amount": 3,
               "basis": "per_prescription",
               "applies_to_deductible": false,
               "applies_to_moop": true
@@ -454,160 +303,11 @@
         },
         {
           "tier_id": "OUT",
-          "covered": false,
-          "cost_shares": [],
-          "notes": "Out-of-network pharmacy not covered."
-        }
-      ],
-      "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
-    {
-      "benefit_id": "RX_BRAND_PREF",
-      "benefit_type": "pharmacy",
-      "category": "PHARMACY",
-      "service_name": "Preferred brand drugs",
-      "canonical_key": "preferred_brand_drugs",
-      "place_of_service": [
-        "pharmacy"
-      ],
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
-              "sequence": 1,
-              "amount": 40,
-              "basis": "per_prescription",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
-            }
-          ]
-        },
-        {
-          "tier_id": "OUT",
-          "covered": false,
-          "cost_shares": [],
-          "notes": "Not covered."
-        }
-      ],
-      "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
-    {
-      "benefit_id": "RX_BRAND_NONPREF",
-      "benefit_type": "pharmacy",
-      "category": "PHARMACY",
-      "service_name": "Non-preferred brand drugs",
-      "canonical_key": "nonpreferred_brand_drugs",
-      "place_of_service": [
-        "pharmacy"
-      ],
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
-              "sequence": 1,
-              "amount": 80,
-              "basis": "per_prescription",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
-            }
-          ]
-        },
-        {
-          "tier_id": "OUT",
-          "covered": false,
-          "cost_shares": [],
-          "notes": "Not covered."
-        }
-      ],
-      "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
-    {
-      "benefit_id": "RX_SPECIALTY",
-      "benefit_type": "pharmacy",
-      "category": "PHARMACY",
-      "service_name": "Specialty drugs",
-      "canonical_key": "specialty_drugs",
-      "place_of_service": [
-        "pharmacy"
-      ],
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
           "covered": true,
           "cost_shares": [
             {
               "type": "coinsurance",
               "sequence": 1,
-              "rate": 0.3,
-              "basis": "per_prescription",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
-        },
-        {
-          "tier_id": "OUT",
-          "covered": false,
-          "cost_shares": [],
-          "notes": "Not covered."
-        }
-      ],
-      "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
-    {
-      "benefit_id": "OUTPATIENT_SURG_FACILITY",
-      "benefit_type": "medical",
-      "category": "SURGICAL_SERVICES",
-      "service_name": "Outpatient surgery facility fee",
-      "canonical_key": "outpatient_surgery_facility",
-      "place_of_service": [
-        "outpatient",
-        "ambulatory_surgery_center"
-      ],
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "coinsurance",
-              "sequence": 1,
-              "rate": 0.2,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
-        },
-        {
-          "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
-              "type": "coinsurance",
-              "sequence": 2,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -621,15 +321,85 @@
       "moop_applicability": "plan_default"
     },
     {
-      "benefit_id": "OUTPATIENT_SURG_PROFESSIONAL",
+      "benefit_id": "PREFERRED_BRAND_DRUGS",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Preferred brand drugs",
+      "canonical_key": "preferred_brand_drugs",
+      "raw_label": "Preferred brand drugs",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 45,
+              "basis": "per_prescription",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "SPECIALTY_DRUGS",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Specialty drugs",
+      "canonical_key": "specialty_drugs",
+      "raw_label": "Specialty drugs",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "OUTPATIENT_SURGERY",
       "benefit_type": "medical",
       "category": "SURGICAL_SERVICES",
-      "service_name": "Outpatient surgery physician/surgeon fee",
-      "canonical_key": "outpatient_surgery_surgeon",
-      "place_of_service": [
-        "outpatient",
-        "ambulatory_surgery_center"
-      ],
+      "service_name": "Outpatient surgery",
+      "canonical_key": "outpatient_surgery",
+      "raw_label": "If you have outpatient surgery",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -650,16 +420,49 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
+              "type": "coinsurance",
               "sequence": 1,
-              "rate": 1.0,
+              "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
               "applies_to_moop": true
-            },
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "SURGERY_PROFESSIONAL",
+      "benefit_type": "medical",
+      "category": "SURGICAL_SERVICES",
+      "service_name": "Surgery professional",
+      "canonical_key": "surgery_professional",
+      "raw_label": "Physician/surgeon fees",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
             {
               "type": "coinsurance",
-              "sequence": 2,
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -676,12 +479,9 @@
       "benefit_id": "EMERGENCY_ROOM",
       "benefit_type": "medical",
       "category": "EMERGENCY_CARE",
-      "service_name": "Emergency room services",
+      "service_name": "Emergency room",
       "canonical_key": "emergency_room",
-      "place_of_service": [
-        "hospital",
-        "emergency_room"
-      ],
+      "raw_label": "Emergency room care",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -701,59 +501,6 @@
               "rate": 0.2,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ],
-          "notes": "Copay waived if admitted within 24 hours."
-        },
-        {
-          "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
-              "sequence": 1,
-              "amount": 300,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
-            },
-            {
-              "type": "coinsurance",
-              "sequence": 2,
-              "rate": 0.2,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ],
-          "notes": "Covered at in-network level for true emergencies."
-        }
-      ],
-      "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
-    {
-      "benefit_id": "URGENT_CARE",
-      "benefit_type": "medical",
-      "category": "URGENT_CARE",
-      "service_name": "Urgent care visit",
-      "canonical_key": "urgent_care",
-      "place_of_service": [
-        "urgent_care"
-      ],
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
-              "sequence": 1,
-              "amount": 50,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
@@ -763,17 +510,17 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
+              "type": "copay",
               "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
+              "amount": 300,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
               "applies_to_moop": true
             },
             {
               "type": "coinsurance",
               "sequence": 2,
-              "rate": 0.5,
+              "rate": 0.2,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
               "applies_to_moop": true
@@ -791,9 +538,7 @@
       "category": "EMERGENCY_CARE",
       "service_name": "Ambulance services",
       "canonical_key": "ambulance",
-      "place_of_service": [
-        "ambulance"
-      ],
+      "raw_label": "Emergency medical transportation",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -821,8 +566,7 @@
               "applies_to_deductible": true,
               "applies_to_moop": true
             }
-          ],
-          "notes": "Covered at in-network level for true emergencies."
+          ]
         }
       ],
       "limits": [],
@@ -830,25 +574,23 @@
       "moop_applicability": "plan_default"
     },
     {
-      "benefit_id": "INPATIENT_HOSPITAL_FACILITY",
+      "benefit_id": "URGENT_CARE",
       "benefit_type": "medical",
-      "category": "HOSPITAL_SERVICES",
-      "service_name": "Inpatient hospital facility fee",
-      "canonical_key": "inpatient_hospital_facility",
-      "place_of_service": [
-        "hospital"
-      ],
+      "category": "URGENT_CARE",
+      "service_name": "Urgent care",
+      "canonical_key": "urgent_care",
+      "raw_label": "Urgent care",
       "network_cost_shares": [
         {
           "tier_id": "IN",
           "covered": true,
           "cost_shares": [
             {
-              "type": "coinsurance",
+              "type": "copay",
               "sequence": 1,
-              "rate": 0.2,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
+              "amount": 75,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
@@ -858,23 +600,14 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
               "type": "coinsurance",
-              "sequence": 2,
+              "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
               "applies_to_moop": true
             }
-          ],
-          "notes": "Prior authorization required."
+          ]
         }
       ],
       "limits": [],
@@ -882,14 +615,12 @@
       "moop_applicability": "plan_default"
     },
     {
-      "benefit_id": "INPATIENT_HOSPITAL_PHYSICIAN",
+      "benefit_id": "INPATIENT_HOSPITAL",
       "benefit_type": "medical",
       "category": "HOSPITAL_SERVICES",
-      "service_name": "Inpatient hospital physician/surgeon fee",
-      "canonical_key": "inpatient_hospital_physician",
-      "place_of_service": [
-        "hospital"
-      ],
+      "service_name": "Inpatient hospital",
+      "canonical_key": "inpatient_hospital",
+      "raw_label": "If you have a hospital stay",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -910,16 +641,8 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
               "type": "coinsurance",
-              "sequence": 2,
+              "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -934,25 +657,22 @@
     },
     {
       "benefit_id": "MENTAL_HEALTH_OUTPATIENT",
-      "benefit_type": "behavioral_health",
+      "benefit_type": "medical",
       "category": "BEHAVIORAL_HEALTH",
-      "service_name": "Mental/behavioral health outpatient services",
+      "service_name": "Mental health outpatient",
       "canonical_key": "mental_health_outpatient",
-      "place_of_service": [
-        "office",
-        "outpatient"
-      ],
+      "raw_label": "Outpatient services",
       "network_cost_shares": [
         {
           "tier_id": "IN",
           "covered": true,
           "cost_shares": [
             {
-              "type": "copay",
+              "type": "coinsurance",
               "sequence": 1,
-              "amount": 25,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
+              "rate": 0.2,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -962,16 +682,8 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
               "type": "coinsurance",
-              "sequence": 2,
+              "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -986,13 +698,11 @@
     },
     {
       "benefit_id": "MENTAL_HEALTH_INPATIENT",
-      "benefit_type": "behavioral_health",
+      "benefit_type": "medical",
       "category": "BEHAVIORAL_HEALTH",
-      "service_name": "Mental/behavioral health inpatient services",
+      "service_name": "Mental health inpatient",
       "canonical_key": "mental_health_inpatient",
-      "place_of_service": [
-        "hospital"
-      ],
+      "raw_label": "Inpatient services",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -1013,68 +723,8 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
               "type": "coinsurance",
-              "sequence": 2,
-              "rate": 0.5,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
-        }
-      ],
-      "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
-    {
-      "benefit_id": "PRENATAL_CARE",
-      "benefit_type": "maternity",
-      "category": "MATERNITY_CARE",
-      "service_name": "Office visits \u2014 prenatal",
-      "canonical_key": "prenatal_care",
-      "place_of_service": [
-        "office"
-      ],
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
               "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
-            }
-          ],
-          "notes": "Preventive prenatal visits at no charge."
-        },
-        {
-          "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
-              "type": "coinsurance",
-              "sequence": 2,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -1089,13 +739,11 @@
     },
     {
       "benefit_id": "DELIVERY_PROFESSIONAL",
-      "benefit_type": "maternity",
+      "benefit_type": "medical",
       "category": "MATERNITY_CARE",
-      "service_name": "Childbirth/delivery professional services",
+      "service_name": "Delivery professional",
       "canonical_key": "delivery_professional",
-      "place_of_service": [
-        "hospital"
-      ],
+      "raw_label": "Childbirth/delivery professional services",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -1116,16 +764,8 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
               "type": "coinsurance",
-              "sequence": 2,
+              "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -1140,13 +780,11 @@
     },
     {
       "benefit_id": "DELIVERY_FACILITY",
-      "benefit_type": "maternity",
+      "benefit_type": "medical",
       "category": "MATERNITY_CARE",
-      "service_name": "Childbirth/delivery facility services",
+      "service_name": "Delivery facility",
       "canonical_key": "delivery_facility",
-      "place_of_service": [
-        "hospital"
-      ],
+      "raw_label": "Childbirth/delivery facility services",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -1167,16 +805,8 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
               "type": "coinsurance",
-              "sequence": 2,
+              "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -1195,9 +825,7 @@
       "category": "HOME_HEALTH",
       "service_name": "Home health care",
       "canonical_key": "home_health_care",
-      "place_of_service": [
-        "home"
-      ],
+      "raw_label": "Home health care",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -1218,16 +846,8 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
               "type": "coinsurance",
-              "sequence": 2,
+              "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -1241,15 +861,12 @@
       "moop_applicability": "plan_default"
     },
     {
-      "benefit_id": "REHAB_SERVICES",
+      "benefit_id": "REHABILITATION_SERVICES",
       "benefit_type": "medical",
       "category": "REHABILITATION",
-      "service_name": "Rehabilitation services (PT/OT/ST)",
+      "service_name": "Rehabilitation services",
       "canonical_key": "rehabilitation_services",
-      "place_of_service": [
-        "office",
-        "outpatient"
-      ],
+      "raw_label": "Rehabilitation services",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -1258,7 +875,7 @@
             {
               "type": "copay",
               "sequence": 1,
-              "amount": 25,
+              "amount": 75,
               "basis": "per_visit",
               "applies_to_deductible": false,
               "applies_to_moop": true
@@ -1270,16 +887,8 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
               "type": "coinsurance",
-              "sequence": 2,
+              "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -1293,14 +902,53 @@
       "moop_applicability": "plan_default"
     },
     {
-      "benefit_id": "SKILLED_NURSING",
+      "benefit_id": "HABILITATIVE_SERVICES",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Habilitative services",
+      "canonical_key": "habilitative_services",
+      "raw_label": "Habilitation services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "SKILLED_NURSING_FACILITY",
       "benefit_type": "medical",
       "category": "SKILLED_NURSING",
       "service_name": "Skilled nursing facility",
       "canonical_key": "skilled_nursing_facility",
-      "place_of_service": [
-        "snf"
-      ],
+      "raw_label": "Skilled nursing care",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -1314,24 +962,15 @@
               "applies_to_deductible": true,
               "applies_to_moop": true
             }
-          ],
-          "notes": "Limited to 60 days per benefit period."
+          ]
         },
         {
           "tier_id": "OUT",
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
               "type": "coinsurance",
-              "sequence": 2,
+              "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -1345,15 +984,53 @@
       "moop_applicability": "plan_default"
     },
     {
-      "benefit_id": "DME",
+      "benefit_id": "DURABLE_MEDICAL_EQUIPMENT",
       "benefit_type": "medical",
       "category": "DURABLE_MEDICAL_EQUIPMENT",
       "service_name": "Durable medical equipment",
       "canonical_key": "durable_medical_equipment",
-      "place_of_service": [
-        "home",
-        "office"
+      "raw_label": "Durable medical equipment",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ]
+        }
       ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "HOSPICE_CARE",
+      "benefit_type": "medical",
+      "category": "HOME_HEALTH",
+      "service_name": "Hospice care",
+      "canonical_key": "hospice_care",
+      "raw_label": "Hospice services",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -1374,69 +1051,8 @@
           "covered": true,
           "cost_shares": [
             {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
               "type": "coinsurance",
-              "sequence": 2,
-              "rate": 0.5,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            }
-          ]
-        }
-      ],
-      "limits": [],
-      "conditions": [],
-      "moop_applicability": "plan_default"
-    },
-    {
-      "benefit_id": "HOSPICE",
-      "benefit_type": "medical",
-      "category": "HOME_HEALTH",
-      "service_name": "Hospice services",
-      "canonical_key": "hospice_care",
-      "place_of_service": [
-        "home",
-        "hospital"
-      ],
-      "network_cost_shares": [
-        {
-          "tier_id": "IN",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
               "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
-            }
-          ],
-          "notes": "No charge in-network."
-        },
-        {
-          "tier_id": "OUT",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "deductible",
-              "sequence": 1,
-              "rate": 1.0,
-              "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
-            },
-            {
-              "type": "coinsurance",
-              "sequence": 2,
               "rate": 0.5,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
@@ -1451,13 +1067,11 @@
     },
     {
       "benefit_id": "PEDIATRIC_EYE_EXAM",
-      "benefit_type": "vision",
+      "benefit_type": "medical",
       "category": "VISION_PEDIATRIC",
-      "service_name": "Children's eye exam",
+      "service_name": "Pediatric eye exam",
       "canonical_key": "pediatric_eye_exam",
-      "place_of_service": [
-        "office"
-      ],
+      "raw_label": "Children's eye exam",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -1471,14 +1085,44 @@
               "applies_to_deductible": false,
               "applies_to_moop": true
             }
-          ],
-          "notes": "One exam per year for children under 19."
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PEDIATRIC_GLASSES",
+      "benefit_type": "medical",
+      "category": "VISION_PEDIATRIC",
+      "service_name": "Pediatric glasses",
+      "canonical_key": "pediatric_glasses",
+      "raw_label": "Children's glasses",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
         },
         {
           "tier_id": "OUT",
           "covered": false,
-          "cost_shares": [],
-          "notes": "Not covered."
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -1487,34 +1131,21 @@
     },
     {
       "benefit_id": "PEDIATRIC_DENTAL_CHECKUP",
-      "benefit_type": "dental",
+      "benefit_type": "medical",
       "category": "DENTAL_PEDIATRIC",
-      "service_name": "Children's dental check-up",
+      "service_name": "Pediatric dental checkup",
       "canonical_key": "pediatric_dental_checkup",
-      "place_of_service": [
-        "office"
-      ],
+      "raw_label": "Children's dental check-up",
       "network_cost_shares": [
         {
           "tier_id": "IN",
-          "covered": true,
-          "cost_shares": [
-            {
-              "type": "copay",
-              "sequence": 1,
-              "amount": 0,
-              "basis": "per_visit",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
-            }
-          ],
-          "notes": "Two visits per year for children under 19."
+          "covered": false,
+          "cost_shares": []
         },
         {
           "tier_id": "OUT",
           "covered": false,
-          "cost_shares": [],
-          "notes": "Not covered."
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -1525,8 +1156,80 @@
   "source_references": [
     {
       "page_number": 1,
-      "page_range": "L1-L150",
-      "excerpt": "Aetna PPO 1500 80/50 SBC"
+      "excerpt": "Coverage Period: 01/01/2026 - 12/31/2026 | FL PPO 1500 80/50 CY V25 | Coverage for: Employee + Family | Plan Type: PPO"
+    },
+    {
+      "page_number": 1,
+      "excerpt": "What is the overall deductible? In-network: Individual $1,500 / Family $3,000"
+    },
+    {
+      "page_number": 1,
+      "excerpt": "What is the out-of-pocket limit for this plan? In-network: Individual $5,500 / Family $11,000."
+    },
+    {
+      "page_number": 2,
+      "excerpt": "Primary care visit to treat an injury or illness: $25 copay/visit, deductible does not apply; 50% coinsurance out-of-network"
+    },
+    {
+      "page_number": 2,
+      "excerpt": "Specialist visit: $75 copay/visit, deductible does not apply; 50% coinsurance out-of-network"
+    },
+    {
+      "page_number": 2,
+      "excerpt": "Preventive care /screening /immunization: No charge in-network"
+    },
+    {
+      "page_number": 2,
+      "excerpt": "Diagnostic test (x-ray, blood work): 20% coinsurance in-network; 50% coinsurance out-of-network"
+    },
+    {
+      "page_number": 2,
+      "excerpt": "Imaging (CT/PET scans, MRIs): 20% coinsurance in-network; 50% coinsurance out-of-network"
+    },
+    {
+      "page_number": 2,
+      "excerpt": "Preferred generic drugs: Copay/ prescription, deductible does not apply: Tier 1A: $3 for up to a 30 day supply"
+    },
+    {
+      "page_number": 2,
+      "excerpt": "Preferred brand drugs: $45 for up to a 30 day supply, $90 for up to a 90 day supply"
+    },
+    {
+      "page_number": 2,
+      "page_range": "2-3",
+      "excerpt": "Specialty drugs: Preferred: 20% coinsurance for up to a 30 day supply; Not covered out-of-network"
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Emergency room care: 20% coinsurance after $300 copay/visit (in-network and out-of-network). Copay waived if admitted."
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Emergency medical transportation: 20% coinsurance. Out-of-network cost-share same as in-network."
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Urgent care: $75 copay/visit, deductible does not apply; 50% coinsurance out-of-network"
+    },
+    {
+      "page_number": 3,
+      "excerpt": "If you have a hospital stay - Facility fee (e.g., hospital room): 20% coinsurance; 50% coinsurance out-of-network"
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Rehabilitation services: $75 copay/visit; 50% coinsurance out-of-network. Coverage is limited to 60 visits for Physical Therapy, Occupational Therapy, Speech Therapy & Chiropractic care combined."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Durable medical equipment: 50% coinsurance; 50% coinsurance out-of-network"
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Children's eye exam: No charge in-network. Coverage is limited to 1 exam every 12 months."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Children's glasses: Not covered. Children's dental check-up: Not covered."
     }
   ],
   "schema_version": "1.1.0"

@@ -67,12 +67,14 @@ docs/
   └── roadmap.md
 examples/
   ├── aetna_example.json
+  ├── aetna_ppo5000_example.json
+  ├── ambetter_example.json
   ├── bluecross_example.json
   ├── cigna_example.json
   ├── gatorcare_example.json
-  ├── humana_example.json
-  ├── scan_example.json
-  └── united_example.json
+  ├── kaiser_example.json
+  ├── united_example.json
+  └── sources/                       ← the SBC PDFs each example was generated from
 vocabularies/
   ├── canonical-benefits.json
   ├── categories.json
