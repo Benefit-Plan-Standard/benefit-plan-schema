@@ -18,7 +18,9 @@ Dates are indicative and subject to change based on community feedback and imple
 1. **Pharmacy module** — Extend the schema to support detailed Part D and commercial pharmacy benefit structures, including tiers, mail-order rules, and cost-sharing stages. v1.1.0 lays the groundwork via `benefit_type: "pharmacy"`; the next step is a pharmacy-specific module schema.
 2. **Behavioral health & supplemental modules** — Provide normalized representation of mental health, substance use, dental, vision, and maternity care as opt-in modules referenced via `benefit_type`.
 3. **Utilization management conditions** — Richer modeling of prior authorization, referral requirements, and step-therapy rules.
-4. **HealthPlanAPI reference-implementation alignment** — Bring the HealthPlanAPI BIME output into full BPS v1.1.0 conformance (snake_case, top-level fields, `cost_shares[]` array structure, ISO 8601 dates).
+4. **CARIN SBC exporter** — A converter from BPS to the CARIN Digital Insurance Card IG's SBC `InsurancePlan` profile, built in this repo so anyone can run it. The field-by-field mapping is written (`docs/carin-dic-reconciliation.md`); targeted for the week of September 8, 2026, with the two ballot-dependent extensions flagged until STU 2.0.0 publishes.
+5. **Medicare Advantage worked examples** — Extend the examples library to the CMS Summary of Benefits format (Medicare Advantage), with source documents alongside, ahead of the 2026 open enrollment period. Committed publicly to the CMS Real-Time Benefits workgroup on 2026-08-31.
+6. **HealthPlanAPI reference-implementation alignment** — Bring the HealthPlanAPI BIME output into full BPS v1.1.0 conformance (snake_case, top-level fields, `cost_shares[]` array structure, ISO 8601 dates).
 
 ## Evidence from implementation (2026-08)
 
