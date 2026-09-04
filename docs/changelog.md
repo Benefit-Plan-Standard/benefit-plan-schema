@@ -3,6 +3,15 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Pharmacy module [0.2.1] – DRAFT (2026-09-04)
+
+Additive patch to the draft pharmacy module (`modules/pharmacy/v0.2.1/`). v0.2.0 documents validate unchanged.
+
+### Added
+
+- `carrier_formulary_document` on `pharmacy.formulary_reference.data_sources[].source_type` — a carrier-published formulary document: medication guide, prior-authorization program list, program drug list, or pharmacy policy bulletin. Identify the document with `source_url` and `file_date`. Motivation: employer group plans have no CMS machine-readable formulary file; their drug-to-tier placement, utilization-management flags and indication rules are published only in carrier documents, and the v0.2.0 enum had no value for that origin.
+- A `description` on `source_type` defining every value.
+
 ## [1.2.0] – DRAFT (2026-07-02)
 
 Backward-compatible minor release, in draft. Existing v1.0.0 and v1.1.0 documents continue to validate against v1.2.0 unchanged. Origin: reconciliation of the three `InsurancePlan` changes merged into the HL7 CARIN Digital Insurance Card IG on June 25, 2026 (FHIR-57525 multi-tier cost sharing, FHIR-57526 deductible applicability, FHIR-57527 structured benefit limitation). Full analysis and field-by-field mapping: `docs/carin-dic-reconciliation.md`.
