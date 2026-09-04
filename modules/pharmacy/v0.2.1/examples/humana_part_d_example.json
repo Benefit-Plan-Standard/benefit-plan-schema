@@ -1,0 +1,195 @@
+{
+  "_comment": "DRAFT example carried forward into the pharmacy module v0.2.1 and updated to the post-IRA Part D design (CY2026). Illustrates a Medicare Part D plan with 5 formulary tiers, 3 pharmacy networks (preferred retail, standard retail, mail order), and the three post-redesign coverage stages (deductible, initial coverage, catastrophic; the pre-2025 coverage gap no longer exists). CY2026 parameters: $615 standard maximum deductible (this illustrative plan uses a lower $300 deductible), $2,100 annual out-of-pocket cap, $0 cost share in the catastrophic stage. The benefits[] array uses the pharmacy extension fields (formulary_tier_id, pharmacy_network_id, coverage_stage_id, day_supply) defined in modules/pharmacy/v0.2.1/pharmacy.schema.json. This file is NOT a real Humana plan — values are illustrative.",
+  "plan_id": "HUMANA_PARTD_PREMIER_2026",
+  "plan_name": "Humana Premier Rx Plan (PDP) — Illustrative",
+  "carrier": "Humana",
+  "plan_type": "PDP",
+  "plan_year": 2026,
+  "effective_date": "2026-01-01",
+  "expiry_date": "2026-12-31",
+  "coverage_period": { "start_date": "2026-01-01", "end_date": "2026-12-31" },
+  "market": "medicare_advantage",
+  "network_tiers": [
+    { "tier_id": "IN", "name": "In Network", "description": "Standalone PDP — pharmacy benefit only" }
+  ],
+  "accumulators": {
+    "individual_oop_max": {
+      "amount": 2100,
+      "currency": "USD",
+      "period": "per_calendar_year",
+      "network_tier": "in-network",
+      "applies_to": "pharmacy"
+    }
+  },
+  "pharmacy": {
+    "deductible": {
+      "amount": 300,
+      "currency": "USD",
+      "period": "per_calendar_year",
+      "applies_to_tiers": ["T2", "T3", "T4", "T5"]
+    },
+    "formulary_tiers": [
+      { "tier_id": "T1", "name": "Tier 1 — Preferred Generic",     "drug_class": "preferred_generic",     "description": "Lowest-cost preferred generics. No deductible." },
+      { "tier_id": "T2", "name": "Tier 2 — Generic",                "drug_class": "generic" },
+      { "tier_id": "T3", "name": "Tier 3 — Preferred Brand",        "drug_class": "preferred_brand" },
+      { "tier_id": "T4", "name": "Tier 4 — Non-preferred Drug",     "drug_class": "nonpreferred_brand" },
+      { "tier_id": "T5", "name": "Tier 5 — Specialty",              "drug_class": "specialty",             "description": "Limited to a 30-day supply." }
+    ],
+    "pharmacy_networks": [
+      { "network_id": "PREF_RETAIL", "name": "Preferred Retail",  "network_type": "preferred_retail",  "default_day_supply": 30 },
+      { "network_id": "STD_RETAIL",  "name": "Standard Retail",   "network_type": "standard_retail",   "default_day_supply": 30 },
+      { "network_id": "MAIL_ORDER",  "name": "Mail Order",        "network_type": "mail_order",        "default_day_supply": 90 }
+    ],
+    "coverage_stages": [
+      {
+        "stage_id": "DEDUCTIBLE",
+        "name": "Deductible",
+        "stage_type": "deductible",
+        "applies_before_total_drug_cost": 300
+      },
+      {
+        "stage_id": "INITIAL",
+        "name": "Initial Coverage",
+        "stage_type": "initial"
+      },
+      {
+        "stage_id": "CATASTROPHIC",
+        "name": "Catastrophic Coverage",
+        "stage_type": "catastrophic",
+        "applies_after_total_out_of_pocket": 2100
+      }
+    ],
+    "mail_order_supply_multiplier": 2.5
+  },
+  "benefits": [
+    {
+      "benefit_id":          "RX_T1_PREF_RETAIL_30_INITIAL",
+      "benefit_type":        "pharmacy",
+      "category":            "PHARMACY",
+      "service_name":        "Tier 1 (Preferred Generic) — Preferred Retail — 30-day — Initial Coverage",
+      "canonical_key":       "preferred_generic_drugs",
+      "formulary_tier_id":   "T1",
+      "pharmacy_network_id": "PREF_RETAIL",
+      "coverage_stage_id":   "INITIAL",
+      "day_supply":          30,
+      "place_of_service":    ["pharmacy"],
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": true,
+          "cost_shares": [
+            { "type": "copay", "sequence": 1, "amount": 0, "basis": "per_prescription",
+              "applies_to_deductible": false, "applies_to_moop": true }
+          ] }
+      ]
+    },
+    {
+      "benefit_id":          "RX_T1_MAIL_90_INITIAL",
+      "benefit_type":        "pharmacy",
+      "category":            "PHARMACY",
+      "service_name":        "Tier 1 (Preferred Generic) — Mail Order — 90-day — Initial Coverage",
+      "canonical_key":       "preferred_generic_drugs",
+      "formulary_tier_id":   "T1",
+      "pharmacy_network_id": "MAIL_ORDER",
+      "coverage_stage_id":   "INITIAL",
+      "day_supply":          90,
+      "place_of_service":    ["pharmacy"],
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": true,
+          "cost_shares": [
+            { "type": "copay", "sequence": 1, "amount": 0, "basis": "per_prescription",
+              "applies_to_deductible": false, "applies_to_moop": true }
+          ] }
+      ]
+    },
+    {
+      "benefit_id":          "RX_T3_PREF_RETAIL_30_INITIAL",
+      "benefit_type":        "pharmacy",
+      "category":            "PHARMACY",
+      "service_name":        "Tier 3 (Preferred Brand) — Preferred Retail — 30-day — Initial Coverage",
+      "canonical_key":       "preferred_brand_drugs",
+      "formulary_tier_id":   "T3",
+      "pharmacy_network_id": "PREF_RETAIL",
+      "coverage_stage_id":   "INITIAL",
+      "day_supply":          30,
+      "step_therapy_required": false,
+      "place_of_service":    ["pharmacy"],
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": true,
+          "cost_shares": [
+            { "type": "copay", "sequence": 1, "amount": 47, "basis": "per_prescription",
+              "applies_to_deductible": true, "applies_to_moop": true,
+              "notes": "Subject to pharmacy deductible." }
+          ] }
+      ]
+    },
+    {
+      "benefit_id":          "RX_T5_SPECIALTY_30_INITIAL",
+      "benefit_type":        "pharmacy",
+      "category":            "PHARMACY",
+      "service_name":        "Tier 5 (Specialty) — Specialty Pharmacy — 30-day — Initial Coverage",
+      "canonical_key":       "specialty_drugs",
+      "formulary_tier_id":   "T5",
+      "pharmacy_network_id": "PREF_RETAIL",
+      "coverage_stage_id":   "INITIAL",
+      "day_supply":          30,
+      "step_therapy_required": true,
+      "quantity_limit": {
+        "value":  30,
+        "units":  "tablets",
+        "period": "per_30_days"
+      },
+      "place_of_service":    ["pharmacy"],
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": true,
+          "cost_shares": [
+            { "type": "coinsurance", "sequence": 1, "rate": 0.33, "basis": "per_prescription",
+              "applies_to_deductible": true, "applies_to_moop": true,
+              "notes": "33% coinsurance; specialty limited to 30-day supply." }
+          ] }
+      ]
+    },
+    {
+      "benefit_id":          "RX_T3_PREF_RETAIL_30_DED",
+      "benefit_type":        "pharmacy",
+      "category":            "PHARMACY",
+      "service_name":        "Tier 3 (Preferred Brand) — Preferred Retail — 30-day — Deductible Stage",
+      "canonical_key":       "preferred_brand_drugs",
+      "formulary_tier_id":   "T3",
+      "pharmacy_network_id": "PREF_RETAIL",
+      "coverage_stage_id":   "DEDUCTIBLE",
+      "day_supply":          30,
+      "place_of_service":    ["pharmacy"],
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": true,
+          "cost_shares": [
+            { "type": "coinsurance", "sequence": 1, "rate": 1.0, "basis": "per_prescription",
+              "applies_to_deductible": true, "applies_to_moop": true,
+              "notes": "Member pays the full negotiated price until the $300 pharmacy deductible is met (deductible applies to tiers T2-T5 only)." }
+          ] }
+      ]
+    },
+    {
+      "benefit_id":          "RX_T3_PREF_RETAIL_30_CATA",
+      "benefit_type":        "pharmacy",
+      "category":            "PHARMACY",
+      "service_name":        "Tier 3 (Preferred Brand) — Preferred Retail — 30-day — Catastrophic Coverage",
+      "canonical_key":       "preferred_brand_drugs",
+      "formulary_tier_id":   "T3",
+      "pharmacy_network_id": "PREF_RETAIL",
+      "coverage_stage_id":   "CATASTROPHIC",
+      "day_supply":          30,
+      "place_of_service":    ["pharmacy"],
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": true,
+          "cost_shares": [
+            { "type": "copay", "sequence": 1, "amount": 0, "basis": "per_prescription",
+              "applies_to_deductible": false, "applies_to_moop": true,
+              "notes": "Catastrophic stage — $0 cost share after the $2,100 annual OOP cap (CY2026) is reached." }
+          ] }
+      ]
+    }
+  ],
+  "source_references": [
+    { "page_number": 1, "page_range": "L1-L120", "excerpt": "Illustrative Medicare Part D example (CY2026 post-IRA design) for BPS pharmacy module v0.2.1 review." }
+  ],
+  "schema_version": "1.1.0"
+}
