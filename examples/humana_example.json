@@ -1,0 +1,3475 @@
+{
+  "plan_id": "HUMANA_GOLD_PLUS_H1036_025_HMO",
+  "plan_name": "Humana Gold Plus H1036-025 (HMO)",
+  "carrier": "Humana",
+  "plan_type": "HMO",
+  "plan_year": 2026,
+  "market": "medicare_advantage",
+  "network_tiers": [
+    {
+      "tier_id": "IN",
+      "name": "In network",
+      "description": "The plan's network of doctors, hospitals, pharmacies and other providers (page 3). Site-of-service tiers below price services inside this network.",
+      "tier_class": "network"
+    },
+    {
+      "tier_id": "OUT",
+      "name": "Out of network",
+      "description": "Page 2: except in emergency or urgent situations, services by out-of-network providers are not covered. Page 12: under certain situations you may be able to get drugs from an out-of-network pharmacy but may pay more.",
+      "tier_class": "network"
+    },
+    {
+      "tier_id": "SITE_PCP_OFFICE",
+      "name": "PCP's office",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_SPECIALIST_OFFICE",
+      "name": "Specialist's office",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_TELEHEALTH",
+      "name": "Telehealth",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network. Page 16: telehealth services shown are in addition to the Original Medicare covered telehealth; your cost may be different for Original Medicare telehealth.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_URGENT_CARE_CENTER",
+      "name": "Urgent care center",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+      "name": "Outpatient hospital",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_AMBULATORY_SURGERY_CENTER",
+      "name": "Ambulatory surgery center",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_FREESTANDING_RADIOLOGY",
+      "name": "Freestanding radiological facility",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_FREESTANDING_LAB",
+      "name": "Freestanding laboratory",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_MEMBERS_HOME",
+      "name": "Member's home",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_COMPREHENSIVE_OUTPATIENT_REHAB",
+      "name": "Comprehensive outpatient rehab facility",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_PHARMACY",
+      "name": "Pharmacy",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_NETWORK_RETAIL_PHARMACY",
+      "name": "Network retail pharmacy",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_DME_PROVIDER",
+      "name": "DME provider",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_DIABETIC_SUPPLIER",
+      "name": "Diabetic supplier",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_MEDICAL_SUPPLIER",
+      "name": "Medical supplier",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_PROSTHETICS_PROVIDER",
+      "name": "Prosthetics provider",
+      "description": "Site of service as labeled in the document; cost sharing at this site within the plan network.",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "SITE_PART_D_RETAIL",
+      "name": "Retail Cost-Sharing",
+      "description": "The Retail Cost-Sharing columns of the Part D grids on pages 10 and 11, which include all in-network retail pharmacies. The Standard and Preferred mail-order prices are not carried in this example. Diabetic monitoring supplies use the separately labeled Network retail pharmacy site (page 12).",
+      "tier_class": "modality",
+      "parent_tier_id": "IN"
+    },
+    {
+      "tier_id": "DESIG_PREFERRED_DIABETIC_SUPPLIER",
+      "name": "Preferred diabetic supplier",
+      "description": "Printed on page 12 as its own bullet, Preferred diabetic supplier: $0 copay, separate from Diabetic supplier: 20% of the cost.",
+      "tier_class": "cost_designation",
+      "parent_tier_id": "IN",
+      "provider_set": {
+        "name": "Preferred diabetic supplier",
+        "description": "The document does not name the preferred suppliers.",
+        "reference": null
+      }
+    }
+  ],
+  "accumulators": {
+    "individual_deductible": {
+      "amount": 0,
+      "currency": "USD",
+      "period": "per_year",
+      "network_tier": "in-network",
+      "applies_to": "medical"
+    },
+    "individual_oop_max": {
+      "amount": 2000,
+      "currency": "USD",
+      "period": "per_year",
+      "network_tier": "in-network",
+      "applies_to": "medical"
+    }
+  },
+  "benefits": [
+    {
+      "benefit_id": "INPATIENT_HOSPITAL",
+      "benefit_type": "medical",
+      "category": "HOSPITAL_SERVICES",
+      "service_name": "Inpatient hospital",
+      "canonical_key": "inpatient_hospital",
+      "raw_label": "This plan covers an unlimited number of days for an inpatient stay",
+      "place_of_service": [
+        "inpatient_hospital"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 50,
+              "basis": "per_day",
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Days 1-6"
+            },
+            {
+              "type": "copay",
+              "sequence": 2,
+              "amount": 0,
+              "basis": "per_day",
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Days 7-90"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "DIAGNOSTIC_COLONOSCOPY",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Diagnostic colonoscopy",
+      "raw_label": "Diagnostic colonoscopy",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_AMBULATORY_SURGERY_CENTER",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "OUTPATIENT_SURGERY",
+      "benefit_type": "medical",
+      "category": "SURGICAL_SERVICES",
+      "service_name": "Outpatient surgery",
+      "canonical_key": "outpatient_surgery",
+      "raw_label": "Surgery services",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 85,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_AMBULATORY_SURGERY_CENTER",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 10,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PRIMARY_CARE",
+      "benefit_type": "medical",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Primary care visit",
+      "canonical_key": "primary_care",
+      "raw_label": "Primary Care Provider (PCP)",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_PCP_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_TELEHEALTH",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "SPECIALIST",
+      "benefit_type": "medical",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Specialist visit",
+      "canonical_key": "specialist",
+      "raw_label": "Specialist",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 10,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_TELEHEALTH",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 10,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "referral",
+          "code": null,
+          "description": "Your primary care provider (PCP) will work with you to coordinate the care you need with specialists or certain other providers in the network. This is called a \"referral.\""
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PREVENTIVE_CARE",
+      "benefit_type": "medical",
+      "category": "PREVENTIVE_CARE",
+      "service_name": "Medicare preventive services",
+      "canonical_key": "preventive_care",
+      "raw_label": "This plan covers all Medicare preventive services including:",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "EMERGENCY_ROOM",
+      "benefit_type": "medical",
+      "category": "EMERGENCY_CARE",
+      "service_name": "Emergency room",
+      "canonical_key": "emergency_room",
+      "raw_label": "Emergency services at emergency room",
+      "place_of_service": [
+        "emergency_room"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 150,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "If you are admitted to the same hospital within 24 hours for the same condition, you pay $0 for the emergency care you received. When placed in observation, member pays observation cost-share instead of emergency room cost-share; the document prints no observation amount."
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "Emergency services are covered worldwide (page 5). Outside the U.S. and its territories you pay upfront and can request reimbursement. The document does not print a separate out-of-network amount."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "URGENT_CARE",
+      "benefit_type": "medical",
+      "category": "URGENT_CARE",
+      "service_name": "Urgently needed services",
+      "canonical_key": "urgent_care",
+      "raw_label": "URGENTLY NEEDED SERVICES",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_TELEHEALTH",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_URGENT_CARE_CENTER",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "Urgently needed services are covered worldwide (page 6). Outside the U.S. and its territories you pay upfront and can request reimbursement. The document does not print a separate out-of-network amount."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "ADVANCED_IMAGING",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Advanced imaging (MRI, MRA, PET, CT)",
+      "canonical_key": "imaging_advanced",
+      "raw_label": "Advanced imaging services (MRI, MRA, PET and CT scans)",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_FREESTANDING_RADIOLOGY",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 50,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 75,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_PCP_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 50,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 50,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "XRAYS",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "X-rays",
+      "canonical_key": "imaging_standard",
+      "raw_label": "Basic radiological services (X-rays)",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_FREESTANDING_RADIOLOGY",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 20,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_PCP_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_URGENT_CARE_CENTER",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "DIAGNOSTIC_TESTS",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Diagnostic procedures and tests",
+      "canonical_key": "diagnostic_test",
+      "raw_label": "Diagnostic procedures and tests",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 25,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_PCP_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 10,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_URGENT_CARE_CENTER",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "LAB_SERVICES",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Lab services",
+      "canonical_key": "diagnostic_lab",
+      "raw_label": "Lab services",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_FREESTANDING_LAB",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 20,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_PCP_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_URGENT_CARE_CENTER",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "NUCLEAR_MEDICINE",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Nuclear medicine",
+      "raw_label": "Nuclear medicine and services",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_FREESTANDING_RADIOLOGY",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 10,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 250,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "SLEEP_STUDY",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Sleep study",
+      "raw_label": "Sleep study",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_MEMBERS_HOME",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 25,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 25,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "THERAPEUTIC_RADIOLOGY",
+      "benefit_type": "medical",
+      "category": "RADIATION_THERAPY",
+      "service_name": "Radiation therapy",
+      "canonical_key": "radiation_therapy",
+      "raw_label": "Therapeutic radiology (Radiation therapy)",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_FREESTANDING_RADIOLOGY",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "DIAGNOSTIC_MAMMOGRAPHY",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Diagnostic mammography",
+      "raw_label": "Diagnostic mammography",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_FREESTANDING_RADIOLOGY",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "HEARING_MEDICARE",
+      "benefit_type": "hearing",
+      "category": "HEARING",
+      "service_name": "Hearing services (Medicare-covered)",
+      "raw_label": "Medicare-covered hearing",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 10,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "HEARING_EXAM_ROUTINE",
+      "benefit_type": "hearing",
+      "category": "HEARING",
+      "service_name": "Routine hearing exam and fitting/evaluation",
+      "raw_label": "Mandatory supplemental hearing benefit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Supplemental benefit. Page 8: copayments, coinsurances, and deductibles paid for supplemental benefits do not count toward your maximum out-of-pocket amount (the sentence is printed in the vision row and worded for all supplemental benefits)."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 1,
+          "period": "per_year",
+          "raw_text": "$0 copay for fitting/evaluation, routine hearing exams up to 1 per year."
+        }
+      ],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "HEARING_AID_VALUE",
+      "benefit_type": "hearing",
+      "category": "HEARING",
+      "service_name": "Hearing aid, Value Technology",
+      "raw_label": "Mandatory supplemental hearing benefit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 199,
+              "basis": "per_aid",
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Includes 1 year warranty and 1 month battery supply. Supplemental benefit. Page 8: copayments, coinsurances, and deductibles paid for supplemental benefits do not count toward your maximum out-of-pocket amount (the sentence is printed in the vision row and worded for all supplemental benefits)."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "hearing_aids_per_ear",
+          "value": 1,
+          "period": "per_year",
+          "raw_text": "up to 1 per ear per year"
+        }
+      ],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "HEARING_AID_ADVANCED",
+      "benefit_type": "hearing",
+      "category": "HEARING",
+      "service_name": "Hearing aid, Advanced Technology",
+      "raw_label": "Mandatory supplemental hearing benefit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 699,
+              "basis": "per_aid",
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Includes 1 year warranty and 1 month battery supply. Supplemental benefit. Page 8: copayments, coinsurances, and deductibles paid for supplemental benefits do not count toward your maximum out-of-pocket amount (the sentence is printed in the vision row and worded for all supplemental benefits)."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "hearing_aids_per_ear",
+          "value": 1,
+          "period": "per_year",
+          "raw_text": "up to 1 per ear per year"
+        }
+      ],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "HEARING_AID_PREMIUM",
+      "benefit_type": "hearing",
+      "category": "HEARING",
+      "service_name": "Hearing aid, Premium Technology",
+      "raw_label": "Mandatory supplemental hearing benefit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 1299,
+              "basis": "per_aid",
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Includes 1 year warranty and 1 month battery supply. Supplemental benefit. Page 8: copayments, coinsurances, and deductibles paid for supplemental benefits do not count toward your maximum out-of-pocket amount (the sentence is printed in the vision row and worded for all supplemental benefits)."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "hearing_aids_per_ear",
+          "value": 1,
+          "period": "per_year",
+          "raw_text": "up to 1 per ear per year"
+        }
+      ],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_MEDICARE",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Dental services (Medicare-covered)",
+      "raw_label": "Medicare-covered dental",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 10,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "DENTAL_ALLOWANCE",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Supplemental dental allowance (preventive, basic and major services)",
+      "raw_label": "Mandatory supplemental dental benefit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "No copay is printed for services under the allowance. You are responsible for any amount above the dental coverage limit. Any amount unused at the end of the year will expire. Benefits are offered on a calendar year basis. Supplemental benefit. Page 8: copayments, coinsurances, and deductibles paid for supplemental benefits do not count toward your maximum out-of-pocket amount (the sentence is printed in the vision row and worded for all supplemental benefits)."
+        }
+      ],
+      "limits": [
+        {
+          "type": "dollars",
+          "value": 3000,
+          "period": "per_calendar_year",
+          "raw_text": "Plan covers up to $3000 allowance every year for non-Medicare covered preventive and comprehensive dental services."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "exclusion",
+          "code": null,
+          "description": "The allowance cannot be used on fluoride, cosmetic services and implants."
+        },
+        {
+          "type": "frequency",
+          "code": null,
+          "description": "Frequency limits may apply."
+        },
+        {
+          "type": "review",
+          "code": null,
+          "description": "Submitted claims are subject to a review process which may include a clinical review and dental history to approve coverage."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_DENTURES_BRIDGES",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Dentures and bridges",
+      "raw_label": "Mandatory supplemental dental benefit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.3,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "30% of the cost applies to dentures and bridges. Dentures and bridges are listed among the treatments the allowance can be used for (page 7). Page 7: benefits are offered on a calendar year basis. Supplemental benefit. Page 8: copayments, coinsurances, and deductibles paid for supplemental benefits do not count toward your maximum out-of-pocket amount (the sentence is printed in the vision row and worded for all supplemental benefits)."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "dollars",
+          "value": 3000,
+          "period": "per_calendar_year",
+          "raw_text": "Plan covers up to $3000 allowance every year for non-Medicare covered preventive and comprehensive dental services."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "frequency",
+          "code": null,
+          "description": "Frequency limits may apply."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "EYEWEAR_POST_CATARACT",
+      "benefit_type": "vision",
+      "category": "VISION",
+      "service_name": "Eyewear after cataract surgery",
+      "raw_label": "Eyewear (post cataract surgery)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "DIABETIC_EYE_EXAM",
+      "benefit_type": "vision",
+      "category": "VISION",
+      "service_name": "Diabetic eye exam (Medicare-covered)",
+      "raw_label": "Medicare-covered diabetic eye exam",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "VISION_MEDICARE",
+      "benefit_type": "vision",
+      "category": "VISION",
+      "service_name": "Vision services (Medicare-covered)",
+      "raw_label": "Medicare-covered vision services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 10,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "VISION_EXAM_ROUTINE",
+      "benefit_type": "vision",
+      "category": "VISION",
+      "service_name": "Routine eye exam",
+      "raw_label": "Mandatory supplemental vision benefit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Page 8: these benefits are offered on a calendar year basis. Supplemental benefit. Page 8: copayments, coinsurances, and deductibles paid for supplemental benefits do not count toward your maximum out-of-pocket amount (the sentence is printed in the vision row and worded for all supplemental benefits)."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 1,
+          "period": "per_calendar_year",
+          "raw_text": "$0 copay for routine exam up to 1 per year."
+        }
+      ],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "EYEWEAR_ALLOWANCE",
+      "benefit_type": "vision",
+      "category": "VISION",
+      "service_name": "Routine eyewear allowance",
+      "raw_label": "Mandatory supplemental vision benefit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "This is one of two options in the same bullet: a $300 allowance, or 2 pairs of select eyeglasses per year at no cost. Page 8: these benefits are offered on a calendar year basis. Supplemental benefit. Page 8: copayments, coinsurances, and deductibles paid for supplemental benefits do not count toward your maximum out-of-pocket amount (the sentence is printed in the vision row and worded for all supplemental benefits)."
+        }
+      ],
+      "limits": [
+        {
+          "type": "dollars",
+          "value": 300,
+          "period": "per_calendar_year",
+          "raw_text": "$300 maximum benefit coverage amount per year for contact lenses or eyeglasses-lenses and frames plus fitting"
+        }
+      ],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "EYEGLASSES_NO_COST",
+      "benefit_type": "vision",
+      "category": "VISION",
+      "service_name": "Select eyeglasses at no cost",
+      "raw_label": "Mandatory supplemental vision benefit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "This is one of two options in the same bullet: a $300 allowance, or 2 pairs of select eyeglasses per year at no cost. Page 8: these benefits are offered on a calendar year basis. Eyeglasses include ultraviolet protection and scratch-resistant coating. Supplemental benefit. Page 8: copayments, coinsurances, and deductibles paid for supplemental benefits do not count toward your maximum out-of-pocket amount (the sentence is printed in the vision row and worded for all supplemental benefits)."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "pairs_of_eyeglasses",
+          "value": 2,
+          "period": "per_calendar_year",
+          "raw_text": "2 pairs of select eyeglasses per year at no cost"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "See a network optical provider for more information on your no cost eyeglass option."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "MENTAL_HEALTH_INPATIENT",
+      "benefit_type": "behavioral_health",
+      "category": "BEHAVIORAL_HEALTH",
+      "service_name": "Inpatient mental health",
+      "canonical_key": "mental_health_inpatient",
+      "raw_label": "Inpatient",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 50,
+              "basis": "per_day",
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Days 1-6"
+            },
+            {
+              "type": "copay",
+              "sequence": 2,
+              "amount": 0,
+              "basis": "per_day",
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Days 7-90"
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "days",
+          "value": 190,
+          "period": "per_lifetime",
+          "raw_text": "This plan covers up to 190 days in a lifetime for inpatient mental health care in a psychiatric hospital"
+        }
+      ],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "MENTAL_HEALTH_OUTPATIENT",
+      "benefit_type": "behavioral_health",
+      "category": "BEHAVIORAL_HEALTH",
+      "service_name": "Mental health therapy visits",
+      "canonical_key": "mental_health_outpatient",
+      "raw_label": "Mental health therapy visits",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_TELEHEALTH",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "SUBSTANCE_USE_OUTPATIENT",
+      "benefit_type": "behavioral_health",
+      "category": "BEHAVIORAL_HEALTH",
+      "service_name": "Outpatient substance use services",
+      "canonical_key": "substance_use_outpatient",
+      "raw_label": "Outpatient substance abuse services",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_TELEHEALTH",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "SKILLED_NURSING_FACILITY",
+      "benefit_type": "medical",
+      "category": "SKILLED_NURSING",
+      "service_name": "Skilled nursing facility",
+      "canonical_key": "skilled_nursing_facility",
+      "raw_label": "This plan covers up to 100 days in a SNF",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": "per_day",
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Days 1-20"
+            },
+            {
+              "type": "copay",
+              "sequence": 2,
+              "amount": 160,
+              "basis": "per_day",
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Days 21-100"
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "days",
+          "value": 100,
+          "period": null,
+          "raw_text": "This plan covers up to 100 days in a SNF"
+        }
+      ],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "AMBULANCE_AIR",
+      "benefit_type": "medical",
+      "category": "EMERGENCY_CARE",
+      "service_name": "Air ambulance",
+      "canonical_key": "ambulance",
+      "raw_label": "Air",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "AMBULANCE_GROUND",
+      "benefit_type": "medical",
+      "category": "EMERGENCY_CARE",
+      "service_name": "Ground ambulance",
+      "canonical_key": "ambulance",
+      "raw_label": "Ground",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 150,
+              "basis": "per_date_of_service",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "TRANSPORTATION_SUPPLEMENTAL",
+      "benefit_type": "non_clinical",
+      "category": "TRANSPORTATION",
+      "service_name": "Transportation to plan-approved locations",
+      "raw_label": "Mandatory supplemental transportation benefit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "This benefit offers unlimited miles per trip. Supplemental benefit. Page 8: copayments, coinsurances, and deductibles paid for supplemental benefits do not count toward your maximum out-of-pocket amount (the sentence is printed in the vision row and worded for all supplemental benefits)."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "one_way_trips",
+          "value": 50,
+          "period": "per_year",
+          "raw_text": "$0 copay for plan approved location up to 50 one-way trip(s) per year."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "scheduling",
+          "code": null,
+          "description": "The member must contact transportation vendor at least 72 hours (3 business days) in advance of their appointment to arrange transportation and should contact Customer Care to be directed to their plan's specific transportation provider."
+        },
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Certain trips may require prior authorization."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "TRANSPORTATION_UNIFORMITY_FLEXIBILITY",
+      "benefit_type": "non_clinical",
+      "category": "TRANSPORTATION",
+      "service_name": "Transportation for members with chronic kidney disease, end stage renal disease, or cancer",
+      "raw_label": "Uniformity flexibility non-emergency medical transportation benefit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "notes": "Up to unlimited one-way trips per year; unlimited miles per trip. The document does not say whether this counts toward the maximum out-of-pocket."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "eligibility",
+          "code": null,
+          "description": "For members with a Chronic Kidney Disease (CKD), End Stage Renal Disease (ESRD), or Cancer Diagnosis."
+        },
+        {
+          "type": "scheduling",
+          "code": null,
+          "description": "The member must contact transportation vendor at least 72 hours (3 business days) in advance of their appointment to arrange transportation and should contact Customer Care to be directed to their plan's specific transportation provider."
+        }
+      ],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "PART_B_ALLERGY",
+      "benefit_type": "medical",
+      "category": "PART_B_DRUGS",
+      "service_name": "Allergy shots and serum",
+      "canonical_key": "allergy_injections",
+      "raw_label": "Allergy shots and serum",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_PCP_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PART_B_CHEMOTHERAPY",
+      "benefit_type": "medical",
+      "category": "PART_B_DRUGS",
+      "service_name": "Chemotherapy drugs (Part B)",
+      "canonical_key": "chemotherapy",
+      "raw_label": "Chemotherapy drugs",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Some rebatable Part B drugs may be subject to a lower coinsurance."
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Some rebatable Part B drugs may be subject to a lower coinsurance."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PART_B_OTHER",
+      "benefit_type": "medical",
+      "category": "PART_B_DRUGS",
+      "service_name": "Other Part B drugs",
+      "raw_label": "Other Part B drugs",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Some rebatable Part B drugs may be subject to a lower coinsurance."
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_PCP_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Some rebatable Part B drugs may be subject to a lower coinsurance."
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_PHARMACY",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Some rebatable Part B drugs may be subject to a lower coinsurance."
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Some rebatable Part B drugs may be subject to a lower coinsurance."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PART_B_INSULIN",
+      "benefit_type": "medical",
+      "category": "PART_B_DRUGS",
+      "service_name": "Part B insulin",
+      "raw_label": "Part B Insulin",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "You won't pay more than $35 for a one-month (up to 30-day) supply of each insulin product covered by this plan. Some rebatable Part B drugs may be subject to a lower coinsurance."
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_PCP_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "You won't pay more than $35 for a one-month (up to 30-day) supply of each insulin product covered by this plan. Some rebatable Part B drugs may be subject to a lower coinsurance."
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_PHARMACY",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "You won't pay more than $35 for a one-month (up to 30-day) supply of each insulin product covered by this plan. Some rebatable Part B drugs may be subject to a lower coinsurance."
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "You won't pay more than $35 for a one-month (up to 30-day) supply of each insulin product covered by this plan. Some rebatable Part B drugs may be subject to a lower coinsurance."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "RX_TIER1",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 1 preferred generic drugs",
+      "canonical_key": "preferred_generic_drugs",
+      "raw_label": "Tier 1: Preferred Generic",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_PART_D_RETAIL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": "per_30_day_supply",
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Retail cost-sharing (includes all in-network retail pharmacies), 30-day supply. The page 10 grid also prices Standard and Preferred mail-order and 100-day supplies (quoted in source_references). $0 deductible for Tier 1, Tier 2 and Tier 3 (page 10). Part D drug: page 4 labels the $2,000 limit the medical maximum out-of-pocket. Page 11: after your total out-of-pocket costs reach $2,100 you pay $0 for plan-covered Part D and Excluded drugs."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "RX_TIER2",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 2 generic drugs",
+      "canonical_key": "generic_drugs",
+      "raw_label": "Tier 2: Generic",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_PART_D_RETAIL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": "per_30_day_supply",
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Retail cost-sharing (includes all in-network retail pharmacies), 30-day supply. The page 10 grid also prices Standard and Preferred mail-order and 100-day supplies (quoted in source_references). $0 deductible for Tier 1, Tier 2 and Tier 3 (page 10). Part D drug: page 4 labels the $2,000 limit the medical maximum out-of-pocket. Page 11: after your total out-of-pocket costs reach $2,100 you pay $0 for plan-covered Part D and Excluded drugs."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "RX_TIER3",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 3 preferred brand drugs",
+      "canonical_key": "preferred_brand_drugs",
+      "raw_label": "Tier 3: Preferred Brand",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_PART_D_RETAIL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": "per_30_day_supply",
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Retail cost-sharing (includes all in-network retail pharmacies), 30-day supply. The page 10 grid also prices Standard and Preferred mail-order and 100-day supplies (quoted in source_references). $0 deductible for Tier 1, Tier 2 and Tier 3 (page 10). Part D drug: page 4 labels the $2,000 limit the medical maximum out-of-pocket. Page 11: after your total out-of-pocket costs reach $2,100 you pay $0 for plan-covered Part D and Excluded drugs."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "RX_TIER4",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 4 non-preferred drugs",
+      "raw_label": "Tier 4: Non-Preferred Drug",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_PART_D_RETAIL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "basis": "per_30_day_supply",
+              "applies_to_deductible": true,
+              "applies_to_moop": false,
+              "notes": "Retail cost-sharing (includes all in-network retail pharmacies), 30-day supply. The page 10 grid also prices Standard and Preferred mail-order and 100-day supplies (quoted in source_references). The $615 Part D deductible applies to Tier 4 and Tier 5 (page 10); it is not a medical deductible. Part D drug: page 4 labels the $2,000 limit the medical maximum out-of-pocket. Page 11: after your total out-of-pocket costs reach $2,100 you pay $0 for plan-covered Part D and Excluded drugs."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "RX_TIER5",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 5 specialty drugs",
+      "canonical_key": "specialty_drugs",
+      "raw_label": "Tier 5: Specialty Tier",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_PART_D_RETAIL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.25,
+              "basis": "per_30_day_supply",
+              "applies_to_deductible": true,
+              "applies_to_moop": false,
+              "notes": "Retail cost-sharing (includes all in-network retail pharmacies), 30-day supply. The page 10 grid also prices Standard and Preferred mail-order and 100-day supplies (quoted in source_references). On page 10, 100-day supplies show N/A for Tier 5. The $615 Part D deductible applies to Tier 4 and Tier 5 (page 10); it is not a medical deductible. Part D drug: page 4 labels the $2,000 limit the medical maximum out-of-pocket. Page 11: after your total out-of-pocket costs reach $2,100 you pay $0 for plan-covered Part D and Excluded drugs."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "RX_INSULIN",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Insulin (Part D)",
+      "raw_label": "Insulin Cost-Sharing",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_PART_D_RETAIL",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "Retail 30-day insulin cost-sharing by tier (page 11): Tier 1 $0, Tier 2 $0, Tier 3 25% up to $5, Tier 4 25% up to $35, Tier 5 25% up to $35. Tiers 3 to 5 pair a coinsurance with a cap, so no single cost share is recorded. You won't pay more than $35 for a one-month (up to 30-day) supply of each plan-covered insulin product regardless of cost-sharing tier, even if you haven't paid your deductible. Page 11 notes that not all tiers may include insulin. Part D drug: page 4 labels the $2,000 limit the medical maximum out-of-pocket. Page 11: after your total out-of-pocket costs reach $2,100 you pay $0 for plan-covered Part D and Excluded drugs."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "PART_D_VACCINES",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Adult Part D vaccines",
+      "raw_label": "$0 vaccines",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Adult Part D covered vaccines recommended by the Advisory Committee on Immunization Practices (ACIP). Part D drug: page 4 labels the $2,000 limit the medical maximum out-of-pocket. Page 11: after your total out-of-pocket costs reach $2,100 you pay $0 for plan-covered Part D and Excluded drugs."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "EXCLUDED_DRUGS_ED",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Erectile dysfunction drugs (excluded drug coverage)",
+      "raw_label": "Erectile dysfunction (ED) drugs",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "Select drugs covered at Tier 1 cost-share amount. The cost share is stated by reference to Tier 1, so no amount is copied here. Excluded drug coverage, printed in the prescription drug section (pages 10 to 12) apart from the page 4 medical maximum out-of-pocket. Page 11: after your total out-of-pocket costs reach $2,100 you pay $0 for plan-covered Part D and Excluded drugs."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "EXCLUDED_DRUGS_VITAMINS",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Prescription vitamins (excluded drug coverage)",
+      "raw_label": "Prescription vitamins",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "Select drugs covered at Tier 1 cost-share amount. The cost share is stated by reference to Tier 1, so no amount is copied here. Excluded drug coverage, printed in the prescription drug section (pages 10 to 12) apart from the page 4 medical maximum out-of-pocket. Page 11: after your total out-of-pocket costs reach $2,100 you pay $0 for plan-covered Part D and Excluded drugs."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "ACUPUNCTURE_MEDICARE",
+      "benefit_type": "medical",
+      "category": "ACUPUNCTURE",
+      "service_name": "Acupuncture for chronic low back pain (Medicare-covered)",
+      "canonical_key": "acupuncture",
+      "raw_label": "Acupuncture services (Medicare-covered)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 20,
+          "period": "per_year",
+          "raw_text": "$0 copay for acupuncture for chronic low back pain visits up to 20 visit(s) per year."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "clinical",
+          "code": null,
+          "description": "For chronic low back pain."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "CHIROPRACTIC_MEDICARE",
+      "benefit_type": "medical",
+      "category": "CHIROPRACTIC",
+      "service_name": "Chiropractic services (Medicare-covered)",
+      "canonical_key": "chiropractic_care",
+      "raw_label": "Chiropractic services (Medicare-covered)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PODIATRY_MEDICARE",
+      "benefit_type": "medical",
+      "category": "PODIATRY",
+      "service_name": "Podiatry services (Medicare-covered)",
+      "raw_label": "Podiatry services (Medicare-covered)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 10,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "CONTINUOUS_GLUCOSE_MONITOR",
+      "benefit_type": "medical",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "service_name": "Continuous glucose monitor",
+      "raw_label": "Continuous glucose monitor (CGM)",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_DME_PROVIDER",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_PHARMACY",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "DIABETIC_SUPPLIES",
+      "benefit_type": "medical",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "service_name": "Diabetic monitoring supplies",
+      "canonical_key": "diabetic_supplies",
+      "raw_label": "Diabetic monitoring supplies",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_DIABETIC_SUPPLIER",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_NETWORK_RETAIL_PHARMACY",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "DESIG_PREFERRED_DIABETIC_SUPPLIER",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "DURABLE_MEDICAL_EQUIPMENT",
+      "benefit_type": "medical",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "service_name": "Durable medical equipment",
+      "canonical_key": "durable_medical_equipment",
+      "raw_label": "Durable medical equipment (DME)",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_DME_PROVIDER",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "DME_OXYGEN",
+      "benefit_type": "medical",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "service_name": "Oxygen system",
+      "canonical_key": "dme_oxygen_equipment",
+      "raw_label": "Durable medical equipment (DME) – Oxygen System",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_DME_PROVIDER",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "MEDICAL_SUPPLIES",
+      "benefit_type": "medical",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "service_name": "Medical supplies",
+      "raw_label": "Medical supplies",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_MEDICAL_SUPPLIER",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PROSTHETICS",
+      "benefit_type": "medical",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "service_name": "Prosthetic devices and related supplies",
+      "canonical_key": "prosthetics",
+      "raw_label": "Prosthetic devices and related supplies",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_PROSTHETICS_PROVIDER",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "CARDIAC_REHAB",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Cardiac rehabilitation",
+      "canonical_key": "cardiac_rehabilitation",
+      "raw_label": "Cardiac rehabilitation services",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "OCCUPATIONAL_THERAPY",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Occupational therapy",
+      "canonical_key": "occupational_therapy",
+      "raw_label": "Occupational therapy",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_COMPREHENSIVE_OUTPATIENT_REHAB",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 15,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PHYSICAL_THERAPY",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Physical therapy",
+      "canonical_key": "physical_therapy",
+      "raw_label": "Physical therapy",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_COMPREHENSIVE_OUTPATIENT_REHAB",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 15,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PULMONARY_REHAB",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Pulmonary rehabilitation",
+      "canonical_key": "pulmonary_rehabilitation",
+      "raw_label": "Pulmonary rehabilitation services",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "SPEECH_THERAPY",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Speech therapy",
+      "canonical_key": "speech_therapy",
+      "raw_label": "Speech therapy",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_COMPREHENSIVE_OUTPATIENT_REHAB",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 15,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "SUPERVISED_EXERCISE_THERAPY_PAD",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Supervised exercise therapy for peripheral artery disease",
+      "raw_label": "Supervised Exercise Therapy (SET) for Peripheral Artery Disease (PAD)",
+      "network_cost_shares": [
+        {
+          "tier_id": "SITE_OUTPATIENT_HOSPITAL",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "SITE_SPECIALIST_OFFICE",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "ACUPUNCTURE_ROUTINE",
+      "benefit_type": "medical",
+      "category": "ACUPUNCTURE",
+      "service_name": "Routine acupuncture",
+      "canonical_key": "acupuncture",
+      "raw_label": "Routine Acupuncture",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "notes": "The document does not say whether this counts toward the maximum out-of-pocket."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 25,
+          "period": "per_year",
+          "raw_text": "$0 copay for acupuncture visits up to 25 visit(s) per year."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Authorization rules may apply."
+        },
+        {
+          "type": "network",
+          "code": null,
+          "description": "The in-network provider must be used for this service. If you choose to utilize another provider, you are responsible for all charges."
+        }
+      ],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "FOOT_CARE_ROUTINE",
+      "benefit_type": "medical",
+      "category": "PODIATRY",
+      "service_name": "Routine foot care",
+      "raw_label": "Routine foot care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 10,
+              "basis": null,
+              "applies_to_deductible": false,
+              "notes": "Up to unlimited visits per year. The document does not say whether this counts toward the maximum out-of-pocket."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "MEALS_POST_DISCHARGE",
+      "benefit_type": "non_clinical",
+      "category": "MEALS",
+      "service_name": "Home-delivered meals after an inpatient stay (Humana Well Dine)",
+      "raw_label": "Humana Well Dine® Meal Program",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "notes": "$0 copayment for Humana Well Dine® meal program. The document does not say whether this counts toward the maximum out-of-pocket."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "meals",
+          "value": 14,
+          "period": "per_discharge",
+          "raw_text": "you may be eligible to receive 2 home delivered meals per day for 7 days (up to 14 meals)."
+        },
+        {
+          "type": "occurrences",
+          "value": 4,
+          "period": "per_year",
+          "raw_text": "Limited to 4 times per year."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "eligibility",
+          "code": null,
+          "description": "After your inpatient stay in either a hospital or a nursing facility."
+        },
+        {
+          "type": "timing",
+          "code": null,
+          "description": "Meals must be requested within 30 days of discharge from your inpatient stay."
+        },
+        {
+          "type": "network",
+          "code": null,
+          "description": "The in-network provider must be used for this service. If you choose to utilize another provider, you are responsible for all charges."
+        }
+      ],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "OTC_ALLOWANCE",
+      "benefit_type": "non_clinical",
+      "category": "OVER_THE_COUNTER",
+      "service_name": "Over-the-counter mail order allowance",
+      "raw_label": "Over-the-Counter (OTC) mail order",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "No copay is printed; the benefit is a quarterly allowance. Unused amount expires at the end of the quarter."
+        }
+      ],
+      "limits": [
+        {
+          "type": "dollars",
+          "value": 150,
+          "period": "per_quarter",
+          "raw_text": "$150 quarterly allowance to buy approved over-the-counter health and wellness products available through our OTC Mail Order provider."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "code": null,
+          "description": "Quarterly allowance amounts are available to use at the beginning of January, April, July, and October."
+        },
+        {
+          "type": "other",
+          "code": null,
+          "description": "Limitations and restrictions may apply."
+        },
+        {
+          "type": "network",
+          "code": null,
+          "description": "The in-network provider must be used for this service. If you choose to utilize another provider, you are responsible for all charges."
+        }
+      ],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "POST_DISCHARGE_HOME_CARE",
+      "benefit_type": "non_clinical",
+      "category": "IN_HOME_SUPPORT",
+      "service_name": "Post-discharge personal home care",
+      "raw_label": "Post Discharge Personal Home Care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "notes": "For a minimum of 4 hours per day. The document does not say whether this counts toward the maximum out-of-pocket."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "hours",
+          "value": 44,
+          "period": "per_year",
+          "raw_text": "$0 copay for a minimum of 4 hours per day, up to a maximum of 44 hours per year for certain in-home support services following a discharge from a skilled nursing facility or from an inpatient hospitalization."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "eligibility",
+          "code": null,
+          "description": "Following a discharge from a skilled nursing facility or from an inpatient hospitalization."
+        },
+        {
+          "type": "timing",
+          "code": null,
+          "description": "Services must be initiated within 30 days of discharge event and utilized within 60 days of discharge for each qualifying event up to the maximum annual allowance."
+        },
+        {
+          "type": "network",
+          "code": null,
+          "description": "The in-network provider must be used for this service. If you choose to utilize another provider, you are responsible for all charges."
+        }
+      ],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "FITNESS",
+      "benefit_type": "non_clinical",
+      "category": "FITNESS",
+      "service_name": "Fitness program (SilverSneakers)",
+      "raw_label": "SilverSneakers® fitness program",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "No cost share is printed for this benefit."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "The in-network provider must be used for this service. If you choose to utilize another provider, you are responsible for all charges."
+        }
+      ],
+      "moop_applicability": null
+    }
+  ],
+  "source_references": [
+    {
+      "page_number": 1,
+      "excerpt": "2026 | Summary of Benefits | Humana Gold Plus H1036-025 (HMO) | Tampa | Hernando, Hillsborough, Pasco, Pinellas counties"
+    },
+    {
+      "page_number": 1,
+      "excerpt": "Our service area includes the following county/counties in Florida: Hernando, Hillsborough, Pasco, Pinellas."
+    },
+    {
+      "page_number": 2,
+      "excerpt": "Benefits, premiums and/or copays/coinsurance may change on January 1, 2027."
+    },
+    {
+      "page_number": 2,
+      "excerpt": "Except in emergency or urgent situations, we do not cover services by out-of-network providers (doctors who are not listed in the provider directory)."
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Humana Gold Plus H1036-025 (HMO) is a Medicare Advantage HMO plan with a Medicare contract."
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Humana Gold Plus H1036-025 (HMO) has a network of doctors, hospitals, pharmacies and other providers. If you use providers who aren't in our network, the plan may not pay for these services."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Monthly plan premium | $0; You must keep paying your Medicare Part B premium."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Part B premium reduction | Your plan will reduce your Monthly Part B premium by up to $3 but by no more than Original Medicare's Part B Premium for 2026."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Medical deductible | This plan does not have a deductible."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Pharmacy (Part D) deductible | $0 deductible for Tier 1, Tier 2 and Tier 3; $615 deductible for Tier 4 and Tier 5"
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Medical Maximum out-of-pocket responsibility | $2,000 in-network; The most you pay for copays, coinsurance and other costs for covered medical services for the year."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Your primary care provider (PCP) will work with you to coordinate the care you need with specialists or certain other providers in the network. This is called a \"referral.\" This plan requires prior authorization for certain items and services. The following link will take you to a list of items and services that may be subject to prior authorization: Humana.com/PAL."
+    },
+    {
+      "page_number": 8,
+      "excerpt": "Copayments, coinsurances, and deductibles paid for supplemental benefits do not count toward your maximum out-of-pocket amount."
+    },
+    {
+      "page_number": 10,
+      "excerpt": "DEDUCTIBLE | $0 deductible for Tier 1, Tier 2 and Tier 3. This plan has a $615 deductible for Tier 4 and Tier 5 drugs. You pay the full cost of these drugs until you reach $615. Then, you only pay your cost-share."
+    },
+    {
+      "page_number": 10,
+      "excerpt": "INITIAL COVERAGE | You pay the following until your total out-of-pocket costs reach $2,100. Once you reach this amount, you will enter the Catastrophic Stage."
+    },
+    {
+      "page_number": 11,
+      "excerpt": "CATASTROPHIC COVERAGE | After your total out-of-pocket costs reach $2,100 you pay $0 for plan-covered Part D and Excluded drugs."
+    },
+    {
+      "page_number": 12,
+      "excerpt": "EXTRA HELP | If you receive Extra Help for your drugs, you will have a $0 deductible."
+    },
+    {
+      "page_number": 12,
+      "excerpt": "If you reside at an in-network long-term care facility, you pay the same as you would at an in-network retail pharmacy. Under certain situations you may be able to get drugs from an out-of-network pharmacy but may pay more than you would pay at an in-network pharmacy."
+    },
+    {
+      "page_number": 16,
+      "excerpt": "Telehealth services shown are in addition to the Original Medicare covered telehealth. Your cost may be different for Original Medicare telehealth."
+    },
+    {
+      "page_number": 9,
+      "excerpt": "MEDICARE PART B DRUGS | Some rebatable Part B drugs may be subject to a lower coinsurance"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "EMERGENCY CARE > Emergency services at emergency room | When placed in observation, member pays observation cost-share instead of emergency room cost-share."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "INPATIENT HOSPITAL COVERAGE > This plan covers an unlimited number of days for an inpatient stay | $50 copay per day for days 1-6; $0 copay per day for days 7-90"
+    },
+    {
+      "page_number": 4,
+      "excerpt": "OUTPATIENT HOSPITAL COVERAGE > Diagnostic colonoscopy | $0 copay"
+    },
+    {
+      "page_number": 4,
+      "excerpt": "AMBULATORY SURGERY CENTER > Diagnostic colonoscopy | $0 copay"
+    },
+    {
+      "page_number": 4,
+      "excerpt": "OUTPATIENT HOSPITAL COVERAGE > Surgery services | $85 copay"
+    },
+    {
+      "page_number": 4,
+      "excerpt": "AMBULATORY SURGERY CENTER > Surgery services | $10 copay"
+    },
+    {
+      "page_number": 4,
+      "excerpt": "DOCTOR VISITS > Primary Care Provider (PCP) | PCP's office: $0 copay; Telehealth: $0 copay"
+    },
+    {
+      "page_number": 4,
+      "excerpt": "DOCTOR VISITS > Specialist | Specialist's office: $10 copay; Telehealth: $10 copay"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "PREVENTIVE CARE > This plan covers all Medicare preventive services including: | $0 copay"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "EMERGENCY CARE > Emergency services at emergency room | $150 copay | If you are admitted to the same hospital within 24 hours for the same condition, you pay $0 for the emergency care you received. We cover emergency services worldwide. If you have an emergency outside of the U.S. and its territories, you will be responsible to pay for the rendered service(s) upfront and can request reimbursement."
+    },
+    {
+      "page_number": 6,
+      "excerpt": "URGENTLY NEEDED SERVICES | Telehealth: $0 copay; Urgent care center: $0 copay | We cover urgently needed services worldwide. If you have an urgently needed service outside of the U.S. and its territories, you will be responsible to pay for the rendered service(s) upfront and can request reimbursement."
+    },
+    {
+      "page_number": 6,
+      "excerpt": "DIAGNOSTIC SERVICES, LABS & IMAGING > Advanced imaging services (MRI, MRA, PET and CT scans) | Freestanding radiological facility: $50 copay; Outpatient hospital: $75 copay; PCP's office: $50 copay; Specialist's office: $50 copay"
+    },
+    {
+      "page_number": 6,
+      "excerpt": "DIAGNOSTIC SERVICES, LABS & IMAGING > Basic radiological services (X-rays) | Freestanding radiological facility: $0 copay; Outpatient hospital: $20 copay; PCP's office: $0 copay; Specialist's office: $5 copay; Urgent care center: $0 copay"
+    },
+    {
+      "page_number": 6,
+      "excerpt": "DIAGNOSTIC SERVICES, LABS & IMAGING > Diagnostic procedures and tests | Outpatient hospital: $25 copay; PCP's office: $0 copay; Specialist's office: $10 copay; Urgent care center: $0 copay"
+    },
+    {
+      "page_number": 6,
+      "excerpt": "DIAGNOSTIC SERVICES, LABS & IMAGING > Lab services | Freestanding laboratory: $0 copay; Outpatient hospital: $20 copay; PCP's office: $0 copay; Specialist's office: $0 copay; Urgent care center: $0 copay"
+    },
+    {
+      "page_number": 6,
+      "excerpt": "DIAGNOSTIC SERVICES, LABS & IMAGING > Nuclear medicine and services | Freestanding radiological facility: $10 copay; Outpatient hospital: $250 copay"
+    },
+    {
+      "page_number": 6,
+      "excerpt": "DIAGNOSTIC SERVICES, LABS & IMAGING > Sleep study | Member's home: $0 copay; Outpatient hospital: $25 copay; Specialist's office: $25 copay"
+    },
+    {
+      "page_number": 6,
+      "excerpt": "DIAGNOSTIC SERVICES, LABS & IMAGING > Therapeutic radiology (Radiation therapy) | Freestanding radiological facility: $0 copay; Outpatient hospital: 20% of the cost; Specialist's office: $5 copay"
+    },
+    {
+      "page_number": 4,
+      "excerpt": "OUTPATIENT HOSPITAL COVERAGE > Diagnostic mammography | $0 copay"
+    },
+    {
+      "page_number": 6,
+      "excerpt": "DIAGNOSTIC SERVICES, LABS & IMAGING > Diagnostic mammography | Freestanding radiological facility: $0 copay; Specialist's office: $0 copay"
+    },
+    {
+      "page_number": 7,
+      "excerpt": "HEARING SERVICES > Medicare-covered hearing | $10 copay"
+    },
+    {
+      "page_number": 7,
+      "excerpt": "HEARING SERVICES > Mandatory supplemental hearing benefit | In-Network: HER692; $0 copay for fitting/evaluation, routine hearing exams up to 1 per year."
+    },
+    {
+      "page_number": 7,
+      "excerpt": "HEARING SERVICES > Mandatory supplemental hearing benefit | In-Network: HER692; $199 copay for each Value Technology hearing aid up to 1 per ear per year.; Note: Includes 1 year warranty and 1 month battery supply."
+    },
+    {
+      "page_number": 7,
+      "excerpt": "HEARING SERVICES > Mandatory supplemental hearing benefit | In-Network: HER692; $699 copay for each Advanced Technology hearing aid up to 1 per ear per year.; Note: Includes 1 year warranty and 1 month battery supply."
+    },
+    {
+      "page_number": 7,
+      "excerpt": "HEARING SERVICES > Mandatory supplemental hearing benefit | In-Network: HER692; $1,299 copay for each Premium Technology hearing aid up to 1 per ear per year.; Note: Includes 1 year warranty and 1 month battery supply."
+    },
+    {
+      "page_number": 7,
+      "excerpt": "DENTAL SERVICES > Medicare-covered dental | $10 copay"
+    },
+    {
+      "page_number": 7,
+      "excerpt": "DENTAL SERVICES > Mandatory supplemental dental benefit | In-Network: DENF33; Plan covers up to $3000 allowance every year for non-Medicare covered preventive and comprehensive dental services.; You are responsible for any amount above the dental coverage limit.; Any amount unused at the end of the year will expire.; Your benefit can be used for most dental treatments such as:; Preventive dental services, such as exams, routine cleanings, etc.; Basic dental services, such as fillings, extractions, etc.; Major dental services, such as periodontal scaling, crowns, dentures, root canals, bridges etc."
+    },
+    {
+      "page_number": 7,
+      "excerpt": "DENTAL SERVICES > Mandatory supplemental dental benefit | Benefits are offered on a calendar year basis. Any amount unused at the end of the year will expire."
+    },
+    {
+      "page_number": 7,
+      "excerpt": "DENTAL SERVICES > Mandatory supplemental dental benefit | In-Network: DENF33; 30% of the cost applies to dentures and bridges."
+    },
+    {
+      "page_number": 7,
+      "excerpt": "DENTAL SERVICES > Mandatory supplemental dental benefit | In-Network: DENF33; Plan covers up to $3000 allowance every year for non-Medicare covered preventive and comprehensive dental services.; Any amount unused at the end of the year will expire."
+    },
+    {
+      "page_number": 8,
+      "excerpt": "VISION SERVICES > Eyewear (post cataract surgery) | $0 copay"
+    },
+    {
+      "page_number": 8,
+      "excerpt": "VISION SERVICES > Medicare-covered diabetic eye exam | $0 copay"
+    },
+    {
+      "page_number": 8,
+      "excerpt": "VISION SERVICES > Medicare-covered vision services | $10 copay"
+    },
+    {
+      "page_number": 8,
+      "excerpt": "VISION SERVICES > Mandatory supplemental vision benefit | In-Network: VIS848; $0 copay for routine exam up to 1 per year."
+    },
+    {
+      "page_number": 8,
+      "excerpt": "VISION SERVICES > Mandatory supplemental vision benefit | Copayments, coinsurances, and deductibles paid for supplemental benefits do not count toward your maximum out-of-pocket amount. | These benefits are offered on a calendar year basis. Any amount unused at the end of the year will expire."
+    },
+    {
+      "page_number": 8,
+      "excerpt": "VISION SERVICES > Mandatory supplemental vision benefit | In-Network: VIS848; $300 maximum benefit coverage amount per year for contact lenses or eyeglasses-lenses and frames plus fitting; or 2 pairs of select eyeglasses per year at no cost.; Eyeglasses include ultraviolet protection and scratch-resistant coating."
+    },
+    {
+      "page_number": 8,
+      "excerpt": "VISION SERVICES > Mandatory supplemental vision benefit | In-Network: VIS848; $300 maximum benefit coverage amount per year for contact lenses or eyeglasses-lenses and frames plus fitting; or 2 pairs of select eyeglasses per year at no cost."
+    },
+    {
+      "page_number": 8,
+      "excerpt": "MENTAL HEALTH SERVICES > Inpatient | $50 copay per day for days 1-6; $0 copay per day for days 7-90 | This plan covers up to 190 days in a lifetime for inpatient mental health care in a psychiatric hospital"
+    },
+    {
+      "page_number": 8,
+      "excerpt": "MENTAL HEALTH SERVICES > Mental health therapy visits | Outpatient hospital: $0 copay; Specialist's office: $5 copay; Telehealth: $5 copay"
+    },
+    {
+      "page_number": 8,
+      "excerpt": "MENTAL HEALTH SERVICES > Outpatient substance abuse services | Outpatient hospital: $0 copay; Specialist's office: $5 copay; Telehealth: $5 copay"
+    },
+    {
+      "page_number": 9,
+      "excerpt": "SKILLED NURSING FACILITY (SNF) > This plan covers up to 100 days in a SNF | $0 copay per day for days 1-20; $160 copay per day for days 21-100"
+    },
+    {
+      "page_number": 9,
+      "excerpt": "AMBULANCE > Air | 20% of the cost"
+    },
+    {
+      "page_number": 9,
+      "excerpt": "AMBULANCE > Ground | $150 copay per date of service"
+    },
+    {
+      "page_number": 9,
+      "excerpt": "TRANSPORTATION > Mandatory supplemental transportation benefit | $0 copay for plan approved location up to 50 one-way trip(s) per year. This benefit offers unlimited miles per trip. | The member must contact transportation vendor at least 72 hours (3 business days) in advance of their appointment to arrange transportation and should contact Customer Care to be directed to their plan's specific transportation provider. Certain trips may require prior authorization."
+    },
+    {
+      "page_number": 9,
+      "excerpt": "TRANSPORTATION > Uniformity flexibility non-emergency medical transportation benefit | $0 copayment for plan approved location up to unlimited one-way trip(s) per year for members with a Chronic Kidney Disease (CKD), End Stage Renal Disease (ESRD), or Cancer Diagnosis. This benefit offers unlimited miles per trip."
+    },
+    {
+      "page_number": 9,
+      "excerpt": "MEDICARE PART B DRUGS > Allergy shots and serum | PCP's office: $0 copay; Specialist's office: $0 copay"
+    },
+    {
+      "page_number": 9,
+      "excerpt": "MEDICARE PART B DRUGS > Chemotherapy drugs | Outpatient hospital: 20% of the cost; Specialist's office: 20% of the cost"
+    },
+    {
+      "page_number": 9,
+      "excerpt": "MEDICARE PART B DRUGS > Other Part B drugs | Outpatient hospital: 20% of the cost; PCP's office: 20% of the cost; Pharmacy: 20% of the cost; Specialist's office: 20% of the cost"
+    },
+    {
+      "page_number": 9,
+      "excerpt": "MEDICARE PART B DRUGS > Part B Insulin | Outpatient hospital: 20% of the cost; PCP's office: 20% of the cost; Pharmacy: 20% of the cost; Specialist's office: 20% of the cost | You won't pay more than $35 for a one-month (up to 30-day) supply of each insulin product covered by this plan."
+    },
+    {
+      "page_number": 10,
+      "excerpt": "Pharmacy Cost-Sharing | columns: Retail Cost-Sharing (Includes all in-network retail pharmacies) 30-day, 100-day*; Standard Mail-Order Cost-Sharing 30-day, 100-day*; Preferred Mail-Order Cost-Sharing (CenterWell Pharmacy™) 30-day, 100-day* | Tier 1: Preferred Generic: $0 $0 $10 $30 $0 $0"
+    },
+    {
+      "page_number": 10,
+      "excerpt": "Pharmacy Cost-Sharing | columns: Retail Cost-Sharing (Includes all in-network retail pharmacies) 30-day, 100-day*; Standard Mail-Order Cost-Sharing 30-day, 100-day*; Preferred Mail-Order Cost-Sharing (CenterWell Pharmacy™) 30-day, 100-day* | Tier 2: Generic: $0 $0 $20 $60 $0 $0"
+    },
+    {
+      "page_number": 10,
+      "excerpt": "Pharmacy Cost-Sharing | columns: Retail Cost-Sharing (Includes all in-network retail pharmacies) 30-day, 100-day*; Standard Mail-Order Cost-Sharing 30-day, 100-day*; Preferred Mail-Order Cost-Sharing (CenterWell Pharmacy™) 30-day, 100-day* | Tier 3: Preferred Brand: $5 $15 $47 $141 $5 $5"
+    },
+    {
+      "page_number": 10,
+      "excerpt": "Pharmacy Cost-Sharing | columns: Retail Cost-Sharing (Includes all in-network retail pharmacies) 30-day, 100-day*; Standard Mail-Order Cost-Sharing 30-day, 100-day*; Preferred Mail-Order Cost-Sharing (CenterWell Pharmacy™) 30-day, 100-day* | Tier 4: Non-Preferred Drug: 50% 50% 50% 50% 50% 50%"
+    },
+    {
+      "page_number": 10,
+      "excerpt": "Pharmacy Cost-Sharing | columns: Retail Cost-Sharing (Includes all in-network retail pharmacies) 30-day, 100-day*; Standard Mail-Order Cost-Sharing 30-day, 100-day*; Preferred Mail-Order Cost-Sharing (CenterWell Pharmacy™) 30-day, 100-day* | Tier 5: Specialty Tier: 25% N/A 25% N/A 25% N/A"
+    },
+    {
+      "page_number": 11,
+      "excerpt": "Insulin Cost-Sharing | columns: Retail 30-day, 100-day*; Standard Mail-Order 30-day, 100-day*; Preferred Mail-Order 30-day, 100-day* | Tier 1: Preferred Generic: $0 $0 25% up to $10 25% up to $30 $0 $0; Tier 2: Generic: $0 $0 25% up to $20 25% up to $60 $0 $0; Tier 3: Preferred Brand: 25% up to $5 25% up to $15 25% up to $35 25% up to $105 25% up to $5 25% up to $5; Tier 4: Non-Preferred Drug: 25% up to $35 25% up to $105 25% up to $35 25% up to $105 25% up to $35 25% up to $105; Tier 5: Specialty Tier: 25% up to $35 N/A 25% up to $35 N/A 25% up to $35 N/A"
+    },
+    {
+      "page_number": 11,
+      "excerpt": "You won't pay more than $35 for a one-month (up to 30-day) supply of each plan-covered insulin product regardless of cost-sharing tier, even if you haven't paid your deductible."
+    },
+    {
+      "page_number": 10,
+      "excerpt": "PLAN HIGHLIGHTS > $0 vaccines | $0 copay for adult Part D covered vaccines recommended by the Advisory Committee on Immunization Practices (ACIP)"
+    },
+    {
+      "page_number": 12,
+      "excerpt": "EXCLUDED DRUG COVERAGE > Erectile dysfunction (ED) drugs | Select drugs covered at Tier 1 cost-share amount."
+    },
+    {
+      "page_number": 12,
+      "excerpt": "EXCLUDED DRUG COVERAGE > Prescription vitamins | Select drugs covered at Tier 1 cost-share amount."
+    },
+    {
+      "page_number": 12,
+      "excerpt": "Additional Benefits > Acupuncture services (Medicare-covered) | $0 copay for acupuncture for chronic low back pain visits up to 20 visit(s) per year."
+    },
+    {
+      "page_number": 12,
+      "excerpt": "Additional Benefits > Chiropractic services (Medicare-covered) | $0 copay"
+    },
+    {
+      "page_number": 12,
+      "excerpt": "Additional Benefits > Podiatry services (Medicare-covered) | $10 copay"
+    },
+    {
+      "page_number": 12,
+      "excerpt": "MEDICAL EQUIPMENT/SUPPLIES > Continuous glucose monitor (CGM) | DME provider $0 copay; Pharmacy: $0 copay"
+    },
+    {
+      "page_number": 12,
+      "excerpt": "MEDICAL EQUIPMENT/SUPPLIES > Diabetic monitoring supplies | Diabetic supplier: 20% of the cost; Network retail pharmacy: $0 copay; Preferred diabetic supplier: $0 copay"
+    },
+    {
+      "page_number": 12,
+      "excerpt": "MEDICAL EQUIPMENT/SUPPLIES > Durable medical equipment (DME) | DME provider: 20% of the cost"
+    },
+    {
+      "page_number": 13,
+      "excerpt": "MEDICAL EQUIPMENT/SUPPLIES (headings on page 12) > Durable medical equipment (DME) – Oxygen System | DME provider: $0 copay"
+    },
+    {
+      "page_number": 13,
+      "excerpt": "MEDICAL EQUIPMENT/SUPPLIES (headings on page 12) > Medical supplies | Medical supplier: $0 copay"
+    },
+    {
+      "page_number": 13,
+      "excerpt": "MEDICAL EQUIPMENT/SUPPLIES (headings on page 12) > Prosthetic devices and related supplies | Prosthetics provider: $0 copay"
+    },
+    {
+      "page_number": 13,
+      "excerpt": "REHABILITATION SERVICES > Cardiac rehabilitation services | Outpatient hospital: $0 copay; Specialist's office: $0 copay"
+    },
+    {
+      "page_number": 13,
+      "excerpt": "REHABILITATION SERVICES > Occupational therapy | Comprehensive outpatient rehab facility: $5 copay; Outpatient hospital: $15 copay; Specialist's office: $5 copay"
+    },
+    {
+      "page_number": 13,
+      "excerpt": "REHABILITATION SERVICES > Physical therapy | Comprehensive outpatient rehab facility: $5 copay; Outpatient hospital: $15 copay; Specialist's office: $5 copay"
+    },
+    {
+      "page_number": 13,
+      "excerpt": "REHABILITATION SERVICES > Pulmonary rehabilitation services | Outpatient hospital: $5 copay; Specialist's office: $5 copay"
+    },
+    {
+      "page_number": 13,
+      "excerpt": "REHABILITATION SERVICES > Speech therapy | Comprehensive outpatient rehab facility: $5 copay; Outpatient hospital: $15 copay; Specialist's office: $5 copay"
+    },
+    {
+      "page_number": 13,
+      "excerpt": "REHABILITATION SERVICES > Supervised Exercise Therapy (SET) for Peripheral Artery Disease (PAD) | Outpatient hospital: $5 copay; Specialist's office: $5 copay"
+    },
+    {
+      "page_number": 14,
+      "excerpt": "More benefits with this plan > Routine Acupuncture | $0 copay for acupuncture visits up to 25 visit(s) per year. Authorization rules may apply. | The in-network provider must be used for this service. | If you choose to utilize another provider, you are responsible for all charges."
+    },
+    {
+      "page_number": 14,
+      "excerpt": "More benefits with this plan > Routine foot care | $10 copay for routine podiatry visits up to unlimited visit(s) per year."
+    },
+    {
+      "page_number": 14,
+      "excerpt": "More benefits with this plan > Humana Well Dine® Meal Program | $0 copayment for Humana Well Dine® meal program. | After your inpatient stay in either a hospital or a nursing facility, you may be eligible to receive 2 home delivered meals per day for 7 days (up to 14 meals). | Meals must be requested within 30 days of discharge from your inpatient stay. | Limited to 4 times per year. | The in-network provider must be used for this service. If you choose to utilize another provider, you are responsible for all charges."
+    },
+    {
+      "page_number": 14,
+      "excerpt": "More benefits with this plan > Over-the-Counter (OTC) mail order | $150 quarterly allowance to buy approved over-the-counter health and wellness products available through our OTC Mail Order provider. | Unused amount expires at the end of the quarter. | Quarterly allowance amounts are available to use at the beginning of January, April, July, and October.; Limitations and restrictions may apply. | The in-network provider must be used for this service. | If you choose to utilize another provider, you are responsible for all charges."
+    },
+    {
+      "page_number": 15,
+      "excerpt": "More benefits with this plan (headings on page 14) > Post Discharge Personal Home Care | $0 copay for a minimum of 4 hours per day, up to a maximum of 44 hours per year for certain in-home support services following a discharge from a skilled nursing facility or from an inpatient hospitalization. | Services must be initiated within 30 days of discharge event and utilized within 60 days of discharge for each qualifying event up to the maximum annual allowance. | The in-network provider must be used for this service. | If you choose to utilize another provider, you are responsible for all charges."
+    },
+    {
+      "page_number": 15,
+      "excerpt": "More benefits with this plan (headings on page 14) > SilverSneakers® fitness program | Live a healthier, more active life through fitness and social connection at participating locations and online. | The in-network provider must be used for this service. | If you choose to utilize another provider, you are responsible for all charges."
+    }
+  ],
+  "schema_version": "1.2.0"
+}

@@ -41,7 +41,7 @@ It is designed to support:
 This repository contains:
 
 - The **canonical JSON Schema (v1.1.0)** — backward-compatible with v1.0.0  
-- Example normalized plans across 7 carriers  
+- Example normalized plans across 9 carriers, including 2 Medicare Advantage plans  
 - Recommended vocabularies (canonical benefits, categories, markets, plan types)  
 - FHIR R4 `InsurancePlan` alignment guide  
 - Module definitions (pharmacy, behavioral health, dental/vision, etc.)  
@@ -64,6 +64,7 @@ docs/
   ├── changelog.md
   ├── fhir-alignment.md
   ├── governance.md
+  ├── medicare-advantage-notes.md
   └── roadmap.md
 examples/
   ├── aetna_example.json
@@ -72,9 +73,11 @@ examples/
   ├── bluecross_example.json
   ├── cigna_example.json
   ├── gatorcare_example.json
+  ├── humana_example.json            ← Medicare Advantage (v1.2.0 draft)
   ├── kaiser_example.json
+  ├── scan_example.json              ← Medicare Advantage (v1.2.0 draft)
   ├── united_example.json
-  └── sources/                       ← the SBC PDFs each example was generated from
+  └── sources/                       ← the source PDF behind each example (SBC or Summary of Benefits)
 vocabularies/
   ├── canonical-benefits.json
   ├── categories.json
@@ -116,6 +119,9 @@ Example normalized files are provided in:
 ```
 
 These examples demonstrate how real-world SBC/EOC plan structures map into the standardized model.
+`humana_example.json` and `scan_example.json` are Medicare Advantage plans, built by hand from the
+CMS Summary of Benefits and validated against the v1.2.0 draft schema. See
+[`docs/medicare-advantage-notes.md`](docs/medicare-advantage-notes.md).
 
 ---
 

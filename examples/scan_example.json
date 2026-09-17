@@ -1,0 +1,2987 @@
+{
+  "plan_id": "SCAN_CLASSIC_HMO_LOS_ANGELES",
+  "plan_name": "SCAN Classic (HMO)",
+  "carrier": "SCAN Health Plan",
+  "plan_type": "HMO",
+  "plan_year": 2026,
+  "effective_date": "2026-01-01",
+  "expiry_date": "2026-12-31",
+  "coverage_period": {
+    "start_date": "2026-01-01",
+    "end_date": "2026-12-31"
+  },
+  "market": "medicare_advantage",
+  "network_tiers": [
+    {
+      "tier_id": "IN",
+      "name": "In network",
+      "description": "SCAN Classic's network of doctors, hospitals, pharmacies, and other providers (page 17).",
+      "tier_class": "network"
+    },
+    {
+      "tier_id": "OUT",
+      "name": "Out of network",
+      "description": "Page 17: if you use providers that are not in the network, the plan may not pay for these services. Emergency and urgently needed services are covered worldwide (page 4). Page 9: you may get drugs from an out-of-network pharmacy, but may pay more than you pay at an in-network pharmacy.",
+      "tier_class": "network"
+    },
+    {
+      "tier_id": "PHARMACY_RETAIL_STANDARD",
+      "name": "Retail, Standard",
+      "description": "The Retail, Standard columns of the page 8 Part D grid. Page 9: some of our network pharmacies have preferred cost-sharing. The Preferred retail and mail-order prices on page 8 are not carried in this example.",
+      "tier_class": "cost_designation",
+      "parent_tier_id": "IN",
+      "provider_set": {
+        "name": "Standard retail pharmacies",
+        "description": "Network retail pharmacies priced in the page 8 Standard columns. The document does not list which pharmacies have preferred cost-sharing.",
+        "reference": null
+      }
+    }
+  ],
+  "accumulators": {
+    "individual_deductible": {
+      "amount": 0,
+      "currency": "USD",
+      "period": "per_year",
+      "network_tier": "in-network",
+      "applies_to": "medical"
+    },
+    "individual_oop_max": {
+      "amount": 199,
+      "currency": "USD",
+      "period": "per_year",
+      "network_tier": "in-network",
+      "applies_to": "medical"
+    }
+  },
+  "benefits": [
+    {
+      "benefit_id": "INPATIENT_HOSPITAL",
+      "benefit_type": "medical",
+      "category": "HOSPITAL_SERVICES",
+      "service_name": "Inpatient hospital",
+      "canonical_key": "inpatient_hospital",
+      "raw_label": "Inpatient Hospital Coverage",
+      "place_of_service": [
+        "inpatient_hospital"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Unlimited days per admission"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules may apply."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "AMBULATORY_SURGICAL_CENTER",
+      "benefit_type": "medical",
+      "category": "SURGICAL_SERVICES",
+      "service_name": "Ambulatory surgical center",
+      "canonical_key": "outpatient_surgery_facility",
+      "raw_label": "Ambulatory Surgical Center",
+      "place_of_service": [
+        "ambulatory_surgery_center"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for outpatient hospital services."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "OUTPATIENT_HOSPITAL",
+      "benefit_type": "medical",
+      "category": "HOSPITAL_SERVICES",
+      "service_name": "Outpatient hospital services",
+      "raw_label": "Outpatient Hospital",
+      "place_of_service": [
+        "outpatient_hospital"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for outpatient hospital services."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "OBSERVATION",
+      "benefit_type": "medical",
+      "category": "HOSPITAL_SERVICES",
+      "service_name": "Observation services",
+      "canonical_key": "observation_care",
+      "raw_label": "Observation services",
+      "place_of_service": [
+        "outpatient_hospital"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for outpatient hospital services."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PRIMARY_CARE",
+      "benefit_type": "medical",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Primary care visit",
+      "canonical_key": "primary_care",
+      "raw_label": "Primary Care",
+      "place_of_service": [
+        "office"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "SPECIALIST",
+      "benefit_type": "medical",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Specialist visit",
+      "canonical_key": "specialist",
+      "raw_label": "Specialists",
+      "place_of_service": [
+        "office"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for specialist visits."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PREVENTIVE_CARE",
+      "benefit_type": "medical",
+      "category": "PREVENTIVE_CARE",
+      "service_name": "Preventive care",
+      "canonical_key": "preventive_care",
+      "raw_label": "Preventive Care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "EMERGENCY_ROOM",
+      "benefit_type": "medical",
+      "category": "EMERGENCY_CARE",
+      "service_name": "Emergency care",
+      "canonical_key": "emergency_room",
+      "raw_label": "Emergency Care",
+      "place_of_service": [
+        "emergency_room"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 90,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "The emergency room copay will be waived if you are immediately admitted to the hospital."
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "Covered worldwide at Original Medicare reimbursable rates (page 4). The document does not print a separate out-of-network amount."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "URGENT_CARE",
+      "benefit_type": "medical",
+      "category": "URGENT_CARE",
+      "service_name": "Urgently needed services",
+      "canonical_key": "urgent_care",
+      "raw_label": "Urgently Needed Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "Covered worldwide at Original Medicare reimbursable rates (page 4). The document does not print a separate out-of-network amount."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "LAB_SERVICES",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Lab services",
+      "canonical_key": "diagnostic_lab",
+      "raw_label": "Lab services",
+      "place_of_service": [
+        "laboratory"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for diagnostic, lab, and imaging services."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "DIAGNOSTIC_TESTS",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Diagnostic tests and procedures",
+      "canonical_key": "diagnostic_test",
+      "raw_label": "Diagnostic tests and procedures",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for diagnostic, lab, and imaging services."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "OUTPATIENT_XRAYS",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Outpatient X-rays",
+      "canonical_key": "imaging_standard",
+      "raw_label": "Outpatient X-rays",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for diagnostic, lab, and imaging services."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "THERAPEUTIC_RADIOLOGY",
+      "benefit_type": "medical",
+      "category": "RADIATION_THERAPY",
+      "service_name": "Therapeutic radiology",
+      "canonical_key": "radiation_therapy",
+      "raw_label": "Therapeutic radiology",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 50,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for diagnostic, lab, and imaging services."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "DIAGNOSTIC_RADIOLOGY",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Diagnostic radiology (MRI, CT)",
+      "canonical_key": "imaging_advanced",
+      "raw_label": "Diagnostic radiology (e.g., MRI, CT)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for diagnostic, lab, and imaging services."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "HEARING_EXAM_MEDICARE",
+      "benefit_type": "hearing",
+      "category": "HEARING",
+      "service_name": "Diagnostic hearing and balance exam (Medicare-covered)",
+      "raw_label": "Medicare-covered diagnostic hearing and balance exam",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for Medicare-covered diagnostic hearing and balance exams."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "HEARING_EXAM_ROUTINE",
+      "benefit_type": "hearing",
+      "category": "HEARING",
+      "service_name": "Routine hearing exam",
+      "raw_label": "Non-Medicare-covered (routine) hearing exam",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 1,
+          "period": "per_12_months",
+          "raw_text": "$0 for up to 1 visit every 12 months"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN-contracted provider to obtain a routine hearing exam and hearing aids."
+        },
+        {
+          "type": "no_referral_required",
+          "code": null,
+          "description": "Members don't need a referral from a PCP or other doctor to use their benefit."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "HEARING_AID_ADVANCED",
+      "benefit_type": "hearing",
+      "category": "HEARING",
+      "service_name": "Hearing aid, TruHearing Advanced",
+      "raw_label": "Non-Medicare-covered (routine) hearing aids",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 450,
+              "basis": "per_aid",
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "The page prints one limit for the hearing aid row, covering both the Advanced and Premium aids. Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "hearing_aids",
+          "value": 2,
+          "period": "per_12_months",
+          "raw_text": "You are covered for up to 2 hearing aids every 12 months"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN-contracted provider to obtain a routine hearing exam and hearing aids."
+        },
+        {
+          "type": "no_referral_required",
+          "code": null,
+          "description": "Members don't need a referral from a PCP or other doctor to use their benefit."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "HEARING_AID_PREMIUM",
+      "benefit_type": "hearing",
+      "category": "HEARING",
+      "service_name": "Hearing aid, TruHearing Premium",
+      "raw_label": "Non-Medicare-covered (routine) hearing aids",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 750,
+              "basis": "per_aid",
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "The page prints one limit for the hearing aid row, covering both the Advanced and Premium aids. Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "hearing_aids",
+          "value": 2,
+          "period": "per_12_months",
+          "raw_text": "You are covered for up to 2 hearing aids every 12 months"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN-contracted provider to obtain a routine hearing exam and hearing aids."
+        },
+        {
+          "type": "no_referral_required",
+          "code": null,
+          "description": "Members don't need a referral from a PCP or other doctor to use their benefit."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_MEDICARE",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Dental services (Medicare-covered)",
+      "raw_label": "Medicare-covered dental services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for Medicare-covered dental services."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "DENTAL_EXAMS",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Routine dental exams",
+      "raw_label": "Dental exams",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 2,
+          "period": "per_12_months",
+          "raw_text": "$0 up to 2 visits every 12 months"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN contracted dental provider to obtain covered services."
+        },
+        {
+          "type": "coverage_limit",
+          "code": null,
+          "description": "Once you have reached your coverage limit, you will be responsible for any remaining costs."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_CLEANINGS",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Routine dental cleanings",
+      "raw_label": "Dental cleanings",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 2,
+          "period": "per_12_months",
+          "raw_text": "$0 up to 2 visits every 12 months"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN contracted dental provider to obtain covered services."
+        },
+        {
+          "type": "coverage_limit",
+          "code": null,
+          "description": "Once you have reached your coverage limit, you will be responsible for any remaining costs."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_XRAYS",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Routine dental X-rays",
+      "raw_label": "Dental X-rays",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 2,
+          "period": "per_12_months",
+          "raw_text": "$0 up to 2 visits every 12 months"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN contracted dental provider to obtain covered services."
+        },
+        {
+          "type": "coverage_limit",
+          "code": null,
+          "description": "Once you have reached your coverage limit, you will be responsible for any remaining costs."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_DIAGNOSTIC",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Comprehensive dental: diagnostic services",
+      "raw_label": "Diagnostic services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": null,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "In-network only: $0-$5 copay. The document prints a range for the category, not a price per procedure. Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "In-network only (page 5)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN contracted dental provider to obtain covered services."
+        },
+        {
+          "type": "coverage_limit",
+          "code": null,
+          "description": "Once you have reached your coverage limit, you will be responsible for any remaining costs."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_PREVENTIVE",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Comprehensive dental: preventive services",
+      "raw_label": "Preventive services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": null,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "In-network only: $0-$80 copay. The document prints a range for the category, not a price per procedure. Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "In-network only (page 5)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN contracted dental provider to obtain covered services."
+        },
+        {
+          "type": "coverage_limit",
+          "code": null,
+          "description": "Once you have reached your coverage limit, you will be responsible for any remaining costs."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_RESTORATIVE",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Comprehensive dental: restorative services",
+      "raw_label": "Restorative services (fillings and crowns)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": null,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "In-network only: $8-$395. The document prints a range for the category, not a price per procedure. Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "In-network only (page 5)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN contracted dental provider to obtain covered services."
+        },
+        {
+          "type": "coverage_limit",
+          "code": null,
+          "description": "Once you have reached your coverage limit, you will be responsible for any remaining costs."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_ENDODONTIC",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Comprehensive dental: endodontic services",
+      "raw_label": "Endodontic services (root canals)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": null,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "In-network only: $5-$395. The document prints a range for the category, not a price per procedure. Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "In-network only (page 5)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN contracted dental provider to obtain covered services."
+        },
+        {
+          "type": "coverage_limit",
+          "code": null,
+          "description": "Once you have reached your coverage limit, you will be responsible for any remaining costs."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_PERIODONTIC",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Comprehensive dental: periodontics",
+      "raw_label": "Periodontics (deep cleaning, periodontal maintenance, surgical procedures)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": null,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "In-network only: $0-$380. The document prints a range for the category, not a price per procedure. Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "In-network only (page 5)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN contracted dental provider to obtain covered services."
+        },
+        {
+          "type": "coverage_limit",
+          "code": null,
+          "description": "Once you have reached your coverage limit, you will be responsible for any remaining costs."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_PROSTHODONTIC_REMOVABLE",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Comprehensive dental: removable prosthodontics",
+      "raw_label": "Prosthodontics, removable (dentures, adjustments, repairs)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": null,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "In-network only: $13-$395. The document prints a range for the category, not a price per procedure. Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "In-network only (page 5)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN contracted dental provider to obtain covered services."
+        },
+        {
+          "type": "coverage_limit",
+          "code": null,
+          "description": "Once you have reached your coverage limit, you will be responsible for any remaining costs."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_PROSTHODONTIC_FIXED",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Comprehensive dental: fixed prosthodontics",
+      "raw_label": "Prosthodontics, fixed (bridges and fixed dentures)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": null,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "In-network only: $25-$395. The document prints a range for the category, not a price per procedure. Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "In-network only (page 5)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN contracted dental provider to obtain covered services."
+        },
+        {
+          "type": "coverage_limit",
+          "code": null,
+          "description": "Once you have reached your coverage limit, you will be responsible for any remaining costs."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_ORAL_SURGERY",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Comprehensive dental: oral and maxillofacial surgery",
+      "raw_label": "Oral and maxillofacial surgery (extractions and surgical procedures)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": null,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "In-network only: $0-$140. The document prints a range for the category, not a price per procedure. Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "In-network only (page 6)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN contracted dental provider to obtain covered services."
+        },
+        {
+          "type": "coverage_limit",
+          "code": null,
+          "description": "Once you have reached your coverage limit, you will be responsible for any remaining costs."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_ADJUNCTIVE",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Comprehensive dental: adjunctive services",
+      "raw_label": "Adjunctive services (anesthesia, emergency pain treatment)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": null,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "In-network only: $0-$125. The document prints a range for the category, not a price per procedure. Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "In-network only (page 6)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN contracted dental provider to obtain covered services."
+        },
+        {
+          "type": "coverage_limit",
+          "code": null,
+          "description": "Once you have reached your coverage limit, you will be responsible for any remaining costs."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "DENTAL_MAXILLOFACIAL_PROSTHETICS",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Maxillofacial prosthetics",
+      "raw_label": "Maxillofacial Prosthetics (facial or jaw prosthetics after surgery or trauma)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "DENTAL_IMPLANTS",
+      "benefit_type": "dental",
+      "category": "DENTAL",
+      "service_name": "Dental implant services",
+      "raw_label": "Implant Services (implants and associated services)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "VISION_EXAM_MEDICARE",
+      "benefit_type": "vision",
+      "category": "VISION",
+      "service_name": "Eye exam to diagnose or treat eye disease (Medicare-covered)",
+      "raw_label": "Medicare-covered vision exam to diagnose/treat diseases of the eye",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for Medicare-covered vision exam and glasses after cataract surgery."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "EYEWEAR_POST_CATARACT",
+      "benefit_type": "vision",
+      "category": "VISION",
+      "service_name": "Glasses after cataract surgery (Medicare-covered)",
+      "raw_label": "Medicare-covered glasses after cataract surgery",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for Medicare-covered vision exam and glasses after cataract surgery."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "VISION_EXAM_ROUTINE",
+      "benefit_type": "vision",
+      "category": "VISION",
+      "service_name": "Routine vision exam",
+      "raw_label": "Non-Medicare-covered (routine) vision exam",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 1,
+          "period": "per_12_months",
+          "raw_text": "$0 for up to 1 visit every 12 months"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "no_authorization_required",
+          "code": null,
+          "description": "Routine vision services do not require prior authorization."
+        },
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN-contracted vision provider to obtain routine vision services."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "EYEWEAR_ROUTINE",
+      "benefit_type": "vision",
+      "category": "VISION",
+      "service_name": "Routine eyewear allowance",
+      "raw_label": "Non-Medicare-covered (routine) vision coverage limit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "No copay is printed; the row states a coverage limit. Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+        }
+      ],
+      "limits": [
+        {
+          "type": "dollars",
+          "value": 300,
+          "period": "per_12_months",
+          "raw_text": "You are covered for up to $300 for frames, lenses, and lens options or contact lenses every 12 months"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "no_authorization_required",
+          "code": null,
+          "description": "Routine vision services do not require prior authorization."
+        },
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must go to a SCAN-contracted vision provider to obtain routine vision services."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "MENTAL_HEALTH_INPATIENT",
+      "benefit_type": "behavioral_health",
+      "category": "BEHAVIORAL_HEALTH",
+      "service_name": "Inpatient mental health",
+      "canonical_key": "mental_health_inpatient",
+      "raw_label": "Inpatient visit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": "per_day",
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Days 1-90"
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "days",
+          "value": 90,
+          "period": "per_benefit_period",
+          "raw_text": "You are covered for up to 90 days per benefit period.*"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for inpatient mental health hospitalization."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "MENTAL_HEALTH_OUTPATIENT",
+      "benefit_type": "behavioral_health",
+      "category": "BEHAVIORAL_HEALTH",
+      "service_name": "Outpatient therapy visit",
+      "canonical_key": "mental_health_outpatient",
+      "raw_label": "Outpatient individual/group therapy visit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for outpatient individual/group therapy visits."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "MENTAL_HEALTH_OUTPATIENT_PSYCHIATRIST",
+      "benefit_type": "behavioral_health",
+      "category": "BEHAVIORAL_HEALTH",
+      "service_name": "Outpatient therapy visit with a psychiatrist",
+      "canonical_key": "mental_health_outpatient",
+      "raw_label": "Outpatient individual/group therapy visit with a psychiatrist",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for outpatient individual/group therapy visits."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "SKILLED_NURSING_FACILITY",
+      "benefit_type": "medical",
+      "category": "SKILLED_NURSING",
+      "service_name": "Skilled nursing facility",
+      "canonical_key": "skilled_nursing_facility",
+      "raw_label": "Skilled Nursing Facility",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Days 1-100"
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "days",
+          "value": 100,
+          "period": "per_benefit_period",
+          "raw_text": "You are covered for up to 100 days per benefit period.*"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for skilled nursing facility services."
+        },
+        {
+          "type": "clinical",
+          "code": null,
+          "description": "No prior hospitalization is required."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PHYSICAL_THERAPY",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Physical therapy",
+      "canonical_key": "physical_therapy",
+      "raw_label": "Physical Therapy",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for outpatient physical therapy services."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "AMBULANCE",
+      "benefit_type": "medical",
+      "category": "EMERGENCY_CARE",
+      "service_name": "Ambulance",
+      "canonical_key": "ambulance",
+      "raw_label": "Ambulance",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 200,
+              "basis": "per_one_way_trip",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for non-emergency and air ambulance services."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "TRANSPORTATION_ROUTINE",
+      "benefit_type": "non_clinical",
+      "category": "TRANSPORTATION",
+      "service_name": "Routine transportation",
+      "raw_label": "Transportation (Non-Medicare-covered — routine)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Non-Medicare-covered benefit. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "one_way_trips",
+          "value": 32,
+          "period": "per_year",
+          "raw_text": "$0 for up to 32 one-way trips per year"
+        },
+        {
+          "type": "miles",
+          "value": 50,
+          "period": "per_one_way_trip",
+          "raw_text": "50-mile limit applies to each one-way trip"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must use a SCAN-contracted provider to obtain routine transportation services."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "PART_B_DRUGS",
+      "benefit_type": "medical",
+      "category": "PART_B_DRUGS",
+      "service_name": "Medicare Part B drugs, including chemotherapy",
+      "raw_label": "Medicare Part B Drugs",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": null,
+              "basis": "medicare_approved_amount",
+              "applies_to_deductible": false,
+              "notes": "$0-20% of the Medicare-approved amount. The document prints a range, not a rate per drug. Page 3 says the maximum out-of-pocket does not include prescription drugs and does not say whether that covers Part B drugs."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply to select drugs."
+        }
+      ],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "PART_B_INSULIN",
+      "benefit_type": "medical",
+      "category": "PART_B_DRUGS",
+      "service_name": "Part B insulin furnished through durable medical equipment",
+      "raw_label": "Medicare Part B Drugs",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "No more than $35 for a one-month supply. The document states the cap, not the underlying cost share. Page 3 says the maximum out-of-pocket does not include prescription drugs and does not say whether that covers Part B drugs."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply to select drugs."
+        }
+      ],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "RX_TIER1",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 1 preferred generic drugs",
+      "canonical_key": "preferred_generic_drugs",
+      "raw_label": "Tier 1 (Preferred Generic)",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "PHARMACY_RETAIL_STANDARD",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 7,
+              "basis": "per_30_day_supply",
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Standard retail pharmacy, 30-day supply. The page 8 grid also prices Preferred retail, mail-order, and 100-day supplies (quoted in source_references). Part D drug: page 3 says the maximum out-of-pocket does not include prescription drugs; page 9 sets a separate $2,100 yearly out-of-pocket drug cost threshold."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "RX_TIER2",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 2 generic drugs",
+      "canonical_key": "generic_drugs",
+      "raw_label": "Tier 2 (Generic)",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "PHARMACY_RETAIL_STANDARD",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 15,
+              "basis": "per_30_day_supply",
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Standard retail pharmacy, 30-day supply. The page 8 grid also prices Preferred retail, mail-order, and 100-day supplies (quoted in source_references). Part D drug: page 3 says the maximum out-of-pocket does not include prescription drugs; page 9 sets a separate $2,100 yearly out-of-pocket drug cost threshold."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "RX_TIER3_INSULIN",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 3 insulin",
+      "raw_label": "Tier 3 (Preferred Brand) Insulin",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "PHARMACY_RETAIL_STANDARD",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 35,
+              "basis": "per_30_day_supply",
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Standard retail pharmacy, 30-day supply. The page 8 grid also prices Preferred retail, mail-order, and 100-day supplies (quoted in source_references). Page 9: you won't pay more than $35 for a one-month supply of each insulin product covered by the plan, no matter what cost-sharing tier it's on, even if you haven't paid your deductible. Part D drug: page 3 says the maximum out-of-pocket does not include prescription drugs; page 9 sets a separate $2,100 yearly out-of-pocket drug cost threshold."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "RX_TIER3",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 3 preferred brand drugs (other than insulin)",
+      "canonical_key": "preferred_brand_drugs",
+      "raw_label": "Tier 3 (Preferred Brand) Other Drugs",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "PHARMACY_RETAIL_STANDARD",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 47,
+              "basis": "per_30_day_supply",
+              "applies_to_deductible": true,
+              "applies_to_moop": false,
+              "notes": "Standard retail pharmacy, 30-day supply. The page 8 grid also prices Preferred retail, mail-order, and 100-day supplies (quoted in source_references). The $250 Part D deductible applies to Tier 3 through Tier 5 (page 8); it is not a medical deductible. Part D drug: page 3 says the maximum out-of-pocket does not include prescription drugs; page 9 sets a separate $2,100 yearly out-of-pocket drug cost threshold."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "RX_TIER4",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 4 non-preferred drugs",
+      "raw_label": "Tier 4 (Non-Preferred Drug)",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "PHARMACY_RETAIL_STANDARD",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.35,
+              "basis": "per_30_day_supply",
+              "applies_to_deductible": true,
+              "applies_to_moop": false,
+              "notes": "Standard retail pharmacy, 30-day supply. The page 8 grid also prices Preferred retail, mail-order, and 100-day supplies (quoted in source_references). The $250 Part D deductible applies to Tier 3 through Tier 5 (page 8); it is not a medical deductible. Part D drug: page 3 says the maximum out-of-pocket does not include prescription drugs; page 9 sets a separate $2,100 yearly out-of-pocket drug cost threshold."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "RX_TIER5",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 5 specialty drugs",
+      "canonical_key": "specialty_drugs",
+      "raw_label": "Tier 5 (Specialty Tier)",
+      "place_of_service": [
+        "pharmacy"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "PHARMACY_RETAIL_STANDARD",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.3,
+              "basis": "per_30_day_supply",
+              "applies_to_deductible": true,
+              "applies_to_moop": false,
+              "notes": "Standard retail pharmacy, 30-day supply. On page 8, Tier 5 is 30% for a 30-day supply at Preferred or Standard retail; 100-day supplies and both mail-order columns show Not available. The $250 Part D deductible applies to Tier 3 through Tier 5 (page 8); it is not a medical deductible. Part D drug: page 3 says the maximum out-of-pocket does not include prescription drugs; page 9 sets a separate $2,100 yearly out-of-pocket drug cost threshold."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "PART_D_VACCINES",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Most adult Part D vaccines",
+      "raw_label": "Most adult Part D vaccines",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Most adult Part D vaccines, including shingles, tetanus and travel vaccines, at no cost across all Part D benefit stages, even if you haven't paid your deductible. Refer to your plan's Drug List (Formulary) or contact Member Services for coverage and cost-sharing details about specific vaccines. Part D drug: page 3 says the maximum out-of-pocket does not include prescription drugs; page 9 sets a separate $2,100 yearly out-of-pocket drug cost threshold."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "ACUPUNCTURE_MEDICARE",
+      "benefit_type": "medical",
+      "category": "ACUPUNCTURE",
+      "service_name": "Acupuncture (Medicare-covered)",
+      "canonical_key": "acupuncture",
+      "raw_label": "Medicare-covered acupuncture care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "ACUPUNCTURE_ROUTINE",
+      "benefit_type": "medical",
+      "category": "ACUPUNCTURE",
+      "service_name": "Routine acupuncture",
+      "canonical_key": "acupuncture",
+      "raw_label": "Routine acupuncture care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Routine care, listed apart from the Medicare-covered row; the document pairs 'routine' with 'Non-Medicare-covered' on pages 4, 5, 6 and 7. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 30,
+          "period": "per_year",
+          "raw_text": "for up to 30 visits per year combined with routine chiropratic services"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "no_referral_required",
+          "code": null,
+          "description": "You do not need a referral for an initial routine acupuncture visit."
+        },
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Any subsequent visits require prior authorization."
+        },
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must use a SCAN-contracted provider to obtain routine acupuncture services."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "IN_HOME_CARE",
+      "benefit_type": "non_clinical",
+      "category": "IN_HOME_SUPPORT",
+      "service_name": "Personal in-home care",
+      "raw_label": "In-home care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "notes": "The document does not say whether this counts toward the maximum out-of-pocket."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "hours",
+          "value": 80,
+          "period": null,
+          "raw_text": "80 hours for personal in-home care after a hospitalization, after a hip or knee replacement, or for assistance with two or more activities of daily living"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "eligibility",
+          "code": null,
+          "description": "After a hospitalization, after a hip or knee replacement, or for assistance with two or more activities of daily living."
+        },
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply."
+        }
+      ],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "MEALS_POST_HOSPITAL",
+      "benefit_type": "non_clinical",
+      "category": "MEALS",
+      "service_name": "Home-delivered meals after a hospitalization",
+      "raw_label": "Meals (home-delivered)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "notes": "The document does not say whether this counts toward the maximum out-of-pocket."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "meals",
+          "value": 84,
+          "period": "per_year",
+          "raw_text": "84 meals per year after a hospitalization"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "eligibility",
+          "code": null,
+          "description": "After a hospitalization."
+        },
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply."
+        }
+      ],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "MEALS_CHRONIC_CONDITION",
+      "benefit_type": "non_clinical",
+      "category": "MEALS",
+      "service_name": "Home-delivered meals for a chronic condition",
+      "raw_label": "Meals (home-delivered)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "notes": "The document does not say whether this counts toward the maximum out-of-pocket."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "meals",
+          "value": 84,
+          "period": "per_year",
+          "raw_text": "84 meals per year due to a chronic condition"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "eligibility",
+          "code": null,
+          "description": "Due to a chronic condition."
+        },
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply."
+        }
+      ],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "RESPITE_CARE",
+      "benefit_type": "non_clinical",
+      "category": "IN_HOME_SUPPORT",
+      "service_name": "Respite care",
+      "raw_label": "Respite care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "notes": "The document does not say whether this counts toward the maximum out-of-pocket."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "hours",
+          "value": 20,
+          "period": "per_year",
+          "raw_text": "20 hours per year to provide temporary relief to unpaid caregivers of members"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply."
+        }
+      ],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "CHIROPRACTIC_MEDICARE",
+      "benefit_type": "medical",
+      "category": "CHIROPRACTIC",
+      "service_name": "Chiropractic care (Medicare-covered)",
+      "canonical_key": "chiropractic_care",
+      "raw_label": "Medicare-covered chiropractic care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "CHIROPRACTIC_ROUTINE",
+      "benefit_type": "medical",
+      "category": "CHIROPRACTIC",
+      "service_name": "Routine chiropractic care",
+      "canonical_key": "chiropractic_care",
+      "raw_label": "Routine chiropractic care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 5,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": false,
+              "notes": "Routine care, listed apart from the Medicare-covered row; the document pairs 'routine' with 'Non-Medicare-covered' on pages 4, 5, 6 and 7. Page 3 defines the maximum out-of-pocket over Medicare-covered medical services."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 30,
+          "period": "per_year",
+          "raw_text": "for up to 30 visits per year combined with routine acupuncture services"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "no_referral_required",
+          "code": null,
+          "description": "You do not need a referral for an initial routine chiropractor visit."
+        },
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Any subsequent visits require prior authorization."
+        },
+        {
+          "type": "network",
+          "code": null,
+          "description": "You must use a SCAN-contracted provider to obtain routine chiropractic services."
+        }
+      ],
+      "moop_applicability": "exclude"
+    },
+    {
+      "benefit_id": "OTC_ALLOWANCE",
+      "benefit_type": "non_clinical",
+      "category": "OVER_THE_COUNTER",
+      "service_name": "Over-the-counter products allowance (FlexEssentials)",
+      "raw_label": "Over-the-Counter (OTC) Products",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "No copay is printed; the row states a quarterly allowance. Unused balances will be carried over to the next quarter, but will not roll over to the following year."
+        }
+      ],
+      "limits": [
+        {
+          "type": "dollars",
+          "value": 150,
+          "period": "per_quarter",
+          "raw_text": "$150 per quarter with the FlexEssentials card"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "network",
+          "code": null,
+          "description": "You receive a quarterly allowance to be used for eligible OTC items in-store at CVS retailers or home delivery."
+        }
+      ],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "HEALTHTECH",
+      "benefit_type": "non_clinical",
+      "category": "MEMBER_SUPPORT",
+      "service_name": "Technology support (HEALTHtech+)",
+      "raw_label": "Technology support to help you access your health care information",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "notes": "The document does not say whether this counts toward the maximum out-of-pocket."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "HOME_HEALTH_CARE",
+      "benefit_type": "medical",
+      "category": "HOME_HEALTH",
+      "service_name": "Home health care (Medicare-covered)",
+      "canonical_key": "home_health_care",
+      "raw_label": "Home Health Care (Medicare-covered)",
+      "place_of_service": [
+        "home"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "DURABLE_MEDICAL_EQUIPMENT",
+      "benefit_type": "medical",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "service_name": "Durable medical equipment",
+      "canonical_key": "durable_medical_equipment",
+      "raw_label": "Durable Medical Equipment (e.g., wheelchairs, oxygen)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for covered durable medical equipment, prosthetic devices, and certain diabetic supplies."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PROSTHETICS",
+      "benefit_type": "medical",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "service_name": "Prosthetics",
+      "canonical_key": "prosthetics",
+      "raw_label": "Prosthetics (e.g., braces, artificial limbs)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for covered durable medical equipment, prosthetic devices, and certain diabetic supplies."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "DIABETIC_SUPPLIES",
+      "benefit_type": "medical",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "service_name": "Diabetic supplies",
+      "canonical_key": "diabetic_supplies",
+      "raw_label": "Diabetic supplies",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply for covered durable medical equipment, prosthetic devices, and certain diabetic supplies."
+        },
+        {
+          "type": "product",
+          "code": null,
+          "description": "SCAN covers diabetic supplies such as glucose monitors, test strips, and control solution from a select manufacturer. Lancets are also covered and are available from all manufacturers."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "CONTINUOUS_GLUCOSE_MONITORS",
+      "benefit_type": "medical",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "service_name": "Continuous glucose monitors",
+      "raw_label": "Continuous Glucose Monitors",
+      "place_of_service": [
+        "pharmacy",
+        "dme_provider"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "$0 at the pharmacy or DME provider"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "product",
+          "code": null,
+          "description": "Freestyle Libre and Dexcom CGMs are covered at contracted pharmacies. Other CGM manufacturers are available at contracted DME providers."
+        },
+        {
+          "type": "authorization",
+          "code": null,
+          "description": "Prior authorization rules apply."
+        }
+      ],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "FITNESS",
+      "benefit_type": "non_clinical",
+      "category": "FITNESS",
+      "service_name": "Fitness benefit (One Pass)",
+      "raw_label": "OnePass® (Fitness)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "notes": "The document does not say whether this counts toward the maximum out-of-pocket."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "PERSONAL_EMERGENCY_RESPONSE",
+      "benefit_type": "non_clinical",
+      "category": "PERSONAL_EMERGENCY_RESPONSE",
+      "service_name": "Personal emergency response system",
+      "raw_label": "Personal Emergency Response System (PERS)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "notes": "The document does not say whether this counts toward the maximum out-of-pocket."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": null
+    },
+    {
+      "benefit_id": "TELEHEALTH",
+      "benefit_type": "medical",
+      "category": "TELEHEALTH",
+      "service_name": "Telehealth for urgent care and mental health",
+      "canonical_key": "telehealth_visit",
+      "raw_label": "Urgent Care and Mental Health",
+      "place_of_service": [
+        "virtual"
+      ],
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": null,
+              "applies_to_deductible": false,
+              "notes": "The document does not say whether this counts toward the maximum out-of-pocket."
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": null
+    }
+  ],
+  "source_references": [
+    {
+      "page_number": 1,
+      "excerpt": "2026 Summary of Benefits | SCAN Classic (HMO) | SCAN Prime (HMO) | Los Angeles County | January 1, 2026 – December 31, 2026"
+    },
+    {
+      "page_number": 1,
+      "excerpt": "SCAN Classic (HMO) and SCAN Prime (HMO) are HMO plans with Medicare contracts. | Y0057_SCAN_21986_2026_M | 8/25 26C-SBH5425006065"
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Monthly Health Plan Premium | SCAN Classic: $0 | What you should know: You must continue to pay your Medicare Part B premium."
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Plan Deductible | SCAN Classic: No deductible for medical. See outpatient prescription drugs section for Part D deductible."
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Maximum Out-of-Pocket Responsibility (this does not include prescription drugs) | SCAN Classic: $199 | What you should know: The most you pay for copays and coinsurance for Medicare-covered medical services for the year."
+    },
+    {
+      "page_number": 8,
+      "excerpt": "OUTPATIENT PRESCRIPTION DRUGS (PART D DRUGS): SCAN CLASSIC | Part D Deductible | You pay the full cost of your Tier 3 through Tier 5 drugs until you have paid $250."
+    },
+    {
+      "page_number": 9,
+      "excerpt": "Catastrophic Coverage Stage | After your yearly out-of-pocket drug costs reach $2,100, you pay $0 for all covered prescription drugs for the remainder of the year."
+    },
+    {
+      "page_number": 9,
+      "excerpt": "Some of our network pharmacies have preferred cost-sharing. You may pay less for certain drugs if you use these pharmacies."
+    },
+    {
+      "page_number": 9,
+      "excerpt": "If you reside in a long-term care facility, your cost-sharing for a 31-day supply is the same as at a standard retail pharmacy for a 30-day supply. You may get drugs from an out-of-network pharmacy, but may pay more than you pay at an in-network pharmacy."
+    },
+    {
+      "page_number": 17,
+      "excerpt": "Who can join? | live in the plan service area (Los Angeles County, California)"
+    },
+    {
+      "page_number": 17,
+      "excerpt": "SCAN Classic and SCAN Prime have a network of doctors, hospitals, pharmacies, and other providers. If you use the providers that are not in our network, the plan may not pay for these services."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Emergency Care | What you should know: You are covered for worldwide emergency services at Original Medicare reimbursable rates."
+    },
+    {
+      "page_number": 6,
+      "excerpt": "*A benefit period begins the day you go into a hospital or SNF. The benefit period ends when you haven't received any inpatient hospital or SNF care for 60 days in a row."
+    },
+    {
+      "page_number": 16,
+      "excerpt": "OPTIONAL SUPPLEMENTAL BENEFITS | DENTAL SERVICES | SCAN CLASSIC | PPO Dental Plan California | Monthly Premium | $55 per month"
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Inpatient Hospital Coverage | SCAN Classic: $0 Unlimited days per admission | What you should know: Prior authorization rules may apply."
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Outpatient Hospital Services > Ambulatory Surgical Center | SCAN Classic: $0 | What you should know: Prior authorization rules apply for outpatient hospital services."
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Outpatient Hospital Services > Outpatient Hospital | SCAN Classic: $0 | What you should know: Prior authorization rules apply for outpatient hospital services."
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Outpatient Hospital Services > Observation services | SCAN Classic: $0 | What you should know: Prior authorization rules apply for outpatient hospital services."
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Doctor Visits > Primary Care | SCAN Classic: $0"
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Doctor Visits > Specialists | SCAN Classic: $0 | What you should know: Prior authorization rules apply for specialist visits."
+    },
+    {
+      "page_number": 3,
+      "excerpt": "Preventive Care | SCAN Classic: $0 | What you should know: Prior authorization rules apply."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Emergency Care | SCAN Classic: $90 copay per visit | What you should know: The emergency room copay will be waived if you are immediately admitted to the hospital. You are covered for worldwide emergency services at Original Medicare reimbursable rates."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Urgently Needed Services | SCAN Classic: $0 | What you should know: You are covered for worldwide urgent care services at Original Medicare reimbursable rates."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Diagnostic Services/Labs/Imaging > Lab services | SCAN Classic: $0 | What you should know: Prior authorization rules apply for diagnostic, lab, and imaging services."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Diagnostic Services/Labs/Imaging > Diagnostic tests and procedures | SCAN Classic: $0 | What you should know: Prior authorization rules apply for diagnostic, lab, and imaging services."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Diagnostic Services/Labs/Imaging > Outpatient X-rays | SCAN Classic: $0 | What you should know: Prior authorization rules apply for diagnostic, lab, and imaging services."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Diagnostic Services/Labs/Imaging > Therapeutic radiology | SCAN Classic: $50 copay per visit | What you should know: Prior authorization rules apply for diagnostic, lab, and imaging services."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Diagnostic Services/Labs/Imaging > Diagnostic radiology (e.g., MRI, CT) | SCAN Classic: $0 | What you should know: Prior authorization rules apply for diagnostic, lab, and imaging services."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Hearing Services > Medicare-covered diagnostic hearing and balance exam | SCAN Classic: $0 | What you should know: Prior authorization rules apply for Medicare-covered diagnostic hearing and balance exams."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Hearing Services > Non-Medicare-covered (routine) hearing exam | SCAN Classic: $0 for up to 1 visit every 12 months | What you should know: You must go to a SCAN-contracted provider to obtain a routine hearing exam and hearing aids. Members don't need a referral from a PCP or other doctor to use their benefit."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Hearing Services > Non-Medicare-covered (routine) hearing aids | SCAN Classic: $450 copay per aid for a TruHearing Advanced hearing aid or $750 copay per aid for a TruHearing Premium hearing aid You are covered for up to 2 hearing aids every 12 months | What you should know: You must go to a SCAN-contracted provider to obtain a routine hearing exam and hearing aids. Members don't need a referral from a PCP or other doctor to use their benefit."
+    },
+    {
+      "page_number": 4,
+      "excerpt": "Hearing Services > Non-Medicare-covered (routine) hearing aids | SCAN Classic: $450 copay per aid for a TruHearing Advanced hearing aid or $750 copay per aid for a TruHearing Premium hearing aid You are covered for up to 2 hearing aids every 12 months | What you should know: You must go to a SCAN-contracted provider to obtain a routine hearing exam and hearing aids. Members don't need a referral from a PCP or other doctor to use their benefit."
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Medicare-covered dental services | SCAN Classic: $0 | What you should know: Prior authorization rules apply for Medicare-covered dental services."
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services | SCAN Classic: Dental Plan CAC73 | What you should know: SCAN Classic You must go to a SCAN contracted dental provider to obtain covered services. Once you have reached your coverage limit, you will be responsible for any remaining costs."
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Preventive Services > Dental exams | SCAN Classic: $0 up to 2 visits every 12 months"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Preventive Services > Dental cleanings | SCAN Classic: $0 up to 2 visits every 12 months"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Preventive Services > Dental X-rays | SCAN Classic: $0 up to 2 visits every 12 months"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Comprehensive Services > Diagnostic services | SCAN Classic: In-network only: $0-$5 copay"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Comprehensive Services > Preventive services | SCAN Classic: In-network only: $0-$80 copay"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Comprehensive Services > Restorative services (fillings and crowns) | SCAN Classic: In-network only: $8-$395"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Comprehensive Services > Endodontic services (root canals) | SCAN Classic: In-network only: $5-$395"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Comprehensive Services > Periodontics (deep cleaning, periodontal maintenance, surgical procedures) | SCAN Classic: In-network only: $0-$380"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Comprehensive Services > Prosthodontics, removable (dentures, adjustments, repairs) | SCAN Classic: In-network only: $13-$395"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Comprehensive Services > Prosthodontics, fixed (bridges and fixed dentures) | SCAN Classic: In-network only: $25-$395"
+    },
+    {
+      "page_number": 6,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Comprehensive Services (headings on page 5) > Oral and maxillofacial surgery (extractions and surgical procedures) | SCAN Classic: In-network only: $0-$140"
+    },
+    {
+      "page_number": 6,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Comprehensive Services (headings on page 5) > Adjunctive services (anesthesia, emergency pain treatment) | SCAN Classic: In-network only: $0-$125"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Comprehensive Services > Maxillofacial Prosthetics (facial or jaw prosthetics after surgery or trauma) | SCAN Classic: Not covered"
+    },
+    {
+      "page_number": 5,
+      "excerpt": "Dental Services > Non-Medicare-covered (routine) dental services > Comprehensive Services > Implant Services (implants and associated services) | SCAN Classic: Not covered"
+    },
+    {
+      "page_number": 6,
+      "excerpt": "Vision Services > Medicare-covered vision exam to diagnose/treat diseases of the eye | SCAN Classic: $0 | What you should know: Prior authorization rules apply for Medicare-covered vision exam and glasses after cataract surgery."
+    },
+    {
+      "page_number": 6,
+      "excerpt": "Vision Services > Medicare-covered glasses after cataract surgery | SCAN Classic: $0 | What you should know: Prior authorization rules apply for Medicare-covered vision exam and glasses after cataract surgery."
+    },
+    {
+      "page_number": 6,
+      "excerpt": "Vision Services > Non-Medicare-covered (routine) vision exam | SCAN Classic: $0 for up to 1 visit every 12 months | What you should know: Routine vision services do not require prior authorization. You must go to a SCAN-contracted vision provider to obtain routine vision services."
+    },
+    {
+      "page_number": 6,
+      "excerpt": "Vision Services > Non-Medicare-covered (routine) vision coverage limit | SCAN Classic: You are covered for up to $300 for frames, lenses, and lens options or contact lenses every 12 months | What you should know: Routine vision services do not require prior authorization. You must go to a SCAN-contracted vision provider to obtain routine vision services."
+    },
+    {
+      "page_number": 6,
+      "excerpt": "Mental Health Services > Inpatient visit | SCAN Classic: $0 per day for days 1-90 | What you should know: Prior authorization rules apply for inpatient mental health hospitalization. You are covered for up to 90 days per benefit period.*"
+    },
+    {
+      "page_number": 6,
+      "excerpt": "Mental Health Services > Outpatient individual/group therapy visit | SCAN Classic: $0 | What you should know: Prior authorization rules apply for outpatient individual/group therapy visits."
+    },
+    {
+      "page_number": 6,
+      "excerpt": "Mental Health Services > Outpatient individual/group therapy visit with a psychiatrist | SCAN Classic: $0 | What you should know: Prior authorization rules apply for outpatient individual/group therapy visits."
+    },
+    {
+      "page_number": 6,
+      "excerpt": "Skilled Nursing Facility | SCAN Classic: $0 for days 1-100 | What you should know: Prior authorization rules apply for skilled nursing facility services. You are covered for up to 100 days per benefit period.* No prior hospitalization is required."
+    },
+    {
+      "page_number": 7,
+      "excerpt": "Physical Therapy | SCAN Classic: $0 | What you should know: Prior authorization rules apply for outpatient physical therapy services."
+    },
+    {
+      "page_number": 7,
+      "excerpt": "Ambulance | SCAN Classic: $200 copay per one-way trip | What you should know: Prior authorization rules apply for non-emergency and air ambulance services."
+    },
+    {
+      "page_number": 7,
+      "excerpt": "Transportation (Non-Medicare-covered — routine) | SCAN Classic: $0 for up to 32 one-way trips per year 50-mile limit applies to each one-way trip | What you should know: You must use a SCAN-contracted provider to obtain routine transportation services."
+    },
+    {
+      "page_number": 7,
+      "excerpt": "Medicare Part B Drugs | SCAN Classic: $0-20% of the Medicare-approved amount for Part B chemotherapy and other Part B drugs | What you should know: Prior authorization rules apply to select drugs."
+    },
+    {
+      "page_number": 7,
+      "excerpt": "Medicare Part B Drugs | SCAN Classic: No more than $35 for a one-month supply of a Part B insulin furnished through an item of durable medical equipment, such as a medically necessary insulin pump"
+    },
+    {
+      "page_number": 8,
+      "excerpt": "Initial Coverage Stage | columns: Retail Preferred 30-day supply, Retail Preferred 100-day supply, Retail Standard 30-day supply, Retail Standard 100-day supply, Mail-Order Preferred 100-day supply, Mail-Order Standard 100-day supply | Tier 1 (Preferred Generic): $0 $0 $7 $14 $0 $14"
+    },
+    {
+      "page_number": 8,
+      "excerpt": "Initial Coverage Stage | columns: Retail Preferred 30-day supply, Retail Preferred 100-day supply, Retail Standard 30-day supply, Retail Standard 100-day supply, Mail-Order Preferred 100-day supply, Mail-Order Standard 100-day supply | Tier 2 (Generic): $0 $0 $15 $30 $0 $30"
+    },
+    {
+      "page_number": 8,
+      "excerpt": "Initial Coverage Stage | columns: Retail Preferred 30-day supply, Retail Preferred 100-day supply, Retail Standard 30-day supply, Retail Standard 100-day supply, Mail-Order Preferred 100-day supply, Mail-Order Standard 100-day supply | Tier 3 (Preferred Brand) Insulin: $35 $85 $35 $85 $85 $85"
+    },
+    {
+      "page_number": 8,
+      "excerpt": "Initial Coverage Stage | columns: Retail Preferred 30-day supply, Retail Preferred 100-day supply, Retail Standard 30-day supply, Retail Standard 100-day supply, Mail-Order Preferred 100-day supply, Mail-Order Standard 100-day supply | Tier 3 (Preferred Brand) Other Drugs: $42 $126 $47 $141 $126 $141"
+    },
+    {
+      "page_number": 8,
+      "excerpt": "Initial Coverage Stage | columns: Retail Preferred 30-day supply, Retail Preferred 100-day supply, Retail Standard 30-day supply, Retail Standard 100-day supply, Mail-Order Preferred 100-day supply, Mail-Order Standard 100-day supply | Tier 4 (Non-Preferred Drug): 35% 35% 35% 35% 35% 35%"
+    },
+    {
+      "page_number": 8,
+      "excerpt": "Initial Coverage Stage | columns: Retail Preferred 30-day supply, Retail Preferred 100-day supply, Retail Standard 30-day supply, Retail Standard 100-day supply, Mail-Order Preferred 100-day supply, Mail-Order Standard 100-day supply | Tier 5 (Specialty Tier): 30% Not available 30% Not available Not available Not available"
+    },
+    {
+      "page_number": 9,
+      "excerpt": "Most adult Part D vaccines, including shingles, tetanus and travel vaccines, are covered by our plan at no cost to you across all Part D benefit stages, even if you haven't paid your deductible."
+    },
+    {
+      "page_number": 12,
+      "excerpt": "Acupuncture Services > Medicare-covered acupuncture care | SCAN Classic: $0 | What you should know: Prior authorization rules apply."
+    },
+    {
+      "page_number": 12,
+      "excerpt": "Acupuncture Services > Routine acupuncture care | SCAN Classic: $5 copay per visit for up to 30 visits per year combined with routine chiropratic services | What you should know: You do not need a referral for an initial routine acupuncture visit. Any subsequent visits require prior authorization. You must use a SCAN-contracted provider to obtain routine acupuncture services."
+    },
+    {
+      "page_number": 12,
+      "excerpt": "At-Home Support > In-home care | SCAN Classic: $0 80 hours for personal in-home care after a hospitalization, after a hip or knee replacement, or for assistance with two or more activities of daily living | What you should know: Prior authorization rules apply."
+    },
+    {
+      "page_number": 12,
+      "excerpt": "At-Home Support > Meals (home-delivered) | SCAN Classic: $0 84 meals per year after a hospitalization 84 meals per year due to a chronic condition | What you should know: Prior authorization rules apply."
+    },
+    {
+      "page_number": 12,
+      "excerpt": "At-Home Support > Meals (home-delivered) | SCAN Classic: $0 84 meals per year after a hospitalization 84 meals per year due to a chronic condition | What you should know: Prior authorization rules apply."
+    },
+    {
+      "page_number": 12,
+      "excerpt": "At-Home Support > Respite care | SCAN Classic: $0 20 hours per year to provide temporary relief to unpaid caregivers of members | What you should know: Prior authorization rules apply."
+    },
+    {
+      "page_number": 13,
+      "excerpt": "Chiropractic Services > Medicare-covered chiropractic care | SCAN Classic: $0 | What you should know: Prior authorization rules apply."
+    },
+    {
+      "page_number": 13,
+      "excerpt": "Chiropractic Services > Routine chiropractic care | SCAN Classic: $5 copay per visit for up to 30 visits per year combined with routine acupuncture services | What you should know: You do not need a referral for an initial routine chiropractor visit. Any subsequent visits require prior authorization. You must use a SCAN-contracted provider to obtain routine chiropractic services."
+    },
+    {
+      "page_number": 13,
+      "excerpt": "FlexEssentials > This includes: Over-the-Counter (OTC) Products | SCAN Classic: $150 per quarter with the FlexEssentials card | What you should know: You receive a quarterly allowance to be used for eligible OTC items in-store at CVS retailers or home delivery. Unused balances will be carried over to the next quarter, but will not roll over to the following year."
+    },
+    {
+      "page_number": 13,
+      "excerpt": "HEALTHtech+ > Technology support to help you access your health care information | SCAN Classic: $0"
+    },
+    {
+      "page_number": 13,
+      "excerpt": "Home Health Care (Medicare-covered) | SCAN Classic: $0 | What you should know: Prior authorization rules apply."
+    },
+    {
+      "page_number": 14,
+      "excerpt": "Medical Equipment/Supplies > Durable Medical Equipment (e.g., wheelchairs, oxygen) | SCAN Classic: $0 | What you should know: Prior authorization rules apply for covered durable medical equipment, prosthetic devices, and certain diabetic supplies."
+    },
+    {
+      "page_number": 14,
+      "excerpt": "Medical Equipment/Supplies > Prosthetics (e.g., braces, artificial limbs) | SCAN Classic: $0 | What you should know: Prior authorization rules apply for covered durable medical equipment, prosthetic devices, and certain diabetic supplies."
+    },
+    {
+      "page_number": 14,
+      "excerpt": "Medical Equipment/Supplies > Diabetic supplies | SCAN Classic: $0 | What you should know: Prior authorization rules apply for covered durable medical equipment, prosthetic devices, and certain diabetic supplies. SCAN covers diabetic supplies such as glucose monitors, test strips, and control solution from a select manufacturer. Lancets are also covered and are available from all manufacturers."
+    },
+    {
+      "page_number": 14,
+      "excerpt": "Medical Equipment/Supplies > Continuous Glucose Monitors | SCAN Classic: $0 at the pharmacy or DME provider | What you should know: Freestyle Libre and Dexcom CGMs are covered at contracted pharmacies. Other CGM manufacturers are available at contracted DME providers. Prior authorization rules apply."
+    },
+    {
+      "page_number": 14,
+      "excerpt": "OnePass® (Fitness) | SCAN Classic: $0 fitness benefit through One Pass, including gym memberships, on-demand workouts, and community classes"
+    },
+    {
+      "page_number": 14,
+      "excerpt": "Personal Emergency Response System (PERS) | SCAN Classic: $0 for personal emergency response device and monitoring service to help you get assistance quickly during a fall or emergency"
+    },
+    {
+      "page_number": 15,
+      "excerpt": "Telehealth Services > Urgent Care and Mental Health | SCAN Classic: $0 | What you should know: Urgent Care: This benefit is for non-life threatening conditions such as, but not limited to, cough, flu, nausea, sore throat, fever and allergies. Visits with providers can be conducted by telephone or secure video capabilities from your computer or smart phone. Telehealth is not intended to replace your primary care doctor or specialist. Behavioral Health: This benefit allows you to connect with licensed Psychologists, Master's level therapists, or Psychiatrists via video visits 7 days a week by appointment."
+    }
+  ],
+  "schema_version": "1.2.0"
+}
