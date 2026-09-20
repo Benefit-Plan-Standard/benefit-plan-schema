@@ -250,13 +250,15 @@ For each construct, the question was whether it fits v1.1.0, needs the v1.2.0 dr
 | One citation per benefit | Gap (G14) | Plan-level `source_references`, one excerpt or more per benefit, in benefit order |
 | One document describing two plans (SCAN) | Conversion rule | One Benefit Plan Standard document per plan. The SCAN example is SCAN Classic |
 
+**Update, September 20, 2026.** Twelve of the fourteen gaps are now fields in the v1.2.0 draft schema: `plan_identifiers` (G1), `service_area` (G2), `premium` and `part_b_premium_reduction` (G3), the top-level `pharmacy` object plus `cost_shares[].deductible_ref` (G4), `cost_shares[].unit_range` (G5), the cap and range fields on `cost_shares[]` (G6), `benefits[].coverage_basis` (G7), an authoritative null on `benefits[].moop_applicability` (G8), `limits[].carryover` (G9), `benefits[].alternative_group` (G10), `limits[].scope` and `limits[].shared_limit_id` with `per_12_months` as a recommended period (G11), and `benefits[].source_references` (G14). G12 and G13 are deferred. Both examples were updated the same day to carry these values in the fields, so the third column above records how they were built on September 16, not how they read now. The field list is in `docs/changelog.md`.
+
 Both examples declare `schema_version` "1.2.0" and validate against the v1.2.0 draft. They fail against v1.1.0 because they use `tier_class` and `raw_text`. They're the first examples on the draft, so if ballot reconciliation reshapes v1.2.0, they'll change with it.
 
 ---
 
 ## 3. Gaps and proposed fields
 
-These are proposals for review, not schema changes. Nothing in `schema/` changed.
+Twelve of these fourteen are in the v1.2.0 draft as of September 20, 2026: G1, G2, G3, G4, G5, G6, G7, G8, G9, G10, G11 and G14. G12 and G13 are deferred and remain proposals. The schema fragments as they shipped, with the backward-compatibility argument for each, are in `docs/medicare-advantage-schema-proposal.md`. The wording of each gap below is unchanged from September 16, when all fourteen were proposals for review.
 
 **G1. Regulator plan identifiers.** Add an optional core array, for example `plan_identifiers: [{ "system": "cms_contract_plan_segment", "value": "H1036-025-000" }]`. It would need systems for the CMS contract and plan number and for the marketplace HIOS id.
 
@@ -305,7 +307,7 @@ Without these fields, a program that adds up the SCAN hearing aid limits counts 
 
 **G14. A citation on each benefit.** `benefits[]` doesn't allow a citation field, so every example keeps its citations in the plan-level `source_references`, and the link to a benefit is positional. Add an optional `benefits[].source_references` with the same shape as the plan-level one. This matters more for a 70-row Summary of Benefits than for a 30-row SBC.
 
-**Vocabulary.** The recommended categories and canonical keys are SBC-shaped, and the examples use some values outside them. The validator prints 60 advisory warnings for those values.
+**Vocabulary.** The recommended categories and canonical keys are SBC-shaped, and the examples use some values outside them. The validator printed 60 advisory warnings for those values; as of September 20, 2026 it prints zero, because the twelve categories and the two benefit types listed below were added to `vocabularies/`.
 
 - **Categories:** `HEARING`, `DENTAL`, `VISION`, `PART_B_DRUGS`, `PODIATRY`, `TRANSPORTATION`, `OVER_THE_COUNTER`, `MEALS`, `IN_HOME_SUPPORT`, `FITNESS`, `PERSONAL_EMERGENCY_RESPONSE`, `MEMBER_SUPPORT`
 - **Benefit types:** `hearing` and `non_clinical`
@@ -406,8 +408,10 @@ A second round of review confirmed the fixes.
 
 **Schema.**
 
-- `node scripts/validate.js --schema schema/v1.2.0/benefit-plan.schema.json examples/scan_example.json examples/humana_example.json` passes both files, with the 60 vocabulary warnings described in section 3.
+- `node scripts/validate.js --schema schema/v1.2.0/benefit-plan.schema.json examples/scan_example.json examples/humana_example.json` passes both files with zero vocabulary warnings as of September 20, 2026, after the twelve categories and the two benefit types described in section 3 were added to `vocabularies/`. Before that it printed 60.
 - Against v1.1.0 both files fail, as expected, on the v1.2.0 fields.
+
+**Corrections made on relocation.** Moving these values out of `notes` and into the v1.2.0 fields on September 20, 2026 changed two of them, in both cases to say the same thing in the field built for it. Humana's hearing aid limit was `type: "hearing_aids_per_ear"`, which folded the scope into the unit; it is now `type: "hearing_aids"` with `scope: "per_ear"`. SCAN's 50-mile transportation limit carried `period: "per_one_way_trip"`, which is not a period; it is now `scope: "per_one_way_trip"` with `period: null`. No amount, rate, page number or excerpt changed.
 
 If you find a value that doesn't match its page, that's a bug in the example. I'd like to hear about it.
 

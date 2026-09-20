@@ -41,7 +41,7 @@ It is designed to support:
 This repository contains:
 
 - The **canonical JSON Schema (v1.1.0)** — backward-compatible with v1.0.0  
-- Example normalized plans across 7 carriers  
+- Example normalized plans across 9 carriers  
 - Recommended vocabularies (canonical benefits, categories, markets, plan types)  
 - FHIR R4 `InsurancePlan` alignment guide  
 - Module definitions (pharmacy, behavioral health, dental/vision, etc.)  
@@ -58,8 +58,10 @@ For complete documentation, visit:
 schema/
   ├── v1.0.0/
   │   └── benefit-plan.schema.json
-  └── v1.1.0/
-      └── benefit-plan.schema.json   ← current
+  ├── v1.1.0/
+  │   └── benefit-plan.schema.json   ← current
+  └── v1.2.0/
+      └── benefit-plan.schema.json   ← draft
 docs/
   ├── changelog.md
   ├── fhir-alignment.md
@@ -72,9 +74,11 @@ examples/
   ├── bluecross_example.json
   ├── cigna_example.json
   ├── gatorcare_example.json
+  ├── humana_example.json
   ├── kaiser_example.json
+  ├── scan_example.json
   ├── united_example.json
-  └── sources/                       ← the SBC PDFs each example was generated from
+  └── sources/                       ← the source PDF each example comes from
 vocabularies/
   ├── canonical-benefits.json
   ├── categories.json
@@ -116,6 +120,8 @@ Example normalized files are provided in:
 ```
 
 These examples demonstrate how real-world SBC/EOC plan structures map into the standardized model.
+
+The eight SBC examples (`aetna`, `aetna_ppo5000`, `ambetter`, `bluecross`, `cigna`, `gatorcare`, `kaiser`, `united`) are pipeline output, regenerated from the source Summary of Benefits and Coverage documents and verified value by value against them. The two Medicare Advantage examples (`scan_example.json` and `humana_example.json`) are different: they are keyed by hand from their CMS Summary of Benefits documents, verified value by value against the cited pages, and they use fields added in the v1.2.0 draft, so they validate against that draft only. See `docs/medicare-advantage-notes.md`.
 
 ---
 
