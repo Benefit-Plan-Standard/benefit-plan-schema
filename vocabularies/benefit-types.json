@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "vocabulary_id": "https://benefitplanstandard.org/vocabularies/v1.1.0/benefit-types.json",
+  "title": "BPS Recommended Benefit Type Vocabulary",
+  "version": "1.1.0",
+  "description": "Non-normative recommended values for the `benefit_type` field on `benefits[]`, the domain discriminator used to support modules. The first seven values repeat the list in the schema's field description; `hearing` and `non_clinical` were added with the Medicare Advantage examples (see docs/medicare-advantage-notes.md, gap G7). Adopters MAY extend.",
+  "license": "MIT",
+  "benefit_types": [
+    { "code": "medical",           "label": "Medical",           "description": "Medical services (the default when benefit_type is absent)." },
+    { "code": "pharmacy",          "label": "Pharmacy",          "description": "Outpatient prescription drug benefits, including Medicare Part D." },
+    { "code": "dental",            "label": "Dental",            "description": "Dental services." },
+    { "code": "vision",            "label": "Vision",            "description": "Vision services and eyewear." },
+    { "code": "behavioral_health", "label": "Behavioral health", "description": "Mental health and substance use services." },
+    { "code": "maternity",         "label": "Maternity",         "description": "Maternity and newborn care." },
+    { "code": "pediatric",         "label": "Pediatric",         "description": "Pediatric services, including the ACA pediatric dental and vision benefits." },
+    { "code": "hearing",           "label": "Hearing",           "description": "Hearing exams and hearing aids, Medicare-covered or supplemental." },
+    { "code": "non_clinical",      "label": "Non-clinical",      "description": "Services that are not clinical care, such as transportation, meals, in-home support, fitness programs, a personal emergency response system, and member support. Stopgap name carried from the Medicare Advantage notes; the two source documents do not use a collective term." }
+  ]
+}

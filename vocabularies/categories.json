@@ -30,6 +30,18 @@
     { "code": "TELEHEALTH",           "label": "Telehealth",                "description": "Virtual/telehealth visits." },
     { "code": "VISION_PEDIATRIC",     "label": "Pediatric vision",          "description": "Pediatric eye exams and corrective lenses (ACA essential benefit)." },
     { "code": "DENTAL_PEDIATRIC",     "label": "Pediatric dental",          "description": "Pediatric dental services (ACA essential benefit)." },
-    { "code": "EXCLUDED_SERVICES",    "label": "Excluded services",         "description": "Services explicitly not covered by the plan." }
+    { "code": "EXCLUDED_SERVICES",    "label": "Excluded services",         "description": "Services explicitly not covered by the plan." },
+    { "code": "HEARING",              "label": "Hearing",                   "description": "Hearing services: diagnostic hearing and balance exams, routine hearing exams, and hearing aids (added with the Medicare Advantage examples)." },
+    { "code": "DENTAL",               "label": "Dental",                    "description": "Adult dental services, Medicare-covered and supplemental, as distinct from the ACA pediatric dental benefit." },
+    { "code": "VISION",               "label": "Vision",                    "description": "Adult vision services, Medicare-covered and supplemental (routine exams, eyewear), as distinct from the ACA pediatric vision benefit." },
+    { "code": "PART_B_DRUGS",         "label": "Medicare Part B drugs",     "description": "Drugs covered as a medical benefit under Medicare Part B (chemotherapy, other Part B drugs, Part B insulin), separate from Part D pharmacy benefits." },
+    { "code": "PODIATRY",             "label": "Podiatry",                  "description": "Podiatry and foot care services, Medicare-covered and routine." },
+    { "code": "TRANSPORTATION",       "label": "Transportation",            "description": "Non-emergency transportation to plan-approved locations (supplemental benefit)." },
+    { "code": "OVER_THE_COUNTER",     "label": "Over-the-counter",          "description": "Allowance for approved over-the-counter health products (supplemental benefit)." },
+    { "code": "MEALS",                "label": "Meals",                     "description": "Home-delivered meals, typically after a hospital stay or for a chronic condition (supplemental benefit)." },
+    { "code": "IN_HOME_SUPPORT",      "label": "In-home support",           "description": "In-home personal care, post-discharge home care, and respite care (supplemental benefit)." },
+    { "code": "FITNESS",              "label": "Fitness",                   "description": "Fitness program membership (supplemental benefit)." },
+    { "code": "PERSONAL_EMERGENCY_RESPONSE", "label": "Personal emergency response", "description": "Personal emergency response device and monitoring service (supplemental benefit)." },
+    { "code": "MEMBER_SUPPORT",       "label": "Member support",            "description": "Member support services such as technology help for accessing health information (supplemental benefit)." }
   ]
 }
