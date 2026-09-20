@@ -2,12 +2,35 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://benefitplanstandard.org/schema/v1.2.0/benefit-plan.schema.json",
   "title": "Benefit Plan Standard Schema",
-  "description": "Canonical JSON schema for representing normalized health benefit plans across carriers. v1.2.0 (DRAFT) is a backward-compatible minor release that adds network-tier classification (tier_class, parent_tier_id, provider_set) and verbatim limit text (limits[].raw_text). Origin: reconciliation of the three InsurancePlan changes merged into the HL7 CARIN Digital Insurance Card IG in June 2026 (FHIR-57525 multi-tier cost sharing, FHIR-57526 deductible applicability, FHIR-57527 structured benefit limitation). See docs/carin-dic-reconciliation.md.",
+  "description": "Canonical JSON schema for representing normalized health benefit plans across carriers. v1.2.0 (DRAFT) is a backward-compatible minor release that adds network-tier classification (tier_class, parent_tier_id, provider_set) and verbatim limit text (limits[].raw_text). Origin: reconciliation of the three InsurancePlan changes merged into the HL7 CARIN Digital Insurance Card IG in June 2026 (FHIR-57525 multi-tier cost sharing, FHIR-57526 deductible applicability, FHIR-57527 structured benefit limitation). See docs/carin-dic-reconciliation.md. The draft also adds Medicare Advantage fields (gaps G1 to G11 and G14 of docs/medicare-advantage-notes.md), motivated by two 2026 CMS Summary of Benefits documents (SCAN Classic HMO, Los Angeles; Humana Gold Plus H1036-025 HMO): plan_identifiers, service_area, premium, part_b_premium_reduction, the pharmacy accumulators object, cost-share unit ranges, caps and ranges, deductible_ref, coverage_basis, alternative_group, limit scope, shared limits and carryover, and per-benefit source_references.",
   "type": "object",
   "properties": {
     "plan_id": {
       "type": "string",
       "description": "Unique identifier for the benefit plan."
+    },
+    "plan_identifiers": {
+      "type": "array",
+      "description": "Regulator-assigned identifiers for this plan (closes gap G1 of the Medicare Advantage notes). Each entry names the identifier system and the value. Recommended system values: 'cms_contract_plan_segment' (e.g. 'H1036-025-000'), 'cms_contract_id' (e.g. 'H1036'), 'cms_pbp_id' (e.g. '025'), 'hios_id' (14-character marketplace plan id). Not enforced as enum to allow adopter extension. Distinct from plan_id, which remains a document-local readable slug.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "system": {
+            "type": "string",
+            "description": "Identifier system this value belongs to. See the recommended values on plan_identifiers."
+          },
+          "value": {
+            "type": "string",
+            "description": "The identifier value, as assigned by the system."
+          },
+          "source": {
+            "type": ["string", "null"],
+            "description": "Where the value came from when the plan's own document does not print it (gap G1; e.g. a public CMS plan listing). Null or absent when the value is printed in the source document. Motivated by the SCAN Summary of Benefits, which prints no contract and plan number for either of its plans."
+          }
+        },
+        "required": ["system", "value"],
+        "additionalProperties": false
+      }
     },
     "plan_name": {
       "type": "string",
@@ -57,6 +80,80 @@
     "market": {
       "type": "string",
       "description": "Market segment (e.g., 'individual', 'individual_on_exchange', 'small_group', 'large_group', 'medicare_advantage', 'medicaid'). Not enforced as enum to allow adopter extension; see vocabularies/markets.json for the recommended values."
+    },
+    "service_area": {
+      "type": ["object", "null"],
+      "description": "Geographic service area the plan is sold in (closes gap G2 of the Medicare Advantage notes). Medicare Advantage plans are sold by county. Carry the counties as printed (e.g. Humana: 'Our service area includes the following county/counties in Florida: Hernando, Hillsborough, Pasco, Pinellas.'); fips is available when a machine-readable county code is known, but neither source document prints one.",
+      "properties": {
+        "state": {
+          "type": ["string", "null"],
+          "description": "Two-letter USPS state code (e.g. 'CA', 'FL')."
+        },
+        "counties": {
+          "type": "array",
+          "description": "Counties in the service area.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "County name as printed (e.g. 'Los Angeles')."
+              },
+              "fips": {
+                "type": ["string", "null"],
+                "description": "Five-digit county FIPS code, when known (gap G2). Null when the source document does not print one."
+              }
+            },
+            "required": ["name"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "premium": {
+      "type": ["object", "null"],
+      "description": "The plan premium (closes gap G3 of the Medicare Advantage notes). The CMS Summary of Benefits leads with the monthly premium; the ACA SBC leaves the premium out, which is why the field did not exist before v1.2.0. For Medicare Advantage this is the plan premium and does not include the Medicare Part B premium.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "description": "Premium amount."
+        },
+        "currency": {
+          "type": "string",
+          "default": "USD",
+          "description": "ISO 4217 currency code."
+        },
+        "period": {
+          "type": ["string", "null"],
+          "description": "Billing period (e.g. 'per_month')."
+        },
+        "notes": {
+          "type": ["string", "null"],
+          "description": "Free-text qualifier (e.g. 'You must continue to pay your Medicare Part B premium.')."
+        }
+      },
+      "required": ["amount"],
+      "additionalProperties": false
+    },
+    "part_b_premium_reduction": {
+      "type": ["object", "null"],
+      "description": "Medicare Part B premium reduction offered by the plan, when printed (part of gap G3 of the Medicare Advantage notes). When the document prints a qualified value (e.g. Humana's 'by up to $3'), leave amount null and quote the qualifier in notes; set amount only when the document prints a flat reduction.",
+      "properties": {
+        "amount": {
+          "type": ["number", "null"],
+          "description": "Flat reduction amount, when the document prints one. Null when the printed value is qualified."
+        },
+        "period": {
+          "type": ["string", "null"],
+          "description": "Period the reduction applies per (e.g. 'per_month')."
+        },
+        "notes": {
+          "type": ["string", "null"],
+          "description": "Verbatim qualifier from the document."
+        }
+      },
+      "additionalProperties": false
     },
     "network_tiers": {
       "type": "array",
@@ -125,6 +222,71 @@
       },
       "additionalProperties": false
     },
+    "pharmacy": {
+      "type": "object",
+      "description": "Pharmacy-specific accumulators and coverage stages (closes gap G4 of the Medicare Advantage notes). A Medicare Advantage plan with drug coverage runs a Part D deductible scoped to drug tiers (SCAN: 'You pay the full cost of your Tier 3 through Tier 5 drugs until you have paid $250') and a Part D out-of-pocket threshold separate from the medical maximum (both source documents: $2,100, after which the member pays $0), and neither fits the accumulators object. Shapes are inlined unchanged from the pharmacy module v0.2.1, of which this object is a strict subset; the module's other layers (formulary_tiers, pharmacy_networks, formulary_items, formulary_reference) are not yet wired into core. Typed as object only, not null, so that every pharmacy value core accepts is also valid under the module's own pharmacy object.",
+      "properties": {
+        "deductible": {
+          "type": "object",
+          "description": "Pharmacy deductible, separate from the medical deductible (gap G4). Same shape as pharmacy.deductible in the pharmacy module v0.2.1.",
+          "properties": {
+            "amount":   { "type": "number", "description": "Pharmacy deductible amount." },
+            "currency": { "type": "string", "default": "USD", "description": "ISO 4217 currency code." },
+            "period":   { "type": ["string", "null"], "description": "Accumulation period (e.g. 'per_calendar_year', 'per_plan_year')." },
+            "applies_to_tiers": {
+              "type": "array",
+              "description": "Drug tiers the deductible applies to, as the plan names them (e.g. 'Tier 3'). If omitted, applies to all tiers. When the pharmacy module is in use, these are pharmacy.formulary_tiers[].tier_id values.",
+              "items": { "type": "string" }
+            }
+          },
+          "required": ["amount"],
+          "additionalProperties": false
+        },
+        "out_of_pocket_max": {
+          "type": "object",
+          "description": "Pharmacy out-of-pocket maximum or threshold, separate from the medical maximum (gap G4; e.g. the Part D annual out-of-pocket threshold, $2,100 in both source documents, after which the member pays $0 for covered drugs). Same shape as pharmacy.out_of_pocket_max in the pharmacy module v0.2.1.",
+          "properties": {
+            "amount":   { "type": "number", "description": "Pharmacy out-of-pocket maximum amount." },
+            "currency": { "type": "string", "default": "USD", "description": "ISO 4217 currency code." },
+            "period":   { "type": ["string", "null"], "description": "Accumulation period (e.g. 'per_calendar_year')." }
+          },
+          "required": ["amount"],
+          "additionalProperties": false
+        },
+        "coverage_stages": {
+          "type": "array",
+          "description": "Coverage stages, primarily for Medicare Part D plans (gap G4). Post-2025 (IRA redesign): Deductible, Initial Coverage, Catastrophic Coverage. Same item shape as pharmacy.coverage_stages in the pharmacy module v0.2.1.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "stage_id": {
+                "type": "string",
+                "description": "Plan-defined identifier. Medicare Part D canonical values (post-2025 redesign): 'DEDUCTIBLE', 'INITIAL', 'CATASTROPHIC'. 'COVERAGE_GAP' remains valid for plan years before 2025."
+              },
+              "name": {
+                "type": "string",
+                "description": "Display name (e.g. 'Deductible', 'Initial Coverage', 'Catastrophic Coverage')."
+              },
+              "stage_type": {
+                "type": "string",
+                "description": "Kind of stage. Recommended Medicare Part D values (post-2025 redesign): 'deductible', 'initial', 'catastrophic'. 'coverage_gap' remains valid for plan years before 2025."
+              },
+              "applies_before_total_drug_cost": {
+                "type": ["number", "null"],
+                "description": "Total-drug-cost ceiling at which this stage ends (Medicare Part D)."
+              },
+              "applies_after_total_out_of_pocket": {
+                "type": ["number", "null"],
+                "description": "Total-OOP threshold at which this stage begins (Medicare Part D catastrophic)."
+              }
+            },
+            "required": ["stage_id", "name"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "benefits": {
       "type": "array",
       "description": "List of individual benefit items included in the plan.",
@@ -139,6 +301,10 @@
             "type": "string",
             "description": "Domain discriminator for this benefit, used to support modules. Recommended values: 'medical', 'pharmacy', 'dental', 'vision', 'behavioral_health', 'maternity', 'pediatric'. Not enforced as enum to allow adopter extension.",
             "default": "medical"
+          },
+          "coverage_basis": {
+            "type": ["string", "null"],
+            "description": "Which program pays for this benefit (closes gap G7 of the Medicare Advantage notes). Recommended values: 'medicare_covered' (a Medicare-covered service), 'supplemental_mandatory' (a plan-added benefit every member gets, e.g. Humana's 'Mandatory supplemental ... benefit' rows), 'supplemental_optional' (a plan-added benefit the member buys separately). Not enforced as enum to allow adopter extension. Orthogonal to benefit_type, which describes the service domain (medical, dental, hearing), not the paying program. Absent or null means the document does not make the distinction, which is the pre-v1.2.0 reading."
           },
           "category": {
             "type": "string",
@@ -193,17 +359,62 @@
                         "type": ["number", "null"],
                         "description": "Dollar amount for copay or flat deductible; null if not applicable."
                       },
+                      "amount_min": {
+                        "type": ["number", "null"],
+                        "description": "Lower bound of a dollar range, when the document prints a range instead of a single amount (gap G6 of the Medicare Advantage notes; e.g. SCAN restorative dental 'In-network only: $8-$395'). Use with amount_max and leave amount null."
+                      },
+                      "amount_max": {
+                        "type": ["number", "null"],
+                        "description": "Upper bound of a dollar range (gap G6). See amount_min."
+                      },
                       "rate": {
                         "type": ["number", "null"],
                         "description": "Percentage rate (0.0–1.0) for coinsurance; null if not applicable."
+                      },
+                      "rate_min": {
+                        "type": ["number", "null"],
+                        "description": "Lower bound of a coinsurance-rate range (0.0-1.0), when the document prints a range (gap G6 of the Medicare Advantage notes; e.g. SCAN Part B drugs '$0-20% of the Medicare-approved amount'). Use with rate_max and leave rate null."
+                      },
+                      "rate_max": {
+                        "type": ["number", "null"],
+                        "description": "Upper bound of a coinsurance-rate range (0.0-1.0) (gap G6). See rate_min."
                       },
                       "basis": {
                         "type": ["string", "null"],
                         "description": "Basis for cost share calculation (e.g. per_visit, per_day, per_test, allowed_amount)."
                       },
+                      "max_amount": {
+                        "type": ["number", "null"],
+                        "description": "Dollar cap on this cost-share step (gap G6 of the Medicare Advantage notes; e.g. Humana insulin '25% up to $35', SCAN Part B insulin 'No more than $35 for a one-month supply'). Pairs with rate or amount: the member pays the rate or amount, but never more than max_amount per max_basis."
+                      },
+                      "max_basis": {
+                        "type": ["string", "null"],
+                        "description": "Unit the cap applies per (e.g. 'per_prescription', 'per_one_month_supply') (gap G6). Only meaningful when max_amount is set."
+                      },
+                      "unit_range": {
+                        "type": ["object", "null"],
+                        "description": "The span of units this cost-share step applies to, when the amount changes with the unit count (closes gap G5 of the Medicare Advantage notes; e.g. Humana inpatient: '$50 copay per day for days 1-6' then '$0 copay per day for days 7-90'). The unit itself stays in basis (e.g. 'per_day'); this object carries only the bounds. Use one cost_shares step per range.",
+                        "properties": {
+                          "from": {
+                            "type": "integer",
+                            "description": "First unit the step applies to, inclusive."
+                          },
+                          "to": {
+                            "type": ["integer", "null"],
+                            "description": "Last unit the step applies to, inclusive (gap G5). Null when the document leaves the range open-ended."
+                          }
+                        },
+                        "required": ["from"],
+                        "additionalProperties": false
+                      },
                       "applies_to_deductible": {
                         "type": "boolean",
                         "default": false
+                      },
+                      "deductible_ref": {
+                        "type": ["string", "null"],
+                        "description": "Which deductible applies_to_deductible refers to, when the plan has more than one (gap G4 of the Medicare Advantage notes). Recommended values: 'medical', 'pharmacy' (the pharmacy.deductible, e.g. the Part D deductible on SCAN Tiers 3 to 5 and Humana Tiers 4 and 5). Absent or null means the plan's medical deductible, which is the pre-v1.2.0 reading.",
+                        "default": null
                       },
                       "applies_to_moop": {
                         "type": "boolean",
@@ -243,7 +454,19 @@
                 },
                 "period": {
                   "type": ["string", "null"],
-                  "description": "Period over which the limit applies. Recommended values: per_plan_year, per_calendar_year, per_benefit_period, per_lifetime. The v1.1.0 examples per_year and per_episode remain valid; prefer the more specific values when the source document distinguishes plan year from calendar year."
+                  "description": "Period over which the limit applies. Recommended values: per_plan_year, per_calendar_year, per_benefit_period, per_lifetime, per_12_months (a rolling 12-month window; added in v1.2.0 with gap G11 of the Medicare Advantage notes, e.g. SCAN's 'every 12 months' for exams and hearing aids). The v1.1.0 examples per_year and per_episode remain valid; prefer the more specific values when the source document distinguishes plan year from calendar year."
+                },
+                "scope": {
+                  "type": ["string", "null"],
+                  "description": "The entity this limit counts against (closes gap G11 of the Medicare Advantage notes; e.g. 'per_ear' for Humana's hearing aid limit of 1 per ear, 'per_trip', 'per_admission'). Distinct from type, which is the unit being counted (visits, days, aids). Absent or null means the limit counts against the member over the period, which is the pre-v1.2.0 reading."
+                },
+                "shared_limit_id": {
+                  "type": ["string", "null"],
+                  "description": "Shared identifier for one limit counted across several benefits (gap G11 of the Medicare Advantage notes; e.g. SCAN routine acupuncture and routine chiropractic share 'up to 30 visits per year combined'). Limits carrying the same shared_limit_id on different benefits are a single count, not one count each; a consumer that sums limits must count each shared_limit_id once. Extends the limit-scope open item in docs/carin-dic-reconciliation.md section 5."
+                },
+                "carryover": {
+                  "type": ["string", "null"],
+                  "description": "What happens to the unused balance of an allowance-style limit at the end of its period (closes gap G9 of the Medicare Advantage notes). Recommended values: 'none' (expires, e.g. Humana's over-the-counter allowance 'expires at the end of the quarter'), 'next_period' (carries into the next period), 'within_year' (carries between periods within the year but not across years, e.g. SCAN's over-the-counter allowance). Not enforced as enum. Only meaningful on dollar allowances; absent or null means the document does not state a carryover rule."
                 },
                 "raw_text": {
                   "type": ["string", "null"],
@@ -279,7 +502,11 @@
           },
           "moop_applicability": {
             "type": ["string", "null"],
-            "description": "Specifies whether cost sharing for this benefit counts toward the maximum out-of-pocket (MOOP). Values may include plan_default, include, or exclude."
+            "description": "Specifies whether cost sharing for this benefit counts toward the maximum out-of-pocket (MOOP). Values may include plan_default, include, or exclude. An explicit null (v1.2.0, gap G8 of the Medicare Advantage notes) means the source document does not state the treatment; consumers must treat the benefit's MOOP handling as unknown rather than applying the applies_to_moop default (e.g. SCAN's Part B drug rows, where page 3 excludes 'prescription drugs' from the maximum without saying whether that includes Part B drugs). An absent field keeps its pre-v1.2.0 meaning of plan_default."
+          },
+          "alternative_group": {
+            "type": ["string", "null"],
+            "description": "Shared identifier for benefits the member chooses between (closes gap G10 of the Medicare Advantage notes; e.g. Humana eyewear is a $300 allowance 'or 2 pairs of select eyeglasses per year at no cost', modeled as two benefits carrying the same alternative_group). A consumer that sums benefits must count at most one benefit per group. Absent or null means the benefit is not part of an either/or choice."
           },
           "coding_hints": {
             "type": "object",
@@ -295,6 +522,11 @@
               }
             },
             "additionalProperties": false
+          },
+          "source_references": {
+            "type": "array",
+            "description": "Citations back to the source document for this benefit (closes gap G14 of the Medicare Advantage notes). Same shape as the plan-level source_references; use this to bind an excerpt to the benefit it evidences instead of relying on the plan-level list's ordering. Motivated by the CMS Summary of Benefits documents, whose 70-plus benefit rows make a positional link fragile.",
+            "items": { "$ref": "#/$defs/source_reference" }
           }
         },
         "required": ["benefit_id", "category", "service_name", "network_cost_shares"],
@@ -304,15 +536,7 @@
     "source_references": {
       "type": "array",
       "description": "Optional citations back to the source document used to populate this plan.",
-      "items": {
-        "type": "object",
-        "properties": {
-          "page_number": { "type": "integer" },
-          "page_range":  { "type": "string" },
-          "excerpt":     { "type": "string" }
-        },
-        "additionalProperties": false
-      }
+      "items": { "$ref": "#/$defs/source_reference" }
     },
     "schema_version": {
       "type": "string",
@@ -386,6 +610,16 @@
         }
       },
       "required": ["amount"],
+      "additionalProperties": false
+    },
+    "source_reference": {
+      "type": "object",
+      "description": "A citation back to the source document: a page and an excerpt. Used by the plan-level source_references and, since v1.2.0 (gap G14 of the Medicare Advantage notes), by benefits[].source_references.",
+      "properties": {
+        "page_number": { "type": "integer" },
+        "page_range":  { "type": "string" },
+        "excerpt":     { "type": "string" }
+      },
       "additionalProperties": false
     }
   }
