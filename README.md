@@ -20,6 +20,9 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 - Example plans: `examples/`  
 - Vocabularies (canonical benefits, categories, markets, plan types): `vocabularies/`  
 - FHIR alignment: `docs/fhir-alignment.md`  
+- FHIR InsurancePlan converter (CARIN SBC profile): `scripts/to-insuranceplan.js`, spec `docs/specs/insuranceplan-converter.md`  
+- The 10 examples as FHIR InsurancePlan: `examples/fhir/`, published at https://benefitplanstandard.org/fhir/index.json  
+- CARIN Digital Insurance Card reconciliation: `docs/carin-dic-reconciliation.md`  
 - Modules: `modules/README.md`  
 - Governance: `docs/governance.md`  
 - Roadmap: `docs/roadmap.md`  
@@ -44,6 +47,7 @@ This repository contains:
 - Example normalized plans across 9 carriers  
 - Recommended vocabularies (canonical benefits, categories, markets, plan types)  
 - FHIR R4 `InsurancePlan` alignment guide  
+- A converter from BPS to FHIR R4 `InsurancePlan` in the CARIN Digital Insurance Card SBC InsurancePlan profile (STU 2 ballot), with the 10 examples converted and validated  
 - Module definitions (pharmacy, behavioral health, dental/vision, etc.)  
 - Governance guidelines and roadmap  
 
@@ -63,11 +67,16 @@ schema/
   └── v1.2.0/
       └── benefit-plan.schema.json   ← draft
 docs/
+  ├── carin-dic-reconciliation.md
   ├── changelog.md
   ├── fhir-alignment.md
   ├── governance.md
-  └── roadmap.md
+  ├── medicare-advantage-notes.md
+  ├── roadmap.md
+  └── specs/
+      └── insuranceplan-converter.md ← the FHIR converter spec
 examples/
+  ├── README.md
   ├── aetna_example.json
   ├── aetna_ppo5000_example.json
   ├── ambetter_example.json
@@ -78,7 +87,14 @@ examples/
   ├── kaiser_example.json
   ├── scan_example.json
   ├── united_example.json
+  ├── fhir/                          ← each example as a FHIR InsurancePlan Bundle, plus VALIDATION.md
   └── sources/                       ← the source PDF each example comes from
+fhir/
+  ├── carin-sbc-crosswalk.json       ← BPS canonical keys to CARIN SBC benefit codes
+  └── definitions/                   ← BPS extension StructureDefinitions and CodeSystem
+scripts/
+  ├── validate.js                    ← schema and vocabulary validation
+  └── to-insuranceplan.js            ← BPS to FHIR InsurancePlan converter
 vocabularies/
   ├── canonical-benefits.json
   ├── categories.json
@@ -119,9 +135,9 @@ Example normalized files are provided in:
 /examples
 ```
 
-These examples demonstrate how real-world SBC/EOC plan structures map into the standardized model.
+These examples demonstrate how real-world plan documents (the SBC and the CMS Summary of Benefits) map into the standardized model. See [`examples/README.md`](examples/README.md).
 
-The eight SBC examples (`aetna`, `aetna_ppo5000`, `ambetter`, `bluecross`, `cigna`, `gatorcare`, `kaiser`, `united`) are pipeline output, regenerated from the source Summary of Benefits and Coverage documents and verified value by value against them. The two Medicare Advantage examples (`scan_example.json` and `humana_example.json`) are different: they are keyed by hand from their CMS Summary of Benefits documents, verified value by value against the cited pages, and they use fields added in the v1.2.0 draft, so they validate against that draft only. See `docs/medicare-advantage-notes.md`.
+The eight SBC examples (`aetna`, `aetna_ppo5000`, `ambetter`, `bluecross`, `cigna`, `gatorcare`, `kaiser`, `united`) are generated from the source Summary of Benefits and Coverage documents and verified value by value against them. The two Medicare Advantage examples (`scan_example.json` and `humana_example.json`) are different: they are keyed by hand from their CMS Summary of Benefits documents, verified value by value against the cited pages, and they use fields added in the v1.2.0 draft, so they validate against that draft only. See `docs/medicare-advantage-notes.md`.
 
 ---
 
@@ -228,6 +244,23 @@ if (!validate(plan)) {
   console.log("Valid according to Benefit Plan Standard v1.1.0");
 }
 ```
+
+### Converting a plan to FHIR InsurancePlan
+
+`scripts/to-insuranceplan.js` converts a BPS file (v1.1.0 or the v1.2.0 draft) into a FHIR R4 collection `Bundle` holding one `InsurancePlan` and the `Organization` it references. The `InsurancePlan` targets the CARIN Digital Insurance Card SBC InsurancePlan profile (`sbc-insurance-plan`, package `hl7.fhir.us.insurance-card#2.0.0-ballot`, draft). The converter makes no network calls and keeps no state, and the same input always gives the same output.
+
+```bash
+node scripts/to-insuranceplan.js examples/aetna_example.json > aetna.insuranceplan.json
+node --test scripts/to-insuranceplan.test.js     # checks output against the files in examples/fhir/
+```
+
+The 10 examples are already converted in [`examples/fhir/`](examples/fhir/) and validate against the CARIN package with 0 errors ([`VALIDATION.md`](examples/fhir/VALIDATION.md)). They are also published as static files:
+
+- Index of all 10: https://benefitplanstandard.org/fhir/index.json
+- One plan, for example: https://benefitplanstandard.org/fhir/InsurancePlan/aetna-ppo-1500-80-50.json
+- Docs page: https://benefitplanstandard.org/docs/specification/fhir-insuranceplan
+
+Two limits to know. The SBC benefit category binding has 29 codes, so benefits outside them (home health care, and most Medicare Advantage benefits) are listed by name in a `bps-unmapped-benefit` extension without their cost sharing. And the 8 SBC examples carry page references at the plan level only. The mapping, including what is lossy, is in [`docs/specs/insuranceplan-converter.md`](docs/specs/insuranceplan-converter.md).
 
 ---
 
