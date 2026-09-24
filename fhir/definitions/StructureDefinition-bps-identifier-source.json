@@ -1,0 +1,54 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "bps-identifier-source",
+  "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-identifier-source",
+  "version": "0.1.0",
+  "name": "BPSIdentifierSource",
+  "title": "BPS Identifier Source",
+  "status": "draft",
+  "experimental": true,
+  "publisher": "Benefit Plan Standard",
+  "description": "Where a regulator-assigned plan identifier came from when the plan document does not print it (BPS plan_identifiers[].source, v1.2.0).",
+  "fhirVersion": "4.0.1",
+  "kind": "complex-type",
+  "abstract": false,
+  "context": [
+    {
+      "type": "element",
+      "expression": "Identifier"
+    }
+  ],
+  "type": "Extension",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Extension",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Extension",
+        "path": "Extension",
+        "short": "BPS Identifier Source",
+        "definition": "Where a regulator-assigned plan identifier came from when the plan document does not print it (BPS plan_identifiers[].source, v1.2.0)."
+      },
+      {
+        "id": "Extension.extension",
+        "path": "Extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.url",
+        "path": "Extension.url",
+        "fixedUri": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-identifier-source"
+      },
+      {
+        "id": "Extension.value[x]",
+        "path": "Extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      }
+    ]
+  }
+}

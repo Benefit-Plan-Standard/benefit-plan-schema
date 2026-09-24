@@ -1,0 +1,493 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "bps-cost-share",
+  "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share",
+  "version": "0.1.0",
+  "name": "BPSCostShare",
+  "title": "BPS Cost Share Detail",
+  "status": "draft",
+  "experimental": true,
+  "publisher": "Benefit Plan Standard",
+  "description": "Benefit Plan Standard cost-share step fields with no element in the SBC InsurancePlan profile. Rates are percentages (0 to 100).",
+  "fhirVersion": "4.0.1",
+  "kind": "complex-type",
+  "abstract": false,
+  "context": [
+    {
+      "type": "element",
+      "expression": "InsurancePlan.plan.specificCost.benefit.cost"
+    }
+  ],
+  "type": "Extension",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Extension",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Extension",
+        "path": "Extension",
+        "short": "BPS Cost Share Detail",
+        "definition": "Benefit Plan Standard cost-share step fields with no element in the SBC InsurancePlan profile. Rates are percentages (0 to 100)."
+      },
+      {
+        "id": "Extension.extension",
+        "path": "Extension.extension",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "closed"
+        },
+        "min": 1
+      },
+      {
+        "id": "Extension.extension:tierId",
+        "path": "Extension.extension",
+        "sliceName": "tierId",
+        "short": "BPS network_cost_shares[].tier_id the entry is keyed to.",
+        "definition": "BPS network_cost_shares[].tier_id the entry is keyed to.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:tierId.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:tierId.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "tierId"
+      },
+      {
+        "id": "Extension.extension:tierId.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:sequence",
+        "path": "Extension.extension",
+        "sliceName": "sequence",
+        "short": "BPS cost_shares[].sequence.",
+        "definition": "BPS cost_shares[].sequence.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:sequence.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:sequence.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "sequence"
+      },
+      {
+        "id": "Extension.extension:sequence.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "integer"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:basis",
+        "path": "Extension.extension",
+        "sliceName": "basis",
+        "short": "BPS cost_shares[].basis (e.g. per_visit, allowed_amount).",
+        "definition": "BPS cost_shares[].basis (e.g. per_visit, allowed_amount).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:basis.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:basis.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "basis"
+      },
+      {
+        "id": "Extension.extension:basis.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:appliesToDeductible",
+        "path": "Extension.extension",
+        "sliceName": "appliesToDeductible",
+        "short": "BPS applies_to_deductible, carried here only when the DeductibleApplies extension is withheld because deductibleRef is pharmacy.",
+        "definition": "BPS applies_to_deductible, carried here only when the DeductibleApplies extension is withheld because deductibleRef is pharmacy.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:appliesToDeductible.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:appliesToDeductible.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "appliesToDeductible"
+      },
+      {
+        "id": "Extension.extension:appliesToDeductible.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "boolean"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:appliesToMoop",
+        "path": "Extension.extension",
+        "sliceName": "appliesToMoop",
+        "short": "BPS cost_shares[].applies_to_moop.",
+        "definition": "BPS cost_shares[].applies_to_moop.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:appliesToMoop.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:appliesToMoop.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "appliesToMoop"
+      },
+      {
+        "id": "Extension.extension:appliesToMoop.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "boolean"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:deductibleRef",
+        "path": "Extension.extension",
+        "sliceName": "deductibleRef",
+        "short": "BPS cost_shares[].deductible_ref (v1.2.0).",
+        "definition": "BPS cost_shares[].deductible_ref (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:deductibleRef.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:deductibleRef.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "deductibleRef"
+      },
+      {
+        "id": "Extension.extension:deductibleRef.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:amountMin",
+        "path": "Extension.extension",
+        "sliceName": "amountMin",
+        "short": "BPS amount_min (v1.2.0).",
+        "definition": "BPS amount_min (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:amountMin.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:amountMin.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "amountMin"
+      },
+      {
+        "id": "Extension.extension:amountMin.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "decimal"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:amountMax",
+        "path": "Extension.extension",
+        "sliceName": "amountMax",
+        "short": "BPS amount_max (v1.2.0).",
+        "definition": "BPS amount_max (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:amountMax.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:amountMax.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "amountMax"
+      },
+      {
+        "id": "Extension.extension:amountMax.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "decimal"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:rateMin",
+        "path": "Extension.extension",
+        "sliceName": "rateMin",
+        "short": "BPS rate_min as a percentage (v1.2.0).",
+        "definition": "BPS rate_min as a percentage (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:rateMin.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:rateMin.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "rateMin"
+      },
+      {
+        "id": "Extension.extension:rateMin.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "decimal"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:rateMax",
+        "path": "Extension.extension",
+        "sliceName": "rateMax",
+        "short": "BPS rate_max as a percentage (v1.2.0).",
+        "definition": "BPS rate_max as a percentage (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:rateMax.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:rateMax.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "rateMax"
+      },
+      {
+        "id": "Extension.extension:rateMax.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "decimal"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:maxAmount",
+        "path": "Extension.extension",
+        "sliceName": "maxAmount",
+        "short": "BPS max_amount (v1.2.0).",
+        "definition": "BPS max_amount (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:maxAmount.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:maxAmount.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "maxAmount"
+      },
+      {
+        "id": "Extension.extension:maxAmount.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "decimal"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:maxBasis",
+        "path": "Extension.extension",
+        "sliceName": "maxBasis",
+        "short": "BPS max_basis (v1.2.0).",
+        "definition": "BPS max_basis (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:maxBasis.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:maxBasis.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "maxBasis"
+      },
+      {
+        "id": "Extension.extension:maxBasis.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:unitRangeFrom",
+        "path": "Extension.extension",
+        "sliceName": "unitRangeFrom",
+        "short": "BPS unit_range.from (v1.2.0).",
+        "definition": "BPS unit_range.from (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:unitRangeFrom.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:unitRangeFrom.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "unitRangeFrom"
+      },
+      {
+        "id": "Extension.extension:unitRangeFrom.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "integer"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:unitRangeTo",
+        "path": "Extension.extension",
+        "sliceName": "unitRangeTo",
+        "short": "BPS unit_range.to (v1.2.0).",
+        "definition": "BPS unit_range.to (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:unitRangeTo.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:unitRangeTo.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "unitRangeTo"
+      },
+      {
+        "id": "Extension.extension:unitRangeTo.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "integer"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:note",
+        "path": "Extension.extension",
+        "sliceName": "note",
+        "short": "BPS cost_shares[].notes and network_cost_shares[].notes.",
+        "definition": "BPS cost_shares[].notes and network_cost_shares[].notes.",
+        "min": 0,
+        "max": "*"
+      },
+      {
+        "id": "Extension.extension:note.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:note.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "note"
+      },
+      {
+        "id": "Extension.extension:note.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.url",
+        "path": "Extension.url",
+        "fixedUri": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+      },
+      {
+        "id": "Extension.value[x]",
+        "path": "Extension.value[x]",
+        "max": "0"
+      }
+    ]
+  }
+}

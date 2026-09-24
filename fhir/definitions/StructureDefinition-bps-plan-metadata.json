@@ -1,0 +1,203 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "bps-plan-metadata",
+  "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-plan-metadata",
+  "version": "0.1.0",
+  "name": "BPSPlanMetadata",
+  "title": "BPS Plan Metadata",
+  "status": "draft",
+  "experimental": true,
+  "publisher": "Benefit Plan Standard",
+  "description": "Benefit Plan Standard plan-level fields with no element in the SBC InsurancePlan profile: schema version, plan year, market segment and service area.",
+  "fhirVersion": "4.0.1",
+  "kind": "complex-type",
+  "abstract": false,
+  "context": [
+    {
+      "type": "element",
+      "expression": "InsurancePlan"
+    }
+  ],
+  "type": "Extension",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Extension",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Extension",
+        "path": "Extension",
+        "short": "BPS Plan Metadata",
+        "definition": "Benefit Plan Standard plan-level fields with no element in the SBC InsurancePlan profile: schema version, plan year, market segment and service area."
+      },
+      {
+        "id": "Extension.extension",
+        "path": "Extension.extension",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "closed"
+        },
+        "min": 1
+      },
+      {
+        "id": "Extension.extension:schemaVersion",
+        "path": "Extension.extension",
+        "sliceName": "schemaVersion",
+        "short": "BPS schema_version of the source document.",
+        "definition": "BPS schema_version of the source document.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:schemaVersion.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:schemaVersion.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "schemaVersion"
+      },
+      {
+        "id": "Extension.extension:schemaVersion.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:planYear",
+        "path": "Extension.extension",
+        "sliceName": "planYear",
+        "short": "BPS plan_year.",
+        "definition": "BPS plan_year.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:planYear.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:planYear.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "planYear"
+      },
+      {
+        "id": "Extension.extension:planYear.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "integer"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:market",
+        "path": "Extension.extension",
+        "sliceName": "market",
+        "short": "BPS market (e.g. large_group, individual).",
+        "definition": "BPS market (e.g. large_group, individual).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:market.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:market.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "market"
+      },
+      {
+        "id": "Extension.extension:market.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:serviceAreaState",
+        "path": "Extension.extension",
+        "sliceName": "serviceAreaState",
+        "short": "BPS service_area.state (v1.2.0).",
+        "definition": "BPS service_area.state (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:serviceAreaState.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:serviceAreaState.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "serviceAreaState"
+      },
+      {
+        "id": "Extension.extension:serviceAreaState.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:serviceAreaCounty",
+        "path": "Extension.extension",
+        "sliceName": "serviceAreaCounty",
+        "short": "BPS service_area.counties[].name (v1.2.0), one per county.",
+        "definition": "BPS service_area.counties[].name (v1.2.0), one per county.",
+        "min": 0,
+        "max": "*"
+      },
+      {
+        "id": "Extension.extension:serviceAreaCounty.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:serviceAreaCounty.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "serviceAreaCounty"
+      },
+      {
+        "id": "Extension.extension:serviceAreaCounty.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.url",
+        "path": "Extension.url",
+        "fixedUri": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-plan-metadata"
+      },
+      {
+        "id": "Extension.value[x]",
+        "path": "Extension.value[x]",
+        "max": "0"
+      }
+    ]
+  }
+}

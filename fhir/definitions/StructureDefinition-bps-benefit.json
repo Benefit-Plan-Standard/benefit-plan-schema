@@ -1,0 +1,290 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "bps-benefit",
+  "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit",
+  "version": "0.1.0",
+  "name": "BPSBenefit",
+  "title": "BPS Benefit Detail",
+  "status": "draft",
+  "experimental": true,
+  "publisher": "Benefit Plan Standard",
+  "description": "Benefit Plan Standard benefit fields with no element in the SBC InsurancePlan profile.",
+  "fhirVersion": "4.0.1",
+  "kind": "complex-type",
+  "abstract": false,
+  "context": [
+    {
+      "type": "element",
+      "expression": "InsurancePlan.coverage.benefit"
+    }
+  ],
+  "type": "Extension",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Extension",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Extension",
+        "path": "Extension",
+        "short": "BPS Benefit Detail",
+        "definition": "Benefit Plan Standard benefit fields with no element in the SBC InsurancePlan profile."
+      },
+      {
+        "id": "Extension.extension",
+        "path": "Extension.extension",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "closed"
+        },
+        "min": 1
+      },
+      {
+        "id": "Extension.extension:benefitId",
+        "path": "Extension.extension",
+        "sliceName": "benefitId",
+        "short": "BPS benefits[].benefit_id.",
+        "definition": "BPS benefits[].benefit_id.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:benefitId.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:benefitId.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "benefitId"
+      },
+      {
+        "id": "Extension.extension:benefitId.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:benefitType",
+        "path": "Extension.extension",
+        "sliceName": "benefitType",
+        "short": "BPS benefits[].benefit_type.",
+        "definition": "BPS benefits[].benefit_type.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:benefitType.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:benefitType.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "benefitType"
+      },
+      {
+        "id": "Extension.extension:benefitType.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:category",
+        "path": "Extension.extension",
+        "sliceName": "category",
+        "short": "BPS benefits[].category.",
+        "definition": "BPS benefits[].category.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:category.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:category.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "category"
+      },
+      {
+        "id": "Extension.extension:category.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:rawLabel",
+        "path": "Extension.extension",
+        "sliceName": "rawLabel",
+        "short": "BPS benefits[].raw_label, verbatim.",
+        "definition": "BPS benefits[].raw_label, verbatim.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:rawLabel.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:rawLabel.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "rawLabel"
+      },
+      {
+        "id": "Extension.extension:rawLabel.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:placeOfService",
+        "path": "Extension.extension",
+        "sliceName": "placeOfService",
+        "short": "BPS benefits[].place_of_service[].",
+        "definition": "BPS benefits[].place_of_service[].",
+        "min": 0,
+        "max": "*"
+      },
+      {
+        "id": "Extension.extension:placeOfService.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:placeOfService.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "placeOfService"
+      },
+      {
+        "id": "Extension.extension:placeOfService.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:moopApplicability",
+        "path": "Extension.extension",
+        "sliceName": "moopApplicability",
+        "short": "BPS benefits[].moop_applicability.",
+        "definition": "BPS benefits[].moop_applicability.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:moopApplicability.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:moopApplicability.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "moopApplicability"
+      },
+      {
+        "id": "Extension.extension:moopApplicability.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:coverageBasis",
+        "path": "Extension.extension",
+        "sliceName": "coverageBasis",
+        "short": "BPS benefits[].coverage_basis (v1.2.0).",
+        "definition": "BPS benefits[].coverage_basis (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:coverageBasis.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:coverageBasis.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "coverageBasis"
+      },
+      {
+        "id": "Extension.extension:coverageBasis.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:alternativeGroup",
+        "path": "Extension.extension",
+        "sliceName": "alternativeGroup",
+        "short": "BPS benefits[].alternative_group (v1.2.0).",
+        "definition": "BPS benefits[].alternative_group (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:alternativeGroup.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:alternativeGroup.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "alternativeGroup"
+      },
+      {
+        "id": "Extension.extension:alternativeGroup.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.url",
+        "path": "Extension.url",
+        "fixedUri": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+      },
+      {
+        "id": "Extension.value[x]",
+        "path": "Extension.value[x]",
+        "max": "0"
+      }
+    ]
+  }
+}

@@ -15,7 +15,7 @@
     {
       "tier_id": "IN",
       "name": "In-Network",
-      "description": "The document prices a Designated Network and a Network column separately; this extraction carries the 'you will pay the least' (Designated) values where they differ. See source_references."
+      "description": "The document prices a Designated Network and a Network column separately; this file carries the Designated Network ('you will pay the least') values where they differ. See source_references."
     },
     {
       "tier_id": "OUT",
@@ -1218,7 +1218,7 @@
     },
     {
       "page_number": 1,
-      "excerpt": "What is the out-of-pocket limit for this plan? Designated Network and Network: $4,500 Individual / $9,000 Family; out-of-Network: $10,000 Individual / $20,000 Family. (The extraction carries the $9,000 family limit; the $4,500 individual limit is stated here and was omitted rather than misassigned from a fragmented source cell.)"
+      "excerpt": "What is the out-of-pocket limit for this plan? Designated Network and Network: $4,500 Individual / $9,000 Family; out-of-Network: $10,000 Individual / $20,000 Family. (This file carries the $9,000 family limit and not the $4,500 individual limit.)"
     },
     {
       "page_number": 2,
@@ -1226,7 +1226,7 @@
     },
     {
       "page_number": 2,
-      "excerpt": "Specialist visit: Designated Network $30 copay per visit / Network Provider $60 copay per visit; 40% coinsurance out-of-Network. (The extraction carries the Designated Network value.)"
+      "excerpt": "Specialist visit: Designated Network $30 copay per visit / Network Provider $60 copay per visit; 40% coinsurance out-of-Network. (This file carries the Designated Network value.)"
     },
     {
       "page_number": 2,
@@ -1234,15 +1234,15 @@
     },
     {
       "page_number": 2,
-      "excerpt": "Diagnostic test: Designated Network Lab: 0% coinsurance / Free Standing/Office X-ray: $30 copay per service; 40% coinsurance out-of-Network. (Both sub-service prices are stated here; the extraction carries them merged in one entry \u2014 a documented split-value limitation.)"
+      "excerpt": "Diagnostic test: Designated Network Lab: 0% coinsurance / Free Standing/Office X-ray: $30 copay per service; 40% coinsurance out-of-Network. (The document prints the lab and x-ray prices separately; this file carries both in one in-network entry, as a $30 copay step and a 0% coinsurance step.)"
     },
     {
       "page_number": 2,
-      "excerpt": "Imaging (CT/PET scans, MRIs): Designated Network $150 copay per service / Free Standing/Office $500 copay per service; 40% coinsurance out-of-Network. (The extraction carries the Designated Network value.)"
+      "excerpt": "Imaging (CT/PET scans, MRIs): Designated Network $150 copay per service / Free Standing/Office $500 copay per service; 40% coinsurance out-of-Network. (This file carries the Designated Network value.)"
     },
     {
       "page_number": 3,
-      "excerpt": "Tier 1 - Your Lowest-Cost Option: Retail: $10 copay. Tier 2 - Your Midrange-Cost Option: Retail: $40 copay. Tier 3 - Your Midrange-Cost Option: Retail: $75 copay. Tier 4 - Additional High-Cost Options: Retail: $125 copay. (Mail-order and specialty-pharmacy prices are stated in the document; the extraction carries the retail values.)"
+      "excerpt": "Tier 1 - Your Lowest-Cost Option: Retail: $10 copay. Tier 2 - Your Midrange-Cost Option: Retail: $40 copay. Tier 3 - Your Midrange-Cost Option: Retail: $75 copay. Tier 4 - Additional High-Cost Options: Retail: $125 copay. (The document also prints mail-order and specialty-pharmacy prices; this file carries only the retail values.)"
     },
     {
       "page_number": 4,

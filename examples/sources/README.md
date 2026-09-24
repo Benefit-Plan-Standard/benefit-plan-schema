@@ -23,18 +23,13 @@ its layout. File names end in `_sbc` or `_summary_of_benefits` so the two are ne
 | `scan_classic_prime_hmo_los_angeles_2026_summary_of_benefits.pdf` | SCAN Classic (HMO) and SCAN Prime (HMO), Los Angeles County (Medicare Advantage Summary of Benefits, 2026; one document for both plans) | `../scan_example.json` (SCAN Classic only) |
 | `humana_gold_plus_h1036_025_hmo_2026_summary_of_benefits.pdf` | Humana Gold Plus H1036-025 (HMO), Hernando, Hillsborough, Pasco and Pinellas counties, Florida (Medicare Advantage Summary of Benefits, 2026) | `../humana_example.json` |
 
-Every SBC example in this folder's parent directory is regenerated directly from these
-documents through the reference implementation and verified
-value-by-value against the source PDF. The JSON, the page references, and the source
-line up exactly; values the pipeline does not extract are omitted rather than filled
-in by hand, and each example's `source_references` quote the passages that document
-any omission.
-
-Regenerated and verified so far: `aetna_example.json`, `aetna_ppo5000_example.json`,
-`cigna_example.json`, `kaiser_example.json`, `ambetter_example.json`, `bluecross_example.json`,
-`gatorcare_example.json`, `united_example.json`
-(every cost-share value checked against the SBC page by page; values the pipeline
-does not extract are omitted rather than filled in by hand).
+Every SBC example in this folder's parent directory is verified value by value against
+its source PDF: `aetna_example.json`, `aetna_ppo5000_example.json`, `cigna_example.json`,
+`kaiser_example.json`, `ambetter_example.json`, `bluecross_example.json`,
+`gatorcare_example.json`, `united_example.json`. The JSON, the page references, and the
+source line up exactly. Where a document prints a value an example does not carry, the
+value is omitted rather than filled in, and the example's `source_references` quote the
+passage that prints it.
 
 The two Medicare Advantage examples, `scan_example.json` and `humana_example.json`, were
 built by hand from their Summary of Benefits and checked value by value in a separate pass.
@@ -43,8 +38,6 @@ a review then compared every benefit with the page images. They use the v1.2.0 d
 How they were built, what didn't fit, and the verification record are in
 [`../../docs/medicare-advantage-notes.md`](../../docs/medicare-advantage-notes.md).
 
-Known, documented imperfection in `kaiser_example.json`: the SBC prices the
-Diagnostic test row as "X-ray: $75 / Lab tests: $40" in one cell; the pipeline
-carries a single copay per benefit and kept the x-ray value. The full split is
-quoted in that example's source_references, and the model change to represent
-priced sub-services is tracked in the reference implementation's backlog.
+One known gap in `kaiser_example.json`: the SBC prices the Diagnostic test row as
+"X-ray: $75 / Lab tests: $40" in one cell, and the example carries only the $75 x-ray
+value. The full row is quoted in that example's `source_references`.

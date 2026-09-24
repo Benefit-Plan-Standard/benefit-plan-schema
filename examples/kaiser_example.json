@@ -857,7 +857,7 @@
     },
     {
       "page_number": 2,
-      "excerpt": "Diagnostic test (x-ray, blood work): X-ray: $75 / encounter; Lab tests: $40 / encounter. (Known extraction limitation: the pipeline carries a single copay per benefit and kept the x-ray value; the $40 lab value is visible here.)"
+      "excerpt": "Diagnostic test (x-ray, blood work): X-ray: $75 / encounter; Lab tests: $40 / encounter. (The document also prints a $40 lab copay; this file carries only the x-ray value.)"
     },
     {
       "page_number": 2,
@@ -877,7 +877,7 @@
     },
     {
       "page_number": 2,
-      "excerpt": "Specialty drugs (Tier 4): 20% coinsurance up to $250 / prescription. (The per-fill cap is stated in the document; the pipeline records the coinsurance and omits rather than misstates the cap.)"
+      "excerpt": "Specialty drugs (Tier 4): 20% coinsurance up to $250 / prescription. (The document also prints a $250 per-prescription cap; this file carries only the 20% coinsurance.)"
     },
     {
       "page_number": 2,

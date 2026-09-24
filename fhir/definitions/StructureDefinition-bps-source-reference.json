@@ -1,0 +1,149 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "bps-source-reference",
+  "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference",
+  "version": "0.1.0",
+  "name": "BPSSourceReference",
+  "title": "BPS Source Reference",
+  "status": "draft",
+  "experimental": true,
+  "publisher": "Benefit Plan Standard",
+  "description": "A citation from a Benefit Plan Standard document back to its source document: a page and an excerpt. On InsurancePlan it carries the BPS plan-level source_references; on coverage.benefit it carries benefits[].source_references (BPS v1.2.0). A plan-level reference is never attached to a benefit.",
+  "fhirVersion": "4.0.1",
+  "kind": "complex-type",
+  "abstract": false,
+  "context": [
+    {
+      "type": "element",
+      "expression": "InsurancePlan"
+    },
+    {
+      "type": "element",
+      "expression": "InsurancePlan.coverage.benefit"
+    }
+  ],
+  "type": "Extension",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Extension",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Extension",
+        "path": "Extension",
+        "short": "BPS Source Reference",
+        "definition": "A citation from a Benefit Plan Standard document back to its source document: a page and an excerpt. On InsurancePlan it carries the BPS plan-level source_references; on coverage.benefit it carries benefits[].source_references (BPS v1.2.0). A plan-level reference is never attached to a benefit."
+      },
+      {
+        "id": "Extension.extension",
+        "path": "Extension.extension",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "closed"
+        },
+        "min": 1
+      },
+      {
+        "id": "Extension.extension:pageNumber",
+        "path": "Extension.extension",
+        "sliceName": "pageNumber",
+        "short": "Page number in the source document.",
+        "definition": "Page number in the source document.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:pageNumber.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:pageNumber.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "pageNumber"
+      },
+      {
+        "id": "Extension.extension:pageNumber.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "integer"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:pageRange",
+        "path": "Extension.extension",
+        "sliceName": "pageRange",
+        "short": "Page or line range in the source document, as recorded in BPS.",
+        "definition": "Page or line range in the source document, as recorded in BPS.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:pageRange.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:pageRange.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "pageRange"
+      },
+      {
+        "id": "Extension.extension:pageRange.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:excerpt",
+        "path": "Extension.extension",
+        "sliceName": "excerpt",
+        "short": "Excerpt from the source document.",
+        "definition": "Excerpt from the source document.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:excerpt.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:excerpt.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "excerpt"
+      },
+      {
+        "id": "Extension.extension:excerpt.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.url",
+        "path": "Extension.url",
+        "fixedUri": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+      },
+      {
+        "id": "Extension.value[x]",
+        "path": "Extension.value[x]",
+        "max": "0"
+      }
+    ]
+  }
+}

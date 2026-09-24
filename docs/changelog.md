@@ -3,6 +3,23 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Tooling: CARIN SBC InsurancePlan converter (2026-09-24)
+
+No schema change. Every BPS document validates exactly as before.
+
+### Added
+
+- `scripts/to-insuranceplan.js`: converts a BPS v1.1.0 or v1.2.0 document into a FHIR R4 collection `Bundle` (one `InsurancePlan` and the `Organization` it references) targeting the CARIN Digital Insurance Card SBC InsurancePlan profile. The converter is a pure function plus a CLI, with deterministic output and ids derived from `plan_id`. The profile exists only in `hl7.fhir.us.insurance-card#2.0.0-ballot` and is draft and experimental. Spec: `docs/specs/insuranceplan-converter.md`.
+- `fhir/carin-sbc-crosswalk.json`: BPS `canonical_key` to SBC benefit category crosswalk used by the converter.
+- `scripts/build-fhir-definitions.js` and `fhir/definitions/`: the BPS extension StructureDefinitions (`bps-source-reference`, `bps-plan-metadata`, `bps-identifier-source`, `bps-benefit`, `bps-condition`, `bps-cost-share`, `bps-accumulator`, `bps-unmapped-benefit`) and the canonical-benefits CodeSystem, all draft.
+- `examples/fhir/`: the converter output for all 10 examples, validated with the HL7 FHIR validator against the ballot package with zero errors (`examples/fhir/VALIDATION.md`). The files are golden files for `scripts/to-insuranceplan.test.js`, which fails on any drift.
+
+### Changed
+
+- `docs/fhir-alignment.md`: the mapping table and worked example now follow FHIR R4 core and the CARIN SBC profile. Plan design goes in `plan.type` (`sbc-plan-type`) rather than `InsurancePlan.type`. Cost-share types use `coverage-copay-type`, and `cost.applicability` uses the R4 applicability code system. Benefit types carry an `sbc-benefit-category` code, with the BPS canonical key as an additional coding. Quantities carry a currency or UCUM `system`. Deductible applicability uses the `DeductibleApplies` extension. The table covers the profile's `contact` and 2-cost minimum, and moves market and source citations to extensions. The worked example is regenerated from the converter.
+- `docs/carin-dic-reconciliation.md`: the whole SBC InsurancePlan profile is ballot-stage, not only the three merged changes. The doc now spells out the qualifier mapping for designation and modality tiers and updates the worked example (the `IN` row carries no qualifier). It adds notes on pharmacy `deductible_ref`, text-only limit types and periods, and the missing home health code.
+- `docs/roadmap.md`: item 4 updated.
+
 ## Pharmacy module [0.2.1] – DRAFT (2026-09-04)
 
 Additive patch to the draft pharmacy module (`modules/pharmacy/v0.2.1/`). v0.2.0 documents validate unchanged.

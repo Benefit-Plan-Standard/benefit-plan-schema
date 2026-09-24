@@ -1,0 +1,232 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "bps-accumulator",
+  "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-accumulator",
+  "version": "0.1.0",
+  "name": "BPSAccumulator",
+  "title": "BPS Accumulator Detail",
+  "status": "draft",
+  "experimental": true,
+  "publisher": "Benefit Plan Standard",
+  "description": "Benefit Plan Standard accumulator fields with no element on InsurancePlan.plan.generalCost.",
+  "fhirVersion": "4.0.1",
+  "kind": "complex-type",
+  "abstract": false,
+  "context": [
+    {
+      "type": "element",
+      "expression": "InsurancePlan.plan.generalCost"
+    }
+  ],
+  "type": "Extension",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Extension",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Extension",
+        "path": "Extension",
+        "short": "BPS Accumulator Detail",
+        "definition": "Benefit Plan Standard accumulator fields with no element on InsurancePlan.plan.generalCost."
+      },
+      {
+        "id": "Extension.extension",
+        "path": "Extension.extension",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "closed"
+        },
+        "min": 1
+      },
+      {
+        "id": "Extension.extension:slot",
+        "path": "Extension.extension",
+        "sliceName": "slot",
+        "short": "BPS accumulator slot name (e.g. oon_individual_deductible, pharmacy.deductible).",
+        "definition": "BPS accumulator slot name (e.g. oon_individual_deductible, pharmacy.deductible).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:slot.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:slot.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "slot"
+      },
+      {
+        "id": "Extension.extension:slot.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:networkTier",
+        "path": "Extension.extension",
+        "sliceName": "networkTier",
+        "short": "BPS accumulator network_tier.",
+        "definition": "BPS accumulator network_tier.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:networkTier.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:networkTier.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "networkTier"
+      },
+      {
+        "id": "Extension.extension:networkTier.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:period",
+        "path": "Extension.extension",
+        "sliceName": "period",
+        "short": "BPS accumulator period.",
+        "definition": "BPS accumulator period.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:period.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:period.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "period"
+      },
+      {
+        "id": "Extension.extension:period.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:embedded",
+        "path": "Extension.extension",
+        "sliceName": "embedded",
+        "short": "BPS accumulator embedded flag.",
+        "definition": "BPS accumulator embedded flag.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:embedded.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:embedded.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "embedded"
+      },
+      {
+        "id": "Extension.extension:embedded.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "boolean"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:appliesTo",
+        "path": "Extension.extension",
+        "sliceName": "appliesTo",
+        "short": "BPS accumulator applies_to.",
+        "definition": "BPS accumulator applies_to.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:appliesTo.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:appliesTo.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "appliesTo"
+      },
+      {
+        "id": "Extension.extension:appliesTo.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:appliesToTier",
+        "path": "Extension.extension",
+        "sliceName": "appliesToTier",
+        "short": "BPS pharmacy.deductible.applies_to_tiers[] (v1.2.0).",
+        "definition": "BPS pharmacy.deductible.applies_to_tiers[] (v1.2.0).",
+        "min": 0,
+        "max": "*"
+      },
+      {
+        "id": "Extension.extension:appliesToTier.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:appliesToTier.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "appliesToTier"
+      },
+      {
+        "id": "Extension.extension:appliesToTier.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.url",
+        "path": "Extension.url",
+        "fixedUri": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-accumulator"
+      },
+      {
+        "id": "Extension.value[x]",
+        "path": "Extension.value[x]",
+        "max": "0"
+      }
+    ]
+  }
+}

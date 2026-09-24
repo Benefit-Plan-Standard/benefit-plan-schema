@@ -15,7 +15,7 @@
     {
       "tier_id": "IN",
       "name": "GatorCare Tier 1 In-Network",
-      "description": "GatorCare Tier 1 providers (the document also prices a BlueOptions Tier 2 in-network column, not carried by this extraction; see source_references)"
+      "description": "GatorCare Tier 1 providers (the document also prices a BlueOptions Tier 2 in-network column, which this file does not carry; see source_references)"
     },
     {
       "tier_id": "OUT",
@@ -882,7 +882,7 @@
     },
     {
       "page_number": 3,
-      "excerpt": "Emergency room care: $150 Per Visit Deductible + Tier 1 Deductible + 10% Coinsurance (Tier 1); $250 Per Visit Deductible + Tier 2 Deductible + 10% Coinsurance (Tier 2/Tier 3). (The extraction records the deductible applicability; the per-visit deductible amounts and coinsurance are stated here.)"
+      "excerpt": "Emergency room care: $150 Per Visit Deductible + Tier 1 Deductible + 10% Coinsurance (Tier 1); $250 Per Visit Deductible + Tier 2 Deductible + 10% Coinsurance (Tier 2/Tier 3). (This file marks emergency room care as covered in both columns and carries none of these amounts.)"
     },
     {
       "page_number": 3,

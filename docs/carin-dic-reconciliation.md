@@ -1,7 +1,7 @@
 # BPS ↔ CARIN Digital Insurance Card Reconciliation
 
 **Status:** Draft (accompanies the BPS v1.2.0 draft schema)
-**Last updated:** 2026-07-02
+**Last updated:** 2026-09-24
 **Scope:** The three `InsurancePlan` changes merged into the HL7 CARIN Digital Insurance Card IG (SBC InsurancePlan profile) on June 25, 2026, and how each is expressed in, and mapped to, the Benefit Plan Standard core schema.
 
 ---
@@ -42,9 +42,9 @@ The BPS encoding puts the tier in the plan-level tier list and keys cost shares 
 
 | BPS (v1.2.0 draft) | CARIN SBC InsurancePlan | Notes |
 |---|---|---|
-| `network_tiers[].tier_id` (tier_class `network`) | `cost.applicability` code, and/or `InsurancePlan.network` / `coverage.network` Organization reference | Unchanged v1.1.0 behavior. In/out-of-network stays in `applicability`. |
-| `network_tiers[].tier_class` = `cost_designation` | `cost.qualifiers` coding from the Cost Tier value set (e.g. `value-choice`, `standard`) | The BPS tier_id maps to the qualifier code. Adopter-specific designations map to adopter codes (the IG binding is extensible). |
-| `network_tiers[].tier_class` = `modality` | `cost.qualifiers` coding (e.g. `virtual`) | A modality is a delivery channel, not a provider set; it takes no provider-set link. |
+| `network_tiers[].tier_id` (tier_class `network`) | `cost.applicability` code (`in-network` for `IN`, `out-of-network` for `OUT`, from `http://terminology.hl7.org/CodeSystem/applicability`), and/or `InsurancePlan.network` / `coverage.network` Organization reference | Unchanged v1.1.0 behavior. In/out-of-network stays in `applicability`, which R4 binds (required) to `in-network` / `out-of-network` / `other`; the BPS tier_id itself is not an applicability code. |
+| `network_tiers[].tier_class` = `cost_designation` | `cost.qualifiers` coding from the Cost Tier value set (e.g. `value-choice`, `standard`) | A designation named `Value Choice` or `Standard` maps to that code. Any other designation is a text-only qualifier carrying the tier name (the IG binding is extensible), with the BPS tier_id kept in an extension. |
+| `network_tiers[].tier_class` = `modality` | `cost.qualifiers` coding (e.g. `virtual`) | A telehealth or virtual modality maps to `virtual`. Other sites of service are text-only qualifiers carrying the tier name. A modality is a delivery channel, not a provider set; it takes no provider-set link. |
 | `network_tiers[].parent_tier_id` | `cost.applicability` of the cost entry carrying the qualifier | The designation's parent network supplies the applicability (typically `in-network`). |
 | `network_tiers[].provider_set.name` / `.description` | `CostAppliesToNetwork` extension `valueReference.display` | Human-readable name of the qualifying provider set. |
 | `network_tiers[].provider_set.reference` | `CostAppliesToNetwork` extension `valueReference.reference` (Organization) | Machine-readable join to a provider directory (DaVinci PDex Plan-Net models a network as an Organization with provider affiliations). |
@@ -74,7 +74,7 @@ Worked example (public Florida Blue BlueCare HMO SBC, specialist visit, one in-n
 ]
 ```
 
-This projects to three `cost[]` entries on one CARIN `specificCost.benefit`, qualified `value-choice` / `standard` / `virtual`, the first carrying `CostAppliesToNetwork`.
+This projects to three `cost[]` entries on one CARIN `specificCost.benefit`, all with `applicability` `in-network`. The `VALUE_CHOICE` entry is qualified `value-choice` and carries `CostAppliesToNetwork`; the `VIRTUAL` entry is qualified `virtual`; the `IN` entry is the network's own rate and carries no qualifier. To emit the `standard` qualifier, key the standard rate to its own `cost_designation` tier named `Standard`.
 
 ### 3.2 Change 2: deductible applicability (FHIR-57526)
 
@@ -82,6 +82,7 @@ This projects to three `cost[]` entries on one CARIN `specificCost.benefit`, qua
 |---|---|---|
 | `cost_shares[].applies_to_deductible` (boolean, default false) | `DeductibleApplies` boolean extension on `plan.specificCost.benefit.cost` | Granularity matches: a BPS cost-share step and a FHIR `cost[]` entry are both one (type, amount) pair on one benefit and tier, so the flag maps one-to-one. |
 | `cost_shares[].applies_to_moop` (boolean, default true) | No CARIN counterpart yet | BPS is a superset here. Candidate for a future IG proposal; see §5. |
+| `cost_shares[].deductible_ref` = `pharmacy` (v1.2.0) | No CARIN counterpart | `DeductibleApplies` means the plan deductible, so it is not emitted for a step keyed to the pharmacy deductible; the flag and the reference go in an extension. |
 
 No schema change. BPS was the source of this concept (the SBC "deductible applies?" column), and the merged extension matches the existing BPS semantics, including that the flag can vary per designation tier on the same benefit (e.g. No Charge with deductible waived on the Value Choice rate, copay after deductible on the Standard rate).
 
@@ -91,9 +92,9 @@ The merged `BenefitLimitation` complex extension carries `limitText` (string), `
 
 | BPS | CARIN SBC InsurancePlan | Notes |
 |---|---|---|
-| `limits[].type` (e.g. `visits`, `days`, `dollars`) | `BenefitLimitation.limitType` | Direct: `visits` ↔ `visits`, `days` ↔ `days`, `dollars` ↔ `dollars`. |
+| `limits[].type` (e.g. `visits`, `days`, `dollars`) | `BenefitLimitation.limitType` | Direct: `visits` ↔ `visits`, `days` ↔ `days`, `dollars` ↔ `dollars`. Other BPS limit types (e.g. `hearing_aids`, `meals`) have no code and are carried as text. |
 | `limits[].value` (number) | `BenefitLimitation.limitValue.value` | Set the Quantity `unit` from the type. |
-| `limits[].period` | `BenefitLimitation.limitPeriod` | `per_plan_year` ↔ `plan-year`, `per_calendar_year` ↔ `calendar-year`, `per_benefit_period` / `per_episode` ↔ `benefit-period`, `per_lifetime` ↔ `lifetime`. The legacy BPS value `per_year` is ambiguous between plan year and calendar year; prefer the specific values when the source document distinguishes them (v1.2.0 updates the recommended values accordingly). |
+| `limits[].period` | `BenefitLimitation.limitPeriod` | `per_plan_year` ↔ `plan-year`, `per_calendar_year` ↔ `calendar-year`, `per_benefit_period` / `per_episode` ↔ `benefit-period`, `per_lifetime` ↔ `lifetime`. The legacy BPS value `per_year` is ambiguous between plan year and calendar year, so it is carried as text, not coded; prefer the specific values when the source document distinguishes them (v1.2.0 updates the recommended values accordingly). Other periods (e.g. `per_12_months`, `per_quarter`) are also carried as text. |
 | `limits[].raw_text` (new in v1.2.0 draft) | `BenefitLimitation.limitText` | Verbatim limitation text as displayed in the source document. Before v1.2.0 the closest home was the benefit-level `raw_label` or cost-share `notes`, neither of which is per-limit. |
 
 BPS has typed limits since v1.0.0; the IG change brings the CARIN profile up to the same structure. The only BPS addition is the verbatim-text companion, which preserves the display fidelity the SBC requires.
@@ -123,13 +124,16 @@ Backward compatibility, per the v1.x governance rules:
 - **Limit scope.** Neither the merged IG change nor BPS types the population scope of a limit (individual vs family) or its network scope (whether a visit limit counts in-network only). Revisit if real documents demand it.
 - **`applies_to_moop`.** BPS tracks out-of-pocket-maximum applicability per cost-share step; the IG has no counterpart. Candidate for a future CARIN proposal.
 - **Tier vocabulary.** The IG's Cost Tier code system starts with `value-choice` / `standard` / `virtual`. If adopters accumulate more designations, a `vocabularies/tier-classes.json` (and/or recommended tier codes) file may be worth adding on the BPS side.
-- **Ballot dependency.** The IG changes are merged to master and cleared for the September 2026 ballot but are not yet balloted content. If ballot reconciliation reshapes the extensions, refresh §3 to match before finalizing v1.2.0.
+- **Ballot dependency.** The whole SBC InsurancePlan profile is ballot-stage: `sbc-insurance-plan`, the three extensions above and the code systems it binds exist only in `hl7.fhir.us.insurance-card#2.0.0-ballot`, all draft and experimental. The converter (`scripts/to-insuranceplan.js`) is validated against that package. If ballot reconciliation reshapes the profile, refresh §3 and the converter to match before finalizing v1.2.0.
+- **SBC benefit categories.** The profile binds benefit types (required) to a 29-code SBC benefit category code system. It has no general home health code, although "Home health care" is a standard SBC row, so a BPS home health benefit cannot be placed in the profile.
 
 ---
 
 ## 6. References
 
+- CARIN Digital Insurance Card IG, STU 2 ballot (`hl7.fhir.us.insurance-card#2.0.0-ballot`): http://hl7.org/fhir/us/insurance-card/2.0.0-202609-ballot
 - CARIN Digital Insurance Card IG (CI build): https://build.fhir.org/ig/HL7/carin-digital-insurance-card/
+- BPS to CARIN SBC InsurancePlan converter spec: [`specs/insuranceplan-converter.md`](specs/insuranceplan-converter.md)
 - HL7 JIRA tickets: FHIR-57525, FHIR-57526, FHIR-57527 (IG) and FHIR-57503, FHIR-57504, FHIR-57505 (R6 core)
 - BPS ↔ FHIR R4 alignment guide: [`fhir-alignment.md`](fhir-alignment.md)
 - BPS v1.2.0 draft schema: [`../schema/v1.2.0/benefit-plan.schema.json`](../schema/v1.2.0/benefit-plan.schema.json)

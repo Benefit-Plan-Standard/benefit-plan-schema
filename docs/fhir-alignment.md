@@ -1,7 +1,7 @@
 # BPS ↔ FHIR `InsurancePlan` Alignment
 
-**Status:** Draft (BPS v1.1.0)
-**Last updated:** 2026-05-21
+**Status:** Draft (BPS v1.1.0, with the CARIN SBC InsurancePlan mapping)
+**Last updated:** 2026-09-24
 **Audience:** Implementers integrating BPS-normalized plans with FHIR-based systems (payer APIs, EHRs, member portals, regulatory submissions).
 
 ---
@@ -25,41 +25,47 @@ A note on FHIR versions:
 
 ## 2. Conceptual mapping
 
-| Concern                                | BPS field(s)                                    | FHIR `InsurancePlan` element                        |
-|----------------------------------------|------------------------------------------------|----------------------------------------------------|
-| Stable identifier                      | `plan_id`                                       | `InsurancePlan.identifier`                         |
-| Display name                           | `plan_name`                                     | `InsurancePlan.name`                               |
-| Marketing aliases                      | (none today)                                    | `InsurancePlan.alias[]`                            |
-| Carrier / sponsor                      | `carrier`                                       | `InsurancePlan.ownedBy` (Reference to Organization)|
-| Plan design (HMO/PPO/EPO/...)          | `plan_type`                                     | `InsurancePlan.type` (CodeableConcept)             |
-| Coverage year                          | `plan_year`                                     | _not directly modeled_ — encode in `InsurancePlan.period.start.year` and/or `identifier` |
-| Coverage window                        | `coverage_period.start_date`, `.end_date`       | `InsurancePlan.period.start`, `.end`               |
-| Effective date of plan document        | `effective_date`                                | `InsurancePlan.period.start` (when no `coverage_period`) |
-| Expiry / renewal                       | `expiry_date`                                   | `InsurancePlan.period.end`                         |
-| Market segment                         | `market`                                        | `InsurancePlan.plan[].type` (CodeableConcept extension) |
-| Network tiers                          | `network_tiers[]`                               | `InsurancePlan.coverage.network[]` and/or `InsurancePlan.network[]` |
-| In-network accumulators                | `accumulators.individual_deductible` etc.       | `InsurancePlan.plan[].generalCost[]` _or_ profile-specific extensions |
-| Out-of-network accumulators            | `accumulators.oon_individual_deductible` etc.   | Same as above, repeated with a different `applicability` qualifier |
-| Per-member embedded deductible flag    | `accumulators.*.embedded`                       | Extension on `generalCost` (no native element)     |
-| Benefit                                | `benefits[]`                                    | `InsurancePlan.coverage.benefit[]`                 |
-| Benefit name                           | `benefits[].service_name`                       | `InsurancePlan.coverage.benefit.type` (CodeableConcept; `text`) |
-| Canonical benefit code                 | `benefits[].canonical_key`                      | `InsurancePlan.coverage.benefit.type.coding[]`     |
-| Category                               | `benefits[].category`                           | `InsurancePlan.coverage.type` (CodeableConcept)    |
-| Cost-share rows                        | `benefits[].network_cost_shares[]`              | `InsurancePlan.plan[].specificCost[].benefit[].cost[]` |
-| Cost-share type (copay/coins/ded)      | `cost_shares[].type`                            | `cost.type` (CodeableConcept, `copay`, `coinsurance`, ...) |
-| Cost-share amount                      | `cost_shares[].amount`                          | `cost.value` (Quantity, currency Money)            |
-| Cost-share rate (coinsurance)          | `cost_shares[].rate`                            | `cost.value` (Quantity with `code="%"`)            |
-| Applicability                          | `cost_shares[].applies_to_deductible`, `applies_to_moop` | `cost.applicability` (CodeableConcept) + qualifiers |
-| Conditions (auth / referral)           | `benefits[].conditions[]`                       | `coverage.benefit.requirement` (string) — lossy    |
-| Limits (visits / days / dollars)       | `benefits[].limits[]`                           | `coverage.benefit.limit[]`                         |
-| Source citation                        | `source_references[]`                           | `InsurancePlan.contact` or extension — lossy       |
-| Schema version                         | `schema_version`                                | Extension on `meta`                                |
+The FHIR column below is R4 core. Where the CARIN Digital Insurance Card SBC InsurancePlan profile (`sbc-insurance-plan`, ballot package `hl7.fhir.us.insurance-card#2.0.0-ballot`) binds or constrains the element, the CARIN column says how. The converter `scripts/to-insuranceplan.js` implements this table; its spec is [`specs/insuranceplan-converter.md`](specs/insuranceplan-converter.md).
+
+| Concern | BPS field(s) | FHIR R4 `InsurancePlan` element | Under the CARIN SBC profile |
+|---|---|---|---|
+| Stable identifier | `plan_id` | `identifier` (system `https://benefitplanstandard.org/plan-id`) | Same |
+| Regulator identifiers | `plan_identifiers[]` (v1.2.0) | additional `identifier` entries | Same; HIOS uses `https://www.cms.gov/CCIIO/Resources/Data-Resources/hios` |
+| Display name | `plan_name` | `name` | `name` 1..1 |
+| Marketing aliases | (none today) | `alias[]` | Same |
+| Carrier / sponsor | `carrier` | `ownedBy` (Reference to Organization) | `ownedBy` 1..1 |
+| Product type | (none) | `type` (`insurance-plan-type`, e.g. `medical`) | Same. Plan design is not a product type. |
+| Plan design (HMO/PPO/EPO/...) | `plan_type` | `plan[].type` | `plan.type` bound (extensible) to `sbc-plan-type` (`HMO`, `PPO`, `POS`, `EPO`, `HDHP`, `INDEMNITY`) |
+| Coverage window | `coverage_period.start_date`, `.end_date`; else `effective_date`, `expiry_date` | `period.start`, `.end` | `period` 1..1 |
+| Coverage year | `plan_year` | `period` at year precision (`"2026"`) only when no more precise date exists; also an extension | Same |
+| Market segment | `market` | Extension | Extension (`plan.type` is bound to `sbc-plan-type`) |
+| Contact | (none) | `contact` | `contact` 1..*. BPS carries no contact details; the converter emits a PAYOR contact with `data-absent-reason` `unknown`. |
+| Network tiers | `network_tiers[]` (`IN`, `OUT`) | `plan[].specificCost[].benefit[].cost[].applicability` (`http://terminology.hl7.org/CodeSystem/applicability`: `in-network`, `out-of-network`, `other`; required binding) | `applicability` 1..1 |
+| Designation / modality tiers | `network_tiers[]` with `tier_class` `cost_designation` / `modality` (v1.2.0) | `cost.qualifiers` | `qualifiers` bound (extensible) to Cost Tier (`value-choice`, `standard`, `virtual`), plus the `CostAppliesToNetwork` extension; see [`carin-dic-reconciliation.md`](carin-dic-reconciliation.md) |
+| Accumulators | `accumulators.*` | `plan[].generalCost[]`, `type` from `coverage-copay-type` (`deductible`, `maxoutofpocket`), `cost` (Money) | Same |
+| In- vs out-of-network accumulator | `accumulators.*.network_tier` | `generalCost.comment`; structured form in an extension (`generalCost` has no `applicability`) | Same |
+| Embedded deductible flag | `accumulators.*.embedded` | Extension on `generalCost` | Same |
+| Benefit | `benefits[]` | `coverage[].benefit[]` and `plan[].specificCost[].benefit[]` | Only benefits with a code in `sbc-benefit-category` (29 codes, required binding). Others are carried in an extension by identity only. |
+| Benefit category | `benefits[].category` | `coverage.type`, `specificCost.category` | Both use an `sbc-benefit-category` code, not the BPS category (`specificCost.category` is a required binding) |
+| Benefit type | `benefits[].canonical_key` | `benefit.type` (CodeableConcept) | `benefit.type` required binding to `sbc-benefit-category`; the BPS canonical key can be an additional coding (system `https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits`) |
+| Benefit name | `benefits[].service_name` | `benefit.type.text` | Same |
+| Cost-share rows | `benefits[].network_cost_shares[].cost_shares[]` | `specificCost.benefit.cost[]`, one per step, in BPS order | `cost` 2..* per benefit |
+| Cost-share type | `cost_shares[].type` | `cost.type` from `coverage-copay-type`: `copay`, `copaypct` (coinsurance), `deductible` | Same |
+| Cost-share amount | `cost_shares[].amount` | `cost.value` (Quantity, `system` `urn:iso:std:iso:4217`, `code` `USD`) | `value` 1..1 |
+| Cost-share rate | `cost_shares[].rate` | `cost.value` (Quantity, `system` `http://unitsofmeasure.org`, `code` `%`, value 0 to 100) | Same |
+| Not covered | `network_cost_shares[].covered: false` | `cost.type.text` `Not covered`, `cost.value` with `data-absent-reason` `not-applicable` | Same |
+| Deductible applicability | `cost_shares[].applies_to_deductible` | Extension | `DeductibleApplies` extension on `cost` |
+| MOOP applicability | `cost_shares[].applies_to_moop` | Extension | Extension (no CARIN counterpart) |
+| Conditions (auth / referral) | `benefits[].conditions[]` | `coverage.benefit.requirement` (string) | Same; structured form in an extension |
+| Limits (visits / days / dollars) | `benefits[].limits[]` | `coverage.benefit.limit[]` | `BenefitLimitation` extension on `coverage.benefit` |
+| Source citation | `source_references[]` | Extension | Extension, at the level BPS records it (plan or benefit) |
+| Schema version | `schema_version` | Extension | Extension |
 
 ---
 
 ## 3. Worked example
 
-Below is the **same plan** rendered as a BPS document and as a FHIR `InsurancePlan` resource. The example is a stripped-down version of the Aetna PPO 1500 80/50 plan in `examples/aetna_example.json`.
+Below is the **same plan** rendered as a BPS document and as a FHIR `InsurancePlan` resource. The BPS document is an illustrative, stripped-down plan modeled on the Aetna PPO 1500 80/50 example; its values are not those of `examples/aetna_example.json`. The FHIR resource is the output of `node scripts/to-insuranceplan.js` for that document.
 
 ### 3.1 BPS (v1.1.0)
 
@@ -104,106 +110,286 @@ Below is the **same plan** rendered as a BPS document and as a FHIR `InsurancePl
 }
 ```
 
-### 3.2 FHIR R4 `InsurancePlan` (equivalent)
+### 3.2 FHIR R4 `InsurancePlan` (CARIN SBC profile)
 
-```jsonc
+```json
 {
   "resourceType": "InsurancePlan",
   "id": "aetna-ppo-1500-80-50",
-  "identifier": [{
-    "system": "https://benefitplanstandard.org/plan-id",
-    "value":  "AETNA_PPO_1500_80_50"
-  }],
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/insurance-card/StructureDefinition/sbc-insurance-plan"
+    ]
+  },
+  "identifier": [
+    {
+      "system": "https://benefitplanstandard.org/plan-id",
+      "value": "AETNA_PPO_1500_80_50"
+    }
+  ],
   "status": "active",
-  "type": [{
-    "coding": [{
-      "system":  "http://terminology.hl7.org/CodeSystem/insurance-plan-type",
-      "code":    "ppo",
-      "display": "Preferred Provider Organization"
-    }]
-  }],
+  "type": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/insurance-plan-type",
+          "code": "medical",
+          "display": "Medical"
+        }
+      ]
+    }
+  ],
   "name": "Aetna PPO 1500 80/50 Coinsurance Plan",
   "period": {
     "start": "2025-01-01",
-    "end":   "2025-12-31"
+    "end": "2025-12-31"
   },
-  "ownedBy": { "display": "Aetna" },
-  "coverage": [{
-    "type": {
-      "coding": [{
-        "system":  "https://benefitplanstandard.org/vocabularies/categories",
-        "code":    "PHYSICIAN_SERVICES",
-        "display": "Physician services"
-      }]
-    },
-    "benefit": [{
-      "type": {
-        "coding": [{
-          "system":  "https://benefitplanstandard.org/vocabularies/canonical-benefits",
-          "code":    "primary_care",
-          "display": "Primary care"
-        }],
-        "text": "Primary care visit"
-      }
-    }]
-  }],
-  "plan": [{
-    "identifier": [{
-      "system": "https://benefitplanstandard.org/plan-id",
-      "value":  "AETNA_PPO_1500_80_50"
-    }],
-    "generalCost": [
-      {
-        "type":    { "text": "Individual deductible" },
-        "cost":    { "value": 1500, "currency": "USD" },
-        "comment": "in-network, per_calendar_year, embedded"
-      },
-      {
-        "type":    { "text": "Individual deductible" },
-        "cost":    { "value": 3000, "currency": "USD" },
-        "comment": "out-of-network, per_calendar_year"
-      }
-    ],
-    "specificCost": [{
-      "category": {
-        "coding": [{
-          "system":  "https://benefitplanstandard.org/vocabularies/categories",
-          "code":    "PHYSICIAN_SERVICES"
-        }]
-      },
-      "benefit": [{
-        "type": {
-          "coding": [{
-            "system": "https://benefitplanstandard.org/vocabularies/canonical-benefits",
-            "code":   "primary_care"
-          }]
-        },
-        "cost": [
+  "ownedBy": {
+    "reference": "urn:uuid:f075485f-1797-58a5-a8ad-8729e4214db0",
+    "display": "Aetna"
+  },
+  "contact": [
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+          "valueCode": "unknown"
+        }
+      ],
+      "purpose": {
+        "coding": [
           {
-            "type":          { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/insurance-plan-type", "code": "copay" }] },
-            "applicability": { "coding": [{ "system": "https://benefitplanstandard.org/network-tier", "code": "in-network" }] },
-            "value":         { "value": 25, "code": "USD" }
-          },
-          {
-            "type":          { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/insurance-plan-type", "code": "coinsurance" }] },
-            "applicability": { "coding": [{ "system": "https://benefitplanstandard.org/network-tier", "code": "out-of-network" }] },
-            "qualifiers":    [{ "coding": [{ "system": "https://benefitplanstandard.org/cost-share-qualifier", "code": "applies_to_deductible" }] }],
-            "value":         { "value": 50, "code": "%" }
+            "system": "http://terminology.hl7.org/CodeSystem/contactentity-type",
+            "code": "PAYOR",
+            "display": "Payor"
           }
         ]
-      }]
-    }]
-  }]
+      }
+    }
+  ],
+  "coverage": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+            "code": "primary-care-visit",
+            "display": "Primary Care Visit"
+          }
+        ]
+      },
+      "benefit": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                "code": "primary-care-visit",
+                "display": "Primary Care Visit"
+              },
+              {
+                "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                "code": "primary_care",
+                "display": "Primary care visit"
+              }
+            ],
+            "text": "Primary care visit"
+          }
+        }
+      ]
+    }
+  ],
+  "plan": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-plan-type",
+            "code": "PPO",
+            "display": "Preferred Provider Organization (PPO)"
+          }
+        ]
+      },
+      "generalCost": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                "code": "deductible",
+                "display": "Deductible"
+              }
+            ],
+            "text": "Individual deductible, in-network"
+          },
+          "cost": {
+            "value": 1500,
+            "currency": "USD"
+          },
+          "comment": "in-network; per_calendar_year; embedded"
+        },
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                "code": "deductible",
+                "display": "Deductible"
+              }
+            ],
+            "text": "Individual deductible, out-of-network"
+          },
+          "cost": {
+            "value": 3000,
+            "currency": "USD"
+          },
+          "comment": "out-of-network; per_calendar_year"
+        }
+      ],
+      "specificCost": [
+        {
+          "category": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                "code": "primary-care-visit",
+                "display": "Primary Care Visit"
+              }
+            ]
+          },
+          "benefit": [
+            {
+              "type": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                    "code": "primary-care-visit",
+                    "display": "Primary Care Visit"
+                  },
+                  {
+                    "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                    "code": "primary_care",
+                    "display": "Primary care visit"
+                  }
+                ],
+                "text": "Primary care visit"
+              },
+              "cost": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                      "valueBoolean": false
+                    }
+                  ],
+                  "type": {
+                    "coding": [
+                      {
+                        "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                        "code": "copay",
+                        "display": "Copay Amount"
+                      }
+                    ]
+                  },
+                  "applicability": {
+                    "coding": [
+                      {
+                        "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                        "code": "in-network",
+                        "display": "In Network"
+                      }
+                    ]
+                  },
+                  "value": {
+                    "value": 25,
+                    "unit": "USD",
+                    "system": "urn:iso:std:iso:4217",
+                    "code": "USD"
+                  }
+                },
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                      "valueBoolean": true
+                    }
+                  ],
+                  "type": {
+                    "coding": [
+                      {
+                        "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                        "code": "deductible",
+                        "display": "Deductible"
+                      }
+                    ]
+                  },
+                  "applicability": {
+                    "coding": [
+                      {
+                        "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                        "code": "out-of-network",
+                        "display": "Out of Network"
+                      }
+                    ]
+                  },
+                  "value": {
+                    "value": 100,
+                    "unit": "%",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "%"
+                  }
+                },
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                      "valueBoolean": true
+                    }
+                  ],
+                  "type": {
+                    "coding": [
+                      {
+                        "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                        "code": "copaypct",
+                        "display": "Copay Percentage"
+                      }
+                    ]
+                  },
+                  "applicability": {
+                    "coding": [
+                      {
+                        "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                        "code": "out-of-network",
+                        "display": "Out of Network"
+                      }
+                    ]
+                  },
+                  "value": {
+                    "value": 50,
+                    "unit": "%",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "%"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
 ```
 
 Notes on the mapping:
 
-1. **BPS `plan_id`** maps to `InsurancePlan.identifier` (with a recommended `system` URL). Carriers' HIOS/CMS IDs SHOULD also be added as additional identifier entries with their own `system`.
-2. **BPS `network_tiers[]`** is collapsed into FHIR `cost.applicability` codes (`in-network`, `out-of-network`, or carrier-specific tier IDs). FHIR's directory profiles (DaVinci PDex Plan Net) handle the formal network definition via `Organization` references; BPS does not. If the receiving system needs the directory, the BPS tier IDs are recommended to mirror the `Organization.identifier.value` so the two can be joined.
-3. **BPS accumulators** map to `plan[].generalCost[]`. FHIR does not natively distinguish in-network from out-of-network accumulators; we recommend either (a) using `cost.applicability` if your profile exposes it on `generalCost`, or (b) the `comment` string as a fallback, with structured machine-readable data in a custom extension.
-4. **BPS `cost_shares[].sequence`** is preserved by the order of the `cost[]` array in FHIR (FHIR uses array order; it does not have an explicit `sequence` field on cost rows).
-5. **BPS `applies_to_deductible` and `applies_to_moop`** map to FHIR `cost.qualifiers`. The codes are not normative in core FHIR; we recommend using the BPS namespace shown above until an HL7 IG ratifies them.
+1. **BPS `plan_id`** maps to `InsurancePlan.identifier` with the system `https://benefitplanstandard.org/plan-id`. Regulator identifiers (BPS v1.2.0 `plan_identifiers[]`) are added as further identifier entries with their own `system`.
+2. **BPS `network_tiers[]`** maps to `cost.applicability`, which R4 binds (required) to `in-network`, `out-of-network` and `other`. Designation and modality tiers keep the applicability of their parent network and add a `cost.qualifiers` entry. FHIR's directory profiles (DaVinci PDex Plan Net) model networks as `Organization` resources; BPS does not, but a BPS `provider_set.reference` can point at one.
+3. **BPS accumulators** map to `plan[].generalCost[]`, typed with `coverage-copay-type` (`deductible`, `maxoutofpocket`). `generalCost` has no `applicability`, so the network goes in `comment` and in an extension.
+4. **BPS `cost_shares[].sequence`** is preserved by the order of the `cost[]` array (FHIR has no `sequence` on cost rows) and is also recorded in an extension.
+5. **BPS `applies_to_deductible`** maps to the CARIN `DeductibleApplies` extension. **`applies_to_moop`** has no FHIR or CARIN counterpart and goes in an extension. `cost.qualifiers` is reserved for cost tiers.
+6. **Currency and percentages** are Quantities with a `system`: `urn:iso:std:iso:4217` for dollars and `http://unitsofmeasure.org` for `%`.
+7. The output above has the BPS extensions and the narrative removed for readability. The full output, and the extension definitions, come from the converter.
 
 ---
 
@@ -213,14 +399,15 @@ These are areas where BPS preserves carrier-document fidelity that FHIR R4 canno
 
 | BPS concept                                  | FHIR R4 status                  | Practical advice                                  |
 |----------------------------------------------|----------------------------------|---------------------------------------------------|
-| `accumulators.*.embedded`                    | No native element                | Extension on `generalCost`                        |
+| `accumulators.*.embedded`                    | No native element                | Extension on `generalCost` (`bps-accumulator`)    |
 | `accumulators.*.period` (`per_calendar_year` vs `per_plan_year`) | Not modeled separately from `period`        | Encode in `comment` or via an extension           |
 | `cost_shares[].sequence` (multi-step)        | Array order only                 | Preserve array order; document the convention     |
-| `cost_shares[].basis` (`per_visit`, `per_day`, `per_test`, `allowed_amount`) | No native element | Use a qualifier code with a BPS-defined system   |
+| `cost_shares[].basis` (`per_visit`, `per_day`, `per_test`, `allowed_amount`) | No native element | Extension on `cost` (`bps-cost-share`); `cost.qualifiers` is reserved for cost tiers under the CARIN profile |
 | `benefits[].canonical_key`                   | Encode as a `Coding`             | Use the BPS canonical-benefits CodeSystem URL     |
-| `benefits[].raw_label`                       | No native element                | Extension or `coverage.benefit.requirement`       |
-| `benefits[].conditions[]` (structured)       | Free-text `requirement`          | Lossy; preserve structured form in an extension if downstream needs it |
-| `source_references[]` (page, range, excerpt) | No native element                | Extension; required if your use case is provenance/depositional |
+| `benefits[].raw_label`                       | No native element                | Extension on `coverage.benefit` (`bps-benefit`)   |
+| `benefits[].conditions[]` (structured)       | Free-text `requirement`          | `requirement` plus the structured form in an extension (`bps-condition`) |
+| `source_references[]` (page, range, excerpt) | No native element                | Extension (`bps-source-reference`), at the level BPS records it; required if your use case is provenance/depositional |
+| Benefits with no `sbc-benefit-category` code | Cannot be placed under the CARIN SBC profile (required binding) | Listed by identity in an extension (`bps-unmapped-benefit`); cost sharing not carried |
 
 The DaVinci PDex Plan Net IG closes some of these gaps for U.S. payer use cases, but not all. We recommend keeping the BPS document alongside the FHIR resource (e.g., as an `Attachment` or out-of-band reference) when full fidelity is required.
 
@@ -244,6 +431,8 @@ If your pipeline goes FHIR → BPS:
 
 ## 5a. CARIN Digital Insurance Card IG (June 2026 update)
 
+The SBC InsurancePlan profile (`sbc-insurance-plan`) exists only in the ballot package `hl7.fhir.us.insurance-card#2.0.0-ballot`, where the profile, its extensions and the code systems it binds are all draft and experimental. Mappings to it are ballot-stage until STU 2.0.0 publishes.
+
 Three `InsurancePlan` changes originating from BPS implementation experience merged into the CARIN Digital Insurance Card IG's SBC InsurancePlan profile on June 25, 2026 (FHIR-57525 multi-tier cost sharing, FHIR-57526 deductible applicability, FHIR-57527 structured benefit limitation), targeting the September 2026 ballot. They give several of the "lossy" rows above a proper structured home in that profile: designation/modality cost tiers map to `cost.qualifiers` plus the `CostAppliesToNetwork` extension, `applies_to_deductible` maps to the `DeductibleApplies` extension, and typed limits map to the structured `BenefitLimitation` extension. The full field-by-field reconciliation, including the BPS v1.2.0 draft additions (`tier_class`, `parent_tier_id`, `provider_set`, `limits[].raw_text`), lives in [`carin-dic-reconciliation.md`](carin-dic-reconciliation.md).
 
 ## 6. Related profiles and reading
@@ -251,6 +440,8 @@ Three `InsurancePlan` changes originating from BPS implementation experience mer
 - HL7 FHIR R4 `InsurancePlan`: https://hl7.org/fhir/R4/insuranceplan.html
 - DaVinci PDex Plan Net Implementation Guide: https://hl7.org/fhir/us/davinci-pdex-plan-net/
 - CARIN Blue Button Implementation Guide: https://hl7.org/fhir/us/carin-bb/
+- CARIN Digital Insurance Card IG, STU 2 ballot: http://hl7.org/fhir/us/insurance-card/2.0.0-202609-ballot
+- BPS to CARIN SBC InsurancePlan converter spec: [`specs/insuranceplan-converter.md`](specs/insuranceplan-converter.md)
 - BPS recommended vocabularies: [`../vocabularies/`](../vocabularies/)
 - BPS schema (current): [`../schema/v1.1.0/benefit-plan.schema.json`](../schema/v1.1.0/benefit-plan.schema.json)
 

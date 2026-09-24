@@ -1,0 +1,174 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "bps-unmapped-benefit",
+  "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit",
+  "version": "0.1.0",
+  "name": "BPSUnmappedBenefit",
+  "title": "BPS Unmapped Benefit",
+  "status": "draft",
+  "experimental": true,
+  "publisher": "Benefit Plan Standard",
+  "description": "A BPS benefit that has no code in the CARIN SBC benefit category code system (a required binding), and so is not placed in coverage or plan.specificCost. Identity only: its cost sharing, limits and conditions are not carried in the FHIR output.",
+  "fhirVersion": "4.0.1",
+  "kind": "complex-type",
+  "abstract": false,
+  "context": [
+    {
+      "type": "element",
+      "expression": "InsurancePlan"
+    }
+  ],
+  "type": "Extension",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Extension",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Extension",
+        "path": "Extension",
+        "short": "BPS Unmapped Benefit",
+        "definition": "A BPS benefit that has no code in the CARIN SBC benefit category code system (a required binding), and so is not placed in coverage or plan.specificCost. Identity only: its cost sharing, limits and conditions are not carried in the FHIR output."
+      },
+      {
+        "id": "Extension.extension",
+        "path": "Extension.extension",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "closed"
+        },
+        "min": 1
+      },
+      {
+        "id": "Extension.extension:benefitId",
+        "path": "Extension.extension",
+        "sliceName": "benefitId",
+        "short": "BPS benefits[].benefit_id.",
+        "definition": "BPS benefits[].benefit_id.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:benefitId.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:benefitId.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "benefitId"
+      },
+      {
+        "id": "Extension.extension:benefitId.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:canonicalKey",
+        "path": "Extension.extension",
+        "sliceName": "canonicalKey",
+        "short": "BPS benefits[].canonical_key, when present.",
+        "definition": "BPS benefits[].canonical_key, when present.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:canonicalKey.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:canonicalKey.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "canonicalKey"
+      },
+      {
+        "id": "Extension.extension:canonicalKey.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:serviceName",
+        "path": "Extension.extension",
+        "sliceName": "serviceName",
+        "short": "BPS benefits[].service_name.",
+        "definition": "BPS benefits[].service_name.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:serviceName.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:serviceName.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "serviceName"
+      },
+      {
+        "id": "Extension.extension:serviceName.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:category",
+        "path": "Extension.extension",
+        "sliceName": "category",
+        "short": "BPS benefits[].category.",
+        "definition": "BPS benefits[].category.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:category.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:category.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "category"
+      },
+      {
+        "id": "Extension.extension:category.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.url",
+        "path": "Extension.url",
+        "fixedUri": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+      },
+      {
+        "id": "Extension.value[x]",
+        "path": "Extension.value[x]",
+        "max": "0"
+      }
+    ]
+  }
+}

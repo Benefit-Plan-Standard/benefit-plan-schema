@@ -1,0 +1,517 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "canonical-benefits",
+  "url": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+  "version": "1.1.0",
+  "name": "BPSCanonicalBenefits",
+  "title": "BPS Canonical Benefits",
+  "status": "draft",
+  "experimental": true,
+  "publisher": "Benefit Plan Standard",
+  "description": "The Benefit Plan Standard canonical benefit identifiers (vocabularies/canonical-benefits.json), as a FHIR CodeSystem. Non-normative and extensible in BPS; generated from the vocabulary file.",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 100,
+  "concept": [
+    {
+      "code": "aba_therapy",
+      "display": "ABA therapy",
+      "definition": "Applied Behavior Analysis therapy for behavioral health and autism."
+    },
+    {
+      "code": "autism_services",
+      "display": "Autism services",
+      "definition": "Autism spectrum disorder evaluation and treatment services."
+    },
+    {
+      "code": "behavioral_health_intensive_outpatient",
+      "display": "Behavioral health IOP",
+      "definition": "Intensive outpatient program for mental health or substance use treatment."
+    },
+    {
+      "code": "behavioral_health_partial_hospitalization",
+      "display": "Behavioral health PHP",
+      "definition": "Partial hospitalization program for mental health or substance use treatment."
+    },
+    {
+      "code": "mental_health_inpatient",
+      "display": "Mental health inpatient",
+      "definition": "Inpatient mental and behavioral health services."
+    },
+    {
+      "code": "mental_health_outpatient",
+      "display": "Mental health outpatient",
+      "definition": "Outpatient mental and behavioral health services."
+    },
+    {
+      "code": "substance_use_inpatient",
+      "display": "Substance use inpatient",
+      "definition": "Inpatient substance use disorder services."
+    },
+    {
+      "code": "substance_use_outpatient",
+      "display": "Substance use outpatient",
+      "definition": "Outpatient substance use disorder services."
+    },
+    {
+      "code": "pediatric_dental_checkup",
+      "display": "Pediatric dental checkup",
+      "definition": "Pediatric dental routine checkup."
+    },
+    {
+      "code": "allergy_testing",
+      "display": "Allergy testing",
+      "definition": "Allergy diagnostic testing."
+    },
+    {
+      "code": "diagnostic_lab",
+      "display": "Diagnostic lab",
+      "definition": "Laboratory services and testing."
+    },
+    {
+      "code": "diagnostic_test",
+      "display": "Diagnostic test",
+      "definition": "Basic diagnostic tests such as lab tests or blood work."
+    },
+    {
+      "code": "imaging_advanced",
+      "display": "Advanced imaging",
+      "definition": "Advanced imaging such as MRI, CT, or PET."
+    },
+    {
+      "code": "imaging_standard",
+      "display": "Standard imaging",
+      "definition": "Standard imaging such as X-ray or ultrasound."
+    },
+    {
+      "code": "infusion_center_services",
+      "display": "Infusion center services",
+      "definition": "Facility-based infusion center services."
+    },
+    {
+      "code": "inpatient_hospital",
+      "display": "Inpatient hospital",
+      "definition": "Inpatient hospital services (global)."
+    },
+    {
+      "code": "inpatient_hospital_facility",
+      "display": "Inpatient hospital facility",
+      "definition": "Facility charges for inpatient stay."
+    },
+    {
+      "code": "ltac_facility",
+      "display": "LTAC facility",
+      "definition": "Long-term acute care facility services."
+    },
+    {
+      "code": "observation_care",
+      "display": "Observation care",
+      "definition": "Hospital observation services."
+    },
+    {
+      "code": "outpatient_surgery",
+      "display": "Outpatient surgery",
+      "definition": "Outpatient surgical procedures (global)."
+    },
+    {
+      "code": "outpatient_surgery_facility",
+      "display": "Outpatient surgery facility",
+      "definition": "Facility charges for outpatient surgery."
+    },
+    {
+      "code": "skilled_nursing_facility",
+      "display": "Skilled nursing facility",
+      "definition": "Skilled nursing facility stay."
+    },
+    {
+      "code": "skilled_nursing_readmission",
+      "display": "Skilled nursing readmission",
+      "definition": "Readmission to a skilled nursing facility."
+    },
+    {
+      "code": "surgery_facility",
+      "display": "Surgery facility",
+      "definition": "Facility charges related to a surgical procedure."
+    },
+    {
+      "code": "home_health_aide_services",
+      "display": "Home health aide services",
+      "definition": "Personal care assistance provided by a home health aide."
+    },
+    {
+      "code": "home_health_care",
+      "display": "Home health care",
+      "definition": "Home health care services."
+    },
+    {
+      "code": "home_health_nursing",
+      "display": "Home health nursing",
+      "definition": "Skilled nursing services provided in the home."
+    },
+    {
+      "code": "home_health_therapies",
+      "display": "Home health therapies",
+      "definition": "Therapy services (PT/OT/ST) provided in the home."
+    },
+    {
+      "code": "hospice_care",
+      "display": "Hospice care",
+      "definition": "Hospice end-of-life care services."
+    },
+    {
+      "code": "delivery_facility",
+      "display": "Delivery facility",
+      "definition": "Facility charges for labor and delivery."
+    },
+    {
+      "code": "delivery_inpatient",
+      "display": "Delivery inpatient",
+      "definition": "Inpatient hospital delivery services."
+    },
+    {
+      "code": "delivery_professional",
+      "display": "Delivery professional",
+      "definition": "Professional fees for obstetrical delivery."
+    },
+    {
+      "code": "newborn_care",
+      "display": "Newborn care",
+      "definition": "Care for newborn during and after delivery."
+    },
+    {
+      "code": "postnatal_care",
+      "display": "Postnatal care",
+      "definition": "Postnatal maternity care after delivery."
+    },
+    {
+      "code": "prenatal_care",
+      "display": "Prenatal care",
+      "definition": "Prenatal maternity care before delivery."
+    },
+    {
+      "code": "prenatal_labs",
+      "display": "Prenatal labs",
+      "definition": "Laboratory testing during prenatal care."
+    },
+    {
+      "code": "prenatal_office_visits",
+      "display": "Prenatal office visits",
+      "definition": "Routine obstetrical prenatal office visits."
+    },
+    {
+      "code": "prenatal_ultrasound",
+      "display": "Prenatal ultrasound",
+      "definition": "Obstetrical ultrasound during prenatal care."
+    },
+    {
+      "code": "ambulance",
+      "display": "Ambulance services",
+      "definition": "Transport by ambulance."
+    },
+    {
+      "code": "emergency_room",
+      "display": "Emergency room",
+      "definition": "Emergency department services for urgent or life-threatening conditions."
+    },
+    {
+      "code": "excluded_service",
+      "display": "Excluded service",
+      "definition": "Benefit explicitly excluded from coverage."
+    },
+    {
+      "code": "not_covered_service",
+      "display": "Not covered service",
+      "definition": "Service not covered by the plan."
+    },
+    {
+      "code": "urgent_care",
+      "display": "Urgent care",
+      "definition": "Urgent care center services for non-emergency conditions."
+    },
+    {
+      "code": "generic_drugs",
+      "display": "Generic drugs",
+      "definition": "Generic prescription medications."
+    },
+    {
+      "code": "nonpreferred_brand_drugs",
+      "display": "Non-preferred brand drugs",
+      "definition": "Non-preferred brand-name prescription medications."
+    },
+    {
+      "code": "nonpreferred_specialty_drugs",
+      "display": "Non-preferred specialty drugs",
+      "definition": "Non-preferred specialty medications."
+    },
+    {
+      "code": "preferred_brand_drugs",
+      "display": "Preferred brand drugs",
+      "definition": "Preferred brand-name prescription medications."
+    },
+    {
+      "code": "preferred_generic_drugs",
+      "display": "Preferred generic drugs",
+      "definition": "Preferred generic medications."
+    },
+    {
+      "code": "preferred_specialty_drugs",
+      "display": "Preferred specialty drugs",
+      "definition": "Preferred specialty medications."
+    },
+    {
+      "code": "preventive_drugs",
+      "display": "Preventive drugs",
+      "definition": "Preventive medications covered under ACA preventive care."
+    },
+    {
+      "code": "specialty_drugs",
+      "display": "Specialty drugs",
+      "definition": "Specialty medications typically requiring special handling."
+    },
+    {
+      "code": "tier_5_drugs",
+      "display": "Tier 5 drugs",
+      "definition": "Tier 5 prescription medications (plan-defined high-cost tier)."
+    },
+    {
+      "code": "tier_6_drugs",
+      "display": "Tier 6 drugs",
+      "definition": "Tier 6 prescription medications (plan-defined highest tier)."
+    },
+    {
+      "code": "immunizations",
+      "display": "Immunizations",
+      "definition": "Routine immunizations and vaccinations."
+    },
+    {
+      "code": "preventive_care",
+      "display": "Preventive care",
+      "definition": "Routine preventive services like screenings and immunizations."
+    },
+    {
+      "code": "preventive_colonoscopy",
+      "display": "Preventive colonoscopy",
+      "definition": "Screening colonoscopy under preventive services."
+    },
+    {
+      "code": "preventive_immunizations",
+      "display": "Preventive immunizations",
+      "definition": "Preventive immunizations and vaccines."
+    },
+    {
+      "code": "preventive_mammogram",
+      "display": "Preventive mammogram",
+      "definition": "Screening mammogram under preventive services."
+    },
+    {
+      "code": "preventive_well_woman_exam",
+      "display": "Preventive well-woman exam",
+      "definition": "Annual well-woman preventive exam."
+    },
+    {
+      "code": "well_child_visit",
+      "display": "Well-child visit",
+      "definition": "Routine pediatric well-child visit."
+    },
+    {
+      "code": "acupuncture",
+      "display": "Acupuncture",
+      "definition": "Acupuncture services."
+    },
+    {
+      "code": "allergy_injections",
+      "display": "Allergy injections",
+      "definition": "Allergy shots and injections."
+    },
+    {
+      "code": "chiropractic_care",
+      "display": "Chiropractic care",
+      "definition": "Chiropractic services."
+    },
+    {
+      "code": "inpatient_hospital_physician",
+      "display": "Inpatient hospital physician",
+      "definition": "Physician professional services during inpatient stay."
+    },
+    {
+      "code": "inpatient_hospital_professional",
+      "display": "Inpatient hospital professional",
+      "definition": "Professional fees during inpatient hospital stay (e.g., surgeon, hospitalist)."
+    },
+    {
+      "code": "outpatient_surgery_professional",
+      "display": "Outpatient surgery professional",
+      "definition": "Professional fees for outpatient surgery (e.g., surgeon)."
+    },
+    {
+      "code": "outpatient_surgery_surgeon",
+      "display": "Outpatient surgeon",
+      "definition": "Surgeon professional fees for outpatient surgery."
+    },
+    {
+      "code": "primary_care",
+      "display": "Primary care visit",
+      "definition": "Office visit to a primary care provider for injury or illness."
+    },
+    {
+      "code": "specialist",
+      "display": "Specialist visit",
+      "definition": "Office visit to a medical specialist."
+    },
+    {
+      "code": "surgery_professional",
+      "display": "Surgery professional",
+      "definition": "Professional fees related to a surgical procedure."
+    },
+    {
+      "code": "telehealth_visit",
+      "display": "Telehealth visit",
+      "definition": "Virtual visit with a provider via telephone or video."
+    },
+    {
+      "code": "cardiac_rehab",
+      "display": "Cardiac rehab",
+      "definition": "Cardiac rehabilitation services."
+    },
+    {
+      "code": "cardiac_rehabilitation",
+      "display": "Cardiac rehabilitation",
+      "definition": "Structured cardiac rehabilitation program sessions."
+    },
+    {
+      "code": "habilitative_services",
+      "display": "Habilitative services",
+      "definition": "Habilitative therapy services to help keep, learn, or improve skills."
+    },
+    {
+      "code": "occupational_therapy",
+      "display": "Occupational therapy",
+      "definition": "Occupational therapy services."
+    },
+    {
+      "code": "physical_therapy",
+      "display": "Physical therapy",
+      "definition": "Physical therapy services."
+    },
+    {
+      "code": "pulmonary_rehab",
+      "display": "Pulmonary rehab",
+      "definition": "Pulmonary rehabilitation services."
+    },
+    {
+      "code": "pulmonary_rehabilitation",
+      "display": "Pulmonary rehabilitation",
+      "definition": "Structured pulmonary rehabilitation program sessions."
+    },
+    {
+      "code": "rehabilitation_inpatient",
+      "display": "Inpatient rehabilitation",
+      "definition": "Inpatient rehabilitation services."
+    },
+    {
+      "code": "rehabilitation_services",
+      "display": "Rehabilitation services",
+      "definition": "Outpatient rehabilitation services (e.g., PT/OT/ST)."
+    },
+    {
+      "code": "speech_therapy",
+      "display": "Speech therapy",
+      "definition": "Speech and language therapy services."
+    },
+    {
+      "code": "bariatric_surgery",
+      "display": "Bariatric surgery",
+      "definition": "Weight loss surgery."
+    },
+    {
+      "code": "chemotherapy",
+      "display": "Chemotherapy",
+      "definition": "Chemotherapy infusion or injections."
+    },
+    {
+      "code": "diabetes_management",
+      "display": "Diabetes management",
+      "definition": "Diabetes self-management training and education."
+    },
+    {
+      "code": "diabetic_supplies",
+      "display": "Diabetic supplies",
+      "definition": "Diabetic testing supplies."
+    },
+    {
+      "code": "dialysis",
+      "display": "Dialysis",
+      "definition": "Dialysis treatment for kidney failure."
+    },
+    {
+      "code": "dme_orthotics",
+      "display": "DME orthotics",
+      "definition": "Orthotic devices under the medical benefit."
+    },
+    {
+      "code": "dme_oxygen_equipment",
+      "display": "DME oxygen equipment",
+      "definition": "Home oxygen equipment under the medical benefit."
+    },
+    {
+      "code": "dme_prosthetics",
+      "display": "DME prosthetics",
+      "definition": "Prosthetic devices under the medical benefit."
+    },
+    {
+      "code": "durable_medical_equipment",
+      "display": "Durable medical equipment",
+      "definition": "Durable medical equipment (DME)."
+    },
+    {
+      "code": "home_infusion_therapy",
+      "display": "Home infusion therapy",
+      "definition": "Infusion therapy administered in the home."
+    },
+    {
+      "code": "infertility_treatment",
+      "display": "Infertility treatment",
+      "definition": "Infertility evaluation and treatment services."
+    },
+    {
+      "code": "injectable_medications_medical",
+      "display": "Injectable medications (medical)",
+      "definition": "Office-administered injectable medications covered under the medical benefit."
+    },
+    {
+      "code": "kidney_dialysis",
+      "display": "Kidney dialysis",
+      "definition": "Dialysis services for kidney failure."
+    },
+    {
+      "code": "nutritional_counseling",
+      "display": "Nutritional counseling",
+      "definition": "Nutrition counseling services."
+    },
+    {
+      "code": "prosthetics",
+      "display": "Prosthetics",
+      "definition": "Prosthetics and orthotics."
+    },
+    {
+      "code": "radiation_therapy",
+      "display": "Radiation therapy",
+      "definition": "Radiation therapy for cancer treatment."
+    },
+    {
+      "code": "surgery_global",
+      "display": "Surgery (global)",
+      "definition": "Global surgical services including facility and professional components."
+    },
+    {
+      "code": "pediatric_eye_exam",
+      "display": "Pediatric eye exam",
+      "definition": "Pediatric vision eye examination."
+    },
+    {
+      "code": "pediatric_glasses",
+      "display": "Pediatric glasses",
+      "definition": "Pediatric vision glasses or lenses."
+    }
+  ]
+}
