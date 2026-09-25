@@ -413,7 +413,17 @@
         {
           "tier_id": "OUT",
           "covered": true,
-          "cost_shares": []
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 50,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "Page 3: \"Covered at In-Network cost-share for emergencies only\""
         }
       ],
       "limits": [],

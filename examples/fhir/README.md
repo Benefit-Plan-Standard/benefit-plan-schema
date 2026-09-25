@@ -23,7 +23,7 @@ Validation record: [`VALIDATION.md`](VALIDATION.md).
 | `flblue-blueoptions-505.json` | `bluecross_example.json` | 1.1.0 | 27 | 4 | 0 |
 | `gatorcare-prime-epo.json` | `gatorcare_example.json` | 1.1.0 | 25 | 4 | 1 |
 | `humana-gold-plus-h1036-025-hmo.json` | `humana_example.json` | 1.2.0 | 26 | 46 | 9 |
-| `kaiser-ca-gold-80-hmo.json` | `kaiser_example.json` | 1.1.0 | 28 | 3 | 28 |
+| `kaiser-ca-gold-80-hmo.json` | `kaiser_example.json` | 1.1.0 | 28 | 3 | 0 |
 | `scan-classic-hmo-los-angeles.json` | `scan_example.json` | 1.2.0 | 22 | 49 | 20 |
 | `uhc-choice-plus-hsa-gold-1700.json` | `united_example.json` | 1.1.0 | 26 | 3 | 0 |
 
@@ -39,7 +39,8 @@ A Summary of Benefits is not an SBC. These two files conform structurally to the
 
 - **Benefits outside the SBC codes.** The SBC benefit category binding is required and has 29 codes. A BPS benefit with no code there is not placed in `coverage` or `plan.specificCost`. It is listed in a `bps-unmapped-benefit` extension on the `InsurancePlan`. Home health care is one of these in the eight SBC files and in SCAN, because the code system has no general home health code. The Humana file has no home health benefit.
 - **`Not stated in the BPS document`.** The profile requires at least 2 `cost` entries per benefit. When the BPS document has only one, the converter adds an entry for the missing network with this text and a `data-absent-reason` of `unknown`. It describes the BPS document, not the source PDF.
-- **Kaiser.** The Kaiser BPS file (`kaiser_example.json`) carries only the in-network (`Plan Provider`) tier. It does not carry the SBC's out-of-network (`Non-Plan Provider`) column, although its plan-level excerpts quote it (for example "Non-Plan Provider: Not covered" on page 2). Every Kaiser benefit therefore has an out-of-network `Not stated in the BPS document` entry.
+- **Kaiser.** The Kaiser BPS file (`kaiser_example.json`) carries both SBC columns: `Plan Provider` (in-network) and `Non-Plan Provider` (out-of-network). Out of network, emergency room care ($350 / visit) and emergency medical transportation ($250 / trip) are covered at the same amounts as in network; every other chart row is not covered. Acupuncture, which the SBC lists only under "Other Covered Services", has no out-of-network row because the document prints no value for it.
+- **Ambetter.** The SBC prints one out-of-network cell, "Covered at In-Network cost-share for emergencies only", across emergency room care, emergency medical transportation and urgent care. The Ambetter BPS file carries it for emergency room care only, so ambulance and urgent care each have an out-of-network `Not stated in the BPS document` entry.
 - **Kaiser surgeon fee.** Kaiser's `OUTPATIENT_SURGERY_SURGEON` benefit is the hospital-stay "Physician/surgeon fee" row on page 2 of the SBC, so it is placed under `hospital-inpatient` through an override in `fhir/carin-sbc-crosswalk.json`.
 - **Source references.** The 8 SBC files carry page references at the plan level only, on the `InsurancePlan`. The 2 Medicare Advantage files also carry per-benefit page references on each placed benefit.
 - **Not covered.** A BPS `covered: false` row becomes a `cost` entry with type text `Not covered` and a `data-absent-reason` of `not-applicable` on the value, not `value: 0`.

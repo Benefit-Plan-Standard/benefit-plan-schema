@@ -1,6 +1,6 @@
 # Validation record
 
-**Date:** 2026-09-24
+**Date:** 2026-09-24; United, Ambetter and Kaiser re-validated 2026-09-25 after data fixes
 **Result:** all 10 files pass with **0 errors**. 47 warnings, all explained below.
 
 ## Setup
@@ -39,7 +39,7 @@ Before conversion, each BPS input was checked with `node scripts/validate.js --s
 | `flblue-blueoptions-505.json` | 0 | 0 | 112 |
 | `gatorcare-prime-epo.json` | 0 | 0 | 101 |
 | `humana-gold-plus-h1036-025-hmo.json` | 0 | 42 | 180 |
-| `kaiser-ca-gold-80-hmo.json` | 0 | 0 | 83 |
+| `kaiser-ca-gold-80-hmo.json` | 0 | 0 | 111 |
 | `scan-classic-hmo-los-angeles.json` | 0 | 4 | 148 |
 | `uhc-choice-plus-hsa-gold-1700.json` | 0 | 0 | 105 |
 
@@ -67,7 +67,7 @@ SCAN's "Retail, Standard" is standard retail pharmacy pricing. It is deliberatel
 
 ## Information messages
 
-All 1,143 information messages are the same message: "This element does not match any known slice defined in the profile ... sbc-insurance-plan". Each one is a BPS extension (`bps-*`) sitting on an element where the profile slices extensions for its own CARIN extensions. The slicing is open, and each BPS extension is validated against its own definition from `fhir/definitions/`. By location: 479 on `specificCost.benefit.cost`, 338 on `InsurancePlan`, and 326 on `coverage.benefit`.
+All 1,171 information messages are the same message: "This element does not match any known slice defined in the profile ... sbc-insurance-plan". Each one is a BPS extension (`bps-*`) sitting on an element where the profile slices extensions for its own CARIN extensions. The slicing is open, and each BPS extension is validated against its own definition from `fhir/definitions/`. By location: 507 on `specificCost.benefit.cost`, 338 on `InsurancePlan`, and 326 on `coverage.benefit`.
 
 ## Negative control
 

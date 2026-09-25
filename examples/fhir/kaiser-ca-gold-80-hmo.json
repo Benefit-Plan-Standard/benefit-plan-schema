@@ -2206,8 +2206,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -2222,7 +2233,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -2313,8 +2324,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -2329,7 +2351,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -2420,8 +2442,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -2436,7 +2469,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -2527,8 +2560,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -2543,7 +2587,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -2634,8 +2678,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -2650,7 +2705,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -2741,8 +2796,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -2757,7 +2823,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -2848,8 +2914,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -2864,7 +2941,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -2955,8 +3032,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -2971,7 +3059,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -3062,8 +3150,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -3078,7 +3177,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -3169,8 +3268,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -3185,7 +3295,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -3243,8 +3353,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -3259,7 +3380,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -3350,8 +3471,45 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "basis",
+                                "valueString": "per_visit"
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Page 3: the Non-Plan Provider column prints $350 / visit, the same as the Plan Provider column."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
                         },
                         "applicability": {
                           "coding": [
@@ -3363,12 +3521,10 @@
                           ]
                         },
                         "value": {
-                          "extension": [
-                            {
-                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
-                            }
-                          ]
+                          "value": 350,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
                         }
                       }
                     ]
@@ -3457,8 +3613,45 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "basis",
+                                "valueString": "per_visit"
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Page 3: the Non-Plan Provider column prints $250 / trip, the same as the Plan Provider column."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
                         },
                         "applicability": {
                           "coding": [
@@ -3470,12 +3663,10 @@
                           ]
                         },
                         "value": {
-                          "extension": [
-                            {
-                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
-                            }
-                          ]
+                          "value": 250,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
                         }
                       }
                     ]
@@ -3564,8 +3755,23 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Page 3: the Non-Plan Provider column prints \"Not covered\"; the limitations column adds \"Non-Plan providers covered when temporarily outside the service area: $40 / visit\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -3580,7 +3786,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -3671,8 +3877,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -3687,7 +3904,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -3745,8 +3962,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -3761,7 +3989,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -3852,8 +4080,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -3868,7 +4107,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -3959,8 +4198,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -3975,7 +4225,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -4046,8 +4296,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -4062,7 +4323,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -4140,8 +4401,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -4156,7 +4428,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -4247,8 +4519,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -4263,7 +4546,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -4354,8 +4637,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -4370,7 +4664,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -4461,8 +4755,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -4477,7 +4782,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -4568,8 +4873,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -4584,7 +4900,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -4675,8 +4991,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -4691,7 +5018,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -4782,8 +5109,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -4798,7 +5136,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -4889,8 +5227,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -4905,7 +5254,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }
@@ -4996,8 +5345,19 @@
                         }
                       },
                       {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
                         "type": {
-                          "text": "Not stated in the BPS document"
+                          "text": "Not covered"
                         },
                         "applicability": {
                           "coding": [
@@ -5012,7 +5372,7 @@
                           "extension": [
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
+                              "valueCode": "not-applicable"
                             }
                           ]
                         }

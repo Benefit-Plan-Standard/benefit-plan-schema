@@ -14,6 +14,11 @@
       "tier_id": "IN",
       "name": "Plan Provider",
       "description": "Kaiser Permanente plan providers"
+    },
+    {
+      "tier_id": "OUT",
+      "name": "Non-Plan Provider",
+      "description": "Non-Plan providers, priced in the \"What You Will Pay: Non-Plan Provider\" column on pages 2 to 4."
     }
   ],
   "accumulators": {
@@ -58,6 +63,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -85,6 +95,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -112,6 +127,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -139,6 +159,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -166,6 +191,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -193,6 +223,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -220,6 +255,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -247,6 +287,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -274,6 +319,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -301,6 +351,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -318,6 +373,11 @@
         {
           "tier_id": "IN",
           "covered": true,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
           "cost_shares": []
         }
       ],
@@ -346,6 +406,21 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 350,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "Page 3: the Non-Plan Provider column prints $350 / visit, the same as the Plan Provider column."
         }
       ],
       "limits": [],
@@ -373,6 +448,21 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 250,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "Page 3: the Non-Plan Provider column prints $250 / trip, the same as the Plan Provider column."
         }
       ],
       "limits": [],
@@ -400,6 +490,12 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "Page 3: the Non-Plan Provider column prints \"Not covered\"; the limitations column adds \"Non-Plan providers covered when temporarily outside the service area: $40 / visit\"."
         }
       ],
       "limits": [],
@@ -427,6 +523,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -444,6 +545,11 @@
         {
           "tier_id": "IN",
           "covered": true,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
           "cost_shares": []
         }
       ],
@@ -472,6 +578,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -499,6 +610,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -516,6 +632,11 @@
         {
           "tier_id": "IN",
           "covered": true,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
           "cost_shares": []
         }
       ],
@@ -544,6 +665,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -571,6 +697,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -598,6 +729,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -625,6 +761,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -652,6 +793,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -679,6 +825,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -706,6 +857,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -733,6 +889,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -760,6 +921,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -787,6 +953,11 @@
               "applies_to_moop": true
             }
           ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
         }
       ],
       "limits": [],
@@ -805,6 +976,12 @@
           "tier_id": "IN",
           "covered": false,
           "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "Page 4 lists Chiropractic Care under \"Services Your Plan Generally Does NOT Cover\"; the chart has no row for it."
         }
       ],
       "limits": [],

@@ -95,7 +95,7 @@ A BPS benefit becomes one `cost[]` entry per cost-share step, grouped by tier in
 | Amount range or rate range (`amount_min`/`amount_max`, `rate_min`/`rate_max`; MA only) | `value` data-absent-reason `unsupported`, because a Quantity cannot hold a range. The bounds go in the BPS cost-share extension. |
 | **Fewer than 2 entries after the rows above** (a benefit with a single network column, or an MA benefit priced only at one site of service) | Append one placeholder for the network the benefit does not mention: `out-of-network` if no out-of-network row exists, otherwise `in-network`. The placeholder has `type.text` `Not stated in the BPS document` and `value` data-absent-reason `unknown`. It never says "not covered", because the BPS document does not say that for the benefit. |
 
-The placeholder exists only to satisfy `cost` 2..*. It describes the BPS document, not the source PDF. The Kaiser BPS file carries only the in-network (`Plan Provider`) tier, while its plan-level excerpts quote the SBC's "Non-Plan Provider: Not covered". So every Kaiser benefit gets an out-of-network placeholder, and `examples/fhir/README.md` notes that the Kaiser BPS file does not carry the out-of-network column. The docs page explains the placeholder.
+The placeholder exists only to satisfy `cost` 2..*. It describes the BPS document, not the source PDF: a benefit that the BPS file prices in one network only gets a placeholder even when the source document prints the other column. `examples/fhir/README.md` lists the placeholder count per file, and the docs page explains the placeholder.
 
 ## 6. Field-by-field mapping
 

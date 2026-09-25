@@ -3417,17 +3417,43 @@
                       {
                         "extension": [
                           {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
                             "extension": [
                               {
                                 "url": "tierId",
                                 "valueString": "OUT"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "basis",
+                                "valueString": "per_visit"
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Page 3: \"Covered at In-Network cost-share for emergencies only\""
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
                           }
                         ],
                         "type": {
-                          "text": "Covered; amount not stated in the BPS document"
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
                         },
                         "applicability": {
                           "coding": [
@@ -3439,12 +3465,10 @@
                           ]
                         },
                         "value": {
-                          "extension": [
-                            {
-                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                              "valueCode": "unknown"
-                            }
-                          ]
+                          "value": 50,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
                         }
                       }
                     ]
