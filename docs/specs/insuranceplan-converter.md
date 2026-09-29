@@ -32,7 +32,6 @@ This spec defines a converter from a Benefit Plan Standard (BPS) document to a F
 - The CLI checks the input against the schema its `schema_version` names (`schema/v1.1.0` or `schema/v1.2.0`), using the same local Ajv setup as `scripts/validate.js`. A document that fails the schema is rejected. Nothing is converted.
 - Absent v1.2.0 fields take their v1.1.0 meaning. For example, a tier with no `tier_class` is a `network` tier.
 - The 10 files in `examples/` are the test corpus. The 8 SBC examples declare v1.1.0 and the 2 Medicare Advantage examples (`humana_example.json`, `scan_example.json`) declare v1.2.0.
-- `scripts/build_examples.py` is read for reference only and **is never run**. It no longer describes the examples (for instance, it still builds a UHC Medicare plan) and running it would overwrite the verified files.
 
 ## 4. Outputs
 
