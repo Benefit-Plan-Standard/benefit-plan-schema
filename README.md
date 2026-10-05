@@ -262,6 +262,16 @@ The 10 examples are already converted in [`examples/fhir/`](examples/fhir/) and 
 
 Two limits to know. The SBC benefit category binding has 29 codes, so benefits outside them (home health care, and most Medicare Advantage benefits) are listed by name in a `bps-unmapped-benefit` extension without their cost sharing. And the 8 SBC examples carry page references at the plan level only. The mapping, including what is lossy, is in [`docs/specs/insuranceplan-converter.md`](docs/specs/insuranceplan-converter.md).
 
+### Importers
+
+`scripts/from-marketplace-puf.js` reads the CMS Health Insurance Exchange public use files (Plan Attributes PUF and Benefits and Cost Sharing PUF) and writes one BPS v1.1.0 document per plan; the FHIR converter above reads that output unchanged. The public files are not in the repository: download them into `data/puf/<year>/` (git-ignored). Benefit names map to canonical keys through `fhir/marketplace-puf-crosswalk.json`; a cost-share string the parser cannot read stops the import instead of being guessed. Spec: [`docs/specs/marketplace-puf-importer.md`](docs/specs/marketplace-puf-importer.md); examples: `examples/*.puf.json`.
+
+```bash
+node scripts/from-marketplace-puf.js --year 2026 --issuer 40220 --state TX          # list an issuer's plans
+node scripts/from-marketplace-puf.js --year 2026 --plan 40220TX0080024-01 --out plan.json
+node --test scripts/from-marketplace-puf.test.js
+```
+
 ---
 
 ## 🤝 Contributing

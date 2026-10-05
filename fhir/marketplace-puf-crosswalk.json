@@ -1,0 +1,1650 @@
+{
+  "description": "CMS Health Insurance Exchange Benefits and Cost Sharing PUF BenefitName to BPS canonical_key (vocabularies/canonical-benefits.json). A name maps only when the public-file benefit clearly is the canonical service; there is no nearest-fit mapping. canonical_key null means the importer does not emit the benefit and lists it in the document's source_references instead. category is the BPS category code (vocabularies/categories.json) or null. See docs/specs/marketplace-puf-importer.md.",
+  "source": "Benefits and Cost Sharing PUF, plan year 2026 (https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip): every distinct BenefitName value, verbatim, including the file's own spellings and truncations.",
+  "plan_year": 2026,
+  "counts": {
+    "names": 273,
+    "mapped": 71,
+    "unmapped": 202
+  },
+  "map": [
+    {
+      "puf_benefit_name": "Abortion for Which Public Funding is Prohibited",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Accidental Dental",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Accidental Dental - Child",
+      "canonical_key": null,
+      "category": "DENTAL_PEDIATRIC",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Accidental Dental Adult",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Acquired Brain Injury",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Active & Fit",
+      "canonical_key": null,
+      "category": "FITNESS",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Acupuncture",
+      "canonical_key": "acupuncture",
+      "category": "ACUPUNCTURE",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Adult Optical (hardware)",
+      "canonical_key": null,
+      "category": "VISION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Allergy Testing",
+      "canonical_key": "allergy_testing",
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Anesthesia Services for Dental Care",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Anesthetics",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Annual Diabetic Eye Exam",
+      "canonical_key": null,
+      "category": "VISION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Applied Behavior Analysis Based Therapies",
+      "canonical_key": "aba_therapy",
+      "category": "BEHAVIORAL_HEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Asthma/COPD Care Management",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Asthma/COPD Testing",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Asthma/COPD Therapies",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Attention Deficit Disorder",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Austism Spectrum Disorders",
+      "canonical_key": "autism_services",
+      "category": "BEHAVIORAL_HEALTH",
+      "note": "Spelled \"Austism\" in the public file; the same benefit as Autism Spectrum Disorders."
+    },
+    {
+      "puf_benefit_name": "Autism Spectrum Disorders",
+      "canonical_key": "autism_services",
+      "category": "BEHAVIORAL_HEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Bariatric Surgery",
+      "canonical_key": "bariatric_surgery",
+      "category": "BARIATRIC_SURGERY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Basic Dental Care - Adult",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Basic Dental Care - Child",
+      "canonical_key": null,
+      "category": "DENTAL_PEDIATRIC",
+      "note": "Broader than a check-up; pediatric_dental_checkup covers the check-up only."
+    },
+    {
+      "puf_benefit_name": "Basic Dental Care - Child (Non EHB)",
+      "canonical_key": null,
+      "category": "DENTAL_PEDIATRIC",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Biomarke",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Biomarker Testing",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Biomarkers",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Blood and Blood Services",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Bone Marrow Testing",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Bone Marrow Transplant",
+      "canonical_key": null,
+      "category": "SURGICAL_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Brain Injury",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Cancer Monitoring Screening",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Cancer Monitoring Test",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Cardiac Rehabilitation",
+      "canonical_key": "cardiac_rehabilitation",
+      "category": "REHABILITATION",
+      "note": "The vocabulary also has cardiac_rehab with the same meaning; cardiac_rehabilitation is used."
+    },
+    {
+      "puf_benefit_name": "Cardiac and Pulmonary Rehabilitation",
+      "canonical_key": null,
+      "category": "REHABILITATION",
+      "note": "Combines cardiac_rehabilitation and pulmonary_rehabilitation; no single key."
+    },
+    {
+      "puf_benefit_name": "Cardiovascular Disease",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Chemotherapy",
+      "canonical_key": "chemotherapy",
+      "category": "CHEMOTHERAPY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Child Health Supervision",
+      "canonical_key": "well_child_visit",
+      "category": "PREVENTIVE_CARE",
+      "note": "Child health supervision services is the statutory term for periodic well-child preventive care."
+    },
+    {
+      "puf_benefit_name": "Chiropractic Care",
+      "canonical_key": "chiropractic_care",
+      "category": "CHIROPRACTIC",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Chronic Pain Treatment",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Clinical Trials",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Cochlear Implants",
+      "canonical_key": null,
+      "category": "HEARING",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Community Health Worke",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Complete and Partial Dentures",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Congenital Anomaly, including Cleft Lip/Palate",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Contraceptive Injections",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Convenience Care Clinic",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Cosmetic Orthodonita",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Cosmetic Orthodontia",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Cosmetic Surgery",
+      "canonical_key": null,
+      "category": "SURGICAL_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Craniofacial Surgery",
+      "canonical_key": null,
+      "category": "SURGICAL_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Delivery and All Inpatient Services for Maternity Care",
+      "canonical_key": "delivery_inpatient",
+      "category": "MATERNITY_CARE",
+      "note": "Covers facility and professional inpatient delivery services together, so delivery_inpatient, not delivery_facility or delivery_professional."
+    },
+    {
+      "puf_benefit_name": "Dental Anesthesia",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Dental Check-Up for Children",
+      "canonical_key": "pediatric_dental_checkup",
+      "category": "DENTAL_PEDIATRIC",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Dental Services for Children with Severe Disabilities",
+      "canonical_key": null,
+      "category": "DENTAL_PEDIATRIC",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Dental X-rays",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Denture Adjustments",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Denture Rebase",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Denture Reline",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Denture Reline and Rebase",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Diabetes Care Management",
+      "canonical_key": null,
+      "category": null,
+      "note": "Care management, not the self-management training that diabetes_management defines."
+    },
+    {
+      "puf_benefit_name": "Diabetes Education",
+      "canonical_key": "diabetes_management",
+      "category": "PHYSICIAN_SERVICES",
+      "note": "diabetes_management is defined as diabetes self-management training and education."
+    },
+    {
+      "puf_benefit_name": "Diabetes Nutritional Counseling",
+      "canonical_key": null,
+      "category": null,
+      "note": "Narrower than nutritional_counseling (diabetes only)."
+    },
+    {
+      "puf_benefit_name": "Diabetes Retinal Eye Exam",
+      "canonical_key": null,
+      "category": "VISION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Diabetic Eye Exam",
+      "canonical_key": null,
+      "category": "VISION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Diabetic Retinal Eye Exam",
+      "canonical_key": null,
+      "category": "VISION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Diabetic Routine Foot Care",
+      "canonical_key": null,
+      "category": "PODIATRY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Diabetic Services Lab-work",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Diabetic Supplies",
+      "canonical_key": "diabetic_supplies",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Diagnosis and Treatment of Lymphedema",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Dialysis",
+      "canonical_key": "dialysis",
+      "category": "DIALYSIS",
+      "note": "The vocabulary also has kidney_dialysis with the same meaning; dialysis is used."
+    },
+    {
+      "puf_benefit_name": "Doula",
+      "canonical_key": null,
+      "category": "MATERNITY_CARE",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Doulas",
+      "canonical_key": null,
+      "category": "MATERNITY_CARE",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Durable Medical Equipment",
+      "canonical_key": "durable_medical_equipment",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "ER Diagnostic Test (X-Ray)",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "ER Diagnostic Test Lab-work/Other",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "ER Imaging Test",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "ER Physician Fee",
+      "canonical_key": null,
+      "category": "EMERGENCY_CARE",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Early Intervention Services",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Emergency Room Services",
+      "canonical_key": "emergency_room",
+      "category": "EMERGENCY_CARE",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Emergency Transportation/Ambulance",
+      "canonical_key": "ambulance",
+      "category": "EMERGENCY_CARE",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Enhanced Asthma/COPD $0 Drug Options",
+      "canonical_key": null,
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Enhanced Asthma/COPD Supplies & Equipment",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Enhanced Diabetes $0 Drug Options",
+      "canonical_key": null,
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Enhanced Diabetic Supplies and Equipment",
+      "canonical_key": null,
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "note": "Plan-specific enhanced benefit covering supplies and equipment; broader than diabetic_supplies."
+    },
+    {
+      "puf_benefit_name": "Enteral Formulas",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Enteral/Parenteral and Oral Nutrition Therapy",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Extractions",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Eye Glasses for Adult",
+      "canonical_key": null,
+      "category": "VISION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Eye Glasses for Adults",
+      "canonical_key": null,
+      "category": "VISION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Eye Glasses for Children",
+      "canonical_key": "pediatric_glasses",
+      "category": "VISION_PEDIATRIC",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Fillings",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Fitness Benefit - Adult",
+      "canonical_key": null,
+      "category": "FITNESS",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Gastric Electrical Stimulation",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Gender Affirming Care",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Gender Affirming Treatment",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Generic Drugs",
+      "canonical_key": "generic_drugs",
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Generic Drugs Maintenance",
+      "canonical_key": null,
+      "category": "PHARMACY",
+      "note": "Maintenance supply of generic drugs; narrower than generic_drugs."
+    },
+    {
+      "puf_benefit_name": "Genetic Testing",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Genetic Testing Lab Services",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Genetic Testing for Cance",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Habilitation - Autism",
+      "canonical_key": null,
+      "category": "REHABILITATION",
+      "note": "Narrower than habilitative_services (one condition)."
+    },
+    {
+      "puf_benefit_name": "Habilitation Services",
+      "canonical_key": "habilitative_services",
+      "category": "REHABILITATION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Harbor Health Express Care",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Hearing Aids",
+      "canonical_key": null,
+      "category": "HEARING",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Hearing Exam",
+      "canonical_key": null,
+      "category": "HEARING",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Home Health Care Services",
+      "canonical_key": "home_health_care",
+      "category": "HOME_HEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Hormone Replacement Therapy (HRT)",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Hormone Therapy",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Hospice Services",
+      "canonical_key": "hospice_care",
+      "category": "HOME_HEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Hyperbaric Oxygen Therapy",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Imaging (CT/PET Scans, MRIs)",
+      "canonical_key": "imaging_advanced",
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Immediate Dentures",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Implants",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Implants - Adult",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Implants - Child",
+      "canonical_key": null,
+      "category": "DENTAL_PEDIATRIC",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Infertility Treatment",
+      "canonical_key": "infertility_treatment",
+      "category": "INFERTILITY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Infusion Therapy",
+      "canonical_key": null,
+      "category": null,
+      "note": "Site not stated; the vocabulary splits infusion_center_services and home_infusion_therapy."
+    },
+    {
+      "puf_benefit_name": "Inherited Metabolic Disorder - PKU",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Inherited Metabolic Disorders - PKU",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Initial Placement of Bridges and Dentures",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Inpatient Hospital Services (e.g., Hospital Stay)",
+      "canonical_key": "inpatient_hospital",
+      "category": "HOSPITAL_SERVICES",
+      "note": "The name matches inpatient_hospital. The file carries physician services in a separate row, so in practice this row is the facility component."
+    },
+    {
+      "puf_benefit_name": "Inpatient Physician and Surgical Services",
+      "canonical_key": "inpatient_hospital_professional",
+      "category": "HOSPITAL_SERVICES",
+      "note": "Physician and surgeon fees during an inpatient stay; broader than inpatient_hospital_physician."
+    },
+    {
+      "puf_benefit_name": "Inpatient Rehabilitation",
+      "canonical_key": "rehabilitation_inpatient",
+      "category": "REHABILITATION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Inpatient Rehabilitation Services",
+      "canonical_key": "rehabilitation_inpatient",
+      "category": "REHABILITATION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Laboratory Outpatient and Professional Services",
+      "canonical_key": "diagnostic_lab",
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Long-Term/Custodial Nursing Home Care",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Low Protein Foods",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Lung Cancer Screening",
+      "canonical_key": null,
+      "category": "PREVENTIVE_CARE",
+      "note": "One screening; narrower than preventive_care."
+    },
+    {
+      "puf_benefit_name": "Major Dental Care - Adult",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Major Dental Care - Child",
+      "canonical_key": null,
+      "category": "DENTAL_PEDIATRIC",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Major Dental Care - Child (Non EHB)",
+      "canonical_key": null,
+      "category": "DENTAL_PEDIATRIC",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Mammogram",
+      "canonical_key": null,
+      "category": null,
+      "note": "Not stated as screening or diagnostic; preventive_mammogram is screening only."
+    },
+    {
+      "puf_benefit_name": "Mammography",
+      "canonical_key": null,
+      "category": null,
+      "note": "Not stated as screening or diagnostic; preventive_mammogram is screening only."
+    },
+    {
+      "puf_benefit_name": "Massage Therapy",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Massage therapy",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Mastectomy",
+      "canonical_key": null,
+      "category": "SURGICAL_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Medical Service Drug",
+      "canonical_key": null,
+      "category": null,
+      "note": "Drugs under the medical benefit, not stated as injectable; injectable_medications_medical is injectables only."
+    },
+    {
+      "puf_benefit_name": "Medical Service Drugs",
+      "canonical_key": null,
+      "category": null,
+      "note": "Drugs under the medical benefit, not stated as injectable; injectable_medications_medical is injectables only."
+    },
+    {
+      "puf_benefit_name": "Mental Health Office Visit",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": "Narrower than mental_health_outpatient (office visits only)."
+    },
+    {
+      "puf_benefit_name": "Mental Health Other",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Mental/Behavioral Health ER Physician Fee",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": "Behavioral-health-specific emergency professional fee; no key."
+    },
+    {
+      "puf_benefit_name": "Mental/Behavioral Health Emergency Room",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": "Narrower than emergency_room (behavioral health visits only)."
+    },
+    {
+      "puf_benefit_name": "Mental/Behavioral Health Emergency Transportation/Ambulance",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": "Narrower than ambulance (behavioral health transports only)."
+    },
+    {
+      "puf_benefit_name": "Mental/Behavioral Health Inpatient Services",
+      "canonical_key": "mental_health_inpatient",
+      "category": "BEHAVIORAL_HEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Mental/Behavioral Health Outpatient Other Services",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Mental/Behavioral Health Outpatient Services",
+      "canonical_key": "mental_health_outpatient",
+      "category": "BEHAVIORAL_HEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Mental/Behavioral Health Urgent Care",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": "Narrower than urgent_care (behavioral health visits only)."
+    },
+    {
+      "puf_benefit_name": "Minor Restorative Services",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Newborn Hearing Screening",
+      "canonical_key": null,
+      "category": "MATERNITY_CARE",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Newborn Services Other",
+      "canonical_key": null,
+      "category": "MATERNITY_CARE",
+      "note": "Residual newborn services, not stated as the newborn_care stay."
+    },
+    {
+      "puf_benefit_name": "Non Preferred Specialty Drugs",
+      "canonical_key": "nonpreferred_specialty_drugs",
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Non-Emergency Care When Traveling Outside the U.S.",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Non-Preferred Brand Drugs",
+      "canonical_key": "nonpreferred_brand_drugs",
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Non-Preferred Generic",
+      "canonical_key": null,
+      "category": "PHARMACY",
+      "note": "The vocabulary has preferred_generic_drugs but no non-preferred generic key."
+    },
+    {
+      "puf_benefit_name": "Non-Preferred Generic Drugs",
+      "canonical_key": null,
+      "category": "PHARMACY",
+      "note": "The vocabulary has preferred_generic_drugs but no non-preferred generic key."
+    },
+    {
+      "puf_benefit_name": "Non-Preferred Specialty Drugs",
+      "canonical_key": "nonpreferred_specialty_drugs",
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Nutrition/Formulas",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Nutritional Counseling",
+      "canonical_key": "nutritional_counseling",
+      "category": "PHYSICIAN_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Occlusal Adjustments",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Off Label Prescription Drugs",
+      "canonical_key": null,
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Office Visits with a Pulmonologist",
+      "canonical_key": null,
+      "category": "PHYSICIAN_SERVICES",
+      "note": "Narrower than specialist (one specialty)."
+    },
+    {
+      "puf_benefit_name": "Oral Surgery",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Organ Donor Search",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Orthodontia - Adult",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Orthodontia - Child",
+      "canonical_key": null,
+      "category": "DENTAL_PEDIATRIC",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Orthodontic Services for Orofacial Anomalies",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Orthodontic Services to Treat Orofacial Anomalies",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Orthotic Devices",
+      "canonical_key": "dme_orthotics",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Orthotic Devices for Positional Plagiocephaly",
+      "canonical_key": null,
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "note": "Narrower than dme_orthotics (one condition)."
+    },
+    {
+      "puf_benefit_name": "Osteoporosis",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Osteoporosis Treatment",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Other Practitioner Office Visit (Nurse, Physician Assistant)",
+      "canonical_key": null,
+      "category": "PHYSICIAN_SERVICES",
+      "note": "Not primary_care or specialist; no key for non-physician practitioner visits."
+    },
+    {
+      "puf_benefit_name": "Outpatient Facility Fee (e.g., Ambulatory Surgery Center)",
+      "canonical_key": "outpatient_surgery_facility",
+      "category": "SURGICAL_SERVICES",
+      "note": "The SBC row this template line feeds is the outpatient surgery facility fee."
+    },
+    {
+      "puf_benefit_name": "Outpatient Observation",
+      "canonical_key": "observation_care",
+      "category": "HOSPITAL_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Outpatient Rehabilitation Services",
+      "canonical_key": "rehabilitation_services",
+      "category": "REHABILITATION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Outpatient Surgery Physician/Surgical Services",
+      "canonical_key": "outpatient_surgery_professional",
+      "category": "SURGICAL_SERVICES",
+      "note": "Physician and surgeon fees for outpatient surgery; outpatient_surgery_professional, not the narrower outpatient_surgery_surgeon."
+    },
+    {
+      "puf_benefit_name": "PANS-PANDA",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "PANS/PANDA",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Palliative - Child",
+      "canonical_key": null,
+      "category": "DENTAL_PEDIATRIC",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Partial Hospitalization",
+      "canonical_key": "behavioral_health_partial_hospitalization",
+      "category": "BEHAVIORAL_HEALTH",
+      "note": "Partial hospitalization is a behavioral health level of care; the canonical key is defined for mental health or substance use."
+    },
+    {
+      "puf_benefit_name": "Partial Pulpotomy",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Pediatric Services Other",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Periodontal Maintenance",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Periodontal Root Scaling and Planing",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Periodontal and Osseous Surgery",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Periradicular Surgical Procedures",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Post and Core Build-up",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Post-Cochlear Implant Aural Rehabilitation Therapy",
+      "canonical_key": null,
+      "category": "HEARING",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Post-Mastectomy Care",
+      "canonical_key": null,
+      "category": "SURGICAL_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Posterior Composites - Adult",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Posterior Composites - Child",
+      "canonical_key": null,
+      "category": "DENTAL_PEDIATRIC",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Preferred Brand Drugs",
+      "canonical_key": "preferred_brand_drugs",
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Preferred Generic",
+      "canonical_key": "preferred_generic_drugs",
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Preferred Generic Drugs",
+      "canonical_key": "preferred_generic_drugs",
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Premera-Designated Centers of Excellence",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Premera-Designated Centers of Excellence Program",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Prenatal and Postnatal Care",
+      "canonical_key": null,
+      "category": "MATERNITY_CARE",
+      "note": "Combines prenatal_care and postnatal_care; no single key."
+    },
+    {
+      "puf_benefit_name": "Prescription Drugs Other",
+      "canonical_key": null,
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Preventative Drugs",
+      "canonical_key": "preventive_drugs",
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Preventive",
+      "canonical_key": null,
+      "category": null,
+      "note": "The name alone does not say which preventive services."
+    },
+    {
+      "puf_benefit_name": "Preventive Care/Screening/Immunization",
+      "canonical_key": "preventive_care",
+      "category": "PREVENTIVE_CARE",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Preventive Drugs",
+      "canonical_key": "preventive_drugs",
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Primary Care Visit to Treat an Injury or Illness",
+      "canonical_key": "primary_care",
+      "category": "PHYSICIAN_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Private-Duty Nursing",
+      "canonical_key": null,
+      "category": null,
+      "note": "Setting not stated; home_health_nursing is nursing in the home only."
+    },
+    {
+      "puf_benefit_name": "Prosthetic Devices",
+      "canonical_key": "dme_prosthetics",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "note": "dme_prosthetics is prosthetic devices; prosthetics also covers orthotics."
+    },
+    {
+      "puf_benefit_name": "Pulmonary Rehabilitation",
+      "canonical_key": "pulmonary_rehabilitation",
+      "category": "REHABILITATION",
+      "note": "The vocabulary also has pulmonary_rehab with the same meaning; pulmonary_rehabilitation is used."
+    },
+    {
+      "puf_benefit_name": "Pulmonary Rehabilitation Therapy",
+      "canonical_key": "pulmonary_rehabilitation",
+      "category": "REHABILITATION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Radiation",
+      "canonical_key": "radiation_therapy",
+      "category": "RADIATION_THERAPY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Recementation of Space Maintainers",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Reconstructive Surgery",
+      "canonical_key": null,
+      "category": "SURGICAL_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Rehabilitative Occupational and Rehabilitative Physical Therapy",
+      "canonical_key": null,
+      "category": "REHABILITATION",
+      "note": "Combines occupational_therapy and physical_therapy; no single key."
+    },
+    {
+      "puf_benefit_name": "Rehabilitative Speech Therapy",
+      "canonical_key": "speech_therapy",
+      "category": "REHABILITATION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Removal of Fixed Space Maintainers",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Removal of Space Maintainers",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Restorative Reproductive Treatment",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Reversible Contraceptives",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Reversible Contraveptives",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Root Canal Therapy and Retreatment",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Routine Dental Services (Adult)",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Routine Eye Exam (Adult)",
+      "canonical_key": null,
+      "category": "VISION",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Routine Eye Exam for Children",
+      "canonical_key": "pediatric_eye_exam",
+      "category": "VISION_PEDIATRIC",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Routine Foot Care",
+      "canonical_key": null,
+      "category": "PODIATRY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "School Based Health Centers",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Sealants",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Sex-Trait Modification",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Sex-Trait Modification Procedures",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Sexual Dysfunction",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Skilled Nursing Facility",
+      "canonical_key": "skilled_nursing_facility",
+      "category": "SKILLED_NURSING",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Specialist Visit",
+      "canonical_key": "specialist",
+      "category": "PHYSICIAN_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Specialty Drugs",
+      "canonical_key": "specialty_drugs",
+      "category": "PHARMACY",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Specialty Drugs Tier 2",
+      "canonical_key": null,
+      "category": "PHARMACY",
+      "note": "A plan-defined second specialty tier; not specialty_drugs as a whole."
+    },
+    {
+      "puf_benefit_name": "Specialty Laboratory Services",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Specified Sex-Trait Modification Procedures",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Specified Sex-Trait Modification Procedures(SSTMP)",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Specified Sex-trait Modification Procedures",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Specified Sex-trait Modification Procedures (SSTMP)",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Sterilization",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Substance Abuse Disorder Inpatient Services",
+      "canonical_key": "substance_use_inpatient",
+      "category": "BEHAVIORAL_HEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Substance Abuse Disorder Outpatient Services",
+      "canonical_key": "substance_use_outpatient",
+      "category": "BEHAVIORAL_HEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Substance Abuse Office Visit",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": "Narrower than substance_use_outpatient (office visits only)."
+    },
+    {
+      "puf_benefit_name": "Substance Use Disorder ER Physician Fee",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": "Behavioral-health-specific emergency professional fee; no key."
+    },
+    {
+      "puf_benefit_name": "Substance Use Disorder Emergency Room",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": "Narrower than emergency_room (substance use visits only)."
+    },
+    {
+      "puf_benefit_name": "Substance Use Disorder Emergency Transportation/Ambulance",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": "Narrower than ambulance (substance use transports only)."
+    },
+    {
+      "puf_benefit_name": "Substance Use Disorder Outpatient Other Services",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Substance Use Disorder Urgent Care",
+      "canonical_key": null,
+      "category": "BEHAVIORAL_HEALTH",
+      "note": "Narrower than urgent_care (substance use visits only)."
+    },
+    {
+      "puf_benefit_name": "Telehealth",
+      "canonical_key": "telehealth_visit",
+      "category": "TELEHEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Telehealth - Primary",
+      "canonical_key": "telehealth_visit",
+      "category": "TELEHEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Telehealth - Primary Care",
+      "canonical_key": "telehealth_visit",
+      "category": "TELEHEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Telehealth - Specialist",
+      "canonical_key": "telehealth_visit",
+      "category": "TELEHEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Testing Services",
+      "canonical_key": null,
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Tier 1b Generic Drugs",
+      "canonical_key": null,
+      "category": "PHARMACY",
+      "note": "A plan-defined formulary tier."
+    },
+    {
+      "puf_benefit_name": "Tier 2 Generic Drugs",
+      "canonical_key": null,
+      "category": "PHARMACY",
+      "note": "A plan-defined formulary tier."
+    },
+    {
+      "puf_benefit_name": "Tier 2 Rx",
+      "canonical_key": null,
+      "category": "PHARMACY",
+      "note": "A plan-defined formulary tier."
+    },
+    {
+      "puf_benefit_name": "Tier 2 Specialty Drugs",
+      "canonical_key": null,
+      "category": "PHARMACY",
+      "note": "A plan-defined second specialty tier; not specialty_drugs as a whole."
+    },
+    {
+      "puf_benefit_name": "Tissue Conditioning",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Topical Fluoride",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Transplant",
+      "canonical_key": null,
+      "category": "SURGICAL_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Transplant Donor Coverage",
+      "canonical_key": null,
+      "category": "SURGICAL_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Treatment for Temporomandibular Joint Disorders",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Urgent Care Centers or Facilities",
+      "canonical_key": "urgent_care",
+      "category": "URGENT_CARE",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Virtual Care",
+      "canonical_key": "telehealth_visit",
+      "category": "TELEHEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Virtual Visit",
+      "canonical_key": "telehealth_visit",
+      "category": "TELEHEALTH",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Vital Pulpotomy",
+      "canonical_key": null,
+      "category": "DENTAL",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Weight Loss Programs",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Weight Loss Treatment",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Weight Management Office Visits",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Weight Management Procedures",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Well Baby Visits and Care",
+      "canonical_key": "well_child_visit",
+      "category": "PREVENTIVE_CARE",
+      "note": "Well-baby visits are well-child visits in the first years of life."
+    },
+    {
+      "puf_benefit_name": "Well Child Care",
+      "canonical_key": "well_child_visit",
+      "category": "PREVENTIVE_CARE",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Wigs",
+      "canonical_key": null,
+      "category": null,
+      "note": null
+    },
+    {
+      "puf_benefit_name": "X-rays and Diagnostic Imaging",
+      "canonical_key": "imaging_standard",
+      "category": "DIAGNOSTIC_SERVICES",
+      "note": null
+    },
+    {
+      "puf_benefit_name": "Zero Cost Share",
+      "canonical_key": null,
+      "category": null,
+      "note": "The name does not say which services or drugs."
+    },
+    {
+      "puf_benefit_name": "Zero Cost Share Preventive Drugs",
+      "canonical_key": "preventive_drugs",
+      "category": "PHARMACY",
+      "note": "Drugs at zero cost share under the ACA preventive services requirement."
+    }
+  ]
+}
