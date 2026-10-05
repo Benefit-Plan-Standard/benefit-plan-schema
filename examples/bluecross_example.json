@@ -317,7 +317,16 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "dispensing_limit",
+          "description": "Up to 30 day supply for retail"
+        },
+        {
+          "type": "dispensing_limit",
+          "description": "90 day supply for mail order"
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -358,7 +367,16 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "dispensing_limit",
+          "description": "Up to 30 day supply for retail"
+        },
+        {
+          "type": "dispensing_limit",
+          "description": "90 day supply for mail order"
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -399,7 +417,16 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "dispensing_limit",
+          "description": "Up to 30 day supply for retail"
+        },
+        {
+          "type": "dispensing_limit",
+          "description": "90 day supply for mail order"
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -422,7 +449,16 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "dispensing_limit",
+          "description": "Up to 30 day supply for retail"
+        },
+        {
+          "type": "dispensing_limit",
+          "description": "Not covered through Mail Order"
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -659,7 +695,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "benefit_limit",
+          "description": "Inpatient Rehab Services limited to 21 days."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -904,9 +945,18 @@
         {
           "type": "visits",
           "value": 25
+        },
+        {
+          "type": "manipulations",
+          "value": 26
         }
       ],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "benefit_limit",
+          "description": "Coverage limited to 25 visits, including 26 manipulations."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {

@@ -1,7 +1,7 @@
 # Validation record
 
-**Date:** 2026-09-24; United, Ambetter and Kaiser re-validated 2026-09-25 after data fixes; the 8 SBC files re-validated 2026-10-05 after limits and deductible flags were corrected from the source PDFs
-**Result:** all 10 files pass with **0 errors**. 72 warnings, all explained below.
+**Date:** 2026-09-24; United, Ambetter and Kaiser re-validated 2026-09-25 after data fixes; the 8 SBC files re-validated 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs
+**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below.
 
 ## Setup
 
@@ -32,16 +32,16 @@ Before conversion, each BPS input was checked with `node scripts/validate.js --s
 
 | File | Errors | Warnings | Information |
 |---|---|---|---|
-| `aetna-ppo-1500-80-50.json` | 0 | 3 | 101 |
-| `aetna-ppo-5000-80-50.json` | 0 | 3 | 100 |
-| `ambetter-ca-silver-94-hmo.json` | 0 | 3 | 106 |
-| `cigna-oap-bowdoin.json` | 0 | 3 | 107 |
-| `flblue-blueoptions-505.json` | 0 | 0 | 112 |
-| `gatorcare-prime-epo.json` | 0 | 1 | 101 |
+| `aetna-ppo-1500-80-50.json` | 0 | 3 | 113 |
+| `aetna-ppo-5000-80-50.json` | 0 | 3 | 112 |
+| `ambetter-ca-silver-94-hmo.json` | 0 | 5 | 113 |
+| `cigna-oap-bowdoin.json` | 0 | 3 | 110 |
+| `flblue-blueoptions-505.json` | 0 | 1 | 122 |
+| `gatorcare-prime-epo.json` | 0 | 1 | 103 |
 | `humana-gold-plus-h1036-025-hmo.json` | 0 | 42 | 180 |
-| `kaiser-ca-gold-80-hmo.json` | 0 | 5 | 111 |
+| `kaiser-ca-gold-80-hmo.json` | 0 | 5 | 116 |
 | `scan-classic-hmo-los-angeles.json` | 0 | 4 | 148 |
-| `uhc-choice-plus-hsa-gold-1700.json` | 0 | 8 | 105 |
+| `uhc-choice-plus-hsa-gold-1700.json` | 0 | 8 | 116 |
 
 ## Warnings explained
 
@@ -65,7 +65,7 @@ Before conversion, each BPS input was checked with `node scripts/validate.js --s
 
 SCAN's "Retail, Standard" is standard retail pharmacy pricing. It is deliberately not coded `standard`, which the value set defines as "Standard Provider". Humana's telehealth tier maps to `virtual` and raises no warning.
 
-**3. Text-only limit codings (25 warnings: Aetna PPO 1500 3, Aetna PPO 5000 3, Ambetter 3, Cigna 2, GatorCare 1, Kaiser 5, United 8).** `coverage[].benefit[].extension` (`benefit-limitation`): "No code provided, and a code should be provided from the value set 'Limit Type Value Set'" or "'Limit Period Value Set'". The CARIN limit type codes are `visits`, `days` and `dollars`, and the converter codes a limit period only for plan year, calendar year, benefit period and lifetime; it writes `per_year` as text because the BPS value does not say plan year or calendar year (converter spec 6.5). The bindings are extensible, so each of these is a text-only CodeableConcept carrying the BPS value. The values come from the SBC Limitations column (added 2026-10-05):
+**3. Text-only limit codings (28 warnings: Aetna PPO 1500 3, Aetna PPO 5000 3, Ambetter 5, Cigna 2, Florida Blue 1, GatorCare 1, Kaiser 5, United 8).** `coverage[].benefit[].extension` (`benefit-limitation`): "No code provided, and a code should be provided from the value set 'Limit Type Value Set'" or "'Limit Period Value Set'". The CARIN limit type codes are `visits`, `days` and `dollars`, and the converter codes a limit period only for plan year, calendar year, benefit period and lifetime; it writes `per_year` as text because the BPS value does not say plan year or calendar year (converter spec 6.5). The bindings are extensible, so each of these is a text-only CodeableConcept carrying the BPS value. The values come from the SBC Limitations column (added 2026-10-05):
 
 | File | Text-only value | Warnings |
 |---|---|---|
@@ -76,10 +76,12 @@ SCAN's "Retail, Standard" is standard retail pharmacy pricing. It is deliberatel
 | Aetna PPO 5000 | limit type `exams` | 1 |
 | Aetna PPO 5000 | limit period `per_12_months` | 1 |
 | Ambetter | limit type `check_ups` | 1 |
-| Ambetter | limit period `per_12_months` | 1 |
+| Ambetter | limit type `pairs_of_glasses` | 1 |
+| Ambetter | limit period `per_12_months` | 2 |
 | Ambetter | limit period `per_6_months` | 1 |
 | Cigna | limit type `exams` | 1 |
 | Cigna | limit period `per_year` | 1 |
+| Florida Blue | limit type `manipulations` | 1 |
 | GatorCare | limit type `manipulations` | 1 |
 | Kaiser | limit type `pairs_of_glasses` | 1 |
 | Kaiser | limit type `check_ups` | 1 |
@@ -91,11 +93,11 @@ SCAN's "Retail, Standard" is standard retail pharmacy pricing. It is deliberatel
 | United | limit period `per_2_years` | 1 |
 | United | limit period `per_12_months` | 3 |
 
-Limits on home health care and chiropractic care stay in the BPS examples but are not in these files: neither benefit has an SBC benefit category code, so the converter lists both as unmapped (converter spec 8.3).
+Limits and conditions on home health care and chiropractic care stay in the BPS examples but are not in these files: neither benefit has an SBC benefit category code, so the converter lists both as unmapped (converter spec 8.3).
 
 ## Information messages
 
-All 1,171 information messages are the same message: "This element does not match any known slice defined in the profile ... sbc-insurance-plan". Each one is a BPS extension (`bps-*`) sitting on an element where the profile slices extensions for its own CARIN extensions. The slicing is open, and each BPS extension is validated against its own definition from `fhir/definitions/`. By location: 507 on `specificCost.benefit.cost`, 338 on `InsurancePlan`, and 326 on `coverage.benefit`.
+All 1,233 information messages are the same message: "This element does not match any known slice defined in the profile ... sbc-insurance-plan". Each one is a BPS extension (`bps-*`) sitting on an element where the profile slices extensions for its own CARIN extensions. The slicing is open, and each BPS extension is validated against its own definition from `fhir/definitions/`. By location: 507 on `specificCost.benefit.cost`, 338 on `InsurancePlan`, and 388 on `coverage.benefit` (62 of them are the `bps-condition` extensions added to the 8 SBC files on 2026-10-05).
 
 ## Negative control
 

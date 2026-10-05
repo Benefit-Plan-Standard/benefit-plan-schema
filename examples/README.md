@@ -36,6 +36,22 @@ Every example carries `source_references[]` with a page number and the source te
 - **Cigna's plan type** is `OAP` (Open Access Plus), as printed on the SBC.
 - **GatorCare** prescription drugs sit in a separate pharmacy SBC (in `sources/`), so they show as not covered on the medical plan.
 
+## Condition types used in the examples
+
+The 8 SBC examples carry row text that is not a cost share or a structured limit in `benefits[].conditions[]`, with `description` set to the exact PDF text. Use these types so the files stay consistent:
+
+| Type | Holds |
+|---|---|
+| `benefit_limit` | Limit wording kept verbatim: a limit with no benefit row of its own, or a limit whose wording the structured `limits[]` cannot carry in full |
+| `exception` | An exception printed inside a cost cell (for example where the deductible does not apply) |
+| `site_of_service` | A cost cell that prices settings differently (for example Ambulatory Surgical Center against Hospital) |
+| `dispensing_limit` | Drug day-supply wording, one condition per channel where retail and mail order differ |
+| `cost_share_cap` | A maximum copay or coinsurance amount (also in that cost share's `notes`) |
+| `penalty` | A penalty for missing precertification |
+| `authorization` | A precertification or preauthorization requirement or threshold |
+
+The 2 Medicare Advantage examples use their own condition types (for example `authorization`, `network`, `eligibility`).
+
 ## Folders
 
 - [`sources/`](sources/): the original published PDFs, unmodified, one per example, so any value can be checked against its source. See [`sources/README.md`](sources/README.md).

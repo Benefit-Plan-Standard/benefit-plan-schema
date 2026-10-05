@@ -1003,6 +1003,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "site_of_service"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Ambulatory Surgical Center: 10% Coinsurance/ Hospital: Deductible + 10% Coinsurance"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -1019,7 +1032,8 @@
                     }
                   ],
                   "text": "Outpatient surgery"
-                }
+                },
+                "requirement": "Ambulatory Surgical Center: 10% Coinsurance/ Hospital: Deductible + 10% Coinsurance"
               },
               {
                 "extension": [
@@ -1218,6 +1232,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "benefit_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Inpatient Rehab Services limited to 21 days."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -1234,7 +1261,8 @@
                     }
                   ],
                   "text": "Inpatient hospital"
-                }
+                },
+                "requirement": "Inpatient Rehab Services limited to 21 days."
               }
             ]
           },
@@ -3079,6 +3107,10 @@
                               {
                                 "url": "appliesToMoop",
                                 "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Ambulatory Surgical Center: no deductible"
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"

@@ -392,6 +392,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "exception"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "50% coinsurance, except deductible does not apply for well child, well baby & immunizations"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -408,7 +421,8 @@
                     }
                   ],
                   "text": "Preventive care"
-                }
+                },
+                "requirement": "50% coinsurance, except deductible does not apply for well child, well baby & immunizations"
               }
             ]
           },
@@ -620,6 +634,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "penalty"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Out-of-network precertification required or $400 penalty applies per occurrence."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -636,7 +663,8 @@
                     }
                   ],
                   "text": "Advanced imaging"
-                }
+                },
+                "requirement": "Out-of-network precertification required or $400 penalty applies per occurrence."
               }
             ]
           },
@@ -677,6 +705,32 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Covers up to a 30 day supply (retail prescription)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "31-90 day supply (retail & mail order prescription)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -693,7 +747,8 @@
                     }
                   ],
                   "text": "Generic drugs"
-                }
+                },
+                "requirement": "Covers up to a 30 day supply (retail prescription); 31-90 day supply (retail & mail order prescription)"
               }
             ]
           },
@@ -734,6 +789,32 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Covers up to a 30 day supply (retail prescription)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "31-90 day supply (retail & mail order prescription)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -750,7 +831,8 @@
                     }
                   ],
                   "text": "Preferred brand drugs"
-                }
+                },
+                "requirement": "Covers up to a 30 day supply (retail prescription); 31-90 day supply (retail & mail order prescription)"
               }
             ]
           },
@@ -791,6 +873,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "cost_share_cap"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "$250 (preferred) and $500 (non-preferred) maximum copay for each 30 day supply."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -807,7 +902,8 @@
                     }
                   ],
                   "text": "Specialty drugs"
-                }
+                },
+                "requirement": "$250 (preferred) and $500 (non-preferred) maximum copay for each 30 day supply."
               }
             ]
           },
@@ -1120,6 +1216,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "penalty"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Out-of-network precertification required or $400 penalty applies per occurrence."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -1136,7 +1245,8 @@
                     }
                   ],
                   "text": "Inpatient hospital"
-                }
+                },
+                "requirement": "Out-of-network precertification required or $400 penalty applies per occurrence."
               }
             ]
           },
@@ -1234,6 +1344,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "penalty"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Out-of-network precertification required or $400 penalty applies per occurrence."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -1250,7 +1373,8 @@
                     }
                   ],
                   "text": "Mental health inpatient"
-                }
+                },
+                "requirement": "Out-of-network precertification required or $400 penalty applies per occurrence."
               }
             ]
           },
@@ -1335,6 +1459,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "penalty"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Out-of-network precertification required or $400 penalty applies per occurrence."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -1351,7 +1488,8 @@
                     }
                   ],
                   "text": "Delivery facility"
-                }
+                },
+                "requirement": "Out-of-network precertification required or $400 penalty applies per occurrence."
               }
             ]
           },
@@ -1554,6 +1692,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "penalty"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Out-of-network precertification required or $400 penalty applies per occurrence."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -1570,7 +1721,8 @@
                     }
                   ],
                   "text": "Skilled nursing facility"
-                }
+                },
+                "requirement": "Out-of-network precertification required or $400 penalty applies per occurrence."
               }
             ]
           },
@@ -1686,6 +1838,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "penalty"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Out-of-network precertification required or $400 penalty applies per occurrence."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -1702,7 +1867,8 @@
                     }
                   ],
                   "text": "Hospice care"
-                }
+                },
+                "requirement": "Out-of-network precertification required or $400 penalty applies per occurrence."
               }
             ]
           },
@@ -3202,7 +3368,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": true
+                            "valueBoolean": false
                           },
                           {
                             "extension": [
@@ -3221,6 +3387,10 @@
                               {
                                 "url": "appliesToMoop",
                                 "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "maximum copay $250 for each 30 day supply"
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"

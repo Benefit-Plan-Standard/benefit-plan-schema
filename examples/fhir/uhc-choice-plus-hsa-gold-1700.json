@@ -754,6 +754,32 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Retail: Up to a 31 day supply"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Mail-Order: Up to a 90 day supply or Preferred 90 Day Retail Network Pharmacy."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -770,7 +796,8 @@
                     }
                   ],
                   "text": "Generic drugs"
-                }
+                },
+                "requirement": "Retail: Up to a 31 day supply; Mail-Order: Up to a 90 day supply or Preferred 90 Day Retail Network Pharmacy."
               }
             ]
           },
@@ -811,6 +838,32 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Retail: Up to a 31 day supply"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Mail-Order: Up to a 90 day supply or Preferred 90 Day Retail Network Pharmacy."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -827,7 +880,8 @@
                     }
                   ],
                   "text": "Preferred brand drugs"
-                }
+                },
+                "requirement": "Retail: Up to a 31 day supply; Mail-Order: Up to a 90 day supply or Preferred 90 Day Retail Network Pharmacy."
               }
             ]
           },
@@ -868,6 +922,32 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Retail: Up to a 31 day supply"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Mail-Order: Up to a 90 day supply or Preferred 90 Day Retail Network Pharmacy."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -884,7 +964,8 @@
                     }
                   ],
                   "text": "Non-preferred brand drugs"
-                }
+                },
+                "requirement": "Retail: Up to a 31 day supply; Mail-Order: Up to a 90 day supply or Preferred 90 Day Retail Network Pharmacy."
               }
             ]
           },
@@ -925,6 +1006,32 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Retail: Up to a 31 day supply"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Mail-Order: Up to a 90 day supply or Preferred 90 Day Retail Network Pharmacy."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -941,7 +1048,8 @@
                     }
                   ],
                   "text": "Specialty drugs"
-                }
+                },
+                "requirement": "Retail: Up to a 31 day supply; Mail-Order: Up to a 90 day supply or Preferred 90 Day Retail Network Pharmacy."
               }
             ]
           },
@@ -1412,6 +1520,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Inpatient preauthorization apply for out-of-Network if stay exceeds 48 hours (C-Section: 96 hours) or benefit reduces to 50% of allowed."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -1428,7 +1549,8 @@
                     }
                   ],
                   "text": "Delivery facility"
-                }
+                },
+                "requirement": "Inpatient preauthorization apply for out-of-Network if stay exceeds 48 hours (C-Section: 96 hours) or benefit reduces to 50% of allowed."
               }
             ]
           },
@@ -1469,6 +1591,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "benefit_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Limits per calendar year: Physical, Speech, Occupational, Pulmonary: Unlimited: Cardiac: 90 visits."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -1485,7 +1620,8 @@
                     }
                   ],
                   "text": "Rehabilitation services"
-                }
+                },
+                "requirement": "Limits per calendar year: Physical, Speech, Occupational, Pulmonary: Unlimited: Cardiac: 90 visits."
               }
             ]
           },
@@ -1619,6 +1755,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "benefit_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "(Inpatient Rehabilitation and Habilitation limited to 90 days each)."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -1635,7 +1784,8 @@
                     }
                   ],
                   "text": "Skilled nursing facility"
-                }
+                },
+                "requirement": "(Inpatient Rehabilitation and Habilitation limited to 90 days each)."
               }
             ]
           },

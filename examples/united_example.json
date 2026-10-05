@@ -316,7 +316,16 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "dispensing_limit",
+          "description": "Retail: Up to a 31 day supply"
+        },
+        {
+          "type": "dispensing_limit",
+          "description": "Mail-Order: Up to a 90 day supply or Preferred 90 Day Retail Network Pharmacy."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -357,7 +366,16 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "dispensing_limit",
+          "description": "Retail: Up to a 31 day supply"
+        },
+        {
+          "type": "dispensing_limit",
+          "description": "Mail-Order: Up to a 90 day supply or Preferred 90 Day Retail Network Pharmacy."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -398,7 +416,16 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "dispensing_limit",
+          "description": "Retail: Up to a 31 day supply"
+        },
+        {
+          "type": "dispensing_limit",
+          "description": "Mail-Order: Up to a 90 day supply or Preferred 90 Day Retail Network Pharmacy."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -439,7 +466,16 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "dispensing_limit",
+          "description": "Retail: Up to a 31 day supply"
+        },
+        {
+          "type": "dispensing_limit",
+          "description": "Mail-Order: Up to a 90 day supply or Preferred 90 Day Retail Network Pharmacy."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -808,7 +844,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Inpatient preauthorization apply for out-of-Network if stay exceeds 48 hours (C-Section: 96 hours) or benefit reduces to 50% of allowed."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -851,7 +892,8 @@
       "limits": [
         {
           "type": "visits",
-          "value": 90
+          "value": 90,
+          "period": "per_episode"
         },
         {
           "type": "hours",
@@ -859,7 +901,12 @@
           "period": "per_visit"
         }
       ],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "benefit_limit",
+          "description": "Limited to 90 visits up to 4 hours per visit per \"episode of care\"."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -900,7 +947,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "benefit_limit",
+          "description": "Limits per calendar year: Physical, Speech, Occupational, Pulmonary: Unlimited: Cardiac: 90 visits."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -988,7 +1040,12 @@
           "period": "per_calendar_year"
         }
       ],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "benefit_limit",
+          "description": "(Inpatient Rehabilitation and Habilitation limited to 90 days each)."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {

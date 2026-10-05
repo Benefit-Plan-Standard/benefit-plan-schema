@@ -17,6 +17,14 @@ No schema change. Each value below is read from the example's source PDF in `exa
 - GatorCare example: 4 limits added from the source PDF.
 - Kaiser example: 6 limits added from the source PDF.
 - United example: 7 limits added from the source PDF.
+- Florida Blue example: 1 limit and 10 conditions added from the source PDF (rehabilitation and inpatient rehab limit wording, drug day supply).
+- Aetna PPO 1500 example: 1 deductible flag corrected, 12 conditions and 1 cost-share note added from the source PDF (preventive care exception, drug day supply, specialty maximum copay, precertification penalty).
+- Aetna PPO 5000 example: 1 deductible flag corrected, 12 conditions and 1 cost-share note added from the source PDF (preventive care exception, drug day supply, specialty maximum copay, precertification penalty).
+- Ambetter example: 9 deductible flags set to false (the plan has no deductible), 1 limit and 7 conditions added from the source PDF (children's glasses, drug day supply).
+- Cigna example: 3 conditions added from the source PDF (drug day supply).
+- GatorCare example: 2 conditions and 1 cost-share note added from the source PDF (outpatient surgery site of service, inpatient rehab limit wording).
+- Kaiser example: 2 deductible flags set to false (the plan has no deductible), 5 conditions added from the source PDF (drug day supply).
+- United example: 1 limit period set, 12 conditions added from the source PDF (home health, cardiac and inpatient rehab limit wording, drug day supply, maternity preauthorization).
 
 ## Tooling: CARIN SBC InsurancePlan converter (2026-09-24)
 

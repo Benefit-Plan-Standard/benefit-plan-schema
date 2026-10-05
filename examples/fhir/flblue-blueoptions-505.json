@@ -827,6 +827,32 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Up to 30 day supply for retail"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "90 day supply for mail order"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -843,7 +869,8 @@
                     }
                   ],
                   "text": "Generic drugs"
-                }
+                },
+                "requirement": "Up to 30 day supply for retail; 90 day supply for mail order"
               }
             ]
           },
@@ -884,6 +911,32 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Up to 30 day supply for retail"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "90 day supply for mail order"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -900,7 +953,8 @@
                     }
                   ],
                   "text": "Preferred brand drugs"
-                }
+                },
+                "requirement": "Up to 30 day supply for retail; 90 day supply for mail order"
               }
             ]
           },
@@ -941,6 +995,32 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Up to 30 day supply for retail"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "90 day supply for mail order"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -957,7 +1037,8 @@
                     }
                   ],
                   "text": "Non-preferred brand drugs"
-                }
+                },
+                "requirement": "Up to 30 day supply for retail; 90 day supply for mail order"
               }
             ]
           },
@@ -998,6 +1079,32 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Up to 30 day supply for retail"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Not covered through Mail Order"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -1014,7 +1121,8 @@
                     }
                   ],
                   "text": "Specialty drugs"
-                }
+                },
+                "requirement": "Up to 30 day supply for retail; Not covered through Mail Order"
               }
             ]
           },
@@ -1327,6 +1435,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "benefit_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Inpatient Rehab Services limited to 21 days."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -1343,7 +1464,8 @@
                     }
                   ],
                   "text": "Inpatient hospital"
-                }
+                },
+                "requirement": "Inpatient Rehab Services limited to 21 days."
               }
             ]
           },
@@ -1602,6 +1724,24 @@
                   {
                     "extension": [
                       {
+                        "url": "limitType",
+                        "valueCodeableConcept": {
+                          "text": "manipulations"
+                        }
+                      },
+                      {
+                        "url": "limitValue",
+                        "valueQuantity": {
+                          "value": 26,
+                          "unit": "manipulations"
+                        }
+                      }
+                    ],
+                    "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/benefit-limitation"
+                  },
+                  {
+                    "extension": [
+                      {
                         "url": "benefitId",
                         "valueString": "REHABILITATION_SERVICES"
                       },
@@ -1623,6 +1763,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "benefit_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Coverage limited to 25 visits, including 26 manipulations."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -1639,7 +1792,8 @@
                     }
                   ],
                   "text": "Rehabilitation services"
-                }
+                },
+                "requirement": "Coverage limited to 25 visits, including 26 manipulations."
               }
             ]
           },

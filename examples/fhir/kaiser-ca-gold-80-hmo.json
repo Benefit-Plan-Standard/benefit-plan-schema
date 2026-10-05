@@ -766,6 +766,32 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Up to a 30-day supply (retail)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "up to a 100-day supply (mail order)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -782,7 +808,8 @@
                     }
                   ],
                   "text": "Generic drugs"
-                }
+                },
+                "requirement": "Up to a 30-day supply (retail); up to a 100-day supply (mail order)"
               }
             ]
           },
@@ -823,6 +850,32 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Up to a 30-day supply (retail)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "up to a 100-day supply (mail order)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -839,7 +892,8 @@
                     }
                   ],
                   "text": "Preferred brand drugs"
-                }
+                },
+                "requirement": "Up to a 30-day supply (retail); up to a 100-day supply (mail order)"
               }
             ]
           },
@@ -937,6 +991,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Up to a 30-day supply (retail)."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -953,7 +1020,8 @@
                     }
                   ],
                   "text": "Specialty drugs"
-                }
+                },
+                "requirement": "Up to a 30-day supply (retail)."
               }
             ]
           },
@@ -3178,7 +3246,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": true
+                            "valueBoolean": false
                           },
                           {
                             "extension": [
@@ -4901,7 +4969,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": true
+                            "valueBoolean": false
                           },
                           {
                             "extension": [

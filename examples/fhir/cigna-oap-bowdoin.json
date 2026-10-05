@@ -801,6 +801,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Coverage is limited up to a 90-day supply (retail and home delivery)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -817,7 +830,8 @@
                     }
                   ],
                   "text": "Generic drugs"
-                }
+                },
+                "requirement": "Coverage is limited up to a 90-day supply (retail and home delivery)"
               }
             ]
           },
@@ -858,6 +872,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Coverage is limited up to a 90-day supply (retail and home delivery)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -874,7 +901,8 @@
                     }
                   ],
                   "text": "Preferred brand drugs"
-                }
+                },
+                "requirement": "Coverage is limited up to a 90-day supply (retail and home delivery)"
               }
             ]
           },
@@ -915,6 +943,19 @@
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "dispensing_limit"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Coverage is limited up to a 90-day supply (retail and home delivery)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
                   }
                 ],
                 "type": {
@@ -931,7 +972,8 @@
                     }
                   ],
                   "text": "Non-preferred brand drugs"
-                }
+                },
+                "requirement": "Coverage is limited up to a 90-day supply (retail and home delivery)"
               }
             ]
           },

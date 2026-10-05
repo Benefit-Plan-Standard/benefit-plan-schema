@@ -317,7 +317,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "dispensing_limit",
+          "description": "Coverage is limited up to a 90-day supply (retail and home delivery)"
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -358,7 +363,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "dispensing_limit",
+          "description": "Coverage is limited up to a 90-day supply (retail and home delivery)"
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -399,7 +409,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "dispensing_limit",
+          "description": "Coverage is limited up to a 90-day supply (retail and home delivery)"
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {

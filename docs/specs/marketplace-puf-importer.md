@@ -285,6 +285,21 @@ These are not schema gaps, but they decide what reaches FHIR; they are recorded 
 - **Keys outside the CARIN crosswalk.** The importer uses canonical keys that `fhir/carin-sbc-crosswalk.json` does not place, so the converter lists them as `bps-unmapped-benefit`: in the 2 PY2026 Bundles, 17 benefits each, among them `delivery_inpatient`, `inpatient_hospital_professional`, `outpatient_surgery_professional`, `well_child_visit` and `substance_use_inpatient`. Some have an obvious SBC row (for example `outpatient_surgery_professional` and the SBC physician/surgeon fee row); adding them to the CARIN crosswalk is a converter decision.
 - **Limit codes.** Limit types other than visits, days and dollars, and limit periods other than plan year, calendar year, benefit period and lifetime, are text-only in FHIR and raise validator warnings ([`../../examples/fhir-puf/README.md`](../../examples/fhir-puf/README.md)).
 
+### 9.4 Limits with no benefit row
+
+Found in the SBC examples on 2026-10-05. The PDF prints a limit for a service that has no row of its own and no cost share. BPS v1.1.0 can hold a limit only in a benefit's `limits[]`, and adding a benefit row would invent a cost share the PDF does not print, so each limit is carried as a condition of type `benefit_limit` on the row where the PDF prints it.
+
+| Example | Row where it is printed | PDF text | Page |
+|---|---|---|---|
+| Florida Blue | `inpatient_hospital` (hospital stay, facility fee) | "Inpatient Rehab Services limited to 21 days." | 4 |
+| GatorCare | `inpatient_hospital` (hospital stay, facility fee) | "Inpatient Rehab Services limited to 21 days." | 3 |
+| United | `rehabilitation_services` | "Limits per calendar year: Physical, Speech, Occupational, Pulmonary: Unlimited: Cardiac: 90 visits." | 5 |
+| United | `skilled_nursing_facility` | "(Inpatient Rehabilitation and Habilitation limited to 90 days each)." | 5 |
+
+### 9.5 Cost-share cap
+
+BPS v1.1.0 has no field for a dollar cap on a cost-share step. Both Aetna SBCs print "$250 (preferred) and $500 (non-preferred) maximum copay for each 30 day supply." for specialty drugs (p. 3). The Aetna examples carry it as a condition of type `cost_share_cap` and in the specialty cost share's `notes`. The v1.2.0 draft adds `max_amount` and `max_basis` on cost shares (Medicare Advantage gap G6), which would hold it as data.
+
 ## 10. Determinism
 
 | Item | Rule |

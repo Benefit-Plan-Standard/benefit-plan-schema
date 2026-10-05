@@ -306,7 +306,8 @@
               "rate": 0.1,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "notes": "Ambulatory Surgical Center: no deductible"
             }
           ]
         },
@@ -317,7 +318,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "site_of_service",
+          "description": "Ambulatory Surgical Center: 10% Coinsurance/ Hospital: Deductible + 10% Coinsurance"
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -436,7 +442,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "benefit_limit",
+          "description": "Inpatient Rehab Services limited to 21 days."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {

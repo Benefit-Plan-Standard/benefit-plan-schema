@@ -112,7 +112,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "exception",
+          "description": "50% coinsurance, except deductible does not apply for well child, well baby & immunizations"
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -276,7 +281,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "penalty",
+          "description": "Out-of-network precertification required or $400 penalty applies per occurrence."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -317,7 +327,16 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "dispensing_limit",
+          "description": "Covers up to a 30 day supply (retail prescription)"
+        },
+        {
+          "type": "dispensing_limit",
+          "description": "31-90 day supply (retail & mail order prescription)"
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -358,7 +377,16 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "dispensing_limit",
+          "description": "Covers up to a 30 day supply (retail prescription)"
+        },
+        {
+          "type": "dispensing_limit",
+          "description": "31-90 day supply (retail & mail order prescription)"
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -378,8 +406,9 @@
               "sequence": 1,
               "rate": 0.2,
               "basis": "allowed_amount",
-              "applies_to_deductible": true,
-              "applies_to_moop": true
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "maximum copay $250 for each 30 day supply"
             }
           ]
         },
@@ -390,7 +419,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "cost_share_cap",
+          "description": "$250 (preferred) and $500 (non-preferred) maximum copay for each 30 day supply."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -652,7 +686,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "penalty",
+          "description": "Out-of-network precertification required or $400 penalty applies per occurrence."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -734,7 +773,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "penalty",
+          "description": "Out-of-network precertification required or $400 penalty applies per occurrence."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -816,7 +860,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "penalty",
+          "description": "Out-of-network precertification required or $400 penalty applies per occurrence."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -995,7 +1044,12 @@
           "value": 60
         }
       ],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "penalty",
+          "description": "Out-of-network precertification required or $400 penalty applies per occurrence."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
@@ -1082,7 +1136,12 @@
         }
       ],
       "limits": [],
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "penalty",
+          "description": "Out-of-network precertification required or $400 penalty applies per occurrence."
+        }
+      ],
       "moop_applicability": "plan_default"
     },
     {
