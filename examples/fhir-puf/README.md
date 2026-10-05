@@ -10,15 +10,15 @@ Importer spec: [`../../docs/specs/marketplace-puf-importer.md`](../../docs/specs
 |---|---|---|---|---|---|---|
 | `blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.puf.json` | Blue Cross and Blue Shield of Louisiana, Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits, PY2026, Silver PPO, 97176LA0340010-01 | `blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.json` | 27 | 17 | 0 | 4 |
 | `unitedhealthcare-uhc-gold-standard.puf.json` | UnitedHealthcare, UHC Gold Standard, PY2026, Texas, Gold HMO, 40220TX0080024-01 | `unitedhealthcare-uhc-gold-standard.json` | 27 | 17 | 0 | 14 |
-| `florida-blue-blueoptions-gold-1505.puf.json` | Florida Blue, BlueOptions Gold 1505, PY2023, Gold EPO, 16842FL0070120-01 | none | | | | |
+| `florida-blue-blueoptions-gold-1505.puf.json` | Florida Blue, BlueOptions Gold 1505, PY2023, Gold EPO, 16842FL0070120-01 | `florida-blue-blueoptions-gold-1505.json` | 27 | 17 | 0 | 30 |
 
-**No Bundle for Florida Blue 1505.** The plan has in-network tier 2 values in the public file, so the BPS document carries 3 network tiers: `IN`, `IN2` and `OUT`. The converter stops with `network tier "IN2" is neither IN nor OUT; the converter does not guess its applicability`, as its spec requires (section 6.2). The BPS document itself is schema-valid.
+**Florida Blue 1505 has a second in-network tier.** The plan has in-network tier 2 values in the public file, so the BPS document carries 3 network tiers: `IN`, `IN2` and `OUT`. The converter maps `IN2` to `in-network` with a text-only `cost.qualifiers` entry, "In-Network Tier 2" (converter spec 6.2; the tier name does not contain "Value Choice", so no `value-choice` code). Each placed benefit has 3 `cost[]` entries, 81 in all: 27 tier 1 (in-network, no qualifier), 27 tier 2 (in-network, qualifier) and 27 out-of-network. 23 of the 27 tier 2 entries read "Covered; amount not stated in the BPS document", because both tier 2 columns in the public file say `Not Applicable` for that benefit (importer spec 5.4).
 
-Neither Bundle needed a `Not stated in the BPS document` placeholder: every placed benefit has both an in-network and an out-of-network row.
+No Bundle needed a `Not stated in the BPS document` placeholder: every placed benefit has both an in-network and an out-of-network row.
 
 ## Validation
 
-Run on 2026-10-05, from the repository root, exactly as [`../fhir/VALIDATION.md`](../fhir/VALIDATION.md) describes:
+Louisiana and Texas run on 2026-10-05; Florida Blue run on 2026-10-05 after the converter gained second in-network tiers. All from the repository root, exactly as [`../fhir/VALIDATION.md`](../fhir/VALIDATION.md) describes:
 
 ```
 java -jar validator_cli.jar -version 4.0.1 \
@@ -36,10 +36,14 @@ java -jar validator_cli.jar -version 4.0.1 \
 
 Before conversion, each BPS document passed `node scripts/validate.js --schema schema/v1.1.0/benefit-plan.schema.json`.
 
-**Warnings (18), all text-only `BenefitLimitation` codings.** "No code provided, and a code should be provided from the value set 'Limit Type Value Set'" or "'Limit Period Value Set'". The CARIN limit type codes are `visits`, `days` and `dollars`, and the converter codes a limit period only for plan year, calendar year, benefit period and lifetime; it writes `per_year` as text because the BPS value does not say plan year or calendar year (converter spec 6.5). The public file's `LimitUnit` gives these values:
+**Florida Blue tier 2 qualifiers (27 warnings).** "No code provided, and a code should be provided from the value set 'Cost Tier Value Set'", once per tier 2 `cost[]` entry. The Cost Tier value set has `value-choice`, `standard` and `virtual` and no code for a second tier; the binding is extensible, so the qualifier is text only, as for the Humana site-of-service tiers in `examples/fhir/VALIDATION.md`.
+
+**Text-only `BenefitLimitation` codings (21 warnings).** "No code provided, and a code should be provided from the value set 'Limit Type Value Set'" or "'Limit Period Value Set'". The CARIN limit type codes are `visits`, `days` and `dollars`, and the converter codes a limit period only for plan year, calendar year, benefit period and lifetime; it writes `per_year` as text because the BPS value does not say plan year or calendar year (converter spec 6.5). The public file's `LimitUnit` gives these values:
 
 | File | Text-only value | Warnings |
 |---|---|---|
+| Florida Blue | limit period `per_year` | 2 |
+| Florida Blue | limit type `items` | 1 |
 | Louisiana | limit period `per_year` | 2 |
 | Louisiana | limit period `per_6_months` | 1 |
 | Louisiana | limit type `items` | 1 |
@@ -48,7 +52,7 @@ Before conversion, each BPS document passed `node scripts/validate.js --schema s
 | Texas | limit type `exams` | 2 |
 | Texas | limit type `items` | 1 |
 
-**Information messages (248: Louisiana 135, Texas 113).** The same message as for the published Bundles: a `bps-*` extension on an element where the profile slices extensions for its own CARIN extensions ("This element does not match any known slice").
+**Information messages (388: Florida Blue 140, Louisiana 135, Texas 113).** The same message as for the published Bundles: a `bps-*` extension on an element where the profile slices extensions for its own CARIN extensions ("This element does not match any known slice").
 
 ## Regenerate
 
@@ -56,6 +60,7 @@ Before conversion, each BPS document passed `node scripts/validate.js --schema s
 node scripts/from-marketplace-puf.js --write-golden
 node scripts/to-insuranceplan.js examples/blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.puf.json -o examples/fhir-puf/blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.json
 node scripts/to-insuranceplan.js examples/unitedhealthcare-uhc-gold-standard.puf.json -o examples/fhir-puf/unitedhealthcare-uhc-gold-standard.json
+node scripts/to-insuranceplan.js examples/florida-blue-blueoptions-gold-1505.puf.json -o examples/fhir-puf/florida-blue-blueoptions-gold-1505.json
 ```
 
 The first command needs the public files in `data/puf/<year>/` (importer spec, section 11).

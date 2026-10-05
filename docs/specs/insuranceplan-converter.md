@@ -92,7 +92,7 @@ A BPS benefit becomes one `cost[]` entry per cost-share step, grouped by tier in
 | `covered: false` | One entry: `type.text` `Not covered`, and a `value` Quantity whose only content is `data-absent-reason` `not-applicable`. It does **not** use `value: 0`, which a reader could take to mean "free". The IG's own example uses `0`; this spec does not. |
 | `covered: true`, `cost_shares` empty (for example GatorCare in-network preventive care, Kaiser surgeon fees, MA allowances) | One entry: `type.text` `Covered; amount not stated in the BPS document`, `value` data-absent-reason `unknown`, with the row `notes` in the BPS cost-share extension. |
 | Amount range or rate range (`amount_min`/`amount_max`, `rate_min`/`rate_max`; MA only) | `value` data-absent-reason `unsupported`, because a Quantity cannot hold a range. The bounds go in the BPS cost-share extension. |
-| **Fewer than 2 entries after the rows above** (a benefit with a single network column, or an MA benefit priced only at one site of service) | Append one placeholder for the network the benefit does not mention: `out-of-network` if no out-of-network row exists, otherwise `in-network`. The placeholder has `type.text` `Not stated in the BPS document` and `value` data-absent-reason `unknown`. It never says "not covered", because the BPS document does not say that for the benefit. |
+| **Fewer than 2 entries after the rows above** (a benefit with a single network column, or an MA benefit priced only at one site of service) | Entries from a second in-network tier (6.2) count like any other. A benefit with `IN`, `IN2` and `OUT` rows has at least 3 entries and never gets a placeholder; a benefit with `IN` and `IN2` rows only has 2 in-network entries and gets none either. Otherwise, append one placeholder for the network the benefit does not mention: `out-of-network` if no out-of-network row exists, otherwise `in-network`. The placeholder has `type.text` `Not stated in the BPS document` and `value` data-absent-reason `unknown`. It never says "not covered", because the BPS document does not say that for the benefit. |
 
 The placeholder exists only to satisfy `cost` 2..*. It describes the BPS document, not the source PDF: a benefit that the BPS file prices in one network only gets a placeholder even when the source document prints the other column. `examples/fhir/README.md` lists the placeholder count per file, and the docs page explains the placeholder.
 
@@ -129,7 +129,8 @@ Namespaces used below:
 |---|---|
 | `tier_class` `network` (or absent), `tier_id` `IN` | `applicability` = `applicability#in-network` |
 | `tier_class` `network` (or absent), `tier_id` `OUT` | `applicability` = `applicability#out-of-network` |
-| Any other `network` tier | Error, with no guessing. All 10 examples use `IN` and `OUT`. |
+| `tier_class` `network` (or absent), a second in-network tier: `tier_id` `IN2`, or a `name` that contains "in-network" (or "in network") and "tier 2" (or "tier two", "second tier"), case-insensitive | `applicability` = `applicability#in-network`. `qualifiers` **[ballot]** (extensible `cost-tier`): `value-choice` (display "Value Choice Provider", `text` = tier `name`) when the name contains "Value Choice"; otherwise a text-only qualifier with the tier `name`, as for site-of-service tiers. The tier 1 (`IN`) entries carry no qualifier. A benefit priced in both tiers gives one `cost[]` entry per tier per cost-share step, all `in-network`, told apart by the qualifier. |
+| Any other `network` tier | Error, with no guessing. The 10 examples use `IN` and `OUT` only. The public-file importer (`docs/specs/marketplace-puf-importer.md`) writes `IN2` for plans with in-network tier 2 values. |
 | `cost_designation` or `modality` with `parent_tier_id` | `applicability` taken from the parent network tier. `qualifiers` **[ballot]** (extensible `cost-tier`): `virtual` for a `modality` tier whose name contains "telehealth" or "virtual"; `value-choice` or `standard` only when a `cost_designation` tier's name is exactly "Value Choice" or "Standard". In every other case, a text-only qualifier with the tier `name`. SCAN's "Retail, Standard" pharmacy pricing is **not** mapped to `standard`, which means Standard Provider. |
 | `provider_set` present | `CostAppliesToNetwork` **[ballot]**: `valueReference.display` = `provider_set.name`, plus `reference` only when `provider_set.reference` is non-null (it is null in both examples). |
 | `tier_id`, `tier_class`, `parent_tier_id` | Also recorded in `bps-cost-share` **[BPS ext]** (`tierId`) so the BPS keying can be recovered. |
@@ -204,6 +205,7 @@ Two BPS benefits that share an SBC row code (for example `diagnostic_lab`, `imag
 | Limit `scope`, `shared_limit_id`, `carryover` | Not carried (only in `limitText` when the source prints it) | No |
 | `pharmacy.coverage_stages` | Not carried | No |
 | `network_tiers[].description` | Not carried (only `name` goes into qualifier text) | No |
+| Second in-network tier (`IN2`) | `in-network` plus a qualifier: `value-choice` only when the tier name says "Value Choice", otherwise text only. The Cost Tier value set has no code for "tier 2", so the tier order is not coded; tier 1 entries carry no qualifier, and the validator warns on each text-only qualifier. The `tier_id` is kept in `bps-cost-share` (`tierId`) | Yes, through `tierId` and the qualifier text |
 
 The docs page tells readers to keep the BPS document when they need full fidelity, as `fhir-alignment.md` section 5 already advises.
 
@@ -339,7 +341,9 @@ Canonical base: `https://benefitplanstandard.org/fhir/`. All are `status: draft`
   - converts each example twice and asserts identical output (determinism);
   - asserts that no SBC output has a benefit-level `bps-source-reference`;
   - asserts that every benefit shows up either placed or unmapped (none lost silently);
-  - asserts that `fhir/definitions/` matches what the definitions script generates.
+  - asserts that `fhir/definitions/` matches what the definitions script generates;
+  - pins the SHA-256 of each of the 10 golden files (LF line endings) and asserts the files and the converter output still hash to those values;
+  - checks second in-network tiers (6.2): `IN2` and name-based recognition map to `in-network` with the right qualifier, `value-choice` is coded only for a "Value Choice" name, other unknown network tiers still fail, no placeholder is added, and `examples/florida-blue-blueoptions-gold-1505.puf.json` converts.
 - Goldens are refreshed only on purpose, with `node scripts/to-insuranceplan.js --write-golden`.
 
 The golden files double as fixtures for ports to other languages.

@@ -166,13 +166,23 @@ function tierClass(tier) {
   return tier.tier_class || 'network';
 }
 
+// A second in-network tier: tier_id IN2, or a name that says both "in-network"
+// and "tier 2" (or "second tier"). Spec section 6.2.
+function isSecondInNetworkTier(tier) {
+  if (tierClass(tier) !== 'network' || tier.tier_id === 'IN' || tier.tier_id === 'OUT') return false;
+  if (tier.tier_id === 'IN2') return true;
+  const name = tier.name || '';
+  return /\bin[- ]?network\b/i.test(name) && /\btier[ -]?(2|two)\b|\bsecond tier\b/i.test(name);
+}
+
 function applicabilityCode(tiers, tierId, seen = new Set()) {
   const tier = tiers.get(tierId);
   if (!tier) throw new Error(`network_cost_shares refers to unknown tier_id "${tierId}"`);
   if (tierClass(tier) === 'network') {
     if (tier.tier_id === 'IN') return 'in-network';
     if (tier.tier_id === 'OUT') return 'out-of-network';
-    throw new Error(`network tier "${tierId}" is neither IN nor OUT; the converter does not guess its applicability`);
+    if (isSecondInNetworkTier(tier)) return 'in-network';
+    throw new Error(`network tier "${tierId}" is not IN, OUT or a second in-network tier; the converter does not guess its applicability`);
   }
   if (!tier.parent_tier_id) throw new Error(`${tierClass(tier)} tier "${tierId}" has no parent_tier_id`);
   if (seen.has(tierId)) throw new Error(`parent_tier_id cycle at "${tierId}"`);
@@ -187,6 +197,12 @@ function applicability(code) {
 
 function qualifierFor(tier) {
   const cls = tierClass(tier);
+  if (isSecondInNetworkTier(tier)) {
+    const name = tier.name || tier.tier_id;
+    return /value choice/i.test(name)
+      ? { coding: [coding(CS_COST_TIER, 'value-choice', 'Value Choice Provider')], text: name }
+      : { text: name };
+  }
   if (cls === 'network') return null;
   if (cls === 'modality' && /telehealth|virtual/i.test(tier.name || '')) {
     return { coding: [coding(CS_COST_TIER, 'virtual', 'Virtual Visit')], text: tier.name };

@@ -222,7 +222,7 @@ Each case takes the reading that loses no information.
 
 | # | Concept | Reading chosen |
 |---|---|---|
-| 7.1 | **Tier 2.** The file has 2 in-network tiers; BPS v1.1.0 tiers are free-form but the converter accepts only `IN` and `OUT`. | A third tier `IN2`, only when the plan has tier 2 values (4.2). Folding tier 2 into `IN` or dropping it would lose values. Consequence: the converter refuses these documents (9.3). |
+| 7.1 | **Tier 2.** The file has 2 in-network tiers; BPS v1.1.0 has free-form tiers but no tier 2 convention. | A third tier `IN2`, only when the plan has tier 2 values (4.2). Folding tier 2 into `IN` or dropping it would lose values. The converter maps `IN2` to `in-network` with a qualifier (converter spec 6.2). |
 | 7.2 | **Combined medical and drug accumulators.** The file can give integrated values only; v1.1.0 has one set of slots. | The integrated values fill the slots with `applies_to: integrated`, and `source_references` records the flags and every cell (4.3). |
 | 7.3 | **Family per-person amount without a family total** (for example Florida Blue 1505 out of network: `$500 per person`, `per group not applicable`). v1.1.0 family slots need an `amount`. | No family slot; the per-person cell is in `source_references`. |
 | 7.4 | **Coverage is benefit-level in the file, tier-level in BPS.** | Every tier row takes the benefit's `IsCovered` value; the strings are quoted in `notes`, so a tier where both columns say `Not Applicable` shows that. |
@@ -281,7 +281,7 @@ Each case takes the reading that loses no information.
 
 These are not schema gaps, but they decide what reaches FHIR; they are recorded here and not fixed.
 
-- **Tier 2.** `scripts/to-insuranceplan.js` stops on any network tier other than `IN` and `OUT` (converter spec 6.2). In PY2026, 5,351 of the 20,670 medical plan variants (26%) have tier 2 values; in PY2023, 6,797 of 30,911 (22%). Florida Blue BlueOptions Gold 1505 is one of them, so it has no Bundle.
+- **Tier 2.** In PY2026, 5,351 of the 20,670 medical plan variants (26%) have tier 2 values; in PY2023, 6,797 of 30,911 (22%). The converter first refused any network tier other than `IN` and `OUT`; it now maps `IN2` to `in-network` with a `cost.qualifiers` entry (converter spec 6.2). The Cost Tier value set has no "tier 2" code, so the qualifier is text only unless the tier name says "Value Choice", and the validator warns once per tier 2 entry. The importer names the tier "In-Network Tier 2", because the public file does not name tiers (Florida Blue's "Value Choice Providers" appears only in Explanation text).
 - **Keys outside the CARIN crosswalk.** The importer uses canonical keys that `fhir/carin-sbc-crosswalk.json` does not place, so the converter lists them as `bps-unmapped-benefit`: in the 2 PY2026 Bundles, 17 benefits each, among them `delivery_inpatient`, `inpatient_hospital_professional`, `outpatient_surgery_professional`, `well_child_visit` and `substance_use_inpatient`. Some have an obvious SBC row (for example `outpatient_surgery_professional` and the SBC physician/surgeon fee row); adding them to the CARIN crosswalk is a converter decision.
 - **Limit codes.** Limit types other than visits, days and dollars, and limit periods other than plan year, calendar year, benefit period and lifetime, are text-only in FHIR and raise validator warnings ([`../../examples/fhir-puf/README.md`](../../examples/fhir-puf/README.md)).
 
@@ -318,7 +318,7 @@ Then write `data/puf/2026/download.json` with at least `{"downloaded": "YYYY-MM-
 node scripts/from-marketplace-puf.js --year 2026 --issuer 40220 --state TX           # list an issuer's plans
 node scripts/from-marketplace-puf.js --year 2026 --plan 40220TX0080024-01 --out uhc-gold.json
 node scripts/validate.js --schema schema/v1.1.0/benefit-plan.schema.json uhc-gold.json
-node scripts/to-insuranceplan.js uhc-gold.json -o uhc-gold.bundle.json             # FHIR, single-tier plans only
+node scripts/to-insuranceplan.js uhc-gold.json -o uhc-gold.bundle.json             # FHIR
 node scripts/puf-parse-report.js                                                   # docs/specs/marketplace-puf-parse-report.md
 node scripts/from-marketplace-puf.js --write-golden                                # regenerate the 3 examples, on purpose only
 node --test scripts/from-marketplace-puf.test.js
@@ -356,4 +356,4 @@ The golden plans:
 | `blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.puf.json` | Blue Cross and Blue Shield of Louisiana, Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits, 97176LA0340010-01, Silver PPO | 2026 | Separate medical deductible, out-of-network values, limits, long explanation text. |
 | `unitedhealthcare-uhc-gold-standard.puf.json` | UnitedHealthcare, UHC Gold Standard, 40220TX0080024-01, Texas, Gold HMO | 2026 | Integrated medical and drug accumulators, 100% out-of-network coinsurance, per-month drug limits. |
 
-FHIR Bundles for the 2 PY2026 plans, and their validator record, are in `examples/fhir-puf/`. They are not golden files and are not published.
+FHIR Bundles for the 3 plans, and their validator record, are in `examples/fhir-puf/`. They are not golden files and are not published.

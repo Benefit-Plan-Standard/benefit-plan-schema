@@ -11,6 +11,7 @@
 
 'use strict';
 
+const crypto = require('crypto');
 const test = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs');
@@ -101,6 +102,90 @@ test('crosswalk codes and displays match the CARIN code system', () => {
   const used = new Set(Object.values(crosswalk.map).flatMap((m) => [m.category, m.type]));
   for (const o of crosswalk.overrides) { used.add(o.category); used.add(o.type); }
   for (const code of used) assert.ok(crosswalk.displays[code], `no display for ${code}`);
+});
+
+// SHA-256 of each golden file (LF line endings) as committed before second
+// in-network tiers were supported. A change to any of them must be deliberate.
+const GOLDEN_SHA256 = {
+  'aetna-ppo-1500-80-50.json': 'd4b33e607ef09d5f100714818028dce5700fd18fa76db0cef0df365a19dd3e73',
+  'aetna-ppo-5000-80-50.json': '590744f92e4af6eed4d8df60dad1cf061927e3663ce4078f7595594fbf5f9805',
+  'ambetter-ca-silver-94-hmo.json': '412de76539f620c2156e7cea7044f6247faf44c81b70fdb8501e9d39d0591c66',
+  'cigna-oap-bowdoin.json': 'b6c0ad14a613564b64eb54d598dc45e1259ccc71e5d08fc8e670d818d23d5c6f',
+  'flblue-blueoptions-505.json': '5ca5f94e584276d4a7275f9460d9f14b7cfb19e2565719f571b30ea6ab75465d',
+  'gatorcare-prime-epo.json': 'f06cffd37128f91b2f0c47e1a0efadc7471af1a9733c9a0919312a9e14cd9006',
+  'humana-gold-plus-h1036-025-hmo.json': 'f5ede6c8c787cdd8a2789bc188935289a4439ad9bb59183ac02eb62c755f84e4',
+  'kaiser-ca-gold-80-hmo.json': '1077c983d3e5f4cc6051558b056fe67b4d609d6b75a3b9686d7a0f50b2acc73f',
+  'scan-classic-hmo-los-angeles.json': 'fb58b0d4b50ee7d1654dfc686c201695bb11c835be6f2a09b70f0a521add9005',
+  'uhc-choice-plus-hsa-gold-1700.json': '9d74e4c7c3b509b41cb87f7c2a43c73a6533848d0c85da14df0e3200f8d5dfbd',
+};
+
+test('the 10 golden files are byte-identical to the pinned versions, and the converter reproduces them', () => {
+  const sha = (s) => crypto.createHash('sha256').update(s, 'utf8').digest('hex');
+  assert.deepStrictEqual(Object.keys(GOLDEN_SHA256).sort(), fs.readdirSync(GOLDEN_DIR).filter((f) => f.endsWith('.json')).sort());
+  for (const [name, want] of Object.entries(GOLDEN_SHA256)) {
+    assert.strictEqual(sha(normalize(fs.readFileSync(path.join(GOLDEN_DIR, name), 'utf8'))), want, `examples/fhir/${name} changed`);
+  }
+  for (const file of examples) {
+    const bundle = toInsurancePlanBundle(readJson(path.join(EXAMPLES_DIR, file)));
+    assert.strictEqual(sha(serialize(bundle)), GOLDEN_SHA256[bundle.entry[0].resource.id + '.json'], `${file} no longer converts to its pinned golden file`);
+  }
+});
+
+// ---- second in-network tier (spec 6.2) --------------------------------------------
+function withSecondTier(tier) {
+  const bps = readJson(path.join(EXAMPLES_DIR, 'aetna_example.json'));
+  bps.network_tiers.splice(1, 0, tier);
+  const b = bps.benefits.find((x) => x.canonical_key === 'primary_care');
+  b.network_cost_shares.splice(1, 0, {
+    tier_id: tier.tier_id, covered: true,
+    cost_shares: [{ type: 'copay', sequence: 1, amount: 60, applies_to_deductible: false }],
+  });
+  const plan = toInsurancePlanBundle(bps).entry[0].resource;
+  const sc = plan.plan[0].specificCost.find((s) => s.category.coding[0].code === 'primary-care-visit');
+  return sc.benefit[0].cost;
+}
+
+test('IN2 maps to in-network with a text-only qualifier carrying the tier name', () => {
+  const cost = withSecondTier({ tier_id: 'IN2', name: 'In-Network Tier 2' });
+  assert.deepStrictEqual(cost.map((c) => c.applicability.coding[0].code), ['in-network', 'in-network', 'out-of-network']);
+  assert.strictEqual(cost[0].qualifiers, undefined);
+  assert.deepStrictEqual(cost[1].qualifiers, [{ text: 'In-Network Tier 2' }]);
+  assert.strictEqual(cost[1].value.value, 60);
+  assert.ok(cost.every((c) => c.type.text !== 'Not stated in the BPS document'), 'IN, IN2 and OUT never get a placeholder');
+});
+
+test('a second in-network tier named "Value Choice" gets the value-choice code', () => {
+  const cost = withSecondTier({ tier_id: 'IN2', name: 'Value Choice Providers' });
+  assert.deepStrictEqual(cost[1].qualifiers, [{
+    coding: [{ system: 'http://hl7.org/fhir/us/insurance-card/CodeSystem/cost-tier', code: 'value-choice', display: 'Value Choice Provider' }],
+    text: 'Value Choice Providers',
+  }]);
+});
+
+test('a second in-network tier is recognized by name, and other unknown network tiers still fail', () => {
+  const cost = withSecondTier({ tier_id: 'PREF2', name: 'In Network Tier 2' });
+  assert.strictEqual(cost[1].applicability.coding[0].code, 'in-network');
+  assert.throws(() => withSecondTier({ tier_id: 'PREF', name: 'Preferred' }), /not IN, OUT or a second in-network tier/);
+  assert.throws(() => withSecondTier({ tier_id: 'OON2', name: 'Out-of-Network Tier 2' }), /not IN, OUT or a second in-network tier/);
+});
+
+test('a benefit priced in IN and IN2 only has 2 in-network entries and no placeholder', () => {
+  const bps = readJson(path.join(EXAMPLES_DIR, 'aetna_example.json'));
+  bps.network_tiers.splice(1, 0, { tier_id: 'IN2', name: 'In-Network Tier 2' });
+  const b = bps.benefits.find((x) => x.canonical_key === 'primary_care');
+  b.network_cost_shares = [b.network_cost_shares[0], { tier_id: 'IN2', covered: true, cost_shares: [{ type: 'copay', sequence: 1, amount: 60 }] }];
+  const sc = toInsurancePlanBundle(bps).entry[0].resource.plan[0].specificCost.find((s) => s.category.coding[0].code === 'primary-care-visit');
+  assert.deepStrictEqual(sc.benefit[0].cost.map((c) => c.applicability.coding[0].code), ['in-network', 'in-network']);
+});
+
+test('the Florida Blue 1505 public-file document converts: tier 2 entries are in-network with the tier 2 qualifier, and there is no placeholder', () => {
+  const bps = readJson(path.join(EXAMPLES_DIR, 'florida-blue-blueoptions-gold-1505.puf.json'));
+  const plan = toInsurancePlanBundle(bps).entry[0].resource;
+  const costs = plan.plan[0].specificCost.flatMap((s) => s.benefit).flatMap((b) => b.cost);
+  const tier2 = costs.filter((c) => c.qualifiers && c.qualifiers[0].text === 'In-Network Tier 2');
+  assert.ok(tier2.length > 0);
+  assert.ok(tier2.every((c) => c.applicability.coding[0].code === 'in-network'));
+  assert.strictEqual(costs.filter((c) => c.type.text === 'Not stated in the BPS document').length, 0);
 });
 
 test('rejects unsupported schema versions and unknown tiers', () => {
