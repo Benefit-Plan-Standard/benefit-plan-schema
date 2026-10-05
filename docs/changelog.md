@@ -3,6 +3,15 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Marketplace public-file importer and a second in-network tier (2026-10-05)
+
+No schema change.
+
+### Added
+
+- `scripts/from-marketplace-puf.js`: CMS Marketplace Plan Attributes and Benefits and Cost Sharing public use files in, Benefit Plan Standard v1.1.0 documents out. Crosswalk in `fhir/marketplace-puf-crosswalk.json` (71 of 273 PY2026 benefit names mapped, the rest listed unmapped), parse report in `docs/specs/marketplace-puf-parse-report.md`, spec in `docs/specs/marketplace-puf-importer.md`. 3 examples (`*.puf.json`) and their Bundles in `examples/fhir-puf/`.
+- The converter maps a second in-network tier (`IN2`) to `in-network` with a cost-tier qualifier: `value-choice` when the tier is named Value Choice, otherwise the tier name as text. The 10 published Bundles are unchanged and pinned by SHA-256 in `scripts/to-insuranceplan.test.js`.
+
 ## Examples: limits and deductible flags from the source PDFs (2026-10-05)
 
 No schema change. Each value below is read from the example's source PDF in `examples/sources/`. The 8 FHIR Bundles in `examples/fhir/` are regenerated and re-validated (`examples/fhir/VALIDATION.md`).
