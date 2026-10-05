@@ -310,7 +310,7 @@
               "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
-              "applies_to_deductible": true,
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
@@ -351,7 +351,7 @@
               "sequence": 1,
               "rate": 0.5,
               "basis": "allowed_amount",
-              "applies_to_deductible": true,
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
@@ -856,7 +856,12 @@
           ]
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 60
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -897,7 +902,12 @@
           ]
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 60
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -979,7 +989,12 @@
           ]
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "days",
+          "value": 60
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -1020,7 +1035,12 @@
           ]
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "items",
+          "value": 1
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -1102,7 +1122,13 @@
           ]
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "exams",
+          "value": 1,
+          "period": "per_12_months"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },

@@ -1371,6 +1371,30 @@
                   {
                     "extension": [
                       {
+                        "url": "limitType",
+                        "valueCodeableConcept": {
+                          "coding": [
+                            {
+                              "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/limit-type",
+                              "code": "visits",
+                              "display": "Visits"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "url": "limitValue",
+                        "valueQuantity": {
+                          "value": 60,
+                          "unit": "visits"
+                        }
+                      }
+                    ],
+                    "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/benefit-limitation"
+                  },
+                  {
+                    "extension": [
+                      {
                         "url": "benefitId",
                         "valueString": "REHABILITATION_SERVICES"
                       },
@@ -1485,6 +1509,30 @@
                   {
                     "extension": [
                       {
+                        "url": "limitType",
+                        "valueCodeableConcept": {
+                          "coding": [
+                            {
+                              "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/limit-type",
+                              "code": "days",
+                              "display": "Days"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "url": "limitValue",
+                        "valueQuantity": {
+                          "value": 60,
+                          "unit": "days"
+                        }
+                      }
+                    ],
+                    "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/benefit-limitation"
+                  },
+                  {
+                    "extension": [
+                      {
                         "url": "benefitId",
                         "valueString": "SKILLED_NURSING_FACILITY"
                       },
@@ -1539,6 +1587,24 @@
             "benefit": [
               {
                 "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "limitType",
+                        "valueCodeableConcept": {
+                          "text": "items"
+                        }
+                      },
+                      {
+                        "url": "limitValue",
+                        "valueQuantity": {
+                          "value": 1,
+                          "unit": "items"
+                        }
+                      }
+                    ],
+                    "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/benefit-limitation"
+                  },
                   {
                     "extension": [
                       {
@@ -1653,6 +1719,30 @@
             "benefit": [
               {
                 "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "limitType",
+                        "valueCodeableConcept": {
+                          "text": "exams"
+                        }
+                      },
+                      {
+                        "url": "limitValue",
+                        "valueQuantity": {
+                          "value": 1,
+                          "unit": "exams"
+                        }
+                      },
+                      {
+                        "url": "limitPeriod",
+                        "valueCodeableConcept": {
+                          "text": "per_12_months"
+                        }
+                      }
+                    ],
+                    "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/benefit-limitation"
+                  },
                   {
                     "extension": [
                       {
@@ -2889,7 +2979,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": true
+                            "valueBoolean": false
                           },
                           {
                             "extension": [
@@ -3027,7 +3117,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": true
+                            "valueBoolean": false
                           },
                           {
                             "extension": [

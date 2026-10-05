@@ -104,19 +104,20 @@ test('crosswalk codes and displays match the CARIN code system', () => {
   for (const code of used) assert.ok(crosswalk.displays[code], `no display for ${code}`);
 });
 
-// SHA-256 of each golden file (LF line endings) as committed before second
-// in-network tiers were supported. A change to any of them must be deliberate.
+// SHA-256 of each golden file (LF line endings). The 8 SBC files were re-pinned on
+// 2026-10-05 after limits and deductible flags were corrected from the source PDFs.
+// A change to any of them must be deliberate.
 const GOLDEN_SHA256 = {
-  'aetna-ppo-1500-80-50.json': 'd4b33e607ef09d5f100714818028dce5700fd18fa76db0cef0df365a19dd3e73',
-  'aetna-ppo-5000-80-50.json': '590744f92e4af6eed4d8df60dad1cf061927e3663ce4078f7595594fbf5f9805',
-  'ambetter-ca-silver-94-hmo.json': '412de76539f620c2156e7cea7044f6247faf44c81b70fdb8501e9d39d0591c66',
-  'cigna-oap-bowdoin.json': 'b6c0ad14a613564b64eb54d598dc45e1259ccc71e5d08fc8e670d818d23d5c6f',
-  'flblue-blueoptions-505.json': '5ca5f94e584276d4a7275f9460d9f14b7cfb19e2565719f571b30ea6ab75465d',
-  'gatorcare-prime-epo.json': 'f06cffd37128f91b2f0c47e1a0efadc7471af1a9733c9a0919312a9e14cd9006',
+  'aetna-ppo-1500-80-50.json': '4453315e652bded056ef0061ee90f0aa7ed70a244f026ff8e7a142827b63e9d7',
+  'aetna-ppo-5000-80-50.json': 'f459ddb9a1f1387ea6099bf695dd801801c625826971a76daacbe054a8b7ea16',
+  'ambetter-ca-silver-94-hmo.json': '63f1a2f8f9afaf6347aba312d57c5dca79f1c59eb8aae86c0fd0d6163e6aaa7d',
+  'cigna-oap-bowdoin.json': '9d3e11cf099a02083d9ddcca8e7b31e73139d76d555f4bc0a50ddd444483c5b8',
+  'flblue-blueoptions-505.json': '246b3dba9039e3f7658baa2ceb0d474dc576f5f02c10e3c51296221b0c0a2251',
+  'gatorcare-prime-epo.json': 'c76a586bba244dafbeb61f247bbda6a96405500633776ef87d95a74e093b69c2',
   'humana-gold-plus-h1036-025-hmo.json': 'f5ede6c8c787cdd8a2789bc188935289a4439ad9bb59183ac02eb62c755f84e4',
-  'kaiser-ca-gold-80-hmo.json': '1077c983d3e5f4cc6051558b056fe67b4d609d6b75a3b9686d7a0f50b2acc73f',
+  'kaiser-ca-gold-80-hmo.json': '1aa1b9a280d3f0644a54c73cb33b055ed61a18dbe43261f64c33e1b23dfbe158',
   'scan-classic-hmo-los-angeles.json': 'fb58b0d4b50ee7d1654dfc686c201695bb11c835be6f2a09b70f0a521add9005',
-  'uhc-choice-plus-hsa-gold-1700.json': '9d74e4c7c3b509b41cb87f7c2a43c73a6533848d0c85da14df0e3200f8d5dfbd',
+  'uhc-choice-plus-hsa-gold-1700.json': 'cc17ff95d385a8b9b3ee8b7306d1c12513e3d039a3da9057221c0d03f8b3b273',
 };
 
 test('the 10 golden files are byte-identical to the pinned versions, and the converter reproduces them', () => {

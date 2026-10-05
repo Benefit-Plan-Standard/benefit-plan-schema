@@ -595,7 +595,12 @@
           "cost_shares": []
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 30
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -627,7 +632,16 @@
           "cost_shares": []
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 75
+        },
+        {
+          "type": "manipulations",
+          "value": 26
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -682,7 +696,12 @@
           "cost_shares": []
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "days",
+          "value": 60
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },

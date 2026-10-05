@@ -172,7 +172,7 @@ Two BPS benefits that share an SBC row code (for example `diagnostic_lab`, `imag
 
 | BPS | Sub-extension | Rule |
 |---|---|---|
-| `raw_text` (v1.2.0) | `limitText` | Verbatim. Omitted when absent (the one Florida Blue limit has no `raw_text`). |
+| `raw_text` (v1.2.0) | `limitText` | Verbatim. Omitted when absent (the limits in the 8 SBC examples, which are v1.1.0 documents, have no `raw_text`). |
 | `type` | `limitType` (extensible `limit-type`) | `visits`, `days` and `dollars` map directly. Other types (`hearing_aids`, `meals`, `hours`, `miles`, `one_way_trips`, `occurrences`, `pairs_of_eyeglasses`) are text only. |
 | `value` | `limitValue` (Quantity) | `unit` from `type`. `dollars` uses currency USD. |
 | `period` | `limitPeriod` (extensible `limit-period`) | `per_plan_year` to `plan-year`, `per_calendar_year` to `calendar-year`, `per_benefit_period` and `per_episode` to `benefit-period` (as in `carin-dic-reconciliation.md` 3.3), `per_lifetime` to `lifetime`. **`per_year` becomes text only**: it is ambiguous between plan year and calendar year (`carin-dic-reconciliation.md` 3.3), and the converter does not choose. `per_12_months`, `per_quarter` and `per_discharge` are also text only. |

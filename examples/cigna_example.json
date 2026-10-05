@@ -310,7 +310,7 @@
               "sequence": 1,
               "rate": 0.4,
               "basis": "allowed_amount",
-              "applies_to_deductible": true,
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
@@ -351,7 +351,7 @@
               "sequence": 1,
               "rate": 0.4,
               "basis": "allowed_amount",
-              "applies_to_deductible": true,
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
@@ -392,7 +392,7 @@
               "sequence": 1,
               "rate": 0.4,
               "basis": "allowed_amount",
-              "applies_to_deductible": true,
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
@@ -849,7 +849,18 @@
           ]
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "days",
+          "value": 100,
+          "period": "per_year"
+        },
+        {
+          "type": "hours",
+          "value": 16,
+          "period": "per_day"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -972,7 +983,13 @@
           ]
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "days",
+          "value": 150,
+          "period": "per_year"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -1095,7 +1112,13 @@
           ]
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "exams",
+          "value": 1,
+          "period": "per_calendar_year"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -1200,7 +1223,13 @@
           "cost_shares": []
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "days",
+          "value": 40,
+          "period": "per_year"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     }

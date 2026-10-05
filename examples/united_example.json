@@ -848,7 +848,17 @@
           ]
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 90
+        },
+        {
+          "type": "hours",
+          "value": 4,
+          "period": "per_visit"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -971,7 +981,13 @@
           ]
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "days",
+          "value": 60,
+          "period": "per_calendar_year"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -1003,7 +1019,13 @@
           "cost_shares": []
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "items",
+          "value": 1,
+          "period": "per_2_years"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -1085,7 +1107,13 @@
           ]
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "exams",
+          "value": 1,
+          "period": "per_12_months"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -1126,7 +1154,13 @@
           ]
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "pairs_of_glasses",
+          "value": 1,
+          "period": "per_12_months"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -1167,7 +1201,13 @@
           ]
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "cleanings",
+          "value": 2,
+          "period": "per_12_months"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },

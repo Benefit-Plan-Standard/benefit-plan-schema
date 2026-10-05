@@ -672,7 +672,13 @@
           "cost_shares": []
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 100,
+          "period": "per_calendar_year"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -768,7 +774,13 @@
           "cost_shares": []
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "days",
+          "value": 100,
+          "period": "per_calendar_year"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -864,7 +876,13 @@
           "cost_shares": []
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 1,
+          "period": "per_12_months"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -928,7 +946,13 @@
           "cost_shares": []
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "check_ups",
+          "value": 1,
+          "period": "per_6_months"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },

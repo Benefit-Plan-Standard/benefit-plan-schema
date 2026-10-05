@@ -704,7 +704,23 @@
           "cost_shares": []
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "hours",
+          "value": 2,
+          "period": "per_visit"
+        },
+        {
+          "type": "visits",
+          "value": 3,
+          "period": "per_day"
+        },
+        {
+          "type": "visits",
+          "value": 100,
+          "period": "per_year"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -800,7 +816,13 @@
           "cost_shares": []
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "days",
+          "value": 100,
+          "period": "per_year"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -928,7 +950,13 @@
           "cost_shares": []
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "pairs_of_glasses",
+          "value": 1,
+          "period": "per_year"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },
@@ -960,7 +988,13 @@
           "cost_shares": []
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "check_ups",
+          "value": 2,
+          "period": "per_year"
+        }
+      ],
       "conditions": [],
       "moop_applicability": "plan_default"
     },

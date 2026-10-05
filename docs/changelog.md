@@ -3,6 +3,21 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Examples: limits and deductible flags from the source PDFs (2026-10-05)
+
+No schema change. Each value below is read from the example's source PDF in `examples/sources/`. The 8 FHIR Bundles in `examples/fhir/` are regenerated and re-validated (`examples/fhir/VALIDATION.md`).
+
+### Changed
+
+- Florida Blue example: 3 limits added, 4 deductible flags corrected from the source PDF.
+- Aetna PPO 1500 example: 5 limits added, 2 deductible flags corrected from the source PDF.
+- Aetna PPO 5000 example: 5 limits added, 2 deductible flags corrected from the source PDF.
+- Ambetter example: 4 limits added from the source PDF.
+- Cigna example: 5 limits added, 3 deductible flags corrected from the source PDF.
+- GatorCare example: 4 limits added from the source PDF.
+- Kaiser example: 6 limits added from the source PDF.
+- United example: 7 limits added from the source PDF.
+
 ## Tooling: CARIN SBC InsurancePlan converter (2026-09-24)
 
 No schema change. Every BPS document validates exactly as before.
