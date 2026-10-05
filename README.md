@@ -21,6 +21,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 - Vocabularies (canonical benefits, categories, markets, plan types): `vocabularies/`  
 - FHIR alignment: `docs/fhir-alignment.md`  
 - FHIR InsurancePlan converter (CARIN SBC profile): `scripts/to-insuranceplan.js`, spec `docs/specs/insuranceplan-converter.md`  
+- Importer from the CMS Marketplace public use files: `scripts/from-marketplace-puf.js`, spec `docs/specs/marketplace-puf-importer.md`, 3 examples in `examples/*.puf.json` and their Bundles in `examples/fhir-puf/`  
 - The 10 examples as FHIR InsurancePlan: `examples/fhir/`, published at https://benefitplanstandard.org/fhir/index.json  
 - CARIN Digital Insurance Card reconciliation: `docs/carin-dic-reconciliation.md`  
 - Modules: `modules/README.md`  
@@ -137,7 +138,7 @@ Example normalized files are provided in:
 
 These examples demonstrate how real-world plan documents (the SBC and the CMS Summary of Benefits) map into the standardized model. See [`examples/README.md`](examples/README.md).
 
-The eight SBC examples (`aetna`, `aetna_ppo5000`, `ambetter`, `bluecross`, `cigna`, `gatorcare`, `kaiser`, `united`) are generated from the source Summary of Benefits and Coverage documents and verified value by value against them. The two Medicare Advantage examples (`scan_example.json` and `humana_example.json`) are different: they are keyed by hand from their CMS Summary of Benefits documents, verified value by value against the cited pages, and they use fields added in the v1.2.0 draft, so they validate against that draft only. See `docs/medicare-advantage-notes.md`.
+The eight SBC examples (`aetna`, `aetna_ppo5000`, `ambetter`, `bluecross`, `cigna`, `gatorcare`, `kaiser`, `united`) are generated from the source Summary of Benefits and Coverage documents and verified value by value against them. The two Medicare Advantage examples (`scan_example.json` and `humana_example.json`) are different: they are keyed by hand from their CMS Summary of Benefits documents, verified value by value against the cited pages, and they use fields added in the v1.2.0 draft, so they validate against that draft only. See `docs/medicare-advantage-notes.md`. The three public-file examples (`*.puf.json`) are written by `scripts/from-marketplace-puf.js` from the CMS Marketplace Plan Attributes and Benefits and Cost Sharing files; no PDF is read.
 
 ---
 
