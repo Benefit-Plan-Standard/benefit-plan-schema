@@ -105,19 +105,20 @@ test('crosswalk codes and displays match the CARIN code system', () => {
 });
 
 // SHA-256 of each golden file (LF line endings). The 8 SBC files were re-pinned on
-// 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs.
+// 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs,
+// and 4 of them again the same day after the deductible flags on silent cells were set.
 // A change to any of them must be deliberate.
 const GOLDEN_SHA256 = {
-  'aetna-ppo-1500-80-50.json': '3254835391c4c4f7a9ec0c30906f93b3c66b7c1321182f469fd2a975d5de8e95',
-  'aetna-ppo-5000-80-50.json': '40d1170925a2261d86847678960d4321a8d7fcae13f8b3d3857c2d8298e93698',
+  'aetna-ppo-1500-80-50.json': '5b71acace40107ffd7783f7f2dfebb2abc6dc46a48a4b21bb5a384dde58ca69b',
+  'aetna-ppo-5000-80-50.json': '03e16565b6de68a075cfecbe1341b3e8fb5ed3601bf0e64c45986366efddbab1',
   'ambetter-ca-silver-94-hmo.json': 'c121fbb145f060a0230e91837ed4f526a1c3bc16bc7fd7aea8fd3d39a57fcfae',
   'cigna-oap-bowdoin.json': 'e82c810f43f5e3f66425a3d28f87de55d8f18fabd19a66bbf53a5338b5609d04',
   'flblue-blueoptions-505.json': '579b1dd83c482d759cae849a629f0ccf10ff3de44ffc106ad62b2a08a61cb4af',
-  'gatorcare-prime-epo.json': '357e0a0c44724244a8e2c8ab0087cbaa590db450e8dba2cfbd08cd9ab74a9d06',
+  'gatorcare-prime-epo.json': '3ea3d74c082269a1cfded8461d0fa35362c3b7019c86b2c002a50b7a078e9487',
   'humana-gold-plus-h1036-025-hmo.json': 'f5ede6c8c787cdd8a2789bc188935289a4439ad9bb59183ac02eb62c755f84e4',
   'kaiser-ca-gold-80-hmo.json': 'a4af8116c546c33f39e65c08a4c3dc06a78dfed61346f8a4294b94bd45227b36',
   'scan-classic-hmo-los-angeles.json': 'fb58b0d4b50ee7d1654dfc686c201695bb11c835be6f2a09b70f0a521add9005',
-  'uhc-choice-plus-hsa-gold-1700.json': 'b7fd426099a2a9ac11d2af3ab293fdfb7dc5cfce3db6e3ed6f8a33ba28f1df3f',
+  'uhc-choice-plus-hsa-gold-1700.json': '4c385df53392d72d1b39dc74dbc07021f41945648a0aba1675153588c38ee19c',
 };
 
 test('the 10 golden files are byte-identical to the pinned versions, and the converter reproduces them', () => {

@@ -3,6 +3,17 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Examples: deductible flags on silent cells (2026-10-05)
+
+No schema change. Rule: a cell silent about the deductible follows the issuer's annotation convention (false where the chart marks where the deductible applies, true where it marks only where it does not), and otherwise the SBC template footnote and the page 1 answer to "Are there services covered before you meet your deductible?" (`examples/README.md`, "Things to know"). The 4 affected FHIR Bundles are regenerated and re-validated with 0 errors (`examples/fhir/VALIDATION.md`).
+
+### Changed
+
+- United example: 25 deductible flags corrected; the 2 pediatric dental check-up cost shares note the separate dental deductible.
+- Aetna PPO 1500 example: 4 deductible flags corrected.
+- Aetna PPO 5000 example: 4 deductible flags corrected.
+- GatorCare example: 2 deductible flags corrected.
+
 ## Marketplace public-file importer and a second in-network tier (2026-10-05)
 
 No schema change.

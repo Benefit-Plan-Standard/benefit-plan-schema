@@ -31,7 +31,7 @@
 
 ## How they were made
 
-- **The 8 SBC examples** are generated from the source Summary of Benefits and Coverage and verified value by value against it. On 2026-10-05 the 8 were corrected against their PDFs for limits and deductible flags; [`../docs/changelog.md`](../docs/changelog.md) has the detail. They validate against v1.1.0 and, unchanged, against the v1.2.0 draft.
+- **The 8 SBC examples** are generated from the source Summary of Benefits and Coverage and verified value by value against it. On 2026-10-05 the 8 were corrected against their PDFs for limits and deductible flags; [`../docs/changelog.md`](../docs/changelog.md) has the detail. Also on 2026-10-05, the deductible flags on cost shares whose cell is silent about the deductible were set from the issuer's annotation convention and the SBC template footnote, with the page 1 answer to "Are there services covered before you meet your deductible?". They validate against v1.1.0 and, unchanged, against the v1.2.0 draft.
 - **The 2 Medicare Advantage examples** are keyed by hand from the CMS Summary of Benefits and verified value by value against the cited pages. They use fields added in the v1.2.0 draft, so they validate against that draft only. See [`../docs/medicare-advantage-notes.md`](../docs/medicare-advantage-notes.md).
 - **The 3 public-file examples** are produced by `scripts/from-marketplace-puf.js` from 2 CMS files for the plan year: the Plan Attributes PUF and the Benefits and Cost Sharing PUF. No PDF is read. The output is deterministic: the same 2 files and download date always give byte-identical output. They validate against v1.1.0 and the v1.2.0 draft. See [`../docs/specs/marketplace-puf-importer.md`](../docs/specs/marketplace-puf-importer.md).
 
@@ -45,6 +45,10 @@ Every example carries `source_references[]`.
 
 ## Things to know
 
+- **Deductible flags on silent cells** follow the issuer's annotation convention, read once per chart. A plan with no deductible (Ambetter, Kaiser) is false throughout; wording in the cell always wins.
+  - The chart marks where the deductible applies ("Deductible +", "after Deductible"): a silent cell is false. GatorCare and Florida Blue. This holds even when the chart also carries the other kind of mark.
+  - The chart marks only where it does not apply ("Deductible does not apply"): a silent cell is true, as the template footnote says. Aetna PPO 1500, Aetna PPO 5000 and Cigna.
+  - The chart marks neither: the footnote and the page 1 answer to "Are there services covered before you meet your deductible?" decide, so a silent cell is true unless page 1 exempts the service. United.
 - **Florida Blue** (`bluecross_example.json`) is contract year 07/2023 to 06/2024; the other document-derived plans are 2026. Of the public-file examples, Florida Blue Gold 1505 is plan year 2023 and the other 2 are 2026.
 - **Florida Blue 505 and Florida Blue Gold 1505 are different plans.** The PY2023 public file has no BlueOptions 505; Gold 1505 is the closest row by name. The comparison is in [`../docs/specs/marketplace-puf-vs-sbc-flblue-505.md`](../docs/specs/marketplace-puf-vs-sbc-flblue-505.md).
 - **Kaiser** carries both SBC columns: `IN` (Plan Provider) and `OUT` (Non-Plan Provider), added on 2026-09-25. Out of network, only emergency room care and emergency medical transportation are covered; every other row is not covered. Acupuncture has no out-of-network row, because the SBC prints no value for it.

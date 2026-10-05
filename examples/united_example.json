@@ -91,7 +91,7 @@
               "sequence": 1,
               "amount": 10,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -132,7 +132,7 @@
               "sequence": 1,
               "amount": 30,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -205,7 +205,7 @@
               "sequence": 1,
               "amount": 30,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             },
             {
@@ -254,7 +254,7 @@
               "sequence": 1,
               "amount": 150,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -295,7 +295,7 @@
               "sequence": 1,
               "amount": 10,
               "basis": "per_prescription",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -309,7 +309,7 @@
               "sequence": 1,
               "amount": 10,
               "basis": "per_prescription",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -345,7 +345,7 @@
               "sequence": 1,
               "amount": 40,
               "basis": "per_prescription",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -359,7 +359,7 @@
               "sequence": 1,
               "amount": 40,
               "basis": "per_prescription",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -395,7 +395,7 @@
               "sequence": 1,
               "amount": 75,
               "basis": "per_prescription",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -409,7 +409,7 @@
               "sequence": 1,
               "amount": 75,
               "basis": "per_prescription",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -445,7 +445,7 @@
               "sequence": 1,
               "amount": 125,
               "basis": "per_prescription",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -459,7 +459,7 @@
               "sequence": 1,
               "amount": 125,
               "basis": "per_prescription",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -495,7 +495,7 @@
               "sequence": 1,
               "amount": 200,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -577,7 +577,7 @@
               "sequence": 1,
               "amount": 400,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -591,7 +591,7 @@
               "sequence": 1,
               "amount": 400,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -618,7 +618,7 @@
               "sequence": 1,
               "amount": 40,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -659,7 +659,7 @@
               "sequence": 1,
               "amount": 350,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -700,7 +700,7 @@
               "sequence": 1,
               "amount": 30,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -741,7 +741,7 @@
               "sequence": 1,
               "amount": 350,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -823,7 +823,7 @@
               "sequence": 1,
               "amount": 350,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -926,7 +926,7 @@
               "sequence": 1,
               "amount": 10,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -972,7 +972,7 @@
               "sequence": 1,
               "amount": 10,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -1013,7 +1013,7 @@
               "sequence": 1,
               "amount": 350,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -1238,8 +1238,9 @@
               "sequence": 1,
               "amount": 0,
               "basis": "per_visit",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_deductible": true,
+              "applies_to_moop": true,
+              "notes": "Separate dental deductible: Network: $50 Individual / $100 Family"
             }
           ]
         },
@@ -1252,8 +1253,9 @@
               "sequence": 1,
               "amount": 0,
               "basis": "per_visit",
-              "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_deductible": true,
+              "applies_to_moop": true,
+              "notes": "Separate dental deductible: Network: $50 Individual / $100 Family"
             }
           ]
         }

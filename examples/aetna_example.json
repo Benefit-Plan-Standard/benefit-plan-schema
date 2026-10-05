@@ -526,7 +526,7 @@
               "sequence": 1,
               "amount": 300,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             },
             {
@@ -548,7 +548,7 @@
               "sequence": 1,
               "amount": 300,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             },
             {
@@ -931,7 +931,7 @@
               "sequence": 1,
               "amount": 75,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]
@@ -1161,7 +1161,7 @@
               "sequence": 1,
               "amount": 0,
               "basis": "per_visit",
-              "applies_to_deductible": false,
+              "applies_to_deductible": true,
               "applies_to_moop": true
             }
           ]

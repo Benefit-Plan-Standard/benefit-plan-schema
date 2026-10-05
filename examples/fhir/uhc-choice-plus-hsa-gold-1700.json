@@ -2505,7 +2505,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -2643,7 +2643,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -2899,7 +2899,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -3090,7 +3090,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -3228,7 +3228,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -3281,7 +3281,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -3366,7 +3366,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -3419,7 +3419,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -3504,7 +3504,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -3557,7 +3557,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -3642,7 +3642,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -3695,7 +3695,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -3780,7 +3780,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -4043,7 +4043,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -4096,7 +4096,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -4181,7 +4181,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -4319,7 +4319,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -4457,7 +4457,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -4595,7 +4595,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -4858,7 +4858,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -4996,7 +4996,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -5134,7 +5134,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -5272,7 +5272,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -5942,7 +5942,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -5961,6 +5961,10 @@
                               {
                                 "url": "appliesToMoop",
                                 "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Separate dental deductible: Network: $50 Individual / $100 Family"
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
@@ -5995,7 +5999,7 @@
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
-                            "valueBoolean": false
+                            "valueBoolean": true
                           },
                           {
                             "extension": [
@@ -6014,6 +6018,10 @@
                               {
                                 "url": "appliesToMoop",
                                 "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Separate dental deductible: Network: $50 Individual / $100 Family"
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"

@@ -149,7 +149,7 @@
               "sequence": 1,
               "rate": 0.1,
               "basis": "allowed_amount",
-              "applies_to_deductible": true,
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
@@ -595,7 +595,7 @@
               "sequence": 1,
               "rate": 0.1,
               "basis": "allowed_amount",
-              "applies_to_deductible": true,
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
