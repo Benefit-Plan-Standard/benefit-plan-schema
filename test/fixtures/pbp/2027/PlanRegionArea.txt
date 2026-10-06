@@ -1,0 +1,1 @@
+pbp_a_hnumber	pbp_a_plan_identifier	segment_id	pbp_a_ben_cov	pbp_a_plan_type	orgtype	bid_id	contract_id	plan_id	segment_id	pending_flag	partial_flag	contract_year	eghp_flag	region_type	ma_or_pdp_region_code	region

@@ -3,6 +3,24 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Medicare Advantage PBP importer (2026-10-06)
+
+No schema change.
+
+### Added
+
+- `scripts/from-pbp.js`: CMS Medicare Advantage Plan Benefit Package (PBP) Benefits files in, Benefit Plan Standard v1.2.0 documents out, 1 plan per run. Plan level, network tiers (including point-of-service and hospital cost tiers), deductibles and maximums, and 30 MVP benefits mapped in `fhir/pbp-crosswalk.json` (19 with a canonical key). Every MVP plan of contract year 2027 (6,872) imports with 0 errors. Spec in `docs/specs/pbp-importer.md`, file layout in `docs/specs/pbp-record-layout-notes.md`.
+- 5 examples (`examples/*.pbp.json`), regenerated only with `--write-golden`, and `scripts/from-pbp.test.js`, which builds them from the plans' rows committed in `test/fixtures/pbp/2027/` and needs no download.
+- `scripts/pbp-sob-check.js` and `docs/specs/pbp-sob-checks/H2406-013-000.json`: an importer document checked against its CMS Summary of Benefits, 61 checks, 0 differences.
+
+## [1.2.0] – DRAFT (2026-10-06), plan-type vocabulary
+
+No schema change.
+
+### Added
+
+- `vocabularies/plan-types.json`: `HMO_POS` (Medicare Advantage HMO with a point-of-service option), added for the PBP importer.
+
 ## Examples: deductible flags on silent cells (2026-10-05)
 
 No schema change. Rule: a cell silent about the deductible follows the issuer's annotation convention (false where the chart marks where the deductible applies, true where it marks only where it does not), and otherwise the SBC template footnote and the page 1 answer to "Are there services covered before you meet your deductible?" (`examples/README.md`, "Things to know"). The 4 affected FHIR Bundles are regenerated and re-validated with 0 errors (`examples/fhir/VALIDATION.md`).

@@ -1,0 +1,1541 @@
+{
+  "plan_id": "AARP_MEDICARE_ADVANTAGE_FROM_UHC_FL_0021_PPO_H2406_013_000",
+  "plan_identifiers": [
+    {
+      "system": "cms_contract_plan_segment",
+      "value": "H2406-013-000"
+    },
+    {
+      "system": "cms_contract_id",
+      "value": "H2406"
+    },
+    {
+      "system": "cms_pbp_id",
+      "value": "013"
+    }
+  ],
+  "plan_name": "AARP Medicare Advantage from UHC FL-0021 (PPO)",
+  "carrier": "UnitedHealthcare",
+  "plan_type": "PPO",
+  "plan_year": 2027,
+  "market": "medicare_advantage",
+  "service_area": {
+    "state": "FL",
+    "counties": [
+      {
+        "name": "Clay",
+        "fips": null
+      },
+      {
+        "name": "Duval",
+        "fips": null
+      },
+      {
+        "name": "Flagler",
+        "fips": null
+      },
+      {
+        "name": "Nassau",
+        "fips": null
+      },
+      {
+        "name": "Putnam",
+        "fips": null
+      },
+      {
+        "name": "St. Johns",
+        "fips": null
+      },
+      {
+        "name": "Volusia",
+        "fips": null
+      }
+    ]
+  },
+  "network_tiers": [
+    {
+      "tier_id": "IN",
+      "name": "In-Network",
+      "description": "The plan network. Cost sharing in the PBP Section B files (pbp_b*), which carry no network qualifier.",
+      "tier_class": "network"
+    },
+    {
+      "tier_id": "OUT",
+      "name": "Out-of-Network",
+      "description": "pbp_Section_C pbp_c_oon_yn \"1\". Cost sharing in pbp_Section_C (inpatient, SNF) and pbp_Section_C_OON (outpatient groups).",
+      "tier_class": "network"
+    }
+  ],
+  "accumulators": {
+    "individual_oop_max": {
+      "amount": 7150,
+      "currency": "USD",
+      "network_tier": "IN",
+      "applies_to": "medical"
+    },
+    "oon_individual_deductible": {
+      "amount": 1000,
+      "currency": "USD",
+      "network_tier": "OUT",
+      "applies_to": "medical"
+    }
+  },
+  "benefits": [
+    {
+      "benefit_id": "PRIMARY_CARE",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Primary care physician services",
+      "canonical_key": "primary_care",
+      "raw_label": "7a: Primary Care Physician Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b7_health_prof.txt cells: pbp_b7a_copay_yn \"1\", pbp_b7a_copay_amt_mc_min \"0.00\", pbp_b7a_copay_amt_mc_max \"0.00\", pbp_b7a_coins_yn \"2\", pbp_b7a_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 45,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 107 (label \"7a\", pbp_c_oon_out_mc_bendesc_cats \"7a;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"45.00\", pbp_c_oon_outpt_copay_max_amt \"45.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 7a: Primary Care Physician Services (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b7a_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "SPECIALIST",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Physician specialist services",
+      "canonical_key": "specialist",
+      "raw_label": "7d: Physician Specialist Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount_min": 0,
+              "amount_max": 65,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b7_health_prof.txt cells: pbp_b7d_copay_yn \"1\", pbp_b7d_copay_amt_mc_min \"0.00\", pbp_b7d_copay_amt_mc_max \"65.00\", pbp_b7d_coins_yn \"2\", pbp_b7d_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 100,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 110 (label \"7d\", pbp_c_oon_out_mc_bendesc_cats \"7d;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"100.00\", pbp_c_oon_outpt_copay_max_amt \"100.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b7d_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 7d: Physician Specialist Services (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b7d_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "INPATIENT_HOSPITAL",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "HOSPITAL_SERVICES",
+      "service_name": "Inpatient hospital, acute",
+      "canonical_key": "inpatient_hospital",
+      "raw_label": "1a: Inpatient Hospital-Acute",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 550,
+              "basis": "per_day",
+              "unit_range": {
+                "from": 1,
+                "to": 5
+              },
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            },
+            {
+              "type": "copay",
+              "sequence": 2,
+              "amount": 0,
+              "basis": "per_day",
+              "unit_range": {
+                "from": 6,
+                "to": 90
+              },
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            },
+            {
+              "type": "copay",
+              "sequence": 3,
+              "amount": 0,
+              "basis": "per_day",
+              "unit_range": {
+                "from": 91,
+                "to": 999
+              },
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Additional days (1a1, supplemental): pbp_b1a_bendesc_amo_ad \"2\" (Mandatory), pbp_b1a_bendesc_lim_ad \"1\"."
+            }
+          ],
+          "notes": "pbp_b1a_inpat_hosp.txt cells: pbp_b1a_copay_yn \"1\", pbp_b1a_copay_mcs_amt_t1 \"0.00\", pbp_b1a_copay_mcs_int_num_t1 \"3\", pbp_b1a_copay_mcs_amt_int1_t1 \"550.00\", pbp_b1a_copay_mcs_bgnd_int1_t1 \"1\", pbp_b1a_copay_mcs_endd_int1_t1 \"5\", pbp_b1a_copay_mcs_amt_int2_t1 \"0.00\", pbp_b1a_copay_mcs_bgnd_int2_t1 \"6\", pbp_b1a_copay_mcs_endd_int2_t1 \"90\", pbp_b1a_copay_ad_intrvl_num_t1 \"2\", pbp_b1a_copay_ad_amt_int1_t1 \"0.00\", pbp_b1a_copay_ad_bgnd_int1_t1 \"91\", pbp_b1a_copay_ad_endd_int1_t1 \"999\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.4,
+              "basis": "per_stay",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C (pbp_c_oon_mc_bendesc_cats lists 1a): pbp_c_oon_coins_ihs_yn \"1\", pbp_c_oon_coins_ihs_ben_type \"11\", pbp_c_oon_coins_iha_pct \"40\", pbp_c_oon_coins_iha_intrvl_num \"1\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b1a_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 1a: Inpatient Hospital-Acute (pbp_b1a_inpat_hosp.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b1a_maxenr_yn \"2\"; pbp_b1a_hosp_ben_period \"3\"; pbp_b1a_cost_discharge_yn \"2\"; pbp_b1a_bendesc_yn \"1\"; pbp_b1a_bendesc_ad_up_nmcs \"010\"; pbp_b1a_bendesc_amo_ad \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "OUTPATIENT_HOSPITAL",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "HOSPITAL_SERVICES",
+      "service_name": "Outpatient hospital services",
+      "canonical_key": "outpatient_surgery",
+      "raw_label": "9a1: Outpatient Hospital Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount_min": 0,
+              "amount_max": 550,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b9_outpat_hosp.txt cells: pbp_b9a_copay_yn \"1\", pbp_b9a_copay_ehc \"11\", pbp_b9a_copay_ohs_amt_min \"0.00\", pbp_b9a_copay_ohs_amt_max \"550.00\", pbp_b9a_coins_yn \"2\", pbp_b9a_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.4,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 125 (label \"9a1\", pbp_c_oon_out_mc_bendesc_cats \"9a1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b9a_auth_ohs_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 9a1: Outpatient Hospital Services (pbp_b9_outpat_hosp.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b9a_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "OBSERVATION",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "HOSPITAL_SERVICES",
+      "service_name": "Observation services",
+      "canonical_key": "observation_care",
+      "raw_label": "9a2: Observation Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 550,
+              "basis": "per_day",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b9_outpat_hosp.txt cells: pbp_b9a_copay_yn \"1\", pbp_b9a_copay_ehc \"11\", pbp_b9a_copay_obs_amt_min \"550.00\", pbp_b9a_copay_obs_amt_max \"550.00\", pbp_b9a_copay_obs_per \"1\", pbp_b9a_coins_yn \"2\", pbp_b9a_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.4,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 126 (label \"9a2\", pbp_c_oon_out_mc_bendesc_cats \"9a2;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b9a_auth_obs_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 9a2: Observation Services (pbp_b9_outpat_hosp.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b9a_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "AMBULATORY_SURGICAL_CENTER",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "SURGICAL_SERVICES",
+      "service_name": "Ambulatory surgical center services",
+      "canonical_key": "outpatient_surgery_facility",
+      "raw_label": "9b: Ambulatory Surgical Center (ASC) Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount_min": 0,
+              "amount_max": 500,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b9_outpat_hosp.txt cells: pbp_b9b_copay_yn \"1\", pbp_b9b_copay_mc_amt \"0.00\", pbp_b9b_copay_mc_amt_max \"500.00\", pbp_b9b_coins_yn \"2\", pbp_b9b_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.4,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 127 (label \"9b\", pbp_c_oon_out_mc_bendesc_cats \"9b;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b9b_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 9b: Ambulatory Surgical Center (ASC) Services (pbp_b9_outpat_hosp.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b9b_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "EMERGENCY",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "EMERGENCY_CARE",
+      "service_name": "Emergency services",
+      "canonical_key": "emergency_room",
+      "raw_label": "4a: Emergency Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 130,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "notes": "Waived if admitted to the hospital within 24 hours (pbp_b4a_copay_wavdia_yn \"1\", pbp_b4a_copay_wavdia_mi_dh \"2\", pbp_b4a_copay_wavd_dh \"24\")."
+            }
+          ],
+          "notes": "pbp_b4_emerg_urgent.txt cells: pbp_b4a_copay_yn \"1\", pbp_b4a_copay_amt_mc_min \"130.00\", pbp_b4a_copay_amt_mc_max \"130.00\", pbp_b4a_coins_yn \"2\". pbp_b4_emerg_urgent.txt prices 4a once, with no network, and no pbp_Section_C_OON.txt group lists 4a, so the cost share is written on the in-network tier only (decision 5, docs/specs/pbp-importer.md section 7.13)."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 4a: Emergency Services (pbp_b4_emerg_urgent.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b4a_deduct_yn \"2\"; pbp_b4a_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "URGENT_CARE",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "URGENT_CARE",
+      "service_name": "Urgently needed services",
+      "canonical_key": "urgent_care",
+      "raw_label": "4b: Urgently Needed Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount_min": 0,
+              "amount_max": 50,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b4_emerg_urgent.txt cells: pbp_b4b_copay_yn \"1\", pbp_b4b_copay_amt_mc_min \"0.00\", pbp_b4b_copay_amt_mc_max \"50.00\", pbp_b4b_coins_yn \"2\". pbp_b4_emerg_urgent.txt prices 4b once, with no network, and no pbp_Section_C_OON.txt group lists 4b, so the cost share is written on the in-network tier only (decision 5, docs/specs/pbp-importer.md section 7.13)."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 4b: Urgently Needed Services (pbp_b4_emerg_urgent.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b4b_deduct_yn \"2\"; pbp_b4b_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "AMBULANCE_GROUND",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "EMERGENCY_CARE",
+      "service_name": "Ground ambulance services",
+      "canonical_key": "ambulance",
+      "raw_label": "10a1: Ground Ambulance Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 380,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b10_amb_trans.txt cells: pbp_b10a_copay_yn \"1\", pbp_b10a_copay_ehc \"11\", pbp_b10a_copay_gas_amt_min \"380.00\", pbp_b10a_copay_gas_amt_max \"380.00\", pbp_b10a_coins_yn \"2\", pbp_b10a_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 380,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 131 (label \"10a1\", pbp_c_oon_out_mc_bendesc_cats \"10a1;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"380.00\", pbp_c_oon_outpt_copay_max_amt \"380.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b10a_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 10a1: Ground Ambulance Services (pbp_b10_amb_trans.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b10a_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "AMBULANCE_AIR",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "EMERGENCY_CARE",
+      "service_name": "Air ambulance services",
+      "canonical_key": "ambulance",
+      "raw_label": "10a2: Air Ambulance Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 380,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b10_amb_trans.txt cells: pbp_b10a_copay_yn \"1\", pbp_b10a_copay_ehc \"11\", pbp_b10a_copay_aas_amt_min \"380.00\", pbp_b10a_copay_aas_amt_max \"380.00\", pbp_b10a_coins_yn \"2\", pbp_b10a_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 380,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 132 (label \"10a2\", pbp_c_oon_out_mc_bendesc_cats \"10a2;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"380.00\", pbp_c_oon_outpt_copay_max_amt \"380.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b10a_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 10a2: Air Ambulance Services (pbp_b10_amb_trans.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b10a_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "DIAGNOSTIC_TESTS",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Diagnostic procedures and tests",
+      "canonical_key": "diagnostic_test",
+      "raw_label": "8a1: Diagnostic Procedures/Tests",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 75,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b8_clin_diag_ther.txt cells: pbp_b8a_copay_yn \"1\", pbp_b8a_copay_ehc \"11\", pbp_b8a_copay_min_dmc_amt \"75.00\", pbp_b8a_copay_max_dmc_amt \"75.00\", pbp_b8a_coins_yn \"2\", pbp_b8a_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.4,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 120 (label \"8a1\", pbp_c_oon_out_mc_bendesc_cats \"8a1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b8a_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 8a1: Diagnostic Procedures/Tests (pbp_b8_clin_diag_ther.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b8a_copay_max_yn \"2\"; pbp_b8a_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "LAB_SERVICES",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Lab services",
+      "canonical_key": "diagnostic_lab",
+      "raw_label": "8a2: Lab Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b8_clin_diag_ther.txt cells: pbp_b8a_copay_yn \"1\", pbp_b8a_copay_ehc \"11\", pbp_b8a_lab_copay_amt \"0.00\", pbp_b8a_lab_copay_amt_max \"0.00\", pbp_b8a_coins_yn \"2\", pbp_b8a_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 121 (label \"8a2\", pbp_c_oon_out_mc_bendesc_cats \"8a2;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"0.00\", pbp_c_oon_outpt_copay_max_amt \"0.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b8a_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 8a2: Lab Services (pbp_b8_clin_diag_ther.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b8a_copay_max_yn \"2\"; pbp_b8a_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "DIAGNOSTIC_RADIOLOGY",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Diagnostic radiological services",
+      "canonical_key": "imaging_advanced",
+      "raw_label": "8b1: Diagnostic Radiological Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount_min": 0,
+              "amount_max": 320,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b8_clin_diag_ther.txt cells: pbp_b8b_copay_yn \"1\", pbp_b8b_copay_ehc \"110\", pbp_b8b_copay_amt_drs \"0.00\", pbp_b8b_copay_amt_drs_max \"320.00\", pbp_b8b_coins_yn \"1\", pbp_b8b_coins_ehc \"001\", pbp_b8b_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.4,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 122 (label \"8b1\", pbp_c_oon_out_mc_bendesc_cats \"8b1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b8b_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 8b1: Diagnostic Radiological Services (pbp_b8_clin_diag_ther.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b8b_copay_max_yn \"2\"; pbp_b8b_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "THERAPEUTIC_RADIOLOGY",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "RADIATION_THERAPY",
+      "service_name": "Therapeutic radiological services",
+      "canonical_key": "radiation_therapy",
+      "raw_label": "8b2: Therapeutic Radiological Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b8_clin_diag_ther.txt cells: pbp_b8b_copay_yn \"1\", pbp_b8b_copay_ehc \"110\", pbp_b8b_coins_yn \"1\", pbp_b8b_coins_ehc \"001\", pbp_b8b_coins_pct_tmc \"20\", pbp_b8b_coins_pct_tmc_max \"20\", pbp_b8b_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.4,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 123 (label \"8b2\", pbp_c_oon_out_mc_bendesc_cats \"8b2;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b8b_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 8b2: Therapeutic Radiological Services (pbp_b8_clin_diag_ther.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b8b_copay_max_yn \"2\"; pbp_b8b_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "XRAY",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Outpatient X-ray services",
+      "canonical_key": "imaging_standard",
+      "raw_label": "8b3: Outpatient X-Ray Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 30,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b8_clin_diag_ther.txt cells: pbp_b8b_copay_yn \"1\", pbp_b8b_copay_ehc \"110\", pbp_b8b_copay_mc_amt \"30.00\", pbp_b8b_copay_mc_amt_max \"30.00\", pbp_b8b_coins_yn \"1\", pbp_b8b_coins_ehc \"001\", pbp_b8b_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 50,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 124 (label \"8b3\", pbp_c_oon_out_mc_bendesc_cats \"8b3;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"50.00\", pbp_c_oon_outpt_copay_max_amt \"50.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b8b_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 8b3: Outpatient X-Ray Services (pbp_b8_clin_diag_ther.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b8b_copay_max_yn \"2\"; pbp_b8b_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "PHYSICAL_AND_SPEECH_THERAPY",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "REHABILITATION",
+      "service_name": "Physical therapy and speech-language pathology services",
+      "raw_label": "7i: Physical Therapy and Speech-Language Pathology Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 65,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b7_health_prof.txt cells: pbp_b7i_copay_yn \"1\", pbp_b7i_copay_mc_amt_min \"65.00\", pbp_b7i_copay_mc_amt_max \"65.00\", pbp_b7i_coins_yn \"2\", pbp_b7i_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 100,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 118 (label \"7i\", pbp_c_oon_out_mc_bendesc_cats \"7i;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"100.00\", pbp_c_oon_outpt_copay_max_amt \"100.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b7i_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 7i: Physical Therapy and Speech-Language Pathology Services (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json; no canonical key, carried by name (spec section 9.1)."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b7i_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "OCCUPATIONAL_THERAPY",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "REHABILITATION",
+      "service_name": "Occupational therapy services",
+      "canonical_key": "occupational_therapy",
+      "raw_label": "7c: Occupational Therapy Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 50,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b7_health_prof.txt cells: pbp_b7c_copay_yn \"1\", pbp_b7c_copay_mc_amt_min \"50.00\", pbp_b7c_copay_mc_amt_max \"50.00\", pbp_b7c_coins_yn \"2\", pbp_b7c_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 100,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 109 (label \"7c\", pbp_c_oon_out_mc_bendesc_cats \"7c;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"100.00\", pbp_c_oon_outpt_copay_max_amt \"100.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b7c_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 7c: Occupational Therapy Services (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b7c_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "CHIROPRACTIC",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "CHIROPRACTIC",
+      "service_name": "Chiropractic services (Medicare-covered)",
+      "canonical_key": "chiropractic_care",
+      "raw_label": "7b: Chiropractic Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 15,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b7_health_prof.txt cells: pbp_b7b_copay_yn \"1\", pbp_b7b_copay_ehc \"010\", pbp_b7b_copay_mc_amt_min \"15.00\", pbp_b7b_copay_mc_amt_max \"15.00\", pbp_b7b_coins_yn \"2\", pbp_b7b_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 100,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 108 (label \"7b\", pbp_c_oon_out_mc_bendesc_cats \"7b;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"100.00\", pbp_c_oon_outpt_copay_max_amt \"100.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b7b_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 7b: Chiropractic Services (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b7b_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "CHIROPRACTIC_ROUTINE",
+      "benefit_type": "medical",
+      "coverage_basis": null,
+      "category": "CHIROPRACTIC",
+      "service_name": "Routine chiropractic care",
+      "canonical_key": "chiropractic_care",
+      "raw_label": "7b1: Routine Chiropractic Care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "pbp_b7b_bendesc_yn \"2\": the plan does not offer this supplemental benefit."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "pbp_b7b_bendesc_yn \"2\": the plan does not offer this supplemental benefit."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 7b1: Routine Chiropractic Care (pbp_b7_health_prof.txt); not covered: pbp_b7b_bendesc_yn \"2\": the plan does not offer this supplemental benefit."
+        }
+      ]
+    },
+    {
+      "benefit_id": "PODIATRY",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "PODIATRY",
+      "service_name": "Podiatry services (Medicare-covered)",
+      "raw_label": "7f: Podiatry Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 45,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b7_health_prof.txt cells: pbp_b7f_copay_yn \"1\", pbp_b7f_copay_ehc \"11\", pbp_b7f_copay_mc_amt_min \"45.00\", pbp_b7f_copay_mc_amt_max \"45.00\", pbp_b7f_coins_yn \"2\", pbp_b7f_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 100,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 113 (label \"7f\", pbp_c_oon_out_mc_bendesc_cats \"7f;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"100.00\", pbp_c_oon_outpt_copay_max_amt \"100.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b7f_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 7f: Podiatry Services (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json; no canonical key, carried by name (spec section 9.1)."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b7f_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "PODIATRY_ROUTINE",
+      "benefit_type": "medical",
+      "coverage_basis": "supplemental_mandatory",
+      "category": "PODIATRY",
+      "service_name": "Routine foot care",
+      "raw_label": "7f: Podiatry Services - Routine Foot Care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 45,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_b7_health_prof.txt cells: pbp_b7f_copay_yn \"1\", pbp_b7f_copay_ehc \"11\", pbp_b7f_copay_rf_amt_min \"45.00\", pbp_b7f_copay_rf_amt_max \"45.00\", pbp_b7f_coins_yn \"2\", pbp_b7f_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 100,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 114 (label \"7f_2\", pbp_c_oon_out_nmc_bendesc_cats \"7f_2;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"100.00\", pbp_c_oon_outpt_copay_max_amt \"100.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\", pbp_c_oon_outpt_maxplan_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 6,
+          "period": "per_year",
+          "raw_text": "pbp_b7f_bendesc_lim_rf \"2\", pbp_b7f_bendesc_amt_rf \"6\", pbp_b7f_bendesc_per_rf \"3\" (Every year)."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b7f_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 7f: Podiatry Services - Routine Foot Care (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json; no canonical key, carried by name (spec section 9.1)."
+        }
+      ]
+    },
+    {
+      "benefit_id": "ACUPUNCTURE",
+      "benefit_type": "medical",
+      "coverage_basis": null,
+      "category": "ACUPUNCTURE",
+      "service_name": "Acupuncture treatments",
+      "canonical_key": "acupuncture",
+      "raw_label": "13a: Acupuncture Treatments",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "pbp_b13a_bendesc_yn \"2\": the plan does not offer this supplemental benefit."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": [],
+          "notes": "pbp_b13a_bendesc_yn \"2\": the plan does not offer this supplemental benefit."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 13a: Acupuncture Treatments (pbp_b13_other_services.txt); not covered: pbp_b13a_bendesc_yn \"2\": the plan does not offer this supplemental benefit."
+        }
+      ]
+    },
+    {
+      "benefit_id": "HEARING_EXAM",
+      "benefit_type": "hearing",
+      "coverage_basis": "medicare_covered",
+      "category": "HEARING",
+      "service_name": "Hearing exams (Medicare-covered)",
+      "raw_label": "18a: Hearing Exams",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b18_hearing_exams_aids.txt cells: pbp_b18a_copay_yn \"1\", pbp_b18a_copay_ehc \"011\", pbp_b18a_copay_amt \"0.00\", pbp_b18a_med_copay_amt_max \"0.00\", pbp_b18a_coins_yn \"2\", pbp_b18a_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 100,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 165 (label \"18a\", pbp_c_oon_out_mc_bendesc_cats \"18a;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"100.00\", pbp_c_oon_outpt_copay_max_amt \"100.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b18a_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 18a: Hearing Exams (pbp_b18_hearing_exams_aids.txt), mapped by fhir/pbp-crosswalk.json; no canonical key, carried by name (spec section 9.1)."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b18a_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "HEARING_EXAM_ROUTINE",
+      "benefit_type": "hearing",
+      "coverage_basis": "supplemental_mandatory",
+      "category": "HEARING",
+      "service_name": "Routine hearing exams",
+      "raw_label": "18a1: Routine Hearing Exams",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_b18_hearing_exams_aids.txt cells: pbp_b18a_copay_yn \"1\", pbp_b18a_copay_ehc \"011\", pbp_b18a_copay_amt_rht \"0.00\", pbp_b18a_copay_amt_max_rht \"0.00\", pbp_b18a_coins_yn \"2\", pbp_b18a_ded_nmc_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 100,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 167 (label \"18a1\", pbp_c_oon_out_nmc_bendesc_cats \"18a1;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"100.00\", pbp_c_oon_outpt_copay_max_amt \"100.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 1,
+          "period": "per_year",
+          "raw_text": "pbp_b18a_bendesc_lim_rht \"2\", pbp_b18a_bendesc_numv_cl \"1\", pbp_b18a_bendesc_per_rht \"3\" (Every year)."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b18a_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 18a1: Routine Hearing Exams (pbp_b18_hearing_exams_aids.txt), mapped by fhir/pbp-crosswalk.json; no canonical key, carried by name (spec section 9.1)."
+        }
+      ]
+    },
+    {
+      "benefit_id": "EYE_EXAM",
+      "benefit_type": "vision",
+      "coverage_basis": "medicare_covered",
+      "category": "VISION",
+      "service_name": "Eye exams (Medicare-covered)",
+      "raw_label": "17a: Eye Exams",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b17_eye_exams_wear.txt cells: pbp_b17a_copay_yn \"1\", pbp_b17a_copay_ehc \"011\", pbp_b17a_copay_amt_mc_min \"0.00\", pbp_b17a_copay_amt_mc_max \"0.00\", pbp_b17a_coins_yn \"2\", pbp_b17a_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 100,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 158 (label \"17a\", pbp_c_oon_out_mc_bendesc_cats \"17a;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"100.00\", pbp_c_oon_outpt_copay_max_amt \"100.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b17a_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 17a: Eye Exams (pbp_b17_eye_exams_wear.txt), mapped by fhir/pbp-crosswalk.json; no canonical key, carried by name (spec section 9.1)."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b17a_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "EYE_EXAM_ROUTINE",
+      "benefit_type": "vision",
+      "coverage_basis": "supplemental_mandatory",
+      "category": "VISION",
+      "service_name": "Routine eye exams",
+      "raw_label": "17a1: Routine Eye Exams",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_b17_eye_exams_wear.txt cells: pbp_b17a_copay_yn \"1\", pbp_b17a_copay_ehc \"011\", pbp_b17a_copay_amt_rex_min \"0.00\", pbp_b17a_copay_amt_rex_max \"0.00\", pbp_b17a_coins_yn \"2\", pbp_b17a_ded_nmc_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 100,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 160 (label \"17a1\", pbp_c_oon_out_nmc_bendesc_cats \"17a1;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"100.00\", pbp_c_oon_outpt_copay_max_amt \"100.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 1,
+          "period": "per_year",
+          "raw_text": "pbp_b17a_bendesc_lim_rex \"2\", pbp_b17a_bendesc_num_rex \"1\", pbp_b17a_bendesc_per_rex \"3\" (Every year)."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b17a_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 17a1: Routine Eye Exams (pbp_b17_eye_exams_wear.txt), mapped by fhir/pbp-crosswalk.json; no canonical key, carried by name (spec section 9.1)."
+        }
+      ]
+    },
+    {
+      "benefit_id": "HEARING_AIDS",
+      "benefit_type": "hearing",
+      "coverage_basis": "supplemental_mandatory",
+      "category": "HEARING",
+      "service_name": "Prescription hearing aids (all types)",
+      "raw_label": "18b1: Prescription Hearing Aids (all types)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": "per_aid",
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_b18_hearing_exams_aids.txt cells: pbp_b18b_copay_yn \"1\", pbp_b18b_copay_at_min_amt \"0.00\", pbp_b18b_copay_at_max_amt \"0.00\", pbp_b18b_coins_yn \"2\", pbp_b18b_ded_yn \"2\"."
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.9,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_Section_C_OON.txt group 169 (label \"18b1\", pbp_c_oon_out_nmc_bendesc_cats \"18b1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"90\", pbp_c_oon_outpt_coins_max_pct \"90\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"), which has no accumulator slot (spec section 9.1)."
+        }
+      ],
+      "limits": [
+        {
+          "type": "hearing_aids",
+          "value": 2,
+          "period": "per_year",
+          "raw_text": "pbp_b18b_bendesc_lim_at \"2\", pbp_b18b_bendesc_numv_at \"2\", pbp_b18b_bendesc_per_at \"3\" (Every year)."
+        },
+        {
+          "type": "dollars",
+          "value": 700,
+          "period": "per_year",
+          "raw_text": "Maximum plan benefit coverage: pbp_b18b_maxplan_yn \"1\", pbp_b18b_maxplan_amt \"700.00\", pbp_b18b_maxplan_per \"3\" (Every year); pbp_b18b_maxplan_perear \"3\" (Both ears combined); pbp_b18b_maxplan_in_oon \"2\" (Both in-network and out-of-network services); pbp_b18b_maxplan_type \"2\"; the columns cover 18b (all hearing aid types)."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b18b_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 18b1: Prescription Hearing Aids (all types) (pbp_b18_hearing_exams_aids.txt), mapped by fhir/pbp-crosswalk.json; no canonical key, carried by name (spec section 9.1)."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b18b_maxenr_yn \"2\"."
+        }
+      ]
+    }
+  ],
+  "source_references": [
+    {
+      "excerpt": "CMS Plan Benefit Package (PBP) Benefits, contract year 2027, release \"PBP Benefits-2027\" (https://www.cms.gov/files/zip/pbp-benefits-2027.zip), downloaded 2026-10-06. Files read: pbp_Section_A.txt, pbp_Section_C.txt, pbp_Section_C_OON.txt, pbp_Section_C_POS.txt, pbp_Section_D.txt, pbp_b10_amb_trans.txt, pbp_b13_other_services.txt, pbp_b17_eye_exams_wear.txt, pbp_b18_hearing_exams_aids.txt, pbp_b1a_inpat_hosp.txt, pbp_b1b_inpat_hosp.txt, pbp_b2_snf.txt, pbp_b4_emerg_urgent.txt, pbp_b7_health_prof.txt, pbp_b8_clin_diag_ther.txt, pbp_b9_outpat_hosp.txt, PlanArea.txt, PlanRegionArea.txt. PBP key: pbp_a_hnumber \"H2406\", pbp_a_plan_identifier \"013\", segment_id \"0\" (written padded to 3 digits in plan_identifiers)."
+    },
+    {
+      "excerpt": "Plan type: pbp_a_plan_type \"04\" (Local PPO), written as plan_type \"PPO\"."
+    },
+    {
+      "excerpt": "Section A values with no Benefit Plan Standard field, verbatim: bid_id \"H2406_013_0\"; version \"5\"; orgtype \"01\"; pbp_a_org_name \"CARE IMPROVEMENT PLUS SOUTH CENTRAL INSURANCE CO.\"; pbp_a_org_type \"01\"; pbp_a_ben_cov \"1\"; pbp_a_plan_geog_name \"Select Counties in Florida\"; pbp_a_eghp_yn \"2\"; pbp_a_special_need_flag \"2\"; pbp_a_contract_partd_flag \"1\"; pbp_a_continue_yn \"2\"; pbp_a_org_website \"AARPMedicarePlans.com\"; pbp_a_phys_web_addr \"AARPMedicarePlans.com\"; pbp_a_formulary_web_addr \"AARPMedicarePlans.com\"; pbp_a_pharmacy_website \"AARPMedicarePlans.com\"."
+    },
+    {
+      "excerpt": "Service area from PlanArea.txt, 7 counties in FL. county_code is the SSA state and county code, not FIPS, so service_area.counties[].fips is null. Each county as county_code, county, stcd, and the partial_flag and eghp_flag values on its rows: 10090 Clay FL partial_flag \"\" eghp_flag \"0\"; 10150 Duval FL partial_flag \"\" eghp_flag \"0\"; 10170 Flagler FL partial_flag \"\" eghp_flag \"0\"; 10440 Nassau FL partial_flag \"\" eghp_flag \"0\"; 10530 Putnam FL partial_flag \"\" eghp_flag \"0\"; 10540 St. Johns FL partial_flag \"\" eghp_flag \"0\"; 10630 Volusia FL partial_flag \"\" eghp_flag \"0\"."
+    },
+    {
+      "excerpt": "Annual plan deductible: $1000, written as oon_individual_deductible with network_tier OUT (decision 1, docs/specs/pbp-importer.md section 7). The plan declares an out-of-network benefit (pbp_c_oon_yn \"1\") and the deductible names no in-network scope: pbp_d_ann_deduct_yn \"1\", pbp_d_ann_deduct_amt_type \"4\", pbp_d_ann_deduct_amt \"1000.00\", pbp_d_ann_deduct_bens \"\", pbp_d_ann_deduct_inn_mc_yn \"\", pbp_d_ann_deduct_inn_nmc_yn \"\", pbp_d_ann_deduct_oon_nmc_yn \"\". The deductible's service categories, verbatim: pbp_d_ann_deduct_14a_yn \"2\"; pbp_c_oon_mc_bendesc_cats \"1a;1b;2;3-1;3-2;3-3;3-4;5a;5b;6;7a;7b;7c;7d;7e1;7e2;7f;7g;7h1;7h2;7i;7k;8a1;8a2;8b1;8b2;8b3;9a1;9a2;9b;9c1;9c2;9d;10a1;10a2;11a;11b1;11b2;11c1;11c2;11c3;12;14a;14d;14e1;14e2;14e4;14e5;15-1-I;15-2;15-3;16a;17a;17b;18a;\". pbp_d_ann_deduct_14a_yn asks whether 14a preventive services are part of the out-of-network Medicare-covered services deductible; the categories are those of the plan's out-of-network benefit, less 14a when that answer is \"2\". Verified on H2406-013-000 against its 2027 Summary of Benefits; to be confirmed on 2 more PPO carriers."
+    },
+    {
+      "excerpt": "In-network out-of-pocket maximum type, no Benefit Plan Standard field (schema gap, spec section 9.1): pbp_d_out_pocket_amt_type \"3\" (Intermediate)."
+    },
+    {
+      "excerpt": "Combined in-network and out-of-network out-of-pocket maximum, no Benefit Plan Standard slot (schema gap, spec section 9.1): pbp_d_comb_max_enr_amt \"10750.00\"; pbp_d_comb_max_enr_amt_type \"\"."
+    },
+    {
+      "excerpt": "Every non-blank Section D deductible and out-of-pocket cell, verbatim, in file order: pbp_d_ann_deduct_yn \"1\"; pbp_d_ann_deduct_amt_type \"4\"; pbp_d_ann_deduct_amt \"1000.00\"; pbp_d_ann_deduct_14a_yn \"2\"; pbp_d_diff_deduct_yn \"2\"; pbp_d_nmc_deduct_yn \"2\"; pbp_d_out_pocket_amt_yn \"1\"; pbp_d_out_pocket_amt_type \"3\"; pbp_d_out_pocket_amt \"7150.00\"; pbp_d_inn_max_enr_oopc_bens \"01\"; pbp_d_inn_max_enr_m_yn \"1\"; pbp_d_inn_max_enr_m_cat_ex \"1a;1b;2;3-1;3-2;3-3;3-4;4a;4b;5a;5b;6;7a;7b;7c;7d;7e1;7e2;7f;7g;7h1;7h2;7i;7k;8a1;8a2;8b1;8b2;8b3;9a1;9a2;9b;9c1;9c2;9d;10a1;10a2;11a;11b1;11b2;11c1;11c2;11c3;12;14a;14d;14e1;14e2;14e4;14e5;15-1-I;15-2;15-3;16a;17a;17b;18a;\"; pbp_d_comb_max_enr_amt_yn \"1\"; pbp_d_comb_max_enr_amt \"10750.00\"; pbp_d_comb_max_enr_oopc_bens \"0101\"; pbp_d_comb_max_enr_inn_m_yn \"1\"; pbp_d_comb_max_enr_inn_mcat_ex \"1a;1b;2;3-1;3-2;3-3;3-4;4a;4b;5a;5b;6;7a;7b;7c;7d;7e1;7e2;7f;7g;7h1;7h2;7i;7k;8a1;8a2;8b1;8b2;8b3;9a1;9a2;9b;9c1;9c2;9d;10a1;10a2;11a;11b1;11b2;11c1;11c2;11c3;12;14a;14d;14e1;14e2;14e4;14e5;15-1-I;15-2;15-3;16a;17a;17b;18a;\"; pbp_d_comb_max_enr_oon_m_yn \"1\"; pbp_d_comb_max_enr_oon_mcat_ex \"1a;1b;2;3-1;3-2;3-3;3-4;5a;5b;6;7a;7b;7c;7d;7e1;7e2;7f;7g;7h1;7h2;7i;7k;8a1;8a2;8b1;8b2;8b3;9a1;9a2;9b;9c1;9c2;9d;10a1;10a2;11a;11b1;11b2;11c1;11c2;11c3;12;14a;14d;14e1;14e2;14e4;14e5;15-1-I;15-2;15-3;16a;17a;17b;18a;\"; pbp_d_oon_max_enr_oopc_yn \"2\"."
+    },
+    {
+      "excerpt": "Benefits: the 30 service categories in fhir/pbp-crosswalk.json (the workgroup MVP), 27 written. Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8)."
+    }
+  ],
+  "schema_version": "1.2.0"
+}

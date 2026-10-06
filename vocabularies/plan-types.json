@@ -10,6 +10,7 @@
     { "code": "PPO",  "label": "PPO",               "description": "Preferred Provider Organization. In- and out-of-network coverage with different cost shares." },
     { "code": "EPO",  "label": "EPO",               "description": "Exclusive Provider Organization. Closed network without referrals." },
     { "code": "POS",  "label": "POS",               "description": "Point of Service. Hybrid HMO/PPO." },
+    { "code": "HMO_POS", "label": "HMO-POS",        "description": "Medicare Advantage HMO with a point-of-service option (CMS PBP plan type 02, HMOPOS). Added in v1.2.0 for the PBP importer." },
     { "code": "HDHP", "label": "HDHP",              "description": "High-Deductible Health Plan, commonly HSA-eligible." },
     { "code": "MA",   "label": "Medicare Advantage", "description": "Medicare Part C plan." },
     { "code": "MA-PD", "label": "Medicare Advantage with Part D", "description": "MA plan with integrated prescription drug coverage." },

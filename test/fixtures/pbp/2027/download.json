@@ -1,0 +1,33 @@
+{
+  "description": "Rows of the golden plans cut from the CMS PBP Benefits files, contract year 2027, by node scripts/from-pbp.js --write-fixtures. Each file holds the original header line and the plans' records, byte for byte. For scripts/from-pbp.test.js.",
+  "downloaded": "2026-10-06",
+  "release_label": "PBP Benefits-2027",
+  "source": "https://www.cms.gov/files/zip/pbp-benefits-2027.zip",
+  "plans": [
+    "H2406-013-000",
+    "H1036-068-000",
+    "H1609-028-000",
+    "H5533-019-000",
+    "H5425-140-000"
+  ],
+  "records": {
+    "pbp_Section_A.txt": 5,
+    "pbp_Section_C.txt": 5,
+    "pbp_Section_C_OON.txt": 152,
+    "pbp_Section_C_POS.txt": 6,
+    "pbp_Section_D.txt": 5,
+    "pbp_b10_amb_trans.txt": 5,
+    "pbp_b13_other_services.txt": 5,
+    "pbp_b17_eye_exams_wear.txt": 5,
+    "pbp_b18_hearing_exams_aids.txt": 5,
+    "pbp_b1a_inpat_hosp.txt": 5,
+    "pbp_b1b_inpat_hosp.txt": 5,
+    "pbp_b2_snf.txt": 5,
+    "pbp_b4_emerg_urgent.txt": 5,
+    "pbp_b7_health_prof.txt": 5,
+    "pbp_b8_clin_diag_ther.txt": 5,
+    "pbp_b9_outpat_hosp.txt": 5,
+    "PlanArea.txt": 29,
+    "PlanRegionArea.txt": 0
+  }
+}

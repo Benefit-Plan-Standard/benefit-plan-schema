@@ -1,0 +1,477 @@
+{
+  "plan": "H2406-013-000",
+  "document": {
+    "title": "Summary of Benefits 2027, AARP Medicare Advantage from UHC FL-0021 (PPO)",
+    "id": "Y0066_SB_H2406_013_000_2027_M",
+    "file": "data/pbp/2027/sob/H2406-013-000-2027-SB.pdf",
+    "pages": 14,
+    "read_with": "pdftotext -layout and pdftotext -raw; pages counted in the PDF"
+  },
+  "golden": "examples/unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json",
+  "spec": "docs/specs/pbp-importer.md section 13",
+  "checks": [
+    {
+      "item": "Annual medical deductible, in network",
+      "page": 2,
+      "printed": "No deductible",
+      "expected": { "$absent": true },
+      "path": "/accumulators/individual_deductible"
+    },
+    {
+      "item": "Annual medical deductible, out of network",
+      "page": 2,
+      "printed": "Your medical deductible is $1,000 for covered medical services you receive from providers as described in the Plan Deductible chart",
+      "expected": { "amount": 1000, "network_tier": "OUT" },
+      "path": "/accumulators/oon_individual_deductible"
+    },
+    {
+      "item": "Deductible chart: doctor visits (primary) out of network",
+      "page": 10,
+      "printed": "Doctor visits: Primary, Specialists",
+      "expected": true,
+      "path": "/benefits/0/network_cost_shares/1/cost_shares/0/applies_to_deductible"
+    },
+    {
+      "item": "Deductible chart: inpatient hospital out of network",
+      "page": 10,
+      "printed": "Inpatient services: Inpatient hospital",
+      "expected": true,
+      "path": "/benefits/2/network_cost_shares/1/cost_shares/0/applies_to_deductible"
+    },
+    {
+      "item": "No deductible in network (primary care)",
+      "page": 2,
+      "printed": "No deductible",
+      "expected": false,
+      "path": "/benefits/0/network_cost_shares/0/cost_shares/0/applies_to_deductible"
+    },
+    {
+      "item": "Maximum out-of-pocket amount, in network",
+      "page": 2,
+      "printed": "$7,150",
+      "expected": { "amount": 7150, "network_tier": "IN" },
+      "path": "/accumulators/individual_oop_max"
+    },
+    {
+      "item": "Maximum out-of-pocket amount, out of network",
+      "page": 2,
+      "printed": "$10,750 This is the most you will pay out-of-pocket each year for Medicare-covered services and supplies received from any provider.",
+      "expected": { "amount": 10750 },
+      "path": "/accumulators/oon_individual_oop_max",
+      "expected_reading": { "$absent": true },
+      "note": "The file states the amount as the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10750.00\"; pbp_d_oon_max_enr_oopc_yn \"2\"). BPS has no combined slot, so it is in source_references only (spec 7.1)."
+    },
+    {
+      "item": "Primary care provider, in network",
+      "page": 3,
+      "printed": "$0 copay",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/0/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Primary care provider, out of network",
+      "page": 3,
+      "printed": "$45 copay",
+      "expected": [{ "type": "copay", "amount": 45 }],
+      "path": "/benefits/0/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Specialists, in network",
+      "page": 3,
+      "printed": "$65 copay",
+      "expected": [{ "type": "copay", "amount": 65 }],
+      "path": "/benefits/1/network_cost_shares/0/cost_shares",
+      "expected_reading": [{ "type": "copay", "amount_min": 0, "amount_max": 65 }],
+      "note": "pbp_b7d_copay_amt_mc_min \"0.00\", _max \"65.00\". The $0 is the \"Virtual medical visits $0 copay\" row (page 3), priced inside 7d; the file states the range and not which service is $0 (spec 5.5)."
+    },
+    {
+      "item": "Specialists, out of network",
+      "page": 3,
+      "printed": "$100 copay",
+      "expected": [{ "type": "copay", "amount": 100 }],
+      "path": "/benefits/1/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Inpatient hospital care, in network, days 1 to 5",
+      "page": 2,
+      "printed": "$550 copay per day: days 1-5",
+      "expected": { "type": "copay", "amount": 550, "basis": "per_day", "unit_range": { "from": 1, "to": 5 } },
+      "path": "/benefits/2/network_cost_shares/0/cost_shares/0"
+    },
+    {
+      "item": "Inpatient hospital care, in network, days 6 and beyond",
+      "page": 2,
+      "printed": "$0 copay per day: days 6 and beyond",
+      "expected": { "type": "copay", "amount": 0, "basis": "per_day", "unit_range": { "from": 6 } },
+      "path": "/benefits/2/network_cost_shares/0/cost_shares/1"
+    },
+    {
+      "item": "Inpatient hospital care, unlimited days",
+      "page": 2,
+      "printed": "Our plan covers an unlimited number of days for an inpatient hospital stay.",
+      "expected": [],
+      "path": "/benefits/2/limits"
+    },
+    {
+      "item": "Inpatient hospital care, out of network",
+      "page": 2,
+      "printed": "40% coinsurance per stay",
+      "expected": [{ "type": "coinsurance", "rate": 0.4, "basis": "per_stay" }],
+      "path": "/benefits/2/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Outpatient hospital, including surgery, in network",
+      "page": 3,
+      "printed": "$0 copay for a colonoscopy; $550 copay otherwise",
+      "expected": [{ "type": "copay", "amount_min": 0, "amount_max": 550 }],
+      "path": "/benefits/3/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient hospital, including surgery, out of network",
+      "page": 3,
+      "printed": "40% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.4 }],
+      "path": "/benefits/3/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Outpatient hospital observation services, in network",
+      "page": 3,
+      "printed": "$550 copay",
+      "expected": [{ "type": "copay", "amount": 550, "basis": { "$absent": true } }],
+      "path": "/benefits/4/network_cost_shares/0/cost_shares",
+      "expected_reading": [{ "type": "copay", "amount": 550, "basis": "per_day" }],
+      "note": "pbp_b9a_copay_obs_per \"1\" (Per day). The document does not print \"per day\"."
+    },
+    {
+      "item": "Outpatient hospital observation services, out of network",
+      "page": 3,
+      "printed": "40% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.4 }],
+      "path": "/benefits/4/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Ambulatory surgical center (ASC), in network",
+      "page": 3,
+      "printed": "$0 copay for a colonoscopy; $500 copay otherwise",
+      "expected": [{ "type": "copay", "amount_min": 0, "amount_max": 500 }],
+      "path": "/benefits/5/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Ambulatory surgical center (ASC), out of network",
+      "page": 3,
+      "printed": "40% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.4 }],
+      "path": "/benefits/5/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Emergency care, both networks",
+      "page": 4,
+      "printed": "$130 copay per visit (1 value across the in-network and out-of-network columns)",
+      "expected": [
+        { "tier_id": "IN", "cost_shares": [{ "type": "copay", "amount": 130 }] },
+        { "tier_id": "OUT", "cost_shares": [{ "type": "copay", "amount": 130 }] }
+      ],
+      "path": "/benefits/6/network_cost_shares",
+      "expected_reading": [
+        { "tier_id": "IN", "cost_shares": [{ "type": "copay", "amount": 130 }] }
+      ],
+      "note": "The file prices 4a once, with no network, and no out-of-network group lists 4a; written on the in-network tier only with a note (decision 5, spec 7.13)."
+    },
+    {
+      "item": "Urgently needed services, both networks",
+      "page": 4,
+      "printed": "$50 copay per visit (1 value across both columns)",
+      "expected": [
+        { "tier_id": "IN", "cost_shares": [{ "type": "copay", "amount": 50 }] },
+        { "tier_id": "OUT", "cost_shares": [{ "type": "copay", "amount": 50 }] }
+      ],
+      "path": "/benefits/7/network_cost_shares",
+      "expected_reading": [
+        { "tier_id": "IN", "cost_shares": [{ "type": "copay", "amount_min": 0, "amount_max": 50 }] }
+      ],
+      "note": "pbp_b4b_copay_amt_mc_min \"0.00\", _max \"50.00\"; the document prints no $0 urgent care row, so which service is $0 is not shown. In-network tier only, as emergency care (decision 5)."
+    },
+    {
+      "item": "Diagnostic radiology services (e.g. MRI, CT scan), in network",
+      "page": 4,
+      "printed": "$0 copay for each diagnostic mammogram; $320 copay otherwise",
+      "expected": [{ "type": "copay", "amount_min": 0, "amount_max": 320 }],
+      "path": "/benefits/12/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Diagnostic radiology services, out of network",
+      "page": 4,
+      "printed": "40% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.4 }],
+      "path": "/benefits/12/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Lab services, in network",
+      "page": 4,
+      "printed": "$0 copay",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/11/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Lab services, out of network",
+      "page": 4,
+      "printed": "$0 copay",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/11/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Diagnostic tests and procedures, in network",
+      "page": 4,
+      "printed": "$75 copay",
+      "expected": [{ "type": "copay", "amount": 75 }],
+      "path": "/benefits/10/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Diagnostic tests and procedures, out of network",
+      "page": 4,
+      "printed": "40% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.4 }],
+      "path": "/benefits/10/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Therapeutic radiology, in network",
+      "page": 4,
+      "printed": "20% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.2 }],
+      "path": "/benefits/13/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Therapeutic radiology, out of network",
+      "page": 4,
+      "printed": "40% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.4 }],
+      "path": "/benefits/13/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Outpatient X-rays, in network",
+      "page": 4,
+      "printed": "$30 copay",
+      "expected": [{ "type": "copay", "amount": 30 }],
+      "path": "/benefits/14/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient X-rays, out of network",
+      "page": 4,
+      "printed": "$50 copay",
+      "expected": [{ "type": "copay", "amount": 50 }],
+      "path": "/benefits/14/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Exam to diagnose and treat hearing and balance issues, in network",
+      "page": 4,
+      "printed": "$0 copay",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/22/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Exam to diagnose and treat hearing and balance issues, out of network",
+      "page": 4,
+      "printed": "$100 copay",
+      "expected": [{ "type": "copay", "amount": 100 }],
+      "path": "/benefits/22/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Routine hearing exam, in network",
+      "page": 4,
+      "printed": "$0 copay for a routine hearing exam",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/23/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Routine hearing exam, out of network",
+      "page": 4,
+      "printed": "$100 copay for a routine hearing exam",
+      "expected": [{ "type": "copay", "amount": 100 }],
+      "path": "/benefits/23/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Routine hearing exam, prior authorization",
+      "page": 4,
+      "printed": "\"Routine hearing exam\" carries no footnote 2 (\"May require your provider to get prior authorization\")",
+      "expected": [],
+      "path": "/benefits/23/conditions",
+      "expected_reading": [{ "type": "authorization" }],
+      "note": "pbp_b18a_auth_yn \"1\" covers service category 18a as a whole; the document marks only the Medicare-covered hearing exam (spec 7.10)."
+    },
+    {
+      "item": "Hearing aids, covered",
+      "page": 4,
+      "printed": "Hearing aids",
+      "expected": { "covered": true },
+      "path": "/benefits/26/network_cost_shares/0"
+    },
+    {
+      "item": "Hearing aids, quantity and allowance",
+      "page": 4,
+      "printed": "$700 allowance for 2 hearing aids every year",
+      "expected": [
+        { "type": "hearing_aids", "value": 2, "period": "per_year" },
+        { "type": "dollars", "value": 700, "period": "per_year" }
+      ],
+      "path": "/benefits/26/limits"
+    },
+    {
+      "item": "Hearing aids, out of network",
+      "page": 4,
+      "printed": "If you use an out-of-network provider, you are responsible for 90% of the allowance amount.",
+      "expected": [{ "type": "coinsurance", "rate": 0.9 }],
+      "path": "/benefits/26/network_cost_shares/1/cost_shares",
+      "note": "The rate matches; \"of the allowance amount\" has no field (spec 9.1)."
+    },
+    {
+      "item": "Exam to diagnose and treat diseases and conditions of the eye, in network",
+      "page": 5,
+      "printed": "$0 copay",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/24/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Exam to diagnose and treat diseases and conditions of the eye, out of network",
+      "page": 5,
+      "printed": "$100 copay",
+      "expected": [{ "type": "copay", "amount": 100 }],
+      "path": "/benefits/24/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Routine eye exam, in network",
+      "page": 5,
+      "printed": "$0 copay for a routine eye exam each year",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/25/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Routine eye exam, out of network",
+      "page": 5,
+      "printed": "$100 copay for a routine eye exam each year",
+      "expected": [{ "type": "copay", "amount": 100 }],
+      "path": "/benefits/25/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Routine eye exam, each year",
+      "page": 5,
+      "printed": "each year",
+      "expected": [{ "type": "visits", "value": 1, "period": "per_year" }],
+      "path": "/benefits/25/limits"
+    },
+    {
+      "item": "Routine eye exam, prior authorization",
+      "page": 5,
+      "printed": "\"Routine eye exam\" carries no footnote 2",
+      "expected": [],
+      "path": "/benefits/25/conditions",
+      "expected_reading": [{ "type": "authorization" }],
+      "note": "pbp_b17a_auth_yn \"1\" covers service category 17a as a whole; the document marks only the Medicare-covered eye exam (spec 7.10)."
+    },
+    {
+      "item": "Physical therapy and speech and language therapy visit, in network",
+      "page": 6,
+      "printed": "$65 copay",
+      "expected": [{ "type": "copay", "amount": 65 }],
+      "path": "/benefits/15/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Physical therapy and speech and language therapy visit, out of network",
+      "page": 6,
+      "printed": "$100 copay",
+      "expected": [{ "type": "copay", "amount": 100 }],
+      "path": "/benefits/15/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Occupational therapy visit, in network",
+      "page": 6,
+      "printed": "$50 copay",
+      "expected": [{ "type": "copay", "amount": 50 }],
+      "path": "/benefits/16/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Occupational therapy visit, out of network",
+      "page": 6,
+      "printed": "$100 copay",
+      "expected": [{ "type": "copay", "amount": 100 }],
+      "path": "/benefits/16/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Ambulance, ground, both networks",
+      "page": 6,
+      "printed": "$380 copay for ground",
+      "expected": [
+        { "tier_id": "IN", "cost_shares": [{ "type": "copay", "amount": 380 }] },
+        { "tier_id": "OUT", "cost_shares": [{ "type": "copay", "amount": 380 }] }
+      ],
+      "path": "/benefits/8/network_cost_shares"
+    },
+    {
+      "item": "Ambulance, air, both networks",
+      "page": 6,
+      "printed": "$380 copay for air",
+      "expected": [
+        { "tier_id": "IN", "cost_shares": [{ "type": "copay", "amount": 380 }] },
+        { "tier_id": "OUT", "cost_shares": [{ "type": "copay", "amount": 380 }] }
+      ],
+      "path": "/benefits/9/network_cost_shares"
+    },
+    {
+      "item": "Medicare-covered chiropractic care, in network",
+      "page": 7,
+      "printed": "$15 copay",
+      "expected": [{ "type": "copay", "amount": 15 }],
+      "path": "/benefits/17/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Medicare-covered chiropractic care, out of network",
+      "page": 7,
+      "printed": "$100 copay",
+      "expected": [{ "type": "copay", "amount": 100 }],
+      "path": "/benefits/17/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Foot exams and treatment, in network",
+      "page": 9,
+      "printed": "$45 copay",
+      "expected": [{ "type": "copay", "amount": 45 }],
+      "path": "/benefits/19/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Foot exams and treatment, out of network",
+      "page": 9,
+      "printed": "$100 copay",
+      "expected": [{ "type": "copay", "amount": 100 }],
+      "path": "/benefits/19/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Routine foot care, in network",
+      "page": 9,
+      "printed": "$45 copay, 6 visits per year",
+      "expected": [{ "type": "copay", "amount": 45 }],
+      "path": "/benefits/20/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Routine foot care, out of network",
+      "page": 9,
+      "printed": "$100 copay, 6 visits per year",
+      "expected": [{ "type": "copay", "amount": 100 }],
+      "path": "/benefits/20/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Routine foot care, 6 visits per year",
+      "page": 9,
+      "printed": "6 visits per year",
+      "expected": [{ "type": "visits", "value": 6, "period": "per_year" }],
+      "path": "/benefits/20/limits"
+    },
+    {
+      "item": "Routine foot care, prior authorization",
+      "page": 9,
+      "printed": "\"Routine foot care\" carries no footnote 2",
+      "expected": [],
+      "path": "/benefits/20/conditions",
+      "expected_reading": [{ "type": "authorization" }],
+      "note": "pbp_b7f_auth_yn \"1\" covers service category 7f as a whole; the document marks only foot exams and treatment (spec 7.10)."
+    }
+  ]
+}

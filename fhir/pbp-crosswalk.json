@@ -1,0 +1,1485 @@
+{
+  "description": "CMS Plan Benefit Package (PBP) service categories to Benefit Plan Standard benefits, for scripts/from-pbp.js. One row per BPS benefit the importer writes: the PBP category code (as used in the Section C out-of-network and point-of-service groups and the Section D category lists), the B file and columns it reads, and a canonical_key from vocabularies/canonical-benefits.json or null. A category maps only when the PBP category clearly is the canonical service; there is no nearest fit (the CARIN crosswalk rule). canonical_key null means the benefit is still written, carried by service_name and pbp_code, and listed in docs/specs/pbp-importer.md section 9.1. See docs/specs/pbp-importer.md section 5.",
+  "source": "PBP_Benefits_2027_dictionary.xlsx and the CY 2027 PBP Benefits files (https://www.cms.gov/files/zip/pbp-benefits-2027.zip): column names verbatim, lowercased as the importer reads them.",
+  "contract_year": 2027,
+  "scope": "The workgroup MVP: primary care, specialist, inpatient hospital, outpatient hospital (outpatient hospital services, observation, ambulatory surgical center), emergency, urgently needed services, ambulance, diagnostic tests, lab and imaging, physical and speech therapy, occupational therapy, services with visit limits (routine chiropractic, routine foot care, acupuncture, routine hearing and eye exams, with their Medicare-covered rows), and hearing aids.",
+  "field_guide": {
+    "pbp_code": "The service category code as the file writes it in category lists (pbp_c_oon_mc_bendesc_cats, pbp_c_oon_nmc_bendesc_cats, pbp_c_pos_*_subcats, pbp_d_*_cats).",
+    "medicare_covered": "true: a Medicare-covered category (coverage_basis medicare_covered, always covered). false: a supplemental category, offered when offered.yn is 1 and offered.ehc has a 1 at offered.position.",
+    "offered.when_not_chosen": "not_covered: write covered false on every network tier when the plan does not offer it. skip: write nothing. skip_unless_excluded: covered false only when offered.yn is 2.",
+    "copay, coins": "yn: the \"Is there a copayment / coinsurance?\" column (1 Yes, 2 No, 3 Yes with a min & max). ehc and position: the position string that says which services of the category carry it. min, max: the minimum and maximum columns. basis: written only where the dictionary title states it.",
+    "service_deductible": "The category-level \"Is there a deductible?\" column and its amount, written as a cost_shares step of type deductible. shared: the column covers more than this benefit.",
+    "limits": "quantity: lim (1 unlimited, 2 limited), num, per (periodicity code), per_d. dollars: the maximum plan benefit coverage columns; via: when type_col holds via.when, the amount is read from the via columns and both benefits carry via.shared_limit_id (hearing aids covered under the 18a maximum); shared_when: the same shared_limit_id on the 18a benefit.",
+    "quote": "Columns with no BPS field, quoted verbatim in the benefit source_references when not blank.",
+    "in_network_only_note": "true: on a plan with an OUT or POS tier and no group listing the category, the in-network row notes that the file prices it once (decision 5)."
+  },
+  "periodicity": {
+    "1": "per_3_years",
+    "2": "per_2_years",
+    "3": "per_year",
+    "4": "per_6_months",
+    "5": "per_3_months",
+    "6": null,
+    "7": "per_month"
+  },
+  "periodicity_labels": {
+    "1": "Every three years",
+    "2": "Every two years",
+    "3": "Every year",
+    "4": "Every six months",
+    "5": "Every three months",
+    "6": "Other, Describe",
+    "7": "Every month"
+  },
+  "counts": {
+    "benefits": 30,
+    "with_canonical_key": 19,
+    "without_canonical_key": 11
+  },
+  "benefits": [
+    {
+      "benefit_id": "PRIMARY_CARE",
+      "service_name": "Primary care physician services",
+      "pbp_code": "7a",
+      "pbp_label": "7a: Primary Care Physician Services",
+      "medicare_covered": true,
+      "file": "pbp_b7_health_prof.txt",
+      "canonical_key": "primary_care",
+      "category": "PHYSICIAN_SERVICES",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b7a_copay_yn",
+        "min": "pbp_b7a_copay_amt_mc_min",
+        "max": "pbp_b7a_copay_amt_mc_max"
+      },
+      "coins": {
+        "yn": "pbp_b7a_coins_yn",
+        "min": "pbp_b7a_coins_pct_mc_min",
+        "max": "pbp_b7a_coins_pct_mc_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b7a_ded_yn",
+        "amt": "pbp_b7a_ded_amt"
+      },
+      "auth": null,
+      "refer": null,
+      "quote": [
+        "pbp_b7a_maxenr_yn",
+        "pbp_b7a_maxenr_amt",
+        "pbp_b7a_maxenr_per",
+        "pbp_b7a_maxenr_per_d"
+      ],
+      "note": "7a has no authorization or referral column."
+    },
+    {
+      "benefit_id": "SPECIALIST",
+      "service_name": "Physician specialist services",
+      "pbp_code": "7d",
+      "pbp_label": "7d: Physician Specialist Services",
+      "medicare_covered": true,
+      "file": "pbp_b7_health_prof.txt",
+      "canonical_key": "specialist",
+      "category": "PHYSICIAN_SERVICES",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b7d_copay_yn",
+        "min": "pbp_b7d_copay_amt_mc_min",
+        "max": "pbp_b7d_copay_amt_mc_max"
+      },
+      "coins": {
+        "yn": "pbp_b7d_coins_yn",
+        "min": "pbp_b7d_coins_pct_mc_min",
+        "max": "pbp_b7d_coins_pct_mc_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b7d_ded_yn",
+        "amt": "pbp_b7d_ded_amt"
+      },
+      "auth": "pbp_b7d_auth_yn",
+      "refer": "pbp_b7d_refer_yn",
+      "quote": [
+        "pbp_b7d_maxenr_yn",
+        "pbp_b7d_maxenr_amt",
+        "pbp_b7d_maxenr_per",
+        "pbp_b7d_maxenr_per_d"
+      ],
+      "note": null
+    },
+    {
+      "benefit_id": "INPATIENT_HOSPITAL",
+      "service_name": "Inpatient hospital, acute",
+      "pbp_code": "1a",
+      "pbp_label": "1a: Inpatient Hospital-Acute",
+      "medicare_covered": true,
+      "file": "pbp_b1a_inpat_hosp.txt",
+      "canonical_key": "inpatient_hospital",
+      "category": "HOSPITAL_SERVICES",
+      "benefit_type": "medical",
+      "handler": "inpatient_acute",
+      "prefix": "pbp_b1a",
+      "auth": "pbp_b1a_auth_yn",
+      "refer": "pbp_b1a_refer_yn",
+      "quote": [
+        "pbp_b1a_maxenr_yn",
+        "pbp_b1a_maxenr_amt",
+        "pbp_b1a_maxenr_per",
+        "pbp_b1a_maxenr_per_d",
+        "pbp_b1a_hosp_ben_period",
+        "pbp_b1a_hosp_ben_period_oth",
+        "pbp_b1a_cost_discharge_yn",
+        "pbp_b1a_bendesc_yn",
+        "pbp_b1a_bendesc_ad_up_nmcs",
+        "pbp_b1a_bendesc_amo_ad",
+        "pbp_b1a_bendesc_amo_up",
+        "pbp_b1a_coins_pct_up"
+      ],
+      "note": "Medicare-covered stay per tier, by day interval; additional days (1a1, supplemental) as further steps; lifetime reserve days, upgrades and Part B-only stays are quoted, not mapped. Out-of-network and point-of-service stays come from pbp_Section_C."
+    },
+    {
+      "benefit_id": "OUTPATIENT_HOSPITAL",
+      "service_name": "Outpatient hospital services",
+      "pbp_code": "9a1",
+      "pbp_label": "9a1: Outpatient Hospital Services",
+      "medicare_covered": true,
+      "file": "pbp_b9_outpat_hosp.txt",
+      "canonical_key": "outpatient_surgery",
+      "category": "HOSPITAL_SERVICES",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b9a_copay_yn",
+        "ehc": "pbp_b9a_copay_ehc",
+        "position": 2,
+        "min": "pbp_b9a_copay_ohs_amt_min",
+        "max": "pbp_b9a_copay_ohs_amt_max",
+        "basis": "per_visit"
+      },
+      "coins": {
+        "yn": "pbp_b9a_coins_yn",
+        "ehc": "pbp_b9a_coins_ehc",
+        "position": 2,
+        "min": "pbp_b9a_coins_ohs_pct_min",
+        "max": "pbp_b9a_coins_ohs_pct_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b9a_ded_yn",
+        "ehc": "pbp_b9a_ded_ehc",
+        "position": 2,
+        "amt": "pbp_b9a_ded_ohs_amt"
+      },
+      "auth": "pbp_b9a_auth_ohs_yn",
+      "refer": "pbp_b9a_refer_ohs_yn",
+      "quote": [
+        "pbp_b9a_maxenr_yn",
+        "pbp_b9a_maxenr_ehc",
+        "pbp_b9a_maxenr_ohs_amt",
+        "pbp_b9a_maxenr_ohs_per",
+        "pbp_b9a_maxenr_ohs_per_d"
+      ],
+      "note": "vocabularies/canonical-benefits.json lists \"outpatient hospital services\" as an alias of outpatient_surgery. The copay title says \"per visit\"."
+    },
+    {
+      "benefit_id": "OBSERVATION",
+      "service_name": "Observation services",
+      "pbp_code": "9a2",
+      "pbp_label": "9a2: Observation Services",
+      "medicare_covered": true,
+      "file": "pbp_b9_outpat_hosp.txt",
+      "canonical_key": "observation_care",
+      "category": "HOSPITAL_SERVICES",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b9a_copay_yn",
+        "ehc": "pbp_b9a_copay_ehc",
+        "position": 1,
+        "min": "pbp_b9a_copay_obs_amt_min",
+        "max": "pbp_b9a_copay_obs_amt_max",
+        "basis_col": "pbp_b9a_copay_obs_per",
+        "basis_codes": {
+          "1": "per_day",
+          "2": "per_stay"
+        },
+        "basis_desc": "pbp_b9a_copay_obs_per_d"
+      },
+      "coins": {
+        "yn": "pbp_b9a_coins_yn",
+        "ehc": "pbp_b9a_coins_ehc",
+        "position": 1,
+        "min": "pbp_b9a_coins_obs_pct_min",
+        "max": "pbp_b9a_coins_obs_pct_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b9a_ded_yn",
+        "ehc": "pbp_b9a_ded_ehc",
+        "position": 1,
+        "amt": "pbp_b9a_ded_obs_amt"
+      },
+      "auth": "pbp_b9a_auth_obs_yn",
+      "refer": "pbp_b9a_refer_obs_yn",
+      "quote": [
+        "pbp_b9a_maxenr_yn",
+        "pbp_b9a_maxenr_ehc",
+        "pbp_b9a_maxenr_obs_amt",
+        "pbp_b9a_maxenr_obs_per",
+        "pbp_b9a_maxenr_obs_per_d"
+      ],
+      "note": "Copay basis from pbp_b9a_copay_obs_per (1 Per day, 2 Per stay; 3 Other leaves basis unwritten and quotes the description)."
+    },
+    {
+      "benefit_id": "AMBULATORY_SURGICAL_CENTER",
+      "service_name": "Ambulatory surgical center services",
+      "pbp_code": "9b",
+      "pbp_label": "9b: Ambulatory Surgical Center (ASC) Services",
+      "medicare_covered": true,
+      "file": "pbp_b9_outpat_hosp.txt",
+      "canonical_key": "outpatient_surgery_facility",
+      "category": "SURGICAL_SERVICES",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b9b_copay_yn",
+        "min": "pbp_b9b_copay_mc_amt",
+        "max": "pbp_b9b_copay_mc_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b9b_coins_yn",
+        "min": "pbp_b9b_coins_pct_mc",
+        "max": "pbp_b9b_coins_pct_mcmax"
+      },
+      "service_deductible": {
+        "yn": "pbp_b9b_ded_yn",
+        "amt": "pbp_b9b_ded_amt"
+      },
+      "auth": "pbp_b9b_auth_yn",
+      "refer": "pbp_b9b_refer_yn",
+      "quote": [
+        "pbp_b9b_maxenr_yn",
+        "pbp_b9b_maxenr_type",
+        "pbp_b9b_maxenr_amt",
+        "pbp_b9b_maxenr_per",
+        "pbp_b9b_maxenr_per_d"
+      ],
+      "note": "As the Marketplace crosswalk maps \"Outpatient Facility Fee (e.g., Ambulatory Surgery Center)\"."
+    },
+    {
+      "benefit_id": "EMERGENCY",
+      "in_network_only_note": true,
+      "service_name": "Emergency services",
+      "pbp_code": "4a",
+      "pbp_label": "4a: Emergency Services",
+      "medicare_covered": true,
+      "file": "pbp_b4_emerg_urgent.txt",
+      "canonical_key": "emergency_room",
+      "category": "EMERGENCY_CARE",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b4a_copay_yn",
+        "min": "pbp_b4a_copay_amt_mc_min",
+        "max": "pbp_b4a_copay_amt_mc_max",
+        "waiver": {
+          "yn": "pbp_b4a_copay_wavdia_yn",
+          "unit": "pbp_b4a_copay_wavdia_mi_dh",
+          "num": "pbp_b4a_copay_wavd_dh"
+        }
+      },
+      "coins": {
+        "yn": "pbp_b4a_coins_yn",
+        "min": "pbp_b4a_coins_pct_mc_min",
+        "max": "pbp_b4a_coins_pct_mc_max",
+        "max_amount": "pbp_b4a_max_visit",
+        "waiver": {
+          "yn": "pbp_b4a_coins_wavdia_yn",
+          "unit": "pbp_b4a_coins_wavdia_dh",
+          "num": "pbp_b4a_coins_wavd_dh"
+        }
+      },
+      "service_deductible": null,
+      "auth": null,
+      "refer": null,
+      "quote": [
+        "pbp_b4a_deduct_yn",
+        "pbp_b4a_maxenr_yn",
+        "pbp_b4a_maxenr_amt",
+        "pbp_b4a_maxenr_per",
+        "pbp_b4a_maxenr_per_d"
+      ],
+      "note": "pbp_b4a_max_visit (\"Maximum per visit amount\") is written as max_amount on the coinsurance step. pbp_b4a_deduct_yn asks whether the cost sharing counts toward a plan-level deductible, which is not applies_to_deductible; it is quoted."
+    },
+    {
+      "benefit_id": "URGENT_CARE",
+      "in_network_only_note": true,
+      "service_name": "Urgently needed services",
+      "pbp_code": "4b",
+      "pbp_label": "4b: Urgently Needed Services",
+      "medicare_covered": true,
+      "file": "pbp_b4_emerg_urgent.txt",
+      "canonical_key": "urgent_care",
+      "category": "URGENT_CARE",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b4b_copay_yn",
+        "min": "pbp_b4b_copay_amt_mc_min",
+        "max": "pbp_b4b_copay_amt_mc_max",
+        "waiver": {
+          "yn": "pbp_b4b_copay_wavdia_yn",
+          "unit": "pbp_b4b_copay_wavd_mcdh",
+          "num": "pbp_b4b_copay_wavdmc_dh"
+        }
+      },
+      "coins": {
+        "yn": "pbp_b4b_coins_yn",
+        "min": "pbp_b4b_coins_pct_mc_min",
+        "max": "pbp_b4b_coins_pct_mc_max",
+        "max_amount": "pbp_b4b_max_visit",
+        "waiver": {
+          "yn": "pbp_b4b_coins_wavdmc_yn",
+          "unit": "pbp_b4b_coins_wavd_mcdh",
+          "num": "pbp_b4b_coins_wavdmc_dh"
+        }
+      },
+      "service_deductible": null,
+      "auth": null,
+      "refer": null,
+      "quote": [
+        "pbp_b4b_deduct_yn",
+        "pbp_b4b_maxenr_yn",
+        "pbp_b4b_maxenr_type",
+        "pbp_b4b_maxenr_amt",
+        "pbp_b4b_maxenr_per",
+        "pbp_b4b_maxenr_per_d"
+      ],
+      "note": "As emergency services."
+    },
+    {
+      "benefit_id": "AMBULANCE_GROUND",
+      "service_name": "Ground ambulance services",
+      "pbp_code": "10a1",
+      "pbp_label": "10a1: Ground Ambulance Services",
+      "medicare_covered": true,
+      "file": "pbp_b10_amb_trans.txt",
+      "canonical_key": "ambulance",
+      "category": "EMERGENCY_CARE",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b10a_copay_yn",
+        "ehc": "pbp_b10a_copay_ehc",
+        "position": 2,
+        "min": "pbp_b10a_copay_gas_amt_min",
+        "max": "pbp_b10a_copay_gas_amt_max",
+        "waiver": {
+          "yn": "pbp_b10a_copay_wav_yn"
+        }
+      },
+      "coins": {
+        "yn": "pbp_b10a_coins_yn",
+        "ehc": "pbp_b10a_coins_ehc",
+        "position": 2,
+        "min": "pbp_b10a_coins_gas_pct_min",
+        "max": "pbp_b10a_coins_gas_pct_max",
+        "waiver": {
+          "yn": "pbp_b10a_coins_wav_yn"
+        }
+      },
+      "service_deductible": {
+        "yn": "pbp_b10a_ded_yn",
+        "ehc": "pbp_b10a_ded_ehc",
+        "position": 2,
+        "amt": "pbp_b10a_ded_gas_amt"
+      },
+      "auth": "pbp_b10a_auth_yn",
+      "refer": null,
+      "quote": [
+        "pbp_b10a_maxenr_yn",
+        "pbp_b10a_maxenr_ehc",
+        "pbp_b10a_maxenr_gas_amt",
+        "pbp_b10a_maxenr_gas_per",
+        "pbp_b10a_maxenr_gas_per_d"
+      ],
+      "note": "Ground and air ambulance share canonical_key ambulance. 10a has no referral column."
+    },
+    {
+      "benefit_id": "AMBULANCE_AIR",
+      "service_name": "Air ambulance services",
+      "pbp_code": "10a2",
+      "pbp_label": "10a2: Air Ambulance Services",
+      "medicare_covered": true,
+      "file": "pbp_b10_amb_trans.txt",
+      "canonical_key": "ambulance",
+      "category": "EMERGENCY_CARE",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b10a_copay_yn",
+        "ehc": "pbp_b10a_copay_ehc",
+        "position": 1,
+        "min": "pbp_b10a_copay_aas_amt_min",
+        "max": "pbp_b10a_copay_aas_amt_max",
+        "waiver": {
+          "yn": "pbp_b10a_copay_wav_yn"
+        }
+      },
+      "coins": {
+        "yn": "pbp_b10a_coins_yn",
+        "ehc": "pbp_b10a_coins_ehc",
+        "position": 1,
+        "min": "pbp_b10a_coins_aas_pct_min",
+        "max": "pbp_b10a_coins_aas_pct_max",
+        "waiver": {
+          "yn": "pbp_b10a_coins_wav_yn"
+        }
+      },
+      "service_deductible": {
+        "yn": "pbp_b10a_ded_yn",
+        "ehc": "pbp_b10a_ded_ehc",
+        "position": 1,
+        "amt": "pbp_b10a_ded_aas_amt"
+      },
+      "auth": "pbp_b10a_auth_yn",
+      "refer": null,
+      "quote": [
+        "pbp_b10a_maxenr_yn",
+        "pbp_b10a_maxenr_ehc",
+        "pbp_b10a_maxenr_aas_amt",
+        "pbp_b10a_maxenr_aas_per",
+        "pbp_b10a_maxenr_aas_per_d"
+      ],
+      "note": "Ground and air ambulance share canonical_key ambulance. 10a has no referral column."
+    },
+    {
+      "benefit_id": "DIAGNOSTIC_TESTS",
+      "service_name": "Diagnostic procedures and tests",
+      "pbp_code": "8a1",
+      "pbp_label": "8a1: Diagnostic Procedures/Tests",
+      "medicare_covered": true,
+      "file": "pbp_b8_clin_diag_ther.txt",
+      "canonical_key": "diagnostic_test",
+      "category": "DIAGNOSTIC_SERVICES",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b8a_copay_yn",
+        "ehc": "pbp_b8a_copay_ehc",
+        "position": 2,
+        "min": "pbp_b8a_copay_min_dmc_amt",
+        "max": "pbp_b8a_copay_max_dmc_amt"
+      },
+      "coins": {
+        "yn": "pbp_b8a_coins_yn",
+        "ehc": "pbp_b8a_coins_ehc",
+        "position": 2,
+        "min": "pbp_b8a_coins_pct_dmc",
+        "max": "pbp_b8a_coins_pct_dmc_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b8a_ded_yn",
+        "amt": "pbp_b8a_ded_amt",
+        "shared": "8a (8a1 and 8a2)"
+      },
+      "auth": "pbp_b8a_auth_yn",
+      "refer": "pbp_b8a_refer_yn",
+      "quote": [
+        "pbp_b8a_copay_max_yn",
+        "pbp_b8a_maxenr_yn",
+        "pbp_b8a_maxenr_amt",
+        "pbp_b8a_maxenr_per",
+        "pbp_b8a_maxenr_per_d"
+      ],
+      "note": null
+    },
+    {
+      "benefit_id": "LAB_SERVICES",
+      "service_name": "Lab services",
+      "pbp_code": "8a2",
+      "pbp_label": "8a2: Lab Services",
+      "medicare_covered": true,
+      "file": "pbp_b8_clin_diag_ther.txt",
+      "canonical_key": "diagnostic_lab",
+      "category": "DIAGNOSTIC_SERVICES",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b8a_copay_yn",
+        "ehc": "pbp_b8a_copay_ehc",
+        "position": 1,
+        "min": "pbp_b8a_lab_copay_amt",
+        "max": "pbp_b8a_lab_copay_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b8a_coins_yn",
+        "ehc": "pbp_b8a_coins_ehc",
+        "position": 1,
+        "min": "pbp_b8a_coins_pct_lab",
+        "max": "pbp_b8a_coins_pct_lab_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b8a_ded_yn",
+        "amt": "pbp_b8a_ded_amt",
+        "shared": "8a (8a1 and 8a2)"
+      },
+      "auth": "pbp_b8a_auth_yn",
+      "refer": "pbp_b8a_refer_yn",
+      "quote": [
+        "pbp_b8a_copay_max_yn",
+        "pbp_b8a_maxenr_yn",
+        "pbp_b8a_maxenr_amt",
+        "pbp_b8a_maxenr_per",
+        "pbp_b8a_maxenr_per_d"
+      ],
+      "note": null
+    },
+    {
+      "benefit_id": "DIAGNOSTIC_RADIOLOGY",
+      "service_name": "Diagnostic radiological services",
+      "pbp_code": "8b1",
+      "pbp_label": "8b1: Diagnostic Radiological Services",
+      "medicare_covered": true,
+      "file": "pbp_b8_clin_diag_ther.txt",
+      "canonical_key": "imaging_advanced",
+      "category": "DIAGNOSTIC_SERVICES",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b8b_copay_yn",
+        "ehc": "pbp_b8b_copay_ehc",
+        "position": 2,
+        "min": "pbp_b8b_copay_amt_drs",
+        "max": "pbp_b8b_copay_amt_drs_max"
+      },
+      "coins": {
+        "yn": "pbp_b8b_coins_yn",
+        "ehc": "pbp_b8b_coins_ehc",
+        "position": 2,
+        "min": "pbp_b8b_coins_pct_drs",
+        "max": "pbp_b8b_coins_pct_drs_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b8b_ded_yn",
+        "amt": "pbp_b8b_ded_amt",
+        "shared": "8b (8b1, 8b2 and 8b3)"
+      },
+      "auth": "pbp_b8b_auth_yn",
+      "refer": "pbp_b8b_refer_yn",
+      "quote": [
+        "pbp_b8b_copay_max_yn",
+        "pbp_b8b_maxenr_yn",
+        "pbp_b8b_maxenr_amt",
+        "pbp_b8b_maxenr_per",
+        "pbp_b8b_maxenr_per_d"
+      ],
+      "note": "The dictionary titles say \"Diagnostic Radiological Services (e.g., CT, MRI, etc.)\"; mapped as the Marketplace crosswalk maps \"Imaging (CT/PET Scans, MRIs)\". X-rays are 8b3."
+    },
+    {
+      "benefit_id": "THERAPEUTIC_RADIOLOGY",
+      "service_name": "Therapeutic radiological services",
+      "pbp_code": "8b2",
+      "pbp_label": "8b2: Therapeutic Radiological Services",
+      "medicare_covered": true,
+      "file": "pbp_b8_clin_diag_ther.txt",
+      "canonical_key": "radiation_therapy",
+      "category": "RADIATION_THERAPY",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b8b_copay_yn",
+        "ehc": "pbp_b8b_copay_ehc",
+        "position": 3,
+        "min": "pbp_b8b_copay_amt_tmc",
+        "max": "pbp_b8b_copay_amt_tmc_max"
+      },
+      "coins": {
+        "yn": "pbp_b8b_coins_yn",
+        "ehc": "pbp_b8b_coins_ehc",
+        "position": 3,
+        "min": "pbp_b8b_coins_pct_tmc",
+        "max": "pbp_b8b_coins_pct_tmc_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b8b_ded_yn",
+        "amt": "pbp_b8b_ded_amt",
+        "shared": "8b (8b1, 8b2 and 8b3)"
+      },
+      "auth": "pbp_b8b_auth_yn",
+      "refer": "pbp_b8b_refer_yn",
+      "quote": [
+        "pbp_b8b_copay_max_yn",
+        "pbp_b8b_maxenr_yn",
+        "pbp_b8b_maxenr_amt",
+        "pbp_b8b_maxenr_per",
+        "pbp_b8b_maxenr_per_d"
+      ],
+      "note": null
+    },
+    {
+      "benefit_id": "XRAY",
+      "service_name": "Outpatient X-ray services",
+      "pbp_code": "8b3",
+      "pbp_label": "8b3: Outpatient X-Ray Services",
+      "medicare_covered": true,
+      "file": "pbp_b8_clin_diag_ther.txt",
+      "canonical_key": "imaging_standard",
+      "category": "DIAGNOSTIC_SERVICES",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b8b_copay_yn",
+        "ehc": "pbp_b8b_copay_ehc",
+        "position": 1,
+        "min": "pbp_b8b_copay_mc_amt",
+        "max": "pbp_b8b_copay_mc_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b8b_coins_yn",
+        "ehc": "pbp_b8b_coins_ehc",
+        "position": 1,
+        "min": "pbp_b8b_coins_pct_cmc",
+        "max": "pbp_b8b_coins_pct_cmc_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b8b_ded_yn",
+        "amt": "pbp_b8b_ded_amt",
+        "shared": "8b (8b1, 8b2 and 8b3)"
+      },
+      "auth": "pbp_b8b_auth_yn",
+      "refer": "pbp_b8b_refer_yn",
+      "quote": [
+        "pbp_b8b_copay_max_yn",
+        "pbp_b8b_maxenr_yn",
+        "pbp_b8b_maxenr_amt",
+        "pbp_b8b_maxenr_per",
+        "pbp_b8b_maxenr_per_d"
+      ],
+      "note": null
+    },
+    {
+      "benefit_id": "PHYSICAL_AND_SPEECH_THERAPY",
+      "service_name": "Physical therapy and speech-language pathology services",
+      "pbp_code": "7i",
+      "pbp_label": "7i: Physical Therapy and Speech-Language Pathology Services",
+      "medicare_covered": true,
+      "file": "pbp_b7_health_prof.txt",
+      "canonical_key": null,
+      "category": "REHABILITATION",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b7i_copay_yn",
+        "min": "pbp_b7i_copay_mc_amt_min",
+        "max": "pbp_b7i_copay_mc_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b7i_coins_yn",
+        "min": "pbp_b7i_coins_pct_mc_min",
+        "max": "pbp_b7i_coins_pct_mc_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b7i_ded_yn",
+        "amt": "pbp_b7i_ded_amt"
+      },
+      "auth": "pbp_b7i_auth_yn",
+      "refer": "pbp_b7i_refer_yn",
+      "quote": [
+        "pbp_b7i_maxenr_yn",
+        "pbp_b7i_maxenr_amt",
+        "pbp_b7i_maxenr_per",
+        "pbp_b7i_maxenr_per_d"
+      ],
+      "note": "Combines physical_therapy and speech_therapy, so no canonical key (as the Marketplace crosswalk leaves \"Rehabilitative Occupational and Rehabilitative Physical Therapy\" unmapped). Carried by name."
+    },
+    {
+      "benefit_id": "OCCUPATIONAL_THERAPY",
+      "service_name": "Occupational therapy services",
+      "pbp_code": "7c",
+      "pbp_label": "7c: Occupational Therapy Services",
+      "medicare_covered": true,
+      "file": "pbp_b7_health_prof.txt",
+      "canonical_key": "occupational_therapy",
+      "category": "REHABILITATION",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b7c_copay_yn",
+        "min": "pbp_b7c_copay_mc_amt_min",
+        "max": "pbp_b7c_copay_mc_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b7c_coins_yn",
+        "min": "pbp_b7c_coins_pct_mc_min",
+        "max": "pbp_b7c_coins_pct_mc_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b7c_ded_yn",
+        "amt": "pbp_b7c_ded_amt"
+      },
+      "auth": "pbp_b7c_auth_yn",
+      "refer": "pbp_b7c_refer_yn",
+      "quote": [
+        "pbp_b7c_maxenr_yn",
+        "pbp_b7c_maxenr_amt",
+        "pbp_b7c_maxenr_per",
+        "pbp_b7c_maxenr_per_d"
+      ],
+      "note": null
+    },
+    {
+      "benefit_id": "CHIROPRACTIC",
+      "service_name": "Chiropractic services (Medicare-covered)",
+      "pbp_code": "7b",
+      "pbp_label": "7b: Chiropractic Services",
+      "medicare_covered": true,
+      "file": "pbp_b7_health_prof.txt",
+      "canonical_key": "chiropractic_care",
+      "category": "CHIROPRACTIC",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b7b_copay_yn",
+        "ehc": "pbp_b7b_copay_ehc",
+        "position": 2,
+        "min": "pbp_b7b_copay_mc_amt_min",
+        "max": "pbp_b7b_copay_mc_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b7b_coins_yn",
+        "ehc": "pbp_b7b_coins_ehc",
+        "position": 2,
+        "min": "pbp_b7b_coins_pct_mc_min",
+        "max": "pbp_b7b_coins_pct_mc_max",
+        "basis": "per_visit"
+      },
+      "service_deductible": {
+        "yn": "pbp_b7b_ded_yn",
+        "amt": "pbp_b7b_ded_amt",
+        "shared": "7b (Medicare-covered and supplemental chiropractic)"
+      },
+      "auth": "pbp_b7b_auth_yn",
+      "refer": "pbp_b7b_refer_yn",
+      "quote": [
+        "pbp_b7b_maxenr_yn",
+        "pbp_b7b_maxenr_amt",
+        "pbp_b7b_maxenr_per",
+        "pbp_b7b_maxenr_per_d"
+      ],
+      "note": null
+    },
+    {
+      "benefit_id": "CHIROPRACTIC_ROUTINE",
+      "service_name": "Routine chiropractic care",
+      "pbp_code": "7b1",
+      "pbp_label": "7b1: Routine Chiropractic Care",
+      "medicare_covered": false,
+      "file": "pbp_b7_health_prof.txt",
+      "canonical_key": "chiropractic_care",
+      "category": "CHIROPRACTIC",
+      "benefit_type": "medical",
+      "offered": {
+        "yn": "pbp_b7b_bendesc_yn",
+        "ehc": "pbp_b7b_bendesc_ehc",
+        "position": 2,
+        "when_not_chosen": "not_covered"
+      },
+      "amo": "pbp_b7b_bendesc_amo_rc",
+      "copay": {
+        "yn": "pbp_b7b_copay_yn",
+        "ehc": "pbp_b7b_copay_ehc",
+        "position": 3,
+        "min": "pbp_b7b_copay_rc_amt_min",
+        "max": "pbp_b7b_copay_rc_amt_max",
+        "basis": "per_visit"
+      },
+      "coins": {
+        "yn": "pbp_b7b_coins_yn",
+        "ehc": "pbp_b7b_coins_ehc",
+        "position": 3,
+        "min": "pbp_b7b_coins_pct_rc_min",
+        "max": "pbp_b7b_coins_pct_rc_max",
+        "basis": "per_visit"
+      },
+      "service_deductible": {
+        "yn": "pbp_b7b_ded_yn",
+        "amt": "pbp_b7b_ded_amt",
+        "shared": "7b (Medicare-covered and supplemental chiropractic)"
+      },
+      "limits": [
+        {
+          "kind": "quantity",
+          "type": "visits",
+          "lim": "pbp_b7b_bendesc_lim_rc",
+          "num": "pbp_b7b_bendesc_num_rc",
+          "per": "pbp_b7b_bendesc_per_rc",
+          "per_d": "pbp_b7b_bendesc_per_rc_d"
+        },
+        {
+          "kind": "dollars",
+          "yn": "pbp_b7b_maxplan_yn",
+          "amt": "pbp_b7b_maxplan_amt",
+          "per": "pbp_b7b_maxplan_per",
+          "per_d": "pbp_b7b_maxplan_per_d",
+          "shared": "7b supplemental benefits"
+        }
+      ],
+      "auth": "pbp_b7b_auth_yn",
+      "refer": "pbp_b7b_refer_yn",
+      "quote": [],
+      "note": "Same canonical key as the Medicare-covered row; coverage_basis tells them apart."
+    },
+    {
+      "benefit_id": "PODIATRY",
+      "service_name": "Podiatry services (Medicare-covered)",
+      "pbp_code": "7f",
+      "pbp_label": "7f: Podiatry Services",
+      "medicare_covered": true,
+      "file": "pbp_b7_health_prof.txt",
+      "canonical_key": null,
+      "category": "PODIATRY",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b7f_copay_yn",
+        "ehc": "pbp_b7f_copay_ehc",
+        "position": 2,
+        "min": "pbp_b7f_copay_mc_amt_min",
+        "max": "pbp_b7f_copay_mc_amt_max",
+        "basis": "per_visit"
+      },
+      "coins": {
+        "yn": "pbp_b7f_coins_yn",
+        "ehc": "pbp_b7f_coins_ehc",
+        "position": 2,
+        "min": "pbp_b7f_coins_pct_mc_min",
+        "max": "pbp_b7f_coins_pct_mc_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b7f_ded_yn",
+        "amt": "pbp_b7f_ded_amt",
+        "shared": "7f (Medicare-covered podiatry and routine foot care)"
+      },
+      "auth": "pbp_b7f_auth_yn",
+      "refer": "pbp_b7f_refer_yn",
+      "quote": [
+        "pbp_b7f_maxenr_yn",
+        "pbp_b7f_maxenr_amt",
+        "pbp_b7f_maxenr_per",
+        "pbp_b7f_maxenr_per_d"
+      ],
+      "note": "No canonical key for podiatry. Carried by name."
+    },
+    {
+      "benefit_id": "PODIATRY_ROUTINE",
+      "service_name": "Routine foot care",
+      "pbp_code": "7f_2",
+      "pbp_label": "7f: Podiatry Services - Routine Foot Care",
+      "medicare_covered": false,
+      "file": "pbp_b7_health_prof.txt",
+      "canonical_key": null,
+      "category": "PODIATRY",
+      "benefit_type": "medical",
+      "offered": {
+        "yn": "pbp_b7f_bendesc_yn",
+        "ehc": "pbp_b7f_bendesc_rf",
+        "position": 1,
+        "when_not_chosen": "not_covered"
+      },
+      "amo": "pbp_b7f_bendesc_amo_rf",
+      "copay": {
+        "yn": "pbp_b7f_copay_yn",
+        "ehc": "pbp_b7f_copay_ehc",
+        "position": 1,
+        "min": "pbp_b7f_copay_rf_amt_min",
+        "max": "pbp_b7f_copay_rf_amt_max",
+        "basis": "per_visit"
+      },
+      "coins": {
+        "yn": "pbp_b7f_coins_yn",
+        "ehc": "pbp_b7f_coins_ehc",
+        "position": 1,
+        "min": "pbp_b7f_coins_pct_rf_min",
+        "max": "pbp_b7f_coins_pct_rf_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b7f_ded_yn",
+        "amt": "pbp_b7f_ded_amt",
+        "shared": "7f (Medicare-covered podiatry and routine foot care)"
+      },
+      "limits": [
+        {
+          "kind": "quantity",
+          "type": "visits",
+          "lim": "pbp_b7f_bendesc_lim_rf",
+          "num": "pbp_b7f_bendesc_amt_rf",
+          "per": "pbp_b7f_bendesc_per_rf",
+          "per_d": "pbp_b7f_bendesc_per_rf_d"
+        },
+        {
+          "kind": "dollars",
+          "yn": "pbp_b7f_maxplan_yn",
+          "amt": "pbp_b7f_maxplan_amt",
+          "per": "pbp_b7f_maxplan_per",
+          "per_d": "pbp_b7f_maxplan_per_d"
+        }
+      ],
+      "auth": "pbp_b7f_auth_yn",
+      "refer": "pbp_b7f_refer_yn",
+      "quote": [],
+      "note": "No canonical key for routine foot care. Carried by name."
+    },
+    {
+      "benefit_id": "ACUPUNCTURE",
+      "service_name": "Acupuncture treatments",
+      "pbp_code": "13a",
+      "pbp_label": "13a: Acupuncture Treatments",
+      "medicare_covered": false,
+      "file": "pbp_b13_other_services.txt",
+      "canonical_key": "acupuncture",
+      "category": "ACUPUNCTURE",
+      "benefit_type": "medical",
+      "offered": {
+        "yn": "pbp_b13a_bendesc_yn",
+        "ehc": "pbp_b13a_bendesc_ehc",
+        "position": 1,
+        "when_not_chosen": "not_covered"
+      },
+      "amo": "pbp_b13a_bendesc_amo",
+      "copay": {
+        "yn": "pbp_b13a_copay_yn",
+        "min": "pbp_b13a_copay_amt_min",
+        "max": "pbp_b13a_copay_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b13a_coins_yn",
+        "min": "pbp_b13a_coins_pct_min",
+        "max": "pbp_b13a_coins_pct_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b13a_ded_yn",
+        "amt": "pbp_b13a_ded_amt"
+      },
+      "limits": [
+        {
+          "kind": "quantity",
+          "type": "treatments",
+          "lim": "pbp_b13a_bendesc_lim",
+          "num": "pbp_b13a_bendesc_numv",
+          "per": "pbp_b13a_bendesc_per",
+          "per_d": "pbp_b13a_bendesc_per_d"
+        },
+        {
+          "kind": "dollars",
+          "yn": "pbp_b13a_maxplan_yn",
+          "amt": "pbp_b13a_maxplan_amt",
+          "per": "pbp_b13a_maxplan_per",
+          "per_d": "pbp_b13a_maxplan_per_d"
+        }
+      ],
+      "auth": "pbp_b13a_auth_yn",
+      "refer": "pbp_b13a_refer_yn",
+      "quote": [
+        "pbp_b13a_maxenr_yn",
+        "pbp_b13a_maxenr_amt",
+        "pbp_b13a_maxenr_per",
+        "pbp_b13a_maxenr_per_d"
+      ],
+      "note": "Medicare-covered acupuncture for chronic low back pain is not a separate PBP category; 13a is the supplemental benefit."
+    },
+    {
+      "benefit_id": "HEARING_EXAM",
+      "service_name": "Hearing exams (Medicare-covered)",
+      "pbp_code": "18a",
+      "pbp_label": "18a: Hearing Exams",
+      "medicare_covered": true,
+      "file": "pbp_b18_hearing_exams_aids.txt",
+      "canonical_key": null,
+      "category": "HEARING",
+      "benefit_type": "hearing",
+      "copay": {
+        "yn": "pbp_b18a_copay_yn",
+        "ehc": "pbp_b18a_copay_ehc",
+        "position": 2,
+        "min": "pbp_b18a_copay_amt",
+        "max": "pbp_b18a_med_copay_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b18a_coins_yn",
+        "ehc": "pbp_b18a_coins_ehc",
+        "position": 2,
+        "min": "pbp_b18a_med_coins_pct",
+        "max": "pbp_b18a_med_coins_pct_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b18a_ded_yn",
+        "amt": "pbp_b18a_ded_amt"
+      },
+      "auth": "pbp_b18a_auth_yn",
+      "refer": "pbp_b18a_refer_yn",
+      "quote": [
+        "pbp_b18a_maxenr_yn",
+        "pbp_b18a_maxenr_amt",
+        "pbp_b18a_maxenr_per",
+        "pbp_b18a_maxenr_per_d"
+      ],
+      "note": "No canonical key for hearing exams. Carried by name."
+    },
+    {
+      "benefit_id": "HEARING_EXAM_ROUTINE",
+      "service_name": "Routine hearing exams",
+      "pbp_code": "18a1",
+      "pbp_label": "18a1: Routine Hearing Exams",
+      "medicare_covered": false,
+      "file": "pbp_b18_hearing_exams_aids.txt",
+      "canonical_key": null,
+      "category": "HEARING",
+      "benefit_type": "hearing",
+      "offered": {
+        "yn": "pbp_b18a_bendesc_yn",
+        "ehc": "pbp_b18a_bendesc_ehc",
+        "position": 2,
+        "when_not_chosen": "not_covered"
+      },
+      "amo": "pbp_b18a_bendesc_amo_rht",
+      "copay": {
+        "yn": "pbp_b18a_copay_yn",
+        "ehc": "pbp_b18a_copay_ehc",
+        "position": 3,
+        "min": "pbp_b18a_copay_amt_rht",
+        "max": "pbp_b18a_copay_amt_max_rht"
+      },
+      "coins": {
+        "yn": "pbp_b18a_coins_yn",
+        "ehc": "pbp_b18a_coins_ehc",
+        "position": 3,
+        "min": "pbp_b18a_coins_pct_rht",
+        "max": "pbp_b18a_coins_pct_max_rht"
+      },
+      "service_deductible": {
+        "yn": "pbp_b18a_ded_nmc_yn",
+        "amt": "pbp_b18a_ded_nmc_amt"
+      },
+      "limits": [
+        {
+          "kind": "quantity",
+          "type": "visits",
+          "lim": "pbp_b18a_bendesc_lim_rht",
+          "num": "pbp_b18a_bendesc_numv_cl",
+          "per": "pbp_b18a_bendesc_per_rht",
+          "per_d": "pbp_b18a_bendesc_per_rht_d"
+        },
+        {
+          "kind": "dollars",
+          "yn": "pbp_b18a_maxplan_yn",
+          "amt": "pbp_b18a_maxplan_amt",
+          "per": "pbp_b18a_maxplan_per",
+          "per_d": "pbp_b18a_maxplan_per_d",
+          "in_oon": "pbp_b18a_maxplan_in_oon",
+          "shared": "18a supplemental benefits",
+          "shared_when": {
+            "col": "pbp_b18b_maxplan_type",
+            "value": "1",
+            "shared_limit_id": "PBP_18A_MAXPLAN"
+          }
+        }
+      ],
+      "auth": "pbp_b18a_auth_yn",
+      "refer": "pbp_b18a_refer_yn",
+      "quote": [],
+      "note": "No canonical key for hearing exams. The visit count column is named pbp_b18a_bendesc_numv_cl in the file. Carried by name."
+    },
+    {
+      "benefit_id": "EYE_EXAM",
+      "service_name": "Eye exams (Medicare-covered)",
+      "pbp_code": "17a",
+      "pbp_label": "17a: Eye Exams",
+      "medicare_covered": true,
+      "file": "pbp_b17_eye_exams_wear.txt",
+      "canonical_key": null,
+      "category": "VISION",
+      "benefit_type": "vision",
+      "copay": {
+        "yn": "pbp_b17a_copay_yn",
+        "ehc": "pbp_b17a_copay_ehc",
+        "position": 2,
+        "min": "pbp_b17a_copay_amt_mc_min",
+        "max": "pbp_b17a_copay_amt_mc_max"
+      },
+      "coins": {
+        "yn": "pbp_b17a_coins_yn",
+        "ehc": "pbp_b17a_coins_ehc",
+        "position": 2,
+        "min": "pbp_b17a_coins_pct_mc_min",
+        "max": "pbp_b17a_coins_pct_mc_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b17a_ded_yn",
+        "amt": "pbp_b17a_ded_amt"
+      },
+      "auth": "pbp_b17a_auth_yn",
+      "refer": "pbp_b17a_refer_yn",
+      "quote": [
+        "pbp_b17a_maxenr_yn",
+        "pbp_b17a_maxenr_amt",
+        "pbp_b17a_maxenr_per",
+        "pbp_b17a_maxenr_per_d"
+      ],
+      "note": "canonical-benefits has pediatric_eye_exam only. Carried by name."
+    },
+    {
+      "benefit_id": "EYE_EXAM_ROUTINE",
+      "service_name": "Routine eye exams",
+      "pbp_code": "17a1",
+      "pbp_label": "17a1: Routine Eye Exams",
+      "medicare_covered": false,
+      "file": "pbp_b17_eye_exams_wear.txt",
+      "canonical_key": null,
+      "category": "VISION",
+      "benefit_type": "vision",
+      "offered": {
+        "yn": "pbp_b17a_bendesc_yn",
+        "ehc": "pbp_b17a_bendesc_ehc",
+        "position": 2,
+        "when_not_chosen": "not_covered"
+      },
+      "amo": "pbp_b17a_bendesc_amo_rex",
+      "copay": {
+        "yn": "pbp_b17a_copay_yn",
+        "ehc": "pbp_b17a_copay_ehc",
+        "position": 3,
+        "min": "pbp_b17a_copay_amt_rex_min",
+        "max": "pbp_b17a_copay_amt_rex_max"
+      },
+      "coins": {
+        "yn": "pbp_b17a_coins_yn",
+        "ehc": "pbp_b17a_coins_ehc",
+        "position": 3,
+        "min": "pbp_b17a_coins_pct_rex_min",
+        "max": "pbp_b17a_coins_pct_rex_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b17a_ded_nmc_yn",
+        "amt": "pbp_b17a_ded_nmc_amt"
+      },
+      "limits": [
+        {
+          "kind": "quantity",
+          "type": "visits",
+          "lim": "pbp_b17a_bendesc_lim_rex",
+          "num": "pbp_b17a_bendesc_num_rex",
+          "per": "pbp_b17a_bendesc_per_rex",
+          "per_d": "pbp_b17a_bendesc_per_rex_d"
+        },
+        {
+          "kind": "dollars",
+          "yn": "pbp_b17a_maxplan_yn",
+          "amt": "pbp_b17a_maxplan_amt",
+          "per": "pbp_b17a_maxplan_per",
+          "per_d": "pbp_b17a_maxplan_per_d",
+          "in_oon": "pbp_b17a_maxplan_in_oon",
+          "shared": "17a supplemental benefits"
+        }
+      ],
+      "auth": "pbp_b17a_auth_yn",
+      "refer": "pbp_b17a_refer_yn",
+      "quote": [],
+      "note": "canonical-benefits has pediatric_eye_exam only. Carried by name."
+    },
+    {
+      "benefit_id": "HEARING_AIDS",
+      "service_name": "Prescription hearing aids (all types)",
+      "pbp_code": "18b1",
+      "pbp_label": "18b1: Prescription Hearing Aids (all types)",
+      "medicare_covered": false,
+      "file": "pbp_b18_hearing_exams_aids.txt",
+      "canonical_key": null,
+      "category": "HEARING",
+      "benefit_type": "hearing",
+      "offered": {
+        "yn": "pbp_b18b_bendesc_yn",
+        "ehc": "pbp_b18b_bendesc_ehc",
+        "position": 2,
+        "when_not_chosen": "skip_unless_excluded"
+      },
+      "amo": "pbp_b18b_bendesc_amo_at",
+      "copay": {
+        "yn": "pbp_b18b_copay_yn",
+        "min": "pbp_b18b_copay_at_min_amt",
+        "max": "pbp_b18b_copay_at_max_amt",
+        "basis": "per_aid"
+      },
+      "coins": {
+        "yn": "pbp_b18b_coins_yn",
+        "min": "pbp_b18b_coins_pct_at_min",
+        "max": "pbp_b18b_coins_pct_at_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b18b_ded_yn",
+        "amt": "pbp_b18b_ded_amt",
+        "shared": "18b (all hearing aid types)"
+      },
+      "limits": [
+        {
+          "kind": "quantity",
+          "type": "hearing_aids",
+          "lim": "pbp_b18b_bendesc_lim_at",
+          "num": "pbp_b18b_bendesc_numv_at",
+          "per": "pbp_b18b_bendesc_per_at",
+          "per_d": "pbp_b18b_bendesc_per_at_d"
+        },
+        {
+          "kind": "dollars",
+          "yn": "pbp_b18b_maxplan_yn",
+          "amt": "pbp_b18b_maxplan_amt",
+          "per": "pbp_b18b_maxplan_per",
+          "per_d": "pbp_b18b_maxplan_per_d",
+          "perear": "pbp_b18b_maxplan_perear",
+          "in_oon": "pbp_b18b_maxplan_in_oon",
+          "type_col": "pbp_b18b_maxplan_type",
+          "shared": "18b (all hearing aid types)",
+          "via": {
+            "when": "1",
+            "yn": "pbp_b18a_maxplan_yn",
+            "amt": "pbp_b18a_maxplan_amt",
+            "per": "pbp_b18a_maxplan_per",
+            "per_d": "pbp_b18a_maxplan_per_d",
+            "shared": "18a supplemental benefits and hearing aids",
+            "shared_limit_id": "PBP_18A_MAXPLAN"
+          }
+        }
+      ],
+      "auth": "pbp_b18b_auth_yn",
+      "refer": "pbp_b18b_refer_yn",
+      "quote": [
+        "pbp_b18b_maxenr_yn",
+        "pbp_b18b_maxenr_type",
+        "pbp_b18b_maxenr_amt",
+        "pbp_b18b_maxenr_per",
+        "pbp_b18b_maxenr_per_d"
+      ],
+      "note": "No canonical key for hearing aids (spec section 9.1). Carried by name. Written covered false when pbp_b18b_bendesc_yn is \"2\"; not written when the plan offers hearing aids but not the all-types option."
+    },
+    {
+      "benefit_id": "HEARING_AIDS_INNER_EAR",
+      "service_name": "Prescription hearing aids, inner ear",
+      "pbp_code": "18b2",
+      "pbp_label": "18b2: Prescription Hearing Aids - Inner Ear",
+      "medicare_covered": false,
+      "file": "pbp_b18_hearing_exams_aids.txt",
+      "canonical_key": null,
+      "category": "HEARING",
+      "benefit_type": "hearing",
+      "offered": {
+        "yn": "pbp_b18b_bendesc_yn",
+        "ehc": "pbp_b18b_bendesc_ehc",
+        "position": 3,
+        "when_not_chosen": "skip"
+      },
+      "amo": "pbp_b18b_bendesc_amo_ie",
+      "copay": {
+        "yn": "pbp_b18b_copay_yn",
+        "ehc": "pbp_b18b_copay_ehc",
+        "position": 2,
+        "min": "pbp_b18b_copay_amt_per_ie_min",
+        "max": "pbp_b18b_copay_amt_per_ie_max",
+        "basis": "per_aid"
+      },
+      "coins": {
+        "yn": "pbp_b18b_coins_yn",
+        "ehc": "pbp_b18b_coins_ehc",
+        "position": 2,
+        "min": "pbp_b18b_coins_pct_ie_min",
+        "max": "pbp_b18b_coins_pct_ie_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b18b_ded_yn",
+        "amt": "pbp_b18b_ded_amt",
+        "shared": "18b (all hearing aid types)"
+      },
+      "limits": [
+        {
+          "kind": "quantity",
+          "type": "hearing_aids",
+          "lim": "pbp_b18b_bendesc_lim_ie",
+          "num": "pbp_b18b_bendesc_numv_ie",
+          "per": "pbp_b18b_bendesc_per_ie",
+          "per_d": "pbp_b18b_bendesc_per_ie_d"
+        },
+        {
+          "kind": "dollars",
+          "yn": "pbp_b18b_maxplan_yn",
+          "amt": "pbp_b18b_maxplan_amt",
+          "per": "pbp_b18b_maxplan_per",
+          "per_d": "pbp_b18b_maxplan_per_d",
+          "perear": "pbp_b18b_maxplan_perear",
+          "in_oon": "pbp_b18b_maxplan_in_oon",
+          "type_col": "pbp_b18b_maxplan_type",
+          "shared": "18b (all hearing aid types)",
+          "via": {
+            "when": "1",
+            "yn": "pbp_b18a_maxplan_yn",
+            "amt": "pbp_b18a_maxplan_amt",
+            "per": "pbp_b18a_maxplan_per",
+            "per_d": "pbp_b18a_maxplan_per_d",
+            "shared": "18a supplemental benefits and hearing aids",
+            "shared_limit_id": "PBP_18A_MAXPLAN"
+          }
+        }
+      ],
+      "auth": "pbp_b18b_auth_yn",
+      "refer": "pbp_b18b_refer_yn",
+      "quote": [
+        "pbp_b18b_copay_amt_p2_ie_min",
+        "pbp_b18b_copay_amt_p2_ie_max",
+        "pbp_b18b_maxenr_yn",
+        "pbp_b18b_maxenr_type",
+        "pbp_b18b_maxenr_amt",
+        "pbp_b18b_maxenr_per",
+        "pbp_b18b_maxenr_per_d"
+      ],
+      "note": "Written only when the plan chooses this aid type in pbp_b18b_bendesc_ehc. The per-two-aids copays have no basis value in BPS and are quoted (question H2)."
+    },
+    {
+      "benefit_id": "HEARING_AIDS_OUTER_EAR",
+      "service_name": "Prescription hearing aids, outer ear",
+      "pbp_code": "18b3",
+      "pbp_label": "18b3: Prescription Hearing Aids - Outer Ear",
+      "medicare_covered": false,
+      "file": "pbp_b18_hearing_exams_aids.txt",
+      "canonical_key": null,
+      "category": "HEARING",
+      "benefit_type": "hearing",
+      "offered": {
+        "yn": "pbp_b18b_bendesc_yn",
+        "ehc": "pbp_b18b_bendesc_ehc",
+        "position": 4,
+        "when_not_chosen": "skip"
+      },
+      "amo": "pbp_b18b_bendesc_amo_oe",
+      "copay": {
+        "yn": "pbp_b18b_copay_yn",
+        "ehc": "pbp_b18b_copay_ehc",
+        "position": 3,
+        "min": "pbp_b18b_copay_amt_per_oe_min",
+        "max": "pbp_b18b_copay_amt_per_oe_max",
+        "basis": "per_aid"
+      },
+      "coins": {
+        "yn": "pbp_b18b_coins_yn",
+        "ehc": "pbp_b18b_coins_ehc",
+        "position": 3,
+        "min": "pbp_b18b_coins_pct_oe_min",
+        "max": "pbp_b18b_coins_pct_oe_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b18b_ded_yn",
+        "amt": "pbp_b18b_ded_amt",
+        "shared": "18b (all hearing aid types)"
+      },
+      "limits": [
+        {
+          "kind": "quantity",
+          "type": "hearing_aids",
+          "lim": "pbp_b18b_bendesc_lim_oe",
+          "num": "pbp_b18b_bendesc_numv_oe",
+          "per": "pbp_b18b_bendesc_per_oe",
+          "per_d": "pbp_b18b_bendesc_per_oe_d"
+        },
+        {
+          "kind": "dollars",
+          "yn": "pbp_b18b_maxplan_yn",
+          "amt": "pbp_b18b_maxplan_amt",
+          "per": "pbp_b18b_maxplan_per",
+          "per_d": "pbp_b18b_maxplan_per_d",
+          "perear": "pbp_b18b_maxplan_perear",
+          "in_oon": "pbp_b18b_maxplan_in_oon",
+          "type_col": "pbp_b18b_maxplan_type",
+          "shared": "18b (all hearing aid types)",
+          "via": {
+            "when": "1",
+            "yn": "pbp_b18a_maxplan_yn",
+            "amt": "pbp_b18a_maxplan_amt",
+            "per": "pbp_b18a_maxplan_per",
+            "per_d": "pbp_b18a_maxplan_per_d",
+            "shared": "18a supplemental benefits and hearing aids",
+            "shared_limit_id": "PBP_18A_MAXPLAN"
+          }
+        }
+      ],
+      "auth": "pbp_b18b_auth_yn",
+      "refer": "pbp_b18b_refer_yn",
+      "quote": [
+        "pbp_b18b_copay_amt_p2_oe_min",
+        "pbp_b18b_copay_amt_p2_oe_max",
+        "pbp_b18b_maxenr_yn",
+        "pbp_b18b_maxenr_type",
+        "pbp_b18b_maxenr_amt",
+        "pbp_b18b_maxenr_per",
+        "pbp_b18b_maxenr_per_d"
+      ],
+      "note": "Written only when the plan chooses this aid type in pbp_b18b_bendesc_ehc. The per-two-aids copays have no basis value in BPS and are quoted (question H2)."
+    },
+    {
+      "benefit_id": "HEARING_AIDS_OVER_THE_EAR",
+      "service_name": "Prescription hearing aids, over the ear",
+      "pbp_code": "18b4",
+      "pbp_label": "18b4: Prescription Hearing Aids - Over the Ear",
+      "medicare_covered": false,
+      "file": "pbp_b18_hearing_exams_aids.txt",
+      "canonical_key": null,
+      "category": "HEARING",
+      "benefit_type": "hearing",
+      "offered": {
+        "yn": "pbp_b18b_bendesc_yn",
+        "ehc": "pbp_b18b_bendesc_ehc",
+        "position": 1,
+        "when_not_chosen": "skip"
+      },
+      "amo": "pbp_b18b_bendesc_amo_ote",
+      "copay": {
+        "yn": "pbp_b18b_copay_yn",
+        "ehc": "pbp_b18b_copay_ehc",
+        "position": 1,
+        "min": "pbp_b18b_copay_amt_per_ote_min",
+        "max": "pbp_b18b_copay_amt_per_ote_max",
+        "basis": "per_aid"
+      },
+      "coins": {
+        "yn": "pbp_b18b_coins_yn",
+        "ehc": "pbp_b18b_coins_ehc",
+        "position": 1,
+        "min": "pbp_b18b_coins_pct_ote_min",
+        "max": "pbp_b18b_coins_pct_ote_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b18b_ded_yn",
+        "amt": "pbp_b18b_ded_amt",
+        "shared": "18b (all hearing aid types)"
+      },
+      "limits": [
+        {
+          "kind": "quantity",
+          "type": "hearing_aids",
+          "lim": "pbp_b18b_bendesc_lim_ote",
+          "num": "pbp_b18b_bendesc_numv_ote",
+          "per": "pbp_b18b_bendesc_per_ote",
+          "per_d": "pbp_b18b_bendesc_per_ote_d"
+        },
+        {
+          "kind": "dollars",
+          "yn": "pbp_b18b_maxplan_yn",
+          "amt": "pbp_b18b_maxplan_amt",
+          "per": "pbp_b18b_maxplan_per",
+          "per_d": "pbp_b18b_maxplan_per_d",
+          "perear": "pbp_b18b_maxplan_perear",
+          "in_oon": "pbp_b18b_maxplan_in_oon",
+          "type_col": "pbp_b18b_maxplan_type",
+          "shared": "18b (all hearing aid types)",
+          "via": {
+            "when": "1",
+            "yn": "pbp_b18a_maxplan_yn",
+            "amt": "pbp_b18a_maxplan_amt",
+            "per": "pbp_b18a_maxplan_per",
+            "per_d": "pbp_b18a_maxplan_per_d",
+            "shared": "18a supplemental benefits and hearing aids",
+            "shared_limit_id": "PBP_18A_MAXPLAN"
+          }
+        }
+      ],
+      "auth": "pbp_b18b_auth_yn",
+      "refer": "pbp_b18b_refer_yn",
+      "quote": [
+        "pbp_b18b_copay_amt_p2_ote_min",
+        "pbp_b18b_copay_amt_p2_ote_max",
+        "pbp_b18b_maxenr_yn",
+        "pbp_b18b_maxenr_type",
+        "pbp_b18b_maxenr_amt",
+        "pbp_b18b_maxenr_per",
+        "pbp_b18b_maxenr_per_d"
+      ],
+      "note": "Written only when the plan chooses this aid type in pbp_b18b_bendesc_ehc. The per-two-aids copays have no basis value in BPS and are quoted (question H2)."
+    }
+  ]
+}

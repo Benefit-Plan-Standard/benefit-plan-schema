@@ -1,0 +1,7 @@
+pbp_a_hnumber	pbp_a_plan_identifier	segment_id	pbp_a_ben_cov	pbp_a_plan_type	orgtype	bid_id	version	pbp_c_pos_outpt_group_num_id	pbp_c_pos_group_lbl	pbp_c_pos_oupt_bencat_bens	pbp_c_pos_outpt_mc_bencats	pbp_c_pos_outpt_nmc_bencats	pbp_c_pos_outpt_coins_yn	pbp_c_pos_outpt_coins_min_pct	pbp_c_pos_outpt_coins_max_pct	pbp_c_pos_outpt_copay_yn	pbp_c_pos_outpt_copay_min_amt	pbp_c_pos_outpt_copay_max_amt	pbp_c_pos_outpt_maxplan_yn	pbp_c_pos_outpt_maxplan_amt	pbp_c_pos_outpt_maxplan_per	pbp_c_pos_outpt_maxplan_per_d	pbp_c_pos_outpt_deduct_yn	pbp_c_pos_outpt_deduct_amt
+H1609	028	0	1	02	01	H1609_028_0	4	1	$0.00 - $70.00 copay	01	7g;		2			1	0.00	70.00	2				2	
+H1609	028	0	1	02	01	H1609_028_0	4	2	$0.00 copay	11	14a;	13d;13e;14c15;	2			1	0.00	0.00	2				2	
+H1609	028	0	1	02	01	H1609_028_0	4	3	$250.00 copay	01	10a1;		2			1	250.00	250.00	2				2	
+H1609	028	0	1	02	01	H1609_028_0	4	4	$70.00 copay	01	7d;		2			1	70.00	70.00	2				2	
+H1609	028	0	1	02	01	H1609_028_0	4	5	20% coinsurance	01	10a2;		1	20	20	2			2				2	
+H1609	028	0	1	02	01	H1609_028_0	4	6	50% coinsurance	01	3-1;3-2;3-3;3-4;5a;5b;6;7b;7f;8a1;8a2;8b1;8b2;8b3;9a1;9a2;9b;12;		1	50	50	2			2				2	

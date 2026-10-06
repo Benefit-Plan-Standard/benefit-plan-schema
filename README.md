@@ -22,6 +22,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 - FHIR alignment: `docs/fhir-alignment.md`  
 - FHIR InsurancePlan converter (CARIN SBC profile): `scripts/to-insuranceplan.js`, spec `docs/specs/insuranceplan-converter.md`  
 - Importer from the CMS Marketplace public use files: `scripts/from-marketplace-puf.js`, spec `docs/specs/marketplace-puf-importer.md`, 3 examples in `examples/*.puf.json` and their Bundles in `examples/fhir-puf/`  
+- Importer from the CMS Medicare Advantage Plan Benefit Package files: `scripts/from-pbp.js`, spec `docs/specs/pbp-importer.md`, 5 examples in `examples/*.pbp.json`  
 - The 10 examples as FHIR InsurancePlan: `examples/fhir/`, published at https://benefitplanstandard.org/fhir/index.json  
 - CARIN Digital Insurance Card reconciliation: `docs/carin-dic-reconciliation.md`  
 - Modules: `modules/README.md`  
@@ -271,6 +272,14 @@ Two limits to know. The SBC benefit category binding has 29 codes, so benefits o
 node scripts/from-marketplace-puf.js --year 2026 --issuer 40220 --state TX          # list an issuer's plans
 node scripts/from-marketplace-puf.js --year 2026 --plan 40220TX0080024-01 --out plan.json
 node --test scripts/from-marketplace-puf.test.js
+```
+
+`scripts/from-pbp.js` reads the CMS Medicare Advantage Plan Benefit Package (PBP) Benefits files and writes one BPS v1.2.0 document per plan; the FHIR converter above reads that output unchanged, except that it refuses the point-of-service tier of HMO-POS plans. The PBP files are not in the repository: download them into `data/pbp/<year>/` (git-ignored). Service categories map to canonical keys through `fhir/pbp-crosswalk.json`; a value the reader cannot read stops the import instead of being guessed. The test runs on the golden plans' rows committed in `test/fixtures/pbp/`, so it needs no download. Spec: [`docs/specs/pbp-importer.md`](docs/specs/pbp-importer.md); examples: `examples/*.pbp.json`.
+
+```bash
+node scripts/from-pbp.js --year 2027 --contract H2406                                # list a contract's plans
+node scripts/from-pbp.js --year 2027 --plan H2406-013-000 --out plan.json
+node --test scripts/from-pbp.test.js
 ```
 
 ---
