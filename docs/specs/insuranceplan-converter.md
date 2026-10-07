@@ -3,6 +3,7 @@
 **Status:** Accepted, 2026-09-24
 **Roadmap:** item 4, "CARIN SBC exporter" (`docs/roadmap.md`)
 **Reads with:** [`../fhir-alignment.md`](../fhir-alignment.md), [`../carin-dic-reconciliation.md`](../carin-dic-reconciliation.md)
+**Map:** the CMS files, the two importers and this converter in one diagram, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow)
 
 This spec defines a converter from a Benefit Plan Standard (BPS) document to a FHIR R4 `InsurancePlan` that conforms to the CARIN Digital Insurance Card SBC InsurancePlan profile. The mappings are checked against the profile definitions in the pinned package and against FHIR R4 core.
 

@@ -2,7 +2,7 @@
 
 These files prove the chain from the CMS Marketplace public use files to FHIR: `scripts/from-marketplace-puf.js` writes a Benefit Plan Standard v1.1.0 document from the public files, and the existing converter, `scripts/to-insuranceplan.js`, reads that document unchanged and writes the Bundle. They are not golden files, they are not published, and they are not in `fhir/index.json`. The 10 published Bundles are in [`../fhir/`](../fhir/).
 
-Importer spec: [`../../docs/specs/marketplace-puf-importer.md`](../../docs/specs/marketplace-puf-importer.md). Converter spec: [`../../docs/specs/insuranceplan-converter.md`](../../docs/specs/insuranceplan-converter.md).
+Importer spec: [`../../docs/specs/marketplace-puf-importer.md`](../../docs/specs/marketplace-puf-importer.md). Converter spec: [`../../docs/specs/insuranceplan-converter.md`](../../docs/specs/insuranceplan-converter.md). The whole route in one diagram, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow).
 
 ## Files
 

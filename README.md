@@ -279,6 +279,8 @@ Two limits to know. The SBC benefit category binding has 29 codes, so benefits o
 
 ### Importers
 
+The two importers and the converter in one diagram, with every command from download to validation: https://benefitplanstandard.org/docs/specification/data-flow
+
 `scripts/from-marketplace-puf.js` reads the CMS Health Insurance Exchange public use files (Plan Attributes PUF and Benefits and Cost Sharing PUF) and writes one BPS v1.1.0 document per plan; the FHIR converter above reads that output unchanged. The public files are not in the repository: download them into `data/puf/<year>/` (git-ignored). Benefit names map to canonical keys through `fhir/marketplace-puf-crosswalk.json`; a cost-share string the parser cannot read stops the import instead of being guessed. Spec: [`docs/specs/marketplace-puf-importer.md`](docs/specs/marketplace-puf-importer.md); examples: `examples/*.puf.json`.
 
 ```bash

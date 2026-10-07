@@ -2,6 +2,7 @@
 
 **Status:** Draft, 2026-10-05
 **Reads with:** [`insuranceplan-converter.md`](insuranceplan-converter.md) (the exporter this importer feeds), [`marketplace-puf-parse-report.md`](marketplace-puf-parse-report.md) (every cost-share string in the PY2026 file and how it is read), [`marketplace-puf-vs-sbc-flblue-505.md`](marketplace-puf-vs-sbc-flblue-505.md) (the importer's Florida Blue output against the SBC example)
+**Map:** this importer, the Medicare Advantage importer and the converter in one diagram, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow)
 
 This spec defines the first importer for the Benefit Plan Standard (BPS): the CMS Health Insurance Exchange public use files (PUFs) in, one BPS v1.1.0 document per plan out. It follows the pattern of the FHIR converter: the benefit mapping lives in a data file, the output is deterministic, 3 golden files are committed, and a test checks them.
 

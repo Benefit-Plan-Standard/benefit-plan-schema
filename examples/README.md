@@ -2,6 +2,8 @@
 
 18 plans expressed in the Benefit Plan Standard. 10 are read from a published plan document, which ships alongside them in `sources/`. 3 are imported from the CMS Marketplace public use files and 5 from the CMS Medicare Advantage Plan Benefit Package files. Use them to see how a real plan maps into the standard, to test a parser or importer, or as input to the FHIR converter.
 
+How the CMS files become these examples and their FHIR Bundles, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow).
+
 ## From published plan documents
 
 | File | Plan | Carrier | Market | Plan type | Year | Schema | Benefits | Source document |
