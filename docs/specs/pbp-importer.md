@@ -404,7 +404,8 @@ First run on 2026-10-06 (session 3) over the 5 golden files; updated in session 
 
 - **`POS` maps since session 4.** Session 3's converter refused the tier (`error: network tier "POS" is not IN, OUT or a second in-network tier`), so no HMO-POS plan reached FHIR. `scripts/to-insuranceplan.js` now maps `POS` to `applicability` `out-of-network` with the text-only qualifier `Point-of-service option`, as it maps `IN2` (converter spec 6.3, which cites the H1609-028 Summary of Benefits and Plan Finder). The 10 published Bundles are byte-identical before and after.
 - **All 5 convert** to 1 `Bundle` each (`InsurancePlan` and `Organization`), written to `examples/fhir/` under the converter's naming (the `InsurancePlan` id, from `plan_id`; section 13). Each places the benefits with a crosswalked canonical key under the SBC categories and lists the rest by name in `bps-unmapped-benefit` (the 11 with no canonical key, and `observation_care`, `radiation_therapy`, `chiropractic_care`, `acupuncture`, which `fhir/carin-sbc-crosswalk.json` does not place, as they apply). The hospital cost tiers of H5533-019 (`IN_1A_TIER_1`, `IN_1A_TIER_2`, `tier_class` `cost_designation`) reach FHIR as cost qualifiers with the tier name as text. H1609-028 has 10 `Point-of-service option` entries.
-- **HL7 FHIR validator: not run.** `validator_cli.jar` is not on this machine (the `hl7.fhir.us.insurance-card#2.0.0-ballot` package is in the local package cache). The command and the table to fill are in section 13. Not yet checked by the validator: `network_tier` values on accumulators as text, `deductible` steps, the `Point-of-service option` qualifier, `max_amount`, and the limit types `treatments` and `hearing_aids` as text.
+- **HL7 FHIR validator: validated on 2026-10-06.** All 5 Bundles pass with 0 errors (15 warnings, 14 of them text-only `cost.qualifiers`, 1 the Aetna `plan.type`; section 13, `examples/fhir/VALIDATION.md`).
+- **The SBC Plan Type value set has no HMO-POS code** (1,273 CY2027 plans). Found by the validator on H1609-028: the converter emits `plan.type` as text, which raises 1 warning on the Aetna Bundle (the binding is extensible, so it is not an error). Candidate third ticket against the CARIN Digital Insurance Card IG: add an HMO-POS code to the SBC Plan Type value set.
 
 ## 10. Determinism
 
@@ -503,10 +504,10 @@ Since session 4 (2026-10-06) the 5 golden files are also converted with `scripts
 | `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | H5533-019-000 | 163,544 | 14 / 13 | 31 | 2 | 4 (hospital tiers) |
 | `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | H5425-140-000 | 137,165 | 14 / 13 | 28 | 13 | 0 |
 
-**HL7 FHIR validator: not run on 2026-10-06.** `validator_cli.jar` is not on this machine; Java (OpenJDK 17.0.19) is, and `hl7.fhir.us.insurance-card#2.0.0-ballot` is in the local FHIR package cache (`~/.fhir/packages`). The command, the one the docs page "Validating" section and `examples/fhir/VALIDATION.md` give, limited to the 5 files, from the repository root (the latest `validator_cli.jar` is at https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar; the run uses `tx.fhir.org`):
+**HL7 FHIR validator: validated on 2026-10-06.** `validator_cli.jar` 7.0.0 (Git# 37795f3f571f, built 2026-10-06T19:02:34Z), OpenJDK 17.0.19, FHIR 4.0.1, packages `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions`. The command, the one `examples/fhir/VALIDATION.md` gives, limited to the 5 files, from the repository root (the latest `validator_cli.jar` is at https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar; the jar is git-ignored and downloaded per run, with its version recorded; `-Dfile.encoding=UTF-8` is there because the validator warns without it):
 
 ```
-java -jar validator_cli.jar -version 4.0.1 \
+java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
   -ig hl7.fhir.us.insurance-card#2.0.0-ballot \
   -ig fhir/definitions \
   examples/fhir/aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json \
@@ -518,11 +519,13 @@ java -jar validator_cli.jar -version 4.0.1 \
 
 | File | Errors | Warnings | Information |
 |---|---|---|---|
-| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | not run | not run | not run |
-| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | not run | not run | not run |
-| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | not run | not run | not run |
-| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | not run | not run | not run |
-| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | not run | not run | not run |
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 | 104 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 | 99 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 11 | 103 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 | 104 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 99 |
+
+All 5 pass with 0 errors. The 15 warnings: 14 are text-only `cost.qualifiers` (10 `Point-of-service option` on Aetna, 4 hospital cost tier names on UPMC), because the Cost Tier value set has only `value-choice`, `standard` and `virtual`; 1 is the Aetna `plan.type`, because the SBC Plan Type value set has no HMO-POS code (section 9.3). The information messages are the extension slicing messages, as for the SBC Bundles. The full record is the second run in `examples/fhir/VALIDATION.md`.
 
 A Bundle with errors is fixed in the importer or the converter and regenerated, never edited by hand.
 

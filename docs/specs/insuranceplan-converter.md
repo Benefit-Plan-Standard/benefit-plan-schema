@@ -31,7 +31,7 @@ This spec defines a converter from a Benefit Plan Standard (BPS) document to a F
 - BPS documents declaring `schema_version` `1.1.0` or `1.2.0`. Any other value is an error.
 - The CLI checks the input against the schema its `schema_version` names (`schema/v1.1.0` or `schema/v1.2.0`), using the same local Ajv setup as `scripts/validate.js`. A document that fails the schema is rejected. Nothing is converted.
 - Absent v1.2.0 fields take their v1.1.0 meaning. For example, a tier with no `tier_class` is a `network` tier.
-- The 10 files in `examples/` are the test corpus. The 8 SBC examples declare v1.1.0 and the 2 Medicare Advantage examples (`humana_example.json`, `scan_example.json`) declare v1.2.0.
+- The 10 `examples/*_example.json` files are the original test corpus. The 8 SBC examples declare v1.1.0 and the 2 Medicare Advantage examples (`humana_example.json`, `scan_example.json`) declare v1.2.0.
 - The PBP importer's 5 golden files (`examples/*.pbp.json`, v1.2.0) are converted too, since 2026-10-06; their Bundles sit in `examples/fhir/` beside the 10 (section 12) and are not published (section 13).
 
 ## 4. Outputs
@@ -346,14 +346,14 @@ Canonical base: `https://benefitplanstandard.org/fhir/`. All are `status: draft`
 2. **Convert.** `node scripts/to-insuranceplan.js examples/<file> > examples/fhir/<id>.json`.
 3. **FHIR validation.** The HL7 validator (`validator_cli.jar`, latest release on the day of the run, version recorded):
    ```
-   java -jar validator_cli.jar -version 4.0.1 \
+   java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
      -ig hl7.fhir.us.insurance-card#2.0.0-ballot \
      -ig fhir/definitions \
      examples/fhir/*.json
    ```
    The InsurancePlan inside each Bundle is checked against `sbc-insurance-plan` through its `meta.profile`. The validator uses its default terminology server (`tx.fhir.org`). The converter itself makes no network calls.
-4. **Pass bar.** Zero errors in all 10. Every warning is listed in `examples/fhir/VALIDATION.md` with an explanation. The record also includes the validator version, the package and its date, the terminology server, and per-file counts of errors, warnings and information messages.
-5. **Result.** All 10 pass with zero errors. The warnings are text-only `cost.qualifiers` for site-of-service and designation tiers that have no Cost Tier code (Humana and SCAN) and the text-only `OAP` plan type (Cigna). The BPS canonical-benefit coding placed beside the required SBC coding raises no issue. The full record, including a negative control, is in `examples/fhir/VALIDATION.md`.
+4. **Pass bar.** Zero errors in every Bundle (the 10 at the first run, and the 5 PBP Bundles from 2026-10-06). Every warning is listed in `examples/fhir/VALIDATION.md` with an explanation. The record also includes the validator version, the package and its date, the terminology server, and per-file counts of errors, warnings and information messages.
+5. **Result.** All 10 pass with zero errors. The warnings are text-only `cost.qualifiers` for site-of-service and designation tiers that have no Cost Tier code (Humana and SCAN) and the text-only `OAP` plan type (Cigna). The BPS canonical-benefit coding placed beside the required SBC coding raises no issue. The 5 PBP Bundles also pass with zero errors (15 warnings: text-only `cost.qualifiers` and the Aetna `plan.type`, which has no HMO-POS code). The full record, including a negative control and the second run, is in `examples/fhir/VALIDATION.md`.
 
 ## 12. Golden files and drift test
 
@@ -387,7 +387,7 @@ benefit-plan-schema/
   scripts/publish-fhir.js              copies outputs and definitions into the docs site; writes index.json
   fhir/carin-sbc-crosswalk.json        section 8.2 as data
   fhir/definitions/*.json              the 8 bps-* extension StructureDefinitions and the canonical-benefits CodeSystem
-  examples/fhir/<id>.json              10 golden Bundles
+  examples/fhir/<id>.json              15 golden Bundles (the 10 published, and the 5 PBP Bundles)
   examples/fhir/README.md
   examples/fhir/VALIDATION.md          validator run record and warnings explained
 
@@ -405,7 +405,7 @@ benefit-plan-docs/
 
 For `humana` and `scan`, both the index `label` and the docs page read exactly:
 
-> Medicare Advantage, keyed by hand from the CMS Summary of Benefits, validates against the v1.2.0 draft only.
+> Medicare Advantage, read from the CMS Summary of Benefits, validates against the v1.2.0 draft only.
 
 The same text heads `examples/fhir/README.md` for those two files.
 

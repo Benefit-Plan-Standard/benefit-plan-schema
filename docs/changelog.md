@@ -10,8 +10,13 @@ No schema change.
 ### Added
 
 - `scripts/from-pbp.js`: CMS Medicare Advantage Plan Benefit Package (PBP) Benefits files in, Benefit Plan Standard v1.2.0 documents out, 1 plan per run. Plan level, network tiers (including point-of-service and hospital cost tiers), deductibles and maximums, and 30 MVP benefits mapped in `fhir/pbp-crosswalk.json` (19 with a canonical key). Every MVP plan of contract year 2027 (6,872) imports with 0 errors. Spec in `docs/specs/pbp-importer.md`, file layout in `docs/specs/pbp-record-layout-notes.md`.
-- 5 examples (`examples/*.pbp.json`), regenerated only with `--write-golden`, and `scripts/from-pbp.test.js`, which builds them from the plans' rows committed in `test/fixtures/pbp/2027/` and needs no download.
-- `scripts/pbp-sob-check.js` and `docs/specs/pbp-sob-checks/H2406-013-000.json`: an importer document checked against its CMS Summary of Benefits, 61 checks, 0 differences.
+- 5 examples (`examples/*.pbp.json`): AARP Medicare Advantage from UHC FL-0021 (PPO, H2406-013-000), Humana Gold Plus H1036-068 (HMO), Aetna Medicare Select Extra (HMO-POS, H1609-028-000), UPMC for Life PPO Rx Choice (PPO, H5533-019-000) and SCAN Costco Medicare Advantage (HMO, H5425-140-000). Regenerated only with `--write-golden`. `scripts/from-pbp.test.js` builds them from the plans' rows committed in `test/fixtures/pbp/2027/` and needs no download.
+- 5 FHIR Bundles in `examples/fhir/`, one per example, written by `scripts/to-insuranceplan.js --write-golden`, hash-pinned in the converter test, and not published to the site. Validated on 2026-10-06 with `validator_cli.jar` 7.0.0: 0 errors on all 5, 15 warnings (14 text-only `cost.qualifiers`, 1 Aetna `plan.type` because the SBC Plan Type value set has no HMO-POS code). Record in `examples/fhir/VALIDATION.md`.
+- `scripts/pbp-sob-check.js`, with `docs/specs/pbp-sob-checks/H2406-013-000.json` (61 checks) and `H1609-028-000.json` (33 checks): importer documents checked against their CMS Summary of Benefits, 0 differences.
+
+### Changed
+
+- `scripts/to-insuranceplan.js` maps the point-of-service network tier (`POS`) of HMO-POS plans to `out-of-network` with the text-only qualifier `Point-of-service option` (converter spec 6.3); it refused the tier before. The 10 published Bundles are byte-identical.
 
 ## [1.2.0] – DRAFT (2026-10-06), plan-type vocabulary
 

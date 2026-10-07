@@ -26,7 +26,7 @@ const DEFS_DIR = path.join(REPO_ROOT, 'fhir', 'definitions');
 const SITE = 'https://benefitplanstandard.org/fhir/';
 const BPS_EXT = 'https://benefitplanstandard.org/fhir/StructureDefinition/';
 
-const MA_LABEL = 'Medicare Advantage, keyed by hand from the CMS Summary of Benefits, validates against the v1.2.0 draft only.';
+const MA_LABEL = 'Medicare Advantage, read from the CMS Summary of Benefits, validates against the v1.2.0 draft only.';
 
 function readJson(p) {
   return JSON.parse(fs.readFileSync(p, 'utf8'));

@@ -21,7 +21,7 @@ No Bundle needed a `Not stated in the BPS document` placeholder: every placed be
 Louisiana and Texas run on 2026-10-05; Florida Blue run on 2026-10-05 after the converter gained second in-network tiers. All from the repository root, exactly as [`../fhir/VALIDATION.md`](../fhir/VALIDATION.md) describes:
 
 ```
-java -jar validator_cli.jar -version 4.0.1 \
+java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
   -ig hl7.fhir.us.insurance-card#2.0.0-ballot \
   -ig fhir/definitions \
   examples/fhir-puf/*.json

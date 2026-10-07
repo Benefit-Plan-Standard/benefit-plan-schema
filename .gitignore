@@ -3,3 +3,5 @@
 node_modules/
 data/
 scratch/
+# validator_cli.jar is downloaded per run and its version recorded (examples/fhir/VALIDATION.md)
+*.jar

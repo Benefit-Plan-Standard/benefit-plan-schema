@@ -1,7 +1,7 @@
 # Validation record
 
 **Date:** 2026-09-24; United, Ambetter and Kaiser re-validated 2026-09-25 after data fixes; the 8 SBC files re-validated 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs; Aetna PPO 1500, Aetna PPO 5000, GatorCare and United re-validated 2026-10-05 after the deductible flags on silent cells were set (no count changed)
-**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below.
+**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run, at the end of this file): 0 errors, 15 warnings.
 
 ## Setup
 
@@ -18,7 +18,7 @@
 Command, from the repository root:
 
 ```
-java -jar validator_cli.jar -version 4.0.1 \
+java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
   -ig hl7.fhir.us.insurance-card#2.0.0-ballot \
   -ig fhir/definitions \
   examples/fhir/*.json
@@ -106,3 +106,37 @@ To confirm that the profile and the BPS definitions are enforced, a copy of `aet
 - unknown code `home-health` in `sbc-benefit-category`, and none of the codings in the SBC Benefit Category value set;
 - `specificCost.benefit.cost`: minimum required = 2, but only found 1;
 - sub-extension url `foo` is not defined by `bps-cost-share`, and does not match any of its slices.
+
+## Second run: 2026-10-06, the 5 PBP Bundles
+
+**Result:** all 5 files pass with **0 errors**. 15 warnings, explained below.
+
+| Item | Value |
+|---|---|
+| Validator | HL7 FHIR validator `validator_cli.jar` 7.0.0 (Git# 37795f3f571f, built 2026-10-06T19:02:34Z) |
+| Java | OpenJDK 17.0.19 |
+| FHIR version | 4.0.1 |
+| Packages | `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions` |
+
+Command, from the repository root (`-Dfile.encoding=UTF-8` is there because the validator warns without it):
+
+```
+java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
+  -ig hl7.fhir.us.insurance-card#2.0.0-ballot \
+  -ig fhir/definitions \
+  examples/fhir/aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json \
+  examples/fhir/humana-gold-plus-h1036-068-hmo-h1036-068-000.json \
+  examples/fhir/aetna-medicare-select-extra-hmo-pos-h1609-028-000.json \
+  examples/fhir/upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json \
+  examples/fhir/scan-costco-medicare-advantage-hmo-h5425-140-000.json
+```
+
+| File | Errors | Warnings | Information |
+|---|---|---|---|
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 | 104 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 | 99 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 11 | 103 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 | 104 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 99 |
+
+**Warnings explained (15).** 14 are text-only `cost.qualifiers` (10 `Point-of-service option` on Aetna and 4 hospital cost tier names on UPMC), because the Cost Tier value set has only `value-choice`, `standard` and `virtual`. 1 is the Aetna `plan.type`, because the SBC Plan Type value set has no HMO-POS code (listed in the PBP importer spec, section 9.3). The information messages are the extension slicing messages, as for the SBC Bundles above.

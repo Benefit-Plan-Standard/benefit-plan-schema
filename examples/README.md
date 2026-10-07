@@ -1,6 +1,6 @@
 # Examples
 
-13 plans expressed in the Benefit Plan Standard. 10 are read from a published plan document, which ships alongside them in `sources/`. 3 are imported from the CMS Marketplace public use files. Use them to see how a real plan maps into the standard, to test a parser or importer, or as input to the FHIR converter.
+18 plans expressed in the Benefit Plan Standard. 10 are read from a published plan document, which ships alongside them in `sources/`. 3 are imported from the CMS Marketplace public use files and 5 from the CMS Medicare Advantage Plan Benefit Package files. Use them to see how a real plan maps into the standard, to test a parser or importer, or as input to the FHIR converter.
 
 ## From published plan documents
 
@@ -29,11 +29,24 @@
 
 "Benefits placed" is the number of entries in `benefits[]` out of the plan's rows in the Benefits and Cost Sharing PUF. A row is placed when its benefit name maps to a canonical key in `../fhir/marketplace-puf-crosswalk.json`; the other rows (31, 31 and 24) are listed by name and coverage in `source_references[]`. The plan ID after each name is the HIOS plan ID, which v1.1.0 has no field for.
 
+## The 5 Medicare Advantage public-file examples
+
+| File | Plan | Issuer | State | Market | Plan type | Plan year | Schema | Benefits placed | Source | FHIR Bundle in `fhir/` |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json` | AARP Medicare Advantage from UHC FL-0021 (PPO), H2406-013-000, 7 counties | UnitedHealthcare | FL | Medicare Advantage | PPO | 2027 | v1.2.0 | 27 of 30 | CMS PBP Benefits 2027 (Plan Benefit Package data), downloaded 2026-10-06 | Yes |
+| `humana-humana-gold-plus-h1036-068.pbp.json` | Humana Gold Plus H1036-068 (HMO), H1036-068-000, 9 counties | Humana | FL | Medicare Advantage | HMO | 2027 | v1.2.0 | 27 of 30 | CMS PBP Benefits 2027 (Plan Benefit Package data), downloaded 2026-10-06 | Yes |
+| `aetna-medicare-aetna-medicare-select-extra.pbp.json` | Aetna Medicare Select Extra (HMO-POS), H1609-028-000, 11 counties | Aetna Medicare | FL | Medicare Advantage | HMO-POS | 2027 | v1.2.0 | 27 of 30 | CMS PBP Benefits 2027 (Plan Benefit Package data), downloaded 2026-10-06 | Yes |
+| `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | UPMC for Life PPO Rx Choice (PPO), H5533-019-000, 1 county | UPMC for Life | PA | Medicare Advantage | PPO | 2027 | v1.2.0 | 27 of 30 | CMS PBP Benefits 2027 (Plan Benefit Package data), downloaded 2026-10-06 | Yes |
+| `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | SCAN Costco Medicare Advantage (HMO), H5425-140-000, 1 county | SCAN Health Plan | CA | Medicare Advantage | HMO | 2027 | v1.2.0 | 27 of 30 | CMS PBP Benefits 2027 (Plan Benefit Package data), downloaded 2026-10-06 | Yes |
+
+"Benefits placed" is the number of entries in `benefits[]` out of the 30 service categories in `../fhir/pbp-crosswalk.json`, the importer's benefit set; each file's `source_references[]` says "27 written". The plan ID after each name is the contract-plan-segment. The 5 FHIR Bundles are in `fhir/`, not in a folder of their own, and are not published on the site.
+
 ## How they were made
 
 - **The 8 SBC examples** are generated from the source Summary of Benefits and Coverage and verified value by value against it. On 2026-10-05 the 8 were corrected against their PDFs for limits and deductible flags; [`../docs/changelog.md`](../docs/changelog.md) has the detail. Also on 2026-10-05, the deductible flags on cost shares whose cell is silent about the deductible were set from the issuer's annotation convention and the SBC template footnote, with the page 1 answer to "Are there services covered before you meet your deductible?". They validate against v1.1.0 and, unchanged, against the v1.2.0 draft.
-- **The 2 Medicare Advantage examples** are keyed by hand from the CMS Summary of Benefits and verified value by value against the cited pages. They use fields added in the v1.2.0 draft, so they validate against that draft only. See [`../docs/medicare-advantage-notes.md`](../docs/medicare-advantage-notes.md).
+- **The 2 Medicare Advantage examples** are read from the CMS Summary of Benefits and verified value by value against the cited pages. They use fields added in the v1.2.0 draft, so they validate against that draft only. See [`../docs/medicare-advantage-notes.md`](../docs/medicare-advantage-notes.md).
 - **The 3 public-file examples** are produced by `scripts/from-marketplace-puf.js` from 2 CMS files for the plan year: the Plan Attributes PUF and the Benefits and Cost Sharing PUF. No PDF is read. The output is deterministic: the same 2 files and download date always give byte-identical output. They validate against v1.1.0 and the v1.2.0 draft. See [`../docs/specs/marketplace-puf-importer.md`](../docs/specs/marketplace-puf-importer.md).
+- **The 5 Medicare Advantage public-file examples** are produced by `scripts/from-pbp.js` from the CMS Plan Benefit Package (PBP) Benefits files for contract year 2027. No PDF is read by the importer. The output is deterministic: the same files and download date always give byte-identical output. They are v1.2.0 documents. Two of them were checked against the carrier's 2027 Summary of Benefits with `scripts/pbp-sob-check.js`: H2406-013 (UnitedHealthcare) and H1609-028 (Aetna). See [`../docs/specs/pbp-importer.md`](../docs/specs/pbp-importer.md).
 
 ## Source references
 
@@ -42,6 +55,7 @@ Every example carries `source_references[]`.
 - The 8 SBC examples carry page references at the plan level (18 to 26 per plan), each with a page number and the source text. Individual benefits do not point to a specific reference.
 - The 2 Medicare Advantage examples also carry references on every benefit (72 of 72 for Humana, 71 of 71 for SCAN).
 - The 3 public-file examples carry 4 plan-level entries each, as text only, because the public files have no pages. The first names the 2 files and their download URLs, the plan year, the download date (2026-10-05), the HIOS plan ID and the SBC URL from the Plan Attributes PUF. The other 3 hold, verbatim, the plan attributes with no BPS field (metal level, cost-sharing reduction variation, network and formulary IDs and others), every accumulator cell, and the benefit rows with no canonical key. Individual benefits carry no references.
+- The 5 Medicare Advantage public-file examples carry 8 to 13 plan-level entries each, as text only, because the PBP files have no pages: the file names, release, URL and download date, the plan type, the service area, the Section A values and deductible and out-of-pocket cells with no BPS field (verbatim), and the benefit count. Every benefit (27 of 27 in each) also carries its own references.
 
 ## Things to know
 
@@ -76,7 +90,7 @@ The 3 public-file examples use 2 other types, 1 per free-text column of the Bene
 ## Folders
 
 - [`sources/`](sources/): the original published PDFs, unmodified, 1 per document-derived example (GatorCare has a second, its pharmacy SBC), so any value can be checked against its source. See [`sources/README.md`](sources/README.md). The public-file examples have no PDF here; the public files are downloaded into `data/puf/<year>/` and not committed.
-- [`fhir/`](fhir/): the 10 document-derived examples converted to FHIR R4 Bundles, each holding an `InsurancePlan` in the CARIN Digital Insurance Card SBC InsurancePlan profile (STU 2 ballot) and its `Organization`, with the validation record. They are golden files for the converter's tests. They are published on the site at https://benefitplanstandard.org/fhir/index.json. See [`fhir/README.md`](fhir/README.md).
+- [`fhir/`](fhir/): the 10 document-derived examples converted to FHIR R4 Bundles, each holding an `InsurancePlan` in the CARIN Digital Insurance Card SBC InsurancePlan profile (STU 2 ballot) and its `Organization`, with the validation record. The 5 Medicare Advantage public-file examples are converted here too. They are golden files for the converter's tests. The 10 document-derived Bundles are published on the site at https://benefitplanstandard.org/fhir/index.json; the 5 public-file Bundles are not. See [`fhir/README.md`](fhir/README.md).
 - [`fhir-puf/`](fhir-puf/): the 3 public-file examples converted to FHIR by the same converter, with their own validation record. They show the chain from the public files to FHIR. They are not golden files, they are not published on the site, and they are not in `fhir/index.json`. See [`fhir-puf/README.md`](fhir-puf/README.md).
 
 ## Validate an example
@@ -103,3 +117,11 @@ node scripts/from-marketplace-puf.js --year 2026 --plan 40220TX0080024-01 --out 
 ```
 
 The public files must first be downloaded into `data/puf/<year>/`; the importer spec, section 11, gives the steps.
+
+## Import a Medicare Advantage plan from the PBP files
+
+```
+node scripts/from-pbp.js --year 2027 --plan H2406-013-000 --out plan.json
+```
+
+The PBP files must first be downloaded into `data/pbp/<year>/`; the importer spec, section 11, gives the steps.
