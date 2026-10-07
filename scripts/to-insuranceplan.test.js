@@ -17,7 +17,7 @@ const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
 
-const { toInsurancePlanBundle, serialize, exampleFiles, EXAMPLES_DIR, GOLDEN_DIR } = require('./to-insuranceplan.js');
+const { toInsurancePlanBundle, serialize, exampleFiles, pbpExampleFiles, EXAMPLES_DIR, GOLDEN_DIR } = require('./to-insuranceplan.js');
 const { buildAll, OUT_DIR } = require('./build-fhir-definitions.js');
 
 const SOURCE_REF = 'https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference';
@@ -84,7 +84,8 @@ test('the 8 SBC examples carry no benefit-level source references', () => {
 });
 
 test('no stray golden files', () => {
-  const expected = examples.map((f) => toInsurancePlanBundle(readJson(path.join(EXAMPLES_DIR, f))).entry[0].resource.id + '.json').sort();
+  const expected = [...examples, ...pbpExampleFiles()]
+    .map((f) => toInsurancePlanBundle(readJson(path.join(EXAMPLES_DIR, f))).entry[0].resource.id + '.json').sort();
   const actual = fs.readdirSync(GOLDEN_DIR).filter((f) => f.endsWith('.json')).sort();
   assert.deepStrictEqual(actual, expected);
 });
@@ -121,9 +122,20 @@ const GOLDEN_SHA256 = {
   'uhc-choice-plus-hsa-gold-1700.json': '4c385df53392d72d1b39dc74dbc07021f41945648a0aba1675153588c38ee19c',
 };
 
+// SHA-256 of the 5 Bundles converted from the PBP importer's golden files
+// (examples/*.pbp.json), pinned 2026-10-06 when the converter learned the POS tier.
+const PBP_BUNDLE_SHA256 = {
+  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': 'cba2d9ea6ff995d581837ffcaf4fea1c9210d71178dc1d0b1ba65670babb58eb',
+  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': '44cc8069595a78147fb4fd3acfc9d2f00c95fa1efb9666c4c57f63824390d6dd',
+  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '441fe9846714206898be8ac6dd0ce2b26b008fed1db4ad600c3f03f51a8324c6',
+  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': 'ce122d5b576c6126bdb797b0994a39e9821219d576006dc7ca130bdc6d002cf2',
+  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': '34235b958c96e909ae24462d3c7f5952ebe0f9fdcb138d60c0d2a1567d8974a9',
+};
+
 test('the 10 golden files are byte-identical to the pinned versions, and the converter reproduces them', () => {
   const sha = (s) => crypto.createHash('sha256').update(s, 'utf8').digest('hex');
-  assert.deepStrictEqual(Object.keys(GOLDEN_SHA256).sort(), fs.readdirSync(GOLDEN_DIR).filter((f) => f.endsWith('.json')).sort());
+  assert.deepStrictEqual([...Object.keys(GOLDEN_SHA256), ...Object.keys(PBP_BUNDLE_SHA256)].sort(),
+    fs.readdirSync(GOLDEN_DIR).filter((f) => f.endsWith('.json')).sort());
   for (const [name, want] of Object.entries(GOLDEN_SHA256)) {
     assert.strictEqual(sha(normalize(fs.readFileSync(path.join(GOLDEN_DIR, name), 'utf8'))), want, `examples/fhir/${name} changed`);
   }
@@ -188,6 +200,49 @@ test('the Florida Blue 1505 public-file document converts: tier 2 entries are in
   assert.ok(tier2.length > 0);
   assert.ok(tier2.every((c) => c.applicability.coding[0].code === 'in-network'));
   assert.strictEqual(costs.filter((c) => c.type.text === 'Not stated in the BPS document').length, 0);
+});
+
+// ---- PBP golden files and the point-of-service tier (spec 6.3) ------------------
+test('the 5 PBP golden files convert to their pinned Bundles in examples/fhir/, twice the same', () => {
+  const sha = (s) => crypto.createHash('sha256').update(s, 'utf8').digest('hex');
+  const files = pbpExampleFiles();
+  assert.strictEqual(files.length, 5);
+  for (const file of files) {
+    const bps = readJson(path.join(EXAMPLES_DIR, file));
+    const text = serialize(toInsurancePlanBundle(bps));
+    const name = toInsurancePlanBundle(bps).entry[0].resource.id + '.json';
+    assert.strictEqual(text, normalize(fs.readFileSync(path.join(GOLDEN_DIR, name), 'utf8')), `examples/fhir/${name} differs from converter output`);
+    assert.strictEqual(sha(text), PBP_BUNDLE_SHA256[name], `${file} no longer converts to its pinned Bundle`);
+    assert.strictEqual(serialize(toInsurancePlanBundle(bps)), text);
+  }
+});
+
+test('the POS tier (Aetna H1609-028 golden) maps to out-of-network with the "Point-of-service option" qualifier', () => {
+  const bps = readJson(path.join(EXAMPLES_DIR, 'aetna-medicare-aetna-medicare-select-extra.pbp.json'));
+  const plan = toInsurancePlanBundle(bps).entry[0].resource;
+  const benefits = plan.plan[0].specificCost.flatMap((s) => s.benefit);
+  const specialist = benefits.find((b) => b.type.coding[1].code === 'specialist').cost;
+  assert.deepStrictEqual(specialist.map((c) => c.applicability.coding[0].code), ['in-network', 'out-of-network']);
+  assert.strictEqual(specialist[0].qualifiers, undefined);
+  assert.deepStrictEqual(specialist[1].qualifiers, [{ text: 'Point-of-service option' }]);
+  assert.deepStrictEqual(specialist[1].value, { value: 70, unit: 'USD', system: 'urn:iso:std:iso:4217', code: 'USD' });
+  assert.ok(specialist[1].extension.some((e) => e.url.endsWith('/deductible-applies') && e.valueBoolean === true));
+  const pos = benefits.flatMap((b) => b.cost).filter((c) => c.qualifiers && c.qualifiers[0].text === 'Point-of-service option');
+  assert.strictEqual(pos.length, 10);
+  assert.ok(pos.every((c) => c.applicability.coding[0].code === 'out-of-network' && !c.qualifiers[0].coding));
+  // A benefit priced in network and at the POS option has no placeholder; primary care (IN only) has 1.
+  assert.ok(specialist.every((c) => c.type.text !== 'Not stated in the BPS document'));
+  const primary = benefits.find((b) => b.type.coding[1].code === 'primary_care').cost;
+  assert.deepStrictEqual(primary.map((c) => c.type.text || c.type.coding[0].code), ['copay', 'Not stated in the BPS document']);
+  // The deductible written to the POS tier reaches generalCost with its tier as text.
+  assert.deepStrictEqual(plan.plan[0].generalCost.map((g) => g.type.text), ['Individual out-of-pocket maximum, IN', 'Individual deductible, POS']);
+});
+
+test('only tier_id POS is the point-of-service tier: a network tier named "Point-of-Service" under another id still fails', () => {
+  const pos = withSecondTier({ tier_id: 'POS', name: 'Point-of-Service', tier_class: 'network' });
+  assert.strictEqual(pos[1].applicability.coding[0].code, 'out-of-network');
+  assert.deepStrictEqual(pos[1].qualifiers, [{ text: 'Point-of-service option' }]);
+  assert.throws(() => withSecondTier({ tier_id: 'POS2', name: 'Point-of-Service' }), /not IN, OUT or a second in-network tier/);
 });
 
 test('rejects unsupported schema versions and unknown tiers', () => {

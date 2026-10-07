@@ -14,7 +14,7 @@
  * Usage:
  *   node scripts/to-insuranceplan.js <bps.json>               Bundle to stdout
  *   node scripts/to-insuranceplan.js <bps.json> -o <out.json> Bundle to a file
- *   node scripts/to-insuranceplan.js --write-golden           regenerate examples/fhir/
+ *   node scripts/to-insuranceplan.js --write-golden           regenerate examples/fhir/ (10 examples, 5 PBP files)
  *   node scripts/to-insuranceplan.js --no-validate <bps.json> skip the input schema check
  *
  * Exit codes: 0 = converted, 1 = invalid input or usage error.
@@ -175,6 +175,13 @@ function isSecondInNetworkTier(tier) {
   return /\bin[- ]?network\b/i.test(name) && /\btier[ -]?(2|two)\b|\bsecond tier\b/i.test(name);
 }
 
+// The point-of-service option of an HMO-POS plan: tier_id POS, as the PBP
+// importer writes it. Spec section 6.3.
+const TEXT_POINT_OF_SERVICE = 'Point-of-service option';
+function isPointOfServiceTier(tier) {
+  return tierClass(tier) === 'network' && tier.tier_id === 'POS';
+}
+
 function applicabilityCode(tiers, tierId, seen = new Set()) {
   const tier = tiers.get(tierId);
   if (!tier) throw new Error(`network_cost_shares refers to unknown tier_id "${tierId}"`);
@@ -182,7 +189,8 @@ function applicabilityCode(tiers, tierId, seen = new Set()) {
     if (tier.tier_id === 'IN') return 'in-network';
     if (tier.tier_id === 'OUT') return 'out-of-network';
     if (isSecondInNetworkTier(tier)) return 'in-network';
-    throw new Error(`network tier "${tierId}" is not IN, OUT or a second in-network tier; the converter does not guess its applicability`);
+    if (isPointOfServiceTier(tier)) return 'out-of-network';
+    throw new Error(`network tier "${tierId}" is not IN, OUT or a second in-network tier, nor the point-of-service tier POS; the converter does not guess its applicability`);
   }
   if (!tier.parent_tier_id) throw new Error(`${tierClass(tier)} tier "${tierId}" has no parent_tier_id`);
   if (seen.has(tierId)) throw new Error(`parent_tier_id cycle at "${tierId}"`);
@@ -203,6 +211,7 @@ function qualifierFor(tier) {
       ? { coding: [coding(CS_COST_TIER, 'value-choice', 'Value Choice Provider')], text: name }
       : { text: name };
   }
+  if (isPointOfServiceTier(tier)) return { text: TEXT_POINT_OF_SERVICE };
   if (cls === 'network') return null;
   if (cls === 'modality' && /telehealth|virtual/i.test(tier.name || '')) {
     return { coding: [coding(CS_COST_TIER, 'virtual', 'Virtual Visit')], text: tier.name };
@@ -629,6 +638,12 @@ function exampleFiles() {
   return fs.readdirSync(EXAMPLES_DIR).filter((f) => f.endsWith('_example.json')).sort();
 }
 
+// The PBP importer's golden files (docs/specs/pbp-importer.md section 13); their
+// Bundles sit in examples/fhir/ beside the 10 above.
+function pbpExampleFiles() {
+  return fs.readdirSync(EXAMPLES_DIR).filter((f) => f.endsWith('.pbp.json')).sort();
+}
+
 function main(argv) {
   let out = null;
   let check = true;
@@ -658,7 +673,7 @@ function main(argv) {
   try {
     if (writeGolden) {
       fs.mkdirSync(GOLDEN_DIR, { recursive: true });
-      for (const f of exampleFiles()) {
+      for (const f of [...exampleFiles(), ...pbpExampleFiles()]) {
         const bundle = convertFile(path.join(EXAMPLES_DIR, f));
         const target = path.join(GOLDEN_DIR, bundle.entry[0].resource.id + '.json');
         fs.writeFileSync(target, serialize(bundle));
@@ -680,6 +695,6 @@ function main(argv) {
   }
 }
 
-module.exports = { toInsurancePlanBundle, serialize, exampleFiles, EXAMPLES_DIR, GOLDEN_DIR };
+module.exports = { toInsurancePlanBundle, serialize, exampleFiles, pbpExampleFiles, EXAMPLES_DIR, GOLDEN_DIR };
 
 if (require.main === module) process.exit(main(process.argv.slice(2)));

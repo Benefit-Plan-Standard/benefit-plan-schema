@@ -35,6 +35,18 @@ Validation record: [`VALIDATION.md`](VALIDATION.md).
 
 A Summary of Benefits is not an SBC. These two files conform structurally to the SBC InsurancePlan profile, but most of their benefits (dental, vision, hearing, supplemental benefits, Part B drugs) have no code in the SBC benefit category code system. Those benefits are listed by identity in the `bps-unmapped-benefit` extension, and their cost sharing is not carried.
 
+## Medicare Advantage files from the CMS PBP public files
+
+Added 2026-10-06. Each is the converter's output for 1 of the PBP importer's 5 golden files (`examples/*.pbp.json`, BPS 1.2.0, written by `scripts/from-pbp.js` from the CMS CY 2027 PBP Benefits files; spec [`../../docs/specs/pbp-importer.md`](../../docs/specs/pbp-importer.md) section 13). They are golden-tested like the 10 above but are not published to the docs site, and they have not yet been run through the HL7 validator. The `POS` tier of the HMO-POS plan maps to out-of-network with the text-only qualifier `Point-of-service option` (converter spec 6.3).
+
+| File | BPS source | Benefits placed | Benefits outside the SBC codes | `Not stated in the BPS document` entries |
+|---|---|---|---|---|
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | `unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json` | 14 | 13 | 2 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | `aetna-medicare-aetna-medicare-select-extra.pbp.json` | 14 | 13 | 4 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | `humana-humana-gold-plus-h1036-068.pbp.json` | 14 | 13 | 13 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | 14 | 13 | 13 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | 14 | 13 | 2 |
+
 ## Reading the files
 
 - **Benefits outside the SBC codes.** The SBC benefit category binding is required and has 29 codes. A BPS benefit with no code there is not placed in `coverage` or `plan.specificCost`. It is listed in a `bps-unmapped-benefit` extension on the `InsurancePlan`. Home health care is one of these in the eight SBC files and in SCAN, because the code system has no general home health code. The Humana file has no home health benefit.

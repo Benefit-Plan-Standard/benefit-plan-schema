@@ -32,6 +32,7 @@ This spec defines a converter from a Benefit Plan Standard (BPS) document to a F
 - The CLI checks the input against the schema its `schema_version` names (`schema/v1.1.0` or `schema/v1.2.0`), using the same local Ajv setup as `scripts/validate.js`. A document that fails the schema is rejected. Nothing is converted.
 - Absent v1.2.0 fields take their v1.1.0 meaning. For example, a tier with no `tier_class` is a `network` tier.
 - The 10 files in `examples/` are the test corpus. The 8 SBC examples declare v1.1.0 and the 2 Medicare Advantage examples (`humana_example.json`, `scan_example.json`) declare v1.2.0.
+- The PBP importer's 5 golden files (`examples/*.pbp.json`, v1.2.0) are converted too, since 2026-10-06; their Bundles sit in `examples/fhir/` beside the 10 (section 12) and are not published (section 13).
 
 ## 4. Outputs
 
@@ -47,7 +48,7 @@ Bundle (type: collection)
 
 - **Organization.** One per distinct carrier, holding `name` only. It is a base R4 `Organization` and does not claim the C4DIC-Organization profile. That profile requires `meta.lastUpdated`, which would break deterministic output, and it expects payer identifiers (NAIC, payer ID) that BPS does not carry.
 - **No `administeredBy`.** BPS has no administrator field. For GatorCare, the BPS document records the sponsor as `carrier`. The converter does not infer the administrator from other text.
-- **No provider-network Organizations.** The `CostAppliesToNetwork` extension uses a display-only reference unless the BPS `provider_set.reference` is non-null (section 6.4).
+- **No provider-network Organizations.** The `CostAppliesToNetwork` extension uses a display-only reference unless the BPS `provider_set.reference` is non-null (section 6.2).
 
 ### 4.2 Identity and determinism
 
@@ -78,8 +79,8 @@ The converter is a pure function, `toInsurancePlanBundle(bps) -> Bundle`. It mak
 | `plan` 1..*, `plan.specificCost` 1..*, `specificCost.benefit` 1..* | A single `plan[0]`. A plan with no benefits inside the 29 codes is an error, because the profile cannot represent it. No example is in that position. |
 | `coverage.benefit.type`, `specificCost.category`, `specificCost.benefit.type`: **required** binding to `sbc-benefit-category` (29 codes) | Only benefits in the crosswalk (section 8) are placed in these elements. Section 8.3 gives the rule for everything else. |
 | `specificCost.benefit.cost` 2..* | See 5.1. |
-| `cost.type` 1..1 | Coded when the BPS type has a code (6.6). Otherwise text: `Not covered`, `Covered; amount not stated in the BPS document`, or `Not stated in the BPS document`. |
-| `cost.applicability` 1..1, required binding to `insuranceplan-applicability` (`in-network`, `out-of-network`, `other`) | From the tier (6.2). A tier that maps to none of these is an error. The converter does not guess. |
+| `cost.type` 1..1 | Coded when the BPS type has a code (6.7). Otherwise text: `Not covered`, `Covered; amount not stated in the BPS document`, or `Not stated in the BPS document`. |
+| `cost.applicability` 1..1, required binding to `insuranceplan-applicability` (`in-network`, `out-of-network`, `other`) | From the tier (6.2, 6.3). A tier that maps to none of these is an error. The converter does not guess. |
 | `cost.value` 1..1 | A Quantity when BPS gives an amount or rate. Otherwise the Quantity carries `data-absent-reason` (5.1). |
 
 ### 5.1 One network column, "not covered", and missing amounts
@@ -130,12 +131,33 @@ Namespaces used below:
 | `tier_class` `network` (or absent), `tier_id` `IN` | `applicability` = `applicability#in-network` |
 | `tier_class` `network` (or absent), `tier_id` `OUT` | `applicability` = `applicability#out-of-network` |
 | `tier_class` `network` (or absent), a second in-network tier: `tier_id` `IN2`, or a `name` that contains "in-network" (or "in network") and "tier 2" (or "tier two", "second tier"), case-insensitive | `applicability` = `applicability#in-network`. `qualifiers` **[ballot]** (extensible `cost-tier`): `value-choice` (display "Value Choice Provider", `text` = tier `name`) when the name contains "Value Choice"; otherwise a text-only qualifier with the tier `name`, as for site-of-service tiers. The tier 1 (`IN`) entries carry no qualifier. A benefit priced in both tiers gives one `cost[]` entry per tier per cost-share step, all `in-network`, told apart by the qualifier. |
-| Any other `network` tier | Error, with no guessing. The 10 examples use `IN` and `OUT` only. The public-file importer (`docs/specs/marketplace-puf-importer.md`) writes `IN2` for plans with in-network tier 2 values. |
+| `tier_class` `network` (or absent), `tier_id` `POS` | Section 6.3. |
+| Any other `network` tier | Error, with no guessing. The 10 examples use `IN` and `OUT` only. The public-file importer (`docs/specs/marketplace-puf-importer.md`) writes `IN2` for plans with in-network tier 2 values; the PBP importer (`docs/specs/pbp-importer.md`) writes `POS` for HMO-POS plans. |
 | `cost_designation` or `modality` with `parent_tier_id` | `applicability` taken from the parent network tier. `qualifiers` **[ballot]** (extensible `cost-tier`): `virtual` for a `modality` tier whose name contains "telehealth" or "virtual"; `value-choice` or `standard` only when a `cost_designation` tier's name is exactly "Value Choice" or "Standard". In every other case, a text-only qualifier with the tier `name`. SCAN's "Retail, Standard" pharmacy pricing is **not** mapped to `standard`, which means Standard Provider. |
 | `provider_set` present | `CostAppliesToNetwork` **[ballot]**: `valueReference.display` = `provider_set.name`, plus `reference` only when `provider_set.reference` is non-null (it is null in both examples). |
 | `tier_id`, `tier_class`, `parent_tier_id` | Also recorded in `bps-cost-share` **[BPS ext]** (`tierId`) so the BPS keying can be recovered. |
 
-### 6.3 Accumulators to `plan[0].generalCost[]`
+### 6.3 Point-of-service tier to `cost.applicability` and `cost.qualifiers`
+
+Added 2026-10-06 for the PBP importer, which writes tier `POS` on every HMO-POS plan (1,273 in the CY 2027 files) from `pbp_Section_C_POS`. It follows the `IN2` pattern of 6.2: a network-class tier mapped to 1 applicability code, told apart by a qualifier.
+
+| BPS tier | FHIR, on each `cost[]` entry keyed to that tier |
+|---|---|
+| `tier_class` `network` (or absent), `tier_id` `POS` | `applicability` = `applicability#out-of-network`. `qualifiers` **[ballot]** (extensible `cost-tier`): a text-only qualifier, `text` `Point-of-service option`; the Cost Tier value set has no point-of-service code. The `IN` entries carry no qualifier. `DeductibleApplies` and the `bps-cost-share` extension (`tierId` `POS`) as for any tier. |
+| A `network` tier with another `tier_id`, whatever its `name` (for example "Point-of-Service" under `POS2`) | Error, as in 6.2. Only the `tier_id` is read, because the qualifier text is fixed and does not come from the name. |
+
+- **Placeholders (5.1).** A benefit priced in network and at the POS option has an `in-network` and an `out-of-network` entry and gets no placeholder. A benefit the plan prices in network only (no POS group lists it, for example primary care, emergency and urgent care on H1609-028) gets the `out-of-network` placeholder `Not stated in the BPS document`, as any benefit with 1 network column does.
+- **Accumulators (6.4).** A slot with `network_tier` `POS` (decision 4 of the PBP importer: `oon_individual_deductible` and `oon_individual_oop_max` on HMO-POS plans) needs no rule: `type.text` reads `Individual deductible, POS`, `comment` `POS`, and `bps-accumulator` `networkTier` `POS`.
+- **A plan with both `OUT` and `POS`.** Both entries are `out-of-network`, told apart by the qualifier. No plan in the CY 2027 PBP files declares both.
+
+**Why out-of-network.** The POS option is the out-of-network benefit of an HMO-POS plan, and the plan's own document and CMS both print it that way for H1609-028-000 (Aetna Medicare Select Extra (HMO-POS), the PBP importer's golden file):
+
+- The 2027 Summary of Benefits, document ID `Y0001_H1609_028_HP32_SB2027_M` (`data/pbp/2027/sob/H1609-028-000-2027-SB.pdf`), prints the POS cost shares in the column "Your out-of-network costs". Page 2: "Plan deductible: No in-network deductible, $500 for certain out-of-network services". Page 3: specialist "$70 copay after your plan deductible is met", inpatient "50% per stay after your plan deductible is met", primary care "Not Covered".
+- CMS Medicare Plan Finder (plan details `2027-H1609-028-0`, read 2026-10-06) labels the $500 deductible "Out-of-network" and prints the specialist at $0-$38 in network and $70 out of network, and the out-of-pocket maximum at $6,750 in network and $10,100 out of network.
+
+The PBP importer's check of this document is in `docs/specs/pbp-sob-checks/H1609-028-000.json` (PBP importer spec, section 13).
+
+### 6.4 Accumulators to `plan[0].generalCost[]`
 
 | BPS | FHIR |
 |---|---|
@@ -149,7 +171,7 @@ Namespaces used below:
 
 Order: slots in BPS object order, then premium, then pharmacy.
 
-### 6.4 Benefits
+### 6.5 Benefits
 
 For each BPS benefit whose `canonical_key` is in the crosswalk (section 8):
 
@@ -161,14 +183,14 @@ For each BPS benefit whose `canonical_key` is in the crosswalk (section 8):
 | `service_name` | `type.text` | same |
 | `conditions[].description` | `requirement`: descriptions joined with `"; "` in input order | |
 | `conditions[]` (structured) | `bps-condition` **[BPS ext]** (`type`, `code`, `description`), one per condition | |
-| `limits[]` | `BenefitLimitation` **[ballot]**, one per limit (6.5) | |
+| `limits[]` | `BenefitLimitation` **[ballot]**, one per limit (6.6) | |
 | `source_references[]` (per benefit; MA only) | `bps-source-reference` **[BPS ext]** | |
 | `benefit_id`, `benefit_type`, `category`, `raw_label`, `place_of_service[]`, `moop_applicability`, `coverage_basis`, `alternative_group` | `bps-benefit` **[BPS ext]** | |
-| `network_cost_shares[]` | | `cost[]` (5.1, 6.2, 6.6) |
+| `network_cost_shares[]` | | `cost[]` (5.1, 6.2, 6.3, 6.7) |
 
 Two BPS benefits that share an SBC row code (for example `diagnostic_lab`, `imaging_standard` and `diagnostic_test`, all in "Diagnostic Test") become separate `benefit[]` entries under the same category. The second coding (the BPS canonical key) and `text` tell them apart.
 
-### 6.5 Limits to `BenefitLimitation` [ballot]
+### 6.6 Limits to `BenefitLimitation` [ballot]
 
 | BPS | Sub-extension | Rule |
 |---|---|---|
@@ -178,7 +200,7 @@ Two BPS benefits that share an SBC row code (for example `diagnostic_lab`, `imag
 | `period` | `limitPeriod` (extensible `limit-period`) | `per_plan_year` to `plan-year`, `per_calendar_year` to `calendar-year`, `per_benefit_period` and `per_episode` to `benefit-period` (as in `carin-dic-reconciliation.md` 3.3), `per_lifetime` to `lifetime`. **`per_year` becomes text only**: it is ambiguous between plan year and calendar year (`carin-dic-reconciliation.md` 3.3), and the converter does not choose. `per_12_months`, `per_quarter` and `per_discharge` are also text only. |
 | `scope`, `shared_limit_id`, `carryover` (v1.2.0) | Not carried as structure (7) | The `limitText` verbatim text usually states them. |
 
-### 6.6 Cost-share steps to `cost[]`
+### 6.7 Cost-share steps to `cost[]`
 
 | BPS | FHIR |
 |---|---|
@@ -206,6 +228,7 @@ Two BPS benefits that share an SBC row code (for example `diagnostic_lab`, `imag
 | `pharmacy.coverage_stages` | Not carried | No |
 | `network_tiers[].description` | Not carried (only `name` goes into qualifier text) | No |
 | Second in-network tier (`IN2`) | `in-network` plus a qualifier: `value-choice` only when the tier name says "Value Choice", otherwise text only. The Cost Tier value set has no code for "tier 2", so the tier order is not coded; tier 1 entries carry no qualifier, and the validator warns on each text-only qualifier. The `tier_id` is kept in `bps-cost-share` (`tierId`) | Yes, through `tierId` and the qualifier text |
+| Point-of-service tier (`POS`) | `out-of-network` plus the text-only qualifier `Point-of-service option` (6.3); the validator warns on each text-only qualifier. The `tier_id` is kept in `bps-cost-share` (`tierId`) | Yes, through `tierId` and the qualifier text |
 
 The docs page tells readers to keep the BPS document when they need full fidelity, as `fhir-alignment.md` section 5 already advises.
 
@@ -334,7 +357,7 @@ Canonical base: `https://benefitplanstandard.org/fhir/`. All are `status: draft`
 
 ## 12. Golden files and drift test
 
-- `examples/fhir/<insuranceplan-id>.json`: 10 Bundles, the output of step 2 above.
+- `examples/fhir/<insuranceplan-id>.json`: 10 Bundles, the output of step 2 above, and 5 more from the PBP importer's golden files (named the same way, for example `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json`).
 - `examples/fhir/README.md`: what the files are, how to regenerate them, and the label for the two MA files (section 13).
 - `scripts/to-insuranceplan.test.js`, run with `node --test scripts/to-insuranceplan.test.js` (Node built-in test runner, no dependencies). The test:
   - converts each of the 10 examples and compares the output with the golden file byte for byte (after CRLF normalization, so a Windows checkout does not fail), and fails on any difference;
@@ -343,14 +366,18 @@ Canonical base: `https://benefitplanstandard.org/fhir/`. All are `status: draft`
   - asserts that every benefit shows up either placed or unmapped (none lost silently);
   - asserts that `fhir/definitions/` matches what the definitions script generates;
   - pins the SHA-256 of each of the 10 golden files (LF line endings) and asserts the files and the converter output still hash to those values;
-  - checks second in-network tiers (6.2): `IN2` and name-based recognition map to `in-network` with the right qualifier, `value-choice` is coded only for a "Value Choice" name, other unknown network tiers still fail, no placeholder is added, and `examples/florida-blue-blueoptions-gold-1505.puf.json` converts.
-- Goldens are refreshed only on purpose, with `node scripts/to-insuranceplan.js --write-golden`.
+  - checks second in-network tiers (6.2): `IN2` and name-based recognition map to `in-network` with the right qualifier, `value-choice` is coded only for a "Value Choice" name, other unknown network tiers still fail, no placeholder is added, and `examples/florida-blue-blueoptions-gold-1505.puf.json` converts;
+  - converts the 5 PBP golden files (`examples/*.pbp.json`) and compares each with its Bundle in `examples/fhir/` byte for byte, twice, against a pinned SHA-256; the directory must hold exactly the 10 and the 5;
+  - checks the point-of-service tier (6.3) on the Aetna H1609-028 golden file: `POS` entries are `out-of-network` with the `Point-of-service option` qualifier (10 entries), the specialist's $70 copay keeps `DeductibleApplies` true, a benefit priced in network and at the POS option has no placeholder, and a network tier named "Point-of-Service" under another `tier_id` still fails.
+
+  65 tests on 2026-10-06 (62 before the POS tier).
+- Goldens are refreshed only on purpose, with `node scripts/to-insuranceplan.js --write-golden`, which writes the 10 and the 5 PBP Bundles.
 
 The golden files double as fixtures for ports to other languages.
 
 ## 13. Publishing layout
 
-All 10 outputs are converted, golden-tested and published.
+All 10 outputs are converted, golden-tested and published. The 5 PBP Bundles in `examples/fhir/` (section 12) are golden-tested but not published: `scripts/publish-fhir.js` reads only `examples/*_example.json`.
 
 ```
 benefit-plan-schema/

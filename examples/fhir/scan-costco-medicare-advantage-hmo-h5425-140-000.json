@@ -1,0 +1,3286 @@
+{
+  "resourceType": "Bundle",
+  "id": "bps-scan-costco-medicare-advantage-hmo-h5425-140-000",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:58222075-5097-5545-9fea-82dd9acabd98",
+      "resource": {
+        "resourceType": "InsurancePlan",
+        "id": "scan-costco-medicare-advantage-hmo-h5425-140-000",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/us/insurance-card/StructureDefinition/sbc-insurance-plan"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>SCAN Costco Medicare Advantage (HMO)</b></p><p>Carrier: SCAN Health Plan. Plan type: HMO. Period: 2027 to 2027.</p><p>14 benefits are placed in CARIN SBC benefit categories. 13 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document SCAN_COSTCO_MEDICARE_ADVANTAGE_HMO_H5425_140_000 (schema version 1.2.0).</p></div>"
+        },
+        "extension": [
+          {
+            "extension": [
+              {
+                "url": "schemaVersion",
+                "valueString": "1.2.0"
+              },
+              {
+                "url": "planYear",
+                "valueInteger": 2027
+              },
+              {
+                "url": "market",
+                "valueString": "medicare_advantage"
+              },
+              {
+                "url": "serviceAreaState",
+                "valueString": "CA"
+              },
+              {
+                "url": "serviceAreaCounty",
+                "valueString": "San Francisco"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-plan-metadata"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "CMS Plan Benefit Package (PBP) Benefits, contract year 2027, release \"PBP Benefits-2027\" (https://www.cms.gov/files/zip/pbp-benefits-2027.zip), downloaded 2026-10-06. Files read: pbp_Section_A.txt, pbp_Section_C.txt, pbp_Section_C_OON.txt, pbp_Section_C_POS.txt, pbp_Section_D.txt, pbp_b10_amb_trans.txt, pbp_b13_other_services.txt, pbp_b17_eye_exams_wear.txt, pbp_b18_hearing_exams_aids.txt, pbp_b1a_inpat_hosp.txt, pbp_b1b_inpat_hosp.txt, pbp_b2_snf.txt, pbp_b4_emerg_urgent.txt, pbp_b7_health_prof.txt, pbp_b8_clin_diag_ther.txt, pbp_b9_outpat_hosp.txt, PlanArea.txt, PlanRegionArea.txt. PBP key: pbp_a_hnumber \"H5425\", pbp_a_plan_identifier \"140\", segment_id \"0\" (written padded to 3 digits in plan_identifiers)."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Plan type: pbp_a_plan_type \"01\" (HMO), written as plan_type \"HMO\"."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Section A values with no Benefit Plan Standard field, verbatim: bid_id \"H5425_140_0\"; version \"10\"; orgtype \"01\"; pbp_a_org_name \"SCAN HEALTH PLAN\"; pbp_a_org_type \"01\"; pbp_a_ben_cov \"1\"; pbp_a_plan_geog_name \"San Francisco County\"; pbp_a_eghp_yn \"2\"; pbp_a_special_need_flag \"2\"; pbp_a_contract_partd_flag \"1\"; pbp_a_continue_yn \"2\"; pbp_a_org_website \"www.scanhealthplan.com\"; pbp_a_phys_web_addr \"www.scanhealthplan.com\"; pbp_a_formulary_web_addr \"www.scanhealthplan.com\"; pbp_a_pharmacy_website \"www.scanhealthplan.com\"."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Service area from PlanArea.txt, 1 county in CA. county_code is the SSA state and county code, not FIPS, so service_area.counties[].fips is null. Each county as county_code, county, stcd, and the partial_flag and eghp_flag values on its rows: 05480 San Francisco CA partial_flag \"\" eghp_flag \"0\"."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "In-network deductible: the plan says it has none (pbp_d_inn_deduct_yn \"2\", pbp_d_inn_deduct_partb_yn \"\", pbp_d_inn_deduct_amt \"\"); no slot is written."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "In-network out-of-pocket maximum type, no Benefit Plan Standard field (schema gap, spec section 9.1): pbp_d_out_pocket_amt_type \"1\" (Lower)."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Every non-blank Section D deductible and out-of-pocket cell, verbatim, in file order: pbp_d_inn_deduct_yn \"2\"; pbp_d_out_pocket_amt_yn \"1\"; pbp_d_out_pocket_amt_type \"1\"; pbp_d_out_pocket_amt \"2500.00\"; pbp_d_inn_max_enr_oopc_bens \"01\"; pbp_d_inn_max_enr_m_yn \"1\"; pbp_d_inn_max_enr_m_cat_ex \"1a;1b;2;3-1;3-2;3-3;3-4;4a;4b;5a;5b;6;7a;7b;7c;7d;7e1;7e2;7f;7g;7h1;7h2;7i;7j;7k;8a1;8a2;8b1;8b2;8b3;9a1;9a2;9b;9c1;9c2;9d;10a1;10a2;11a;11b1;11b2;11c1;11c2;11c3;12;14a;14d;14e1;14e2;14e4;14e5;15-1-I;15-2;15-3;16a;17a;17b;18a;\"."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Benefits: the 30 service categories in fhir/pbp-crosswalk.json (the workgroup MVP), 27 written. Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8)."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "OBSERVATION"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "observation_care"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Observation services"
+              },
+              {
+                "url": "category",
+                "valueString": "HOSPITAL_SERVICES"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "THERAPEUTIC_RADIOLOGY"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "radiation_therapy"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Therapeutic radiological services"
+              },
+              {
+                "url": "category",
+                "valueString": "RADIATION_THERAPY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "PHYSICAL_AND_SPEECH_THERAPY"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Physical therapy and speech-language pathology services"
+              },
+              {
+                "url": "category",
+                "valueString": "REHABILITATION"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "CHIROPRACTIC"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "chiropractic_care"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Chiropractic services (Medicare-covered)"
+              },
+              {
+                "url": "category",
+                "valueString": "CHIROPRACTIC"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "CHIROPRACTIC_ROUTINE"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "chiropractic_care"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Routine chiropractic care"
+              },
+              {
+                "url": "category",
+                "valueString": "CHIROPRACTIC"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "PODIATRY"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Podiatry services (Medicare-covered)"
+              },
+              {
+                "url": "category",
+                "valueString": "PODIATRY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "PODIATRY_ROUTINE"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Routine foot care"
+              },
+              {
+                "url": "category",
+                "valueString": "PODIATRY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "ACUPUNCTURE"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "acupuncture"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Acupuncture treatments"
+              },
+              {
+                "url": "category",
+                "valueString": "ACUPUNCTURE"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "HEARING_EXAM"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Hearing exams (Medicare-covered)"
+              },
+              {
+                "url": "category",
+                "valueString": "HEARING"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "HEARING_EXAM_ROUTINE"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Routine hearing exams"
+              },
+              {
+                "url": "category",
+                "valueString": "HEARING"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "EYE_EXAM"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Eye exams (Medicare-covered)"
+              },
+              {
+                "url": "category",
+                "valueString": "VISION"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "EYE_EXAM_ROUTINE"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Routine eye exams"
+              },
+              {
+                "url": "category",
+                "valueString": "VISION"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "HEARING_AIDS"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Prescription hearing aids (all types)"
+              },
+              {
+                "url": "category",
+                "valueString": "HEARING"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://benefitplanstandard.org/plan-id",
+            "value": "SCAN_COSTCO_MEDICARE_ADVANTAGE_HMO_H5425_140_000"
+          },
+          {
+            "system": "https://benefitplanstandard.org/fhir/identifier/cms_contract_plan_segment",
+            "value": "H5425-140-000"
+          },
+          {
+            "system": "https://benefitplanstandard.org/fhir/identifier/cms_contract_id",
+            "value": "H5425"
+          },
+          {
+            "system": "https://benefitplanstandard.org/fhir/identifier/cms_pbp_id",
+            "value": "140"
+          }
+        ],
+        "status": "active",
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/insurance-plan-type",
+                "code": "medical",
+                "display": "Medical"
+              }
+            ]
+          }
+        ],
+        "name": "SCAN Costco Medicare Advantage (HMO)",
+        "period": {
+          "start": "2027",
+          "end": "2027"
+        },
+        "ownedBy": {
+          "reference": "urn:uuid:584807d0-7e3b-5c6b-bd97-a1585e7c68bd",
+          "display": "SCAN Health Plan"
+        },
+        "contact": [
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                "valueCode": "unknown"
+              }
+            ],
+            "purpose": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/contactentity-type",
+                  "code": "PAYOR",
+                  "display": "Payor"
+                }
+              ]
+            }
+          }
+        ],
+        "coverage": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "primary-care-visit",
+                  "display": "Primary Care Visit"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "PRIMARY_CARE"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "PHYSICIAN_SERVICES"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "7a: Primary Care Physician Services"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 7a: Primary Care Physician Services (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b7a_maxenr_yn \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "primary-care-visit",
+                      "display": "Primary Care Visit"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "primary_care",
+                      "display": "Primary care visit"
+                    }
+                  ],
+                  "text": "Primary care physician services"
+                }
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "specialist-visit",
+                  "display": "Specialist Visit"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "SPECIALIST"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "PHYSICIAN_SERVICES"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "7d: Physician Specialist Services"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Authorization required (pbp_b7d_auth_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "referral"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Referral required (pbp_b7d_refer_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 7d: Physician Specialist Services (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b7d_maxenr_yn \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "specialist-visit",
+                      "display": "Specialist Visit"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "specialist",
+                      "display": "Specialist visit"
+                    }
+                  ],
+                  "text": "Physician specialist services"
+                },
+                "requirement": "Authorization required (pbp_b7d_auth_yn \"1\").; Referral required (pbp_b7d_refer_yn \"1\")."
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "hospital-inpatient",
+                  "display": "Hospital Inpatient Care"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "INPATIENT_HOSPITAL"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "HOSPITAL_SERVICES"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "1a: Inpatient Hospital-Acute"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Authorization required (pbp_b1a_auth_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "referral"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Referral required (pbp_b1a_refer_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 1a: Inpatient Hospital-Acute (pbp_b1a_inpat_hosp.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b1a_maxenr_yn \"2\"; pbp_b1a_hosp_ben_period \"3\"; pbp_b1a_cost_discharge_yn \"2\"; pbp_b1a_bendesc_yn \"1\"; pbp_b1a_bendesc_ad_up_nmcs \"010\"; pbp_b1a_bendesc_amo_ad \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "facility-fee",
+                      "display": "Facility Fee"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "inpatient_hospital",
+                      "display": "Inpatient hospital"
+                    }
+                  ],
+                  "text": "Inpatient hospital, acute"
+                },
+                "requirement": "Authorization required (pbp_b1a_auth_yn \"1\").; Referral required (pbp_b1a_refer_yn \"1\")."
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "hospital-outpatient",
+                  "display": "Hospital Outpatient Care"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "OUTPATIENT_HOSPITAL"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "HOSPITAL_SERVICES"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "9a1: Outpatient Hospital Services"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Authorization required (pbp_b9a_auth_ohs_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "referral"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Referral required (pbp_b9a_refer_ohs_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 9a1: Outpatient Hospital Services (pbp_b9_outpat_hosp.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b9a_maxenr_yn \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "facility-fee",
+                      "display": "Facility Fee"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "outpatient_surgery",
+                      "display": "Outpatient surgery"
+                    }
+                  ],
+                  "text": "Outpatient hospital services"
+                },
+                "requirement": "Authorization required (pbp_b9a_auth_ohs_yn \"1\").; Referral required (pbp_b9a_refer_ohs_yn \"1\")."
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "AMBULATORY_SURGICAL_CENTER"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "SURGICAL_SERVICES"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "9b: Ambulatory Surgical Center (ASC) Services"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Authorization required (pbp_b9b_auth_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "referral"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Referral required (pbp_b9b_refer_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 9b: Ambulatory Surgical Center (ASC) Services (pbp_b9_outpat_hosp.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b9b_maxenr_yn \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "facility-fee",
+                      "display": "Facility Fee"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "outpatient_surgery_facility",
+                      "display": "Outpatient surgery facility"
+                    }
+                  ],
+                  "text": "Ambulatory surgical center services"
+                },
+                "requirement": "Authorization required (pbp_b9b_auth_yn \"1\").; Referral required (pbp_b9b_refer_yn \"1\")."
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "emergency-room-care",
+                  "display": "Emergency Room Care"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "EMERGENCY"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "EMERGENCY_CARE"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "4a: Emergency Services"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 4a: Emergency Services (pbp_b4_emerg_urgent.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b4a_deduct_yn \"2\"; pbp_b4a_maxenr_yn \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "emergency-room-care",
+                      "display": "Emergency Room Care"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "emergency_room",
+                      "display": "Emergency room"
+                    }
+                  ],
+                  "text": "Emergency services"
+                }
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "urgent-care",
+                  "display": "Urgent Care"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "URGENT_CARE"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "URGENT_CARE"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "4b: Urgently Needed Services"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 4b: Urgently Needed Services (pbp_b4_emerg_urgent.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b4b_maxenr_yn \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "urgent-care",
+                      "display": "Urgent Care"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "urgent_care",
+                      "display": "Urgent care"
+                    }
+                  ],
+                  "text": "Urgently needed services"
+                }
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "emergency-medical-transport",
+                  "display": "Emergency Medical Transportation"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "AMBULANCE_GROUND"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "EMERGENCY_CARE"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "10a1: Ground Ambulance Services"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Authorization required (pbp_b10a_auth_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 10a1: Ground Ambulance Services (pbp_b10_amb_trans.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b10a_maxenr_yn \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "emergency-medical-transport",
+                      "display": "Emergency Medical Transportation"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "ambulance",
+                      "display": "Ambulance services"
+                    }
+                  ],
+                  "text": "Ground ambulance services"
+                },
+                "requirement": "Authorization required (pbp_b10a_auth_yn \"1\")."
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "AMBULANCE_AIR"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "EMERGENCY_CARE"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "10a2: Air Ambulance Services"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Authorization required (pbp_b10a_auth_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 10a2: Air Ambulance Services (pbp_b10_amb_trans.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b10a_maxenr_yn \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "emergency-medical-transport",
+                      "display": "Emergency Medical Transportation"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "ambulance",
+                      "display": "Ambulance services"
+                    }
+                  ],
+                  "text": "Air ambulance services"
+                },
+                "requirement": "Authorization required (pbp_b10a_auth_yn \"1\")."
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "diagnostic-test",
+                  "display": "Diagnostic Test"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "DIAGNOSTIC_TESTS"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "DIAGNOSTIC_SERVICES"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "8a1: Diagnostic Procedures/Tests"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Authorization required (pbp_b8a_auth_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "referral"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Referral required (pbp_b8a_refer_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 8a1: Diagnostic Procedures/Tests (pbp_b8_clin_diag_ther.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b8a_maxenr_yn \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "diagnostic-test",
+                      "display": "Diagnostic Test"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "diagnostic_test",
+                      "display": "Diagnostic test"
+                    }
+                  ],
+                  "text": "Diagnostic procedures and tests"
+                },
+                "requirement": "Authorization required (pbp_b8a_auth_yn \"1\").; Referral required (pbp_b8a_refer_yn \"1\")."
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "LAB_SERVICES"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "DIAGNOSTIC_SERVICES"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "8a2: Lab Services"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Authorization required (pbp_b8a_auth_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "referral"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Referral required (pbp_b8a_refer_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 8a2: Lab Services (pbp_b8_clin_diag_ther.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b8a_maxenr_yn \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "diagnostic-test",
+                      "display": "Diagnostic Test"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "diagnostic_lab",
+                      "display": "Diagnostic lab"
+                    }
+                  ],
+                  "text": "Lab services"
+                },
+                "requirement": "Authorization required (pbp_b8a_auth_yn \"1\").; Referral required (pbp_b8a_refer_yn \"1\")."
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "XRAY"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "DIAGNOSTIC_SERVICES"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "8b3: Outpatient X-Ray Services"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Authorization required (pbp_b8b_auth_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "referral"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Referral required (pbp_b8b_refer_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 8b3: Outpatient X-Ray Services (pbp_b8_clin_diag_ther.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b8b_copay_max_yn \"2\"; pbp_b8b_maxenr_yn \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "diagnostic-test",
+                      "display": "Diagnostic Test"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "imaging_standard",
+                      "display": "Standard imaging"
+                    }
+                  ],
+                  "text": "Outpatient X-ray services"
+                },
+                "requirement": "Authorization required (pbp_b8b_auth_yn \"1\").; Referral required (pbp_b8b_refer_yn \"1\")."
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "imaging",
+                  "display": "Imaging (CT/PET/MRI)"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "DIAGNOSTIC_RADIOLOGY"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "DIAGNOSTIC_SERVICES"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "8b1: Diagnostic Radiological Services"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Authorization required (pbp_b8b_auth_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "referral"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Referral required (pbp_b8b_refer_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 8b1: Diagnostic Radiological Services (pbp_b8_clin_diag_ther.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b8b_copay_max_yn \"2\"; pbp_b8b_maxenr_yn \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "imaging",
+                      "display": "Imaging (CT/PET/MRI)"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "imaging_advanced",
+                      "display": "Advanced imaging"
+                    }
+                  ],
+                  "text": "Diagnostic radiological services"
+                },
+                "requirement": "Authorization required (pbp_b8b_auth_yn \"1\").; Referral required (pbp_b8b_refer_yn \"1\")."
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "rehabilitation",
+                  "display": "Rehabilitation Services"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "OCCUPATIONAL_THERAPY"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "REHABILITATION"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "7c: Occupational Therapy Services"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Authorization required (pbp_b7c_auth_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "referral"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Referral required (pbp_b7c_refer_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 7c: Occupational Therapy Services (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b7c_maxenr_yn \"2\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "rehabilitation",
+                      "display": "Rehabilitation Services"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "occupational_therapy",
+                      "display": "Occupational therapy"
+                    }
+                  ],
+                  "text": "Occupational therapy services"
+                },
+                "requirement": "Authorization required (pbp_b7c_auth_yn \"1\").; Referral required (pbp_b7c_refer_yn \"1\")."
+              }
+            ]
+          }
+        ],
+        "plan": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-plan-type",
+                  "code": "HMO",
+                  "display": "Health Maintenance Organization (HMO)"
+                }
+              ]
+            },
+            "generalCost": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "slot",
+                        "valueString": "individual_oop_max"
+                      },
+                      {
+                        "url": "networkTier",
+                        "valueString": "IN"
+                      },
+                      {
+                        "url": "appliesTo",
+                        "valueString": "medical"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-accumulator"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                      "code": "maxoutofpocket",
+                      "display": "Maximum out of pocket"
+                    }
+                  ],
+                  "text": "Individual out-of-pocket maximum, IN"
+                },
+                "cost": {
+                  "value": 2500,
+                  "currency": "USD"
+                },
+                "comment": "IN"
+              }
+            ],
+            "specificCost": [
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "primary-care-visit",
+                      "display": "Primary Care Visit"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "primary-care-visit",
+                          "display": "Primary Care Visit"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "primary_care",
+                          "display": "Primary care visit"
+                        }
+                      ],
+                      "text": "Primary care physician services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b7a_copay_yn \"2\", pbp_b7a_coins_yn \"2\"); written as a $0 copay (decision S1, docs/specs/pbp-importer.md section 7.12)."
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b7_health_prof.txt cells: pbp_b7a_copay_yn \"2\", pbp_b7a_coins_yn \"2\", pbp_b7a_ded_yn \"2\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 0,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "specialist-visit",
+                      "display": "Specialist Visit"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "specialist-visit",
+                          "display": "Specialist Visit"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "specialist",
+                          "display": "Specialist visit"
+                        }
+                      ],
+                      "text": "Physician specialist services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b7d_copay_yn \"2\", pbp_b7d_coins_yn \"2\"); written as a $0 copay (decision S1, docs/specs/pbp-importer.md section 7.12)."
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b7_health_prof.txt cells: pbp_b7d_copay_yn \"2\", pbp_b7d_coins_yn \"2\", pbp_b7d_ded_yn \"2\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 0,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "hospital-inpatient",
+                      "display": "Hospital Inpatient Care"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "facility-fee",
+                          "display": "Facility Fee"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "inpatient_hospital",
+                          "display": "Inpatient hospital"
+                        }
+                      ],
+                      "text": "Inpatient hospital, acute"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "basis",
+                                "valueString": "per_day"
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "unitRangeFrom",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "unitRangeTo",
+                                "valueInteger": 4
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b1a_inpat_hosp.txt cells: pbp_b1a_copay_yn \"1\", pbp_b1a_copay_mcs_amt_t1 \"0.00\", pbp_b1a_copay_mcs_int_num_t1 \"3\", pbp_b1a_copay_mcs_amt_int1_t1 \"250.00\", pbp_b1a_copay_mcs_bgnd_int1_t1 \"1\", pbp_b1a_copay_mcs_endd_int1_t1 \"4\", pbp_b1a_copay_mcs_amt_int2_t1 \"0.00\", pbp_b1a_copay_mcs_bgnd_int2_t1 \"5\", pbp_b1a_copay_mcs_endd_int2_t1 \"90\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 250,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 2
+                              },
+                              {
+                                "url": "basis",
+                                "valueString": "per_day"
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "unitRangeFrom",
+                                "valueInteger": 5
+                              },
+                              {
+                                "url": "unitRangeTo",
+                                "valueInteger": 90
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 0,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "hospital-outpatient",
+                      "display": "Hospital Outpatient Care"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "facility-fee",
+                          "display": "Facility Fee"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "outpatient_surgery",
+                          "display": "Outpatient surgery"
+                        }
+                      ],
+                      "text": "Outpatient hospital services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "basis",
+                                "valueString": "per_visit"
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b9_outpat_hosp.txt cells: pbp_b9a_copay_yn \"1\", pbp_b9a_copay_ehc \"01\", pbp_b9a_copay_ohs_amt_min \"175.00\", pbp_b9a_copay_ohs_amt_max \"175.00\", pbp_b9a_coins_yn \"2\", pbp_b9a_ded_yn \"2\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 175,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "facility-fee",
+                          "display": "Facility Fee"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "outpatient_surgery_facility",
+                          "display": "Outpatient surgery facility"
+                        }
+                      ],
+                      "text": "Ambulatory surgical center services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b9_outpat_hosp.txt cells: pbp_b9b_copay_yn \"1\", pbp_b9b_copay_mc_amt \"125.00\", pbp_b9b_copay_mc_amt_max \"125.00\", pbp_b9b_coins_yn \"2\", pbp_b9b_ded_yn \"2\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 125,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "emergency-room-care",
+                      "display": "Emergency Room Care"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "emergency-room-care",
+                          "display": "Emergency Room Care"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "emergency_room",
+                          "display": "Emergency room"
+                        }
+                      ],
+                      "text": "Emergency services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Waived if admitted to the hospital within 0 hours (pbp_b4a_copay_wavdia_yn \"1\", pbp_b4a_copay_wavdia_mi_dh \"2\", pbp_b4a_copay_wavd_dh \"0\")."
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b4_emerg_urgent.txt cells: pbp_b4a_copay_yn \"1\", pbp_b4a_copay_amt_mc_min \"90.00\", pbp_b4a_copay_amt_mc_max \"90.00\", pbp_b4a_coins_yn \"2\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 90,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "urgent-care",
+                      "display": "Urgent Care"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "urgent-care",
+                          "display": "Urgent Care"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "urgent_care",
+                          "display": "Urgent care"
+                        }
+                      ],
+                      "text": "Urgently needed services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b4b_copay_yn \"2\", pbp_b4b_coins_yn \"2\"); written as a $0 copay (decision S1, docs/specs/pbp-importer.md section 7.12)."
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b4_emerg_urgent.txt cells: pbp_b4b_copay_yn \"2\", pbp_b4b_coins_yn \"2\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 0,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "emergency-medical-transport",
+                      "display": "Emergency Medical Transportation"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "emergency-medical-transport",
+                          "display": "Emergency Medical Transportation"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "ambulance",
+                          "display": "Ambulance services"
+                        }
+                      ],
+                      "text": "Ground ambulance services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b10_amb_trans.txt cells: pbp_b10a_copay_yn \"1\", pbp_b10a_copay_ehc \"11\", pbp_b10a_copay_gas_amt_min \"175.00\", pbp_b10a_copay_gas_amt_max \"175.00\", pbp_b10a_coins_yn \"2\", pbp_b10a_ded_yn \"2\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 175,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "emergency-medical-transport",
+                          "display": "Emergency Medical Transportation"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "ambulance",
+                          "display": "Ambulance services"
+                        }
+                      ],
+                      "text": "Air ambulance services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b10_amb_trans.txt cells: pbp_b10a_copay_yn \"1\", pbp_b10a_copay_ehc \"11\", pbp_b10a_copay_aas_amt_min \"175.00\", pbp_b10a_copay_aas_amt_max \"175.00\", pbp_b10a_coins_yn \"2\", pbp_b10a_ded_yn \"2\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 175,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "diagnostic-test",
+                      "display": "Diagnostic Test"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "diagnostic-test",
+                          "display": "Diagnostic Test"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "diagnostic_test",
+                          "display": "Diagnostic test"
+                        }
+                      ],
+                      "text": "Diagnostic procedures and tests"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b8a_copay_yn \"2\", pbp_b8a_coins_yn \"2\"); written as a $0 copay (decision S1, docs/specs/pbp-importer.md section 7.12)."
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b8_clin_diag_ther.txt cells: pbp_b8a_copay_yn \"2\", pbp_b8a_coins_yn \"2\", pbp_b8a_ded_yn \"2\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 0,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "diagnostic-test",
+                          "display": "Diagnostic Test"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "diagnostic_lab",
+                          "display": "Diagnostic lab"
+                        }
+                      ],
+                      "text": "Lab services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b8a_copay_yn \"2\", pbp_b8a_coins_yn \"2\"); written as a $0 copay (decision S1, docs/specs/pbp-importer.md section 7.12)."
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b8_clin_diag_ther.txt cells: pbp_b8a_copay_yn \"2\", pbp_b8a_coins_yn \"2\", pbp_b8a_ded_yn \"2\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 0,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "diagnostic-test",
+                          "display": "Diagnostic Test"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "imaging_standard",
+                          "display": "Standard imaging"
+                        }
+                      ],
+                      "text": "Outpatient X-ray services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b8b_copay_yn \"1\", pbp_b8b_copay_ehc \"010\", pbp_b8b_coins_yn \"1\", pbp_b8b_coins_ehc \"001\"); written as a $0 copay (decision S1, docs/specs/pbp-importer.md section 7.12)."
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b8_clin_diag_ther.txt cells: pbp_b8b_copay_yn \"1\", pbp_b8b_copay_ehc \"010\", pbp_b8b_coins_yn \"1\", pbp_b8b_coins_ehc \"001\", pbp_b8b_ded_yn \"2\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 0,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "imaging",
+                      "display": "Imaging (CT/PET/MRI)"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "imaging",
+                          "display": "Imaging (CT/PET/MRI)"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "imaging_advanced",
+                          "display": "Advanced imaging"
+                        }
+                      ],
+                      "text": "Diagnostic radiological services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b8_clin_diag_ther.txt cells: pbp_b8b_copay_yn \"1\", pbp_b8b_copay_ehc \"010\", pbp_b8b_copay_amt_drs \"50.00\", pbp_b8b_copay_amt_drs_max \"50.00\", pbp_b8b_coins_yn \"1\", pbp_b8b_coins_ehc \"001\", pbp_b8b_ded_yn \"2\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 50,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "rehabilitation",
+                      "display": "Rehabilitation Services"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "rehabilitation",
+                          "display": "Rehabilitation Services"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "occupational_therapy",
+                          "display": "Occupational therapy"
+                        }
+                      ],
+                      "text": "Occupational therapy services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b7_health_prof.txt cells: pbp_b7c_copay_yn \"1\", pbp_b7c_copay_mc_amt_min \"15.00\", pbp_b7c_copay_mc_amt_max \"15.00\", pbp_b7c_coins_yn \"2\", pbp_b7c_ded_yn \"2\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 15,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:584807d0-7e3b-5c6b-bd97-a1585e7c68bd",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "org-scan-health-plan",
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>SCAN Health Plan</p></div>"
+        },
+        "name": "SCAN Health Plan"
+      }
+    }
+  ]
+}

@@ -38,7 +38,7 @@ Before conversion, each BPS document passed `node scripts/validate.js --schema s
 
 **Florida Blue tier 2 qualifiers (27 warnings).** "No code provided, and a code should be provided from the value set 'Cost Tier Value Set'", once per tier 2 `cost[]` entry. The Cost Tier value set has `value-choice`, `standard` and `virtual` and no code for a second tier; the binding is extensible, so the qualifier is text only, as for the Humana site-of-service tiers in `examples/fhir/VALIDATION.md`.
 
-**Text-only `BenefitLimitation` codings (21 warnings).** "No code provided, and a code should be provided from the value set 'Limit Type Value Set'" or "'Limit Period Value Set'". The CARIN limit type codes are `visits`, `days` and `dollars`, and the converter codes a limit period only for plan year, calendar year, benefit period and lifetime; it writes `per_year` as text because the BPS value does not say plan year or calendar year (converter spec 6.5). The public file's `LimitUnit` gives these values:
+**Text-only `BenefitLimitation` codings (21 warnings).** "No code provided, and a code should be provided from the value set 'Limit Type Value Set'" or "'Limit Period Value Set'". The CARIN limit type codes are `visits`, `days` and `dollars`, and the converter codes a limit period only for plan year, calendar year, benefit period and lifetime; it writes `per_year` as text because the BPS value does not say plan year or calendar year (converter spec 6.6). The public file's `LimitUnit` gives these values:
 
 | File | Text-only value | Warnings |
 |---|---|---|

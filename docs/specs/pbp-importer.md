@@ -1,6 +1,6 @@
 # Spec: CMS Plan Benefit Package (PBP) Benefits to BPS importer
 
-**Status:** Draft, 2026-10-06. Phase 1 (sources, layout, MVP field map, 1 proven parse), phase 2 session 1 (the plan level), session 2 (the MVP benefits, checked line by line against the H2406-013-000 Summary of Benefits) and session 3 (decisions S1, N1, A5, C3 and 5; 5 golden files; the test on committed fixtures; the Summary of Benefits check script; sections 10 to 13) are done. Readings still to confirm: end of section 7.
+**Status:** Draft, 2026-10-06. Phase 1 (sources, layout, MVP field map, 1 proven parse), phase 2 session 1 (the plan level), session 2 (the MVP benefits, checked line by line against the H2406-013-000 Summary of Benefits) and session 3 (decisions S1, N1, A5, C3 and 5; 5 golden files; the test on committed fixtures; the Summary of Benefits check script; sections 10 to 13) and session 4 (decision 4 confirmed on the Aetna H1609-028 Summary of Benefits; the converter maps the `POS` tier; the 5 golden files converted to FHIR; a second Summary of Benefits check) are done. Confirmed readings and readings still to confirm: end of section 7.
 **Reads with:** [`pbp-record-layout-notes.md`](pbp-record-layout-notes.md) (every PBP file, its key and grain), [`marketplace-puf-importer.md`](marketplace-puf-importer.md) (the pattern this importer follows), [`../medicare-advantage-notes.md`](../medicare-advantage-notes.md) (gaps G1 to G14), [`../../fhir/pbp-crosswalk.json`](../../fhir/pbp-crosswalk.json) (the benefit-to-column mapping)
 
 This spec defines the second importer for the Benefit Plan Standard (BPS): the CMS Medicare Advantage PBP Benefits files in, one BPS document per plan out. It follows the Marketplace importer's pattern: 1 direction, 1 plan in and 1 document out, nothing invented, nothing dropped silently, the mapping in a data file, deterministic output, golden files and a test. Sections marked **Not yet** are headings kept for later work.
@@ -41,7 +41,7 @@ This spec defines the second importer for the Benefit Plan Standard (BPS): the C
 | CY 2027 zip | https://www.cms.gov/files/zip/pbp-benefits-2027.zip |
 | Release label | "PBP Benefits-2027", Report Period 2027. No quarter on the page. Zip `Last-Modified` Thu, 01 Oct 2026 17:45:40 GMT. |
 | Layout | `PBP_Benefits_2027_dictionary.xlsx` and `Readme_PBP_Benefits_2027.txt`, inside the zip |
-| Check document | 2027 Summary of Benefits for H2406-013-000, `data/pbp/2027/sob/H2406-013-000-2027-SB.pdf`, 14 pages, document ID `Y0066_SB_H2406_013_000_2027_M` (read with `pdftotext -layout`; section 13) |
+| Check documents | 2027 Summary of Benefits for H2406-013-000, `data/pbp/2027/sob/H2406-013-000-2027-SB.pdf`, 14 pages, document ID `Y0066_SB_H2406_013_000_2027_M`; 2027 Summary of Benefits for H1609-028-000 (Aetna), `data/pbp/2027/sob/H1609-028-000-2027-SB.pdf`, 14 pages, document ID `Y0001_H1609_028_HP32_SB2027_M` (both read with `pdftotext -layout` and `-raw`; section 13) |
 
 The index page also lists CY 2026 (`pbp-benefits-2026`), CY 2026 JSON (`pbp-benefits-2026-json`, `pbp-benefits-2026-json-0`) and CY 2025 JSON pages. No 2027 JSON release is listed. This draft reads the tab-delimited text files only.
 
@@ -224,7 +224,7 @@ Steps are numbered from 1: service deductible, copay, coinsurance (inpatient: pe
 
 **Ranges.** Different minimum and maximum columns are common: specialist on 1,226 of 4,204 plans with a 7d copay, urgent care on 1,610 of 4,680, outpatient hospital, ASC and diagnostic radiology on several thousand. **Reading (question C1, answered for H2406-013):** the minimum and maximum are the lowest and highest cost share among the services the category covers. The file shows it where the Summary of Benefits splits a row: 9a1 `$0`-`$550` is "$0 copay for a colonoscopy, $550 copay otherwise", 9b `$0`-`$500` the same, 8b1 `$0`-`$320` is "$0 copay for each diagnostic mammogram, $320 copay otherwise", while every row with 1 price has minimum equal to maximum (7a, 7c, 7i, 9a2, 4a). Where the Summary of Benefits prints 1 value against a file range (specialist `$0`-`$65` against $65, urgent care `$0`-`$50` against $50, mental health individual sessions `$0`-`$25` against $25), its $0 is on another row: "Virtual medical visits $0 copay" and "Virtual mental health visits $0 copay", priced inside the Medicare-covered category (`pbp_b7j_bendesc_yn` "2": no supplemental telehealth benefit). Over the file, 1,104 of the 1,226 specialist ranges and 1,585 of the 1,610 urgent care ranges start at $0, and the 7j answer does not separate them (644 Yes, 582 No among the specialist ranges). The file never says which service carries the minimum, so the importer writes the range as the file states it and never 1 end of it (gap 9.1: an unlabeled range).
 
-**Inpatient (1a), per tier `t`.** Copay: `pbp_b1a_copay_yn`; `pbp_b1a_mc_copay_cstshr_yn_t<t>` 1 means the Medicare-defined cost share, which the file does not state: no step, tier `notes` (gap 9.1). Otherwise `pbp_b1a_copay_mcs_amt_t<t>` ("Copayment for Medicare-covered stay") is a `per_stay` step when there are no intervals or it is not 0, and `pbp_b1a_copay_mcs_int_num_t<t>` (1 Zero, 2 One, 3 Two, 4 Three intervals) gives 1 `per_day` step per interval with `unit_range` `{from, to}` from `_bgnd_int<n>_t<t>` and `_endd_int<n>_t<t>`. A $0.00 per-stay amount beside intervals is quoted in the tier `notes` only (4,007 MVP plans; question C2 answered: it is the per-stay amount, and `pbp_b1a_hosp_ben_period` says whether the intervals restart per admission, quoted). Coinsurance: the same with `coins`. Additional days (1a1, supplemental), when `pbp_b1a_bendesc_ad_up_nmcs` position 2 is 1: further `per_day` steps from `_ad_` intervals, with a step note quoting the type (Mandatory or Optional) and `pbp_b1a_bendesc_lim_ad`; the file writes an unlimited span as end day `999` (H2406-013: days 91 to 999), written as is. Service deductible: `pbp_b1a_ded_yn` with `pbp_b1a_ded_amt_t<t>`; on the 39 plans that answer Yes with no amount, the stay is charged the Medicare-defined cost share, and the tier `notes` say so (no step). `OUT` and `POS`: `pbp_c_oon_*` and `pbp_c_pos_*` inpatient columns of Section C (coinsurance, copay, intervals, Medicare-defined flags, the inpatient deductible), when 1a is in `pbp_c_oon_mc_bendesc_cats` or `pbp_c_pos_mc_bendesc_subcats`.
+**Inpatient (1a), per tier `t`.** Copay: `pbp_b1a_copay_yn`; `pbp_b1a_mc_copay_cstshr_yn_t<t>` 1 means the Medicare-defined cost share, which the file does not state: no step, tier `notes` (gap 9.1). Otherwise `pbp_b1a_copay_mcs_amt_t<t>` ("Copayment for Medicare-covered stay") is a `per_stay` step when there are no intervals or it is not 0, and `pbp_b1a_copay_mcs_int_num_t<t>` (1 Zero, 2 One, 3 Two, 4 Three intervals) gives 1 `per_day` step per interval with `unit_range` `{from, to}` from `_bgnd_int<n>_t<t>` and `_endd_int<n>_t<t>`. A $0.00 per-stay amount beside intervals is quoted in the tier `notes` only (4,007 MVP plans; question C2 answered: it is the per-stay amount, and `pbp_b1a_hosp_ben_period` says whether the intervals restart per admission, quoted). Coinsurance: the same with `coins`. Additional days (1a1, supplemental), when `pbp_b1a_bendesc_ad_up_nmcs` position 2 is 1: further `per_day` steps from `_ad_` intervals, with a step note quoting the type (Mandatory or Optional) and `pbp_b1a_bendesc_lim_ad`; the file writes an unlimited span as end day `999` (H2406-013: days 91 to 999), written as is. Additional days chosen with the interval count `1` (Zero intervals) give no day range and no amount, so no step is written and the cell is quoted in the tier `notes` (H1609-028, whose Summary of Benefits prints "$0 for additional days"; section 13). Service deductible: `pbp_b1a_ded_yn` with `pbp_b1a_ded_amt_t<t>`; on the 39 plans that answer Yes with no amount, the stay is charged the Medicare-defined cost share, and the tier `notes` say so (no step). `OUT` and `POS`: `pbp_c_oon_*` and `pbp_c_pos_*` inpatient columns of Section C (coinsurance, copay, intervals, Medicare-defined flags, the inpatient deductible), when 1a is in `pbp_c_oon_mc_bendesc_cats` or `pbp_c_pos_mc_bendesc_subcats`.
 
 **`applies_to_deductible`** (decision: written where the file states it, omitted otherwise):
 
@@ -291,12 +291,13 @@ There is no string grammar: PBP cost shares are numbers in typed columns. Amount
 | 7.5 | Periodicity "Every year" | `per_year`; the files do not say plan or calendar year. |
 | 7.6 | A deductible family answered "No" | No slot, and a `source_references` entry quotes the "No". A `$0` slot is not written (decision 2). |
 | 7.7 | An HMO with out-of-network families and no `OUT` or `POS` tier | Written with the file's wording; `source_references` says so. None in CY 2027. |
-| 7.8 | HMO-POS out-of-network deductible and maximum | **Decision 4 (2026-10-06):** the columns describe the POS option; written as `oon_individual_deductible` and `oon_individual_oop_max` with `network_tier` `POS` and a note quoting the columns. Supported by H1609-028, whose Section C POS deductible ($500) equals its Section D out-of-network deductible and whose `pbp_d_oon_deduct_m_cats` is its POS category list less 14a. **To be confirmed against the Aetna H1609-028 Summary of Benefits** (not in `data/pbp/2027/sob/`; the download was refused with HTTP 403). **Decision A5 (2026-10-06, session 3):** where Section C (`pbp_c_pos_ded_yn`, `_amt`) and Section D (`pbp_d_oon_deduct_yn`, `_amt`) disagree, Section D is written, Section C is quoted in `source_references`, and that entry says they disagree. The 12 plans are listed below this table. Not counted as disagreeing: the 83 plans where Section D names the Medicare-defined Part B deductible (no amount, so no slot) and Section C says "No". |
+| 7.8 | HMO-POS out-of-network deductible and maximum | **Decision 4 (2026-10-06):** the columns describe the POS option; written as `oon_individual_deductible` and `oon_individual_oop_max` with `network_tier` `POS` and a note quoting the columns. Supported by H1609-028, whose Section C POS deductible ($500) equals its Section D out-of-network deductible and whose `pbp_d_oon_deduct_m_cats` is its POS category list less 14a. **Confirmed 2026-10-06 (session 4)** on H1609-028-000 by 2 sources: (1) Aetna's 2027 Summary of Benefits (`data/pbp/2027/sob/H1609-028-000-2027-SB.pdf`, document ID `Y0001_H1609_028_HP32_SB2027_M`) prints the POS side under "Your out-of-network costs": page 2 "Plan deductible: No in-network deductible, $500 for certain out-of-network services"; page 3 specialist "$70 copay after your plan deductible is met", inpatient "50% per stay after your plan deductible is met", primary care "Not Covered" out of network; (2) CMS Medicare Plan Finder for the same plan (plan details `2027-H1609-028-0`) labels the $500 deductible "Out-of-network" and prints the specialist at $0-$38 in network and $70 out of network, and the out-of-pocket maximum at $6,750 in network and $10,100 out of network. The check is `docs/specs/pbp-sob-checks/H1609-028-000.json` (section 13; 0 differences). The $10,100 is the file's combined maximum (`pbp_d_comb_max_enr_amt`), carried in `source_references` (7.1); `pbp_d_oon_max_enr_oopc_yn` is "2" on this plan, so no POS maximum is written. **Decision A5 (2026-10-06, session 3):** where Section C (`pbp_c_pos_ded_yn`, `_amt`) and Section D (`pbp_d_oon_deduct_yn`, `_amt`) disagree, Section D is written, Section C is quoted in `source_references`, and that entry says they disagree. The 12 plans are listed below this table. Not counted as disagreeing: the 83 plans where Section D names the Medicare-defined Part B deductible (no amount, so no slot) and Section C says "No". |
 | 7.9 | Network values in BPS slots | **Decision N1 (2026-10-06, session 3):** `network_tier` holds the document's tier codes `IN`, `OUT` and `POS` everywhere, or `null` where the file does not say (7.3). Session 1's `in-network` and `out-of-network` are replaced: the 859 in-network deductibles and 6,872 in-network maximums are `IN`, the 111 PPO out-of-network maximums `OUT`. |
 | 7.10 | A category-level column that covers more than 1 benefit (`pbp_b7b_ded_yn`, `pbp_b7f_auth_yn`, `pbp_b18a_auth_yn`, `pbp_b17a_auth_yn`, `pbp_b18b_maxplan_*`) | Written on each benefit it covers, with the note naming the category it covers. The H2406-013 Summary of Benefits marks authorization only on the Medicare-covered rows (section 13). |
 | 7.11 | Out-of-network group with a supplemental benefit's coinsurance "of the allowance" | Written as `coinsurance` with the rate; the file does not say of what amount (H2406-013 hearing aids, 90%; gap 9.1). |
 | 7.12 | A covered service answered "No" to copayment and "No" to coinsurance | **Decision S1 (2026-10-06, session 3):** a `copay` step with `amount` 0 and a note quoting both answers, for example `The file states no copayment and no coinsurance for this service (pbp_b7a_copay_yn "2", pbp_b7a_coins_yn "2"); written as a $0 copay`. "No" is the answer 2, or a shared answer 1 whose "which services" position string leaves this service out (`pbp_b8a_copay_ehc` "01" leaves out 8a1). The same reading applies to the out-of-network and point-of-service groups and to the inpatient stay (B file and Section C). This is not the deductible rule: a deductible answered "No" still writes no slot (7.6). Over the CY 2027 file: 14,109 steps, among them primary care on 1,876 plans in network. **To be verified:** no plan whose Summary of Benefits is in `data/pbp/2027/sob/` has such a service (H2406-013 answers "Yes" for every MVP service). A candidate is the golden plan H5425-140-000 (SCAN Costco Medicare Advantage), with 14 such services, among them primary care, specialist and urgent care. |
 | 7.13 | Emergency and urgent care priced once | **Decision 5 (2026-10-06, session 3):** emergency stays on the in-network tier only, with a note that the file prices 4a once, with no network, and no out-of-network or point-of-service group lists it. The importer applies the same note to urgent care (4b), which the file treats the same way. Written on every plan with an `OUT` or `POS` tier (3,757). |
+| 7.14 | A category the plan's POS (or out-of-network) lists leave out | No `POS` or `OUT` row (5.4); the FHIR converter then adds its "Not stated in the BPS document" placeholder. The H1609-028 Summary of Benefits prints "Not Covered" out of network for 4 such checked rows: primary care (7a), the Medicare-covered and routine hearing exams (18a, 18a1) and hearing aids (18b1), none of them in `pbp_c_pos_mc_bendesc_subcats` or `pbp_c_pos_nmc_bendesc_subcats`. **Question O1, open:** write `covered: false` on the `POS` (or `OUT`) tier, with a note quoting the plan-level list, for a covered benefit whose code the list leaves out, or keep writing no row. Emergency and urgent care are not in the lists either but are priced once for both networks (decision 5), so they need a rule of their own under either answer. |
 
 **The 12 HMO-POS plans where Section C and Section D disagree on the POS deductible (decision A5):**
 
@@ -307,13 +308,22 @@ There is no string grammar: PBP cost shares are numbers in typed columns. Amount
 | H5883-003-001, -002, -003, -004, -005 | BCN Advantage Prestige (HMO-POS), Blue Care Network | "2", "" | "1", "200.00" | No slot |
 | H5883-017-000 | BCN Advantage Elements (HMO-POS), Blue Care Network | "2", "" | "1", "500.00" | No slot |
 
+### Confirmed readings
+
+Each reading below is written by the importer and has been checked against a source document.
+
+1. **Decision 4 (7.8), confirmed 2026-10-06:** the HMO-POS out-of-network deductible as the POS option's. Aetna H1609-028-000: the 2027 Summary of Benefits (document ID `Y0001_H1609_028_HP32_SB2027_M`, pages 2 and 3, under "Your out-of-network costs") and CMS Medicare Plan Finder (plan details `2027-H1609-028-0`, which labels the $500 deductible "Out-of-network"). Check: `docs/specs/pbp-sob-checks/H1609-028-000.json`, 0 differences.
+2. **Decision 1 (7.3), confirmed on 1 carrier:** the PPO annual deductible with no in-network scope as the out-of-network deductible. UnitedHealthcare H2406-013-000: the Summary of Benefits prints in network "No deductible" and out of network $1,000 on a listed set of services (`docs/specs/pbp-sob-checks/H2406-013-000.json`). 2 more carriers are still needed (below).
+
 ### Known readings to confirm
 
 Each reading below is written by the importer today and is not yet confirmed against a source document.
 
-1. **Decision 4 (7.8):** the HMO-POS out-of-network deductible and maximum as the POS option's. Confirm against the Aetna H1609-028 2027 Summary of Benefits ($500 POS deductible expected; its combined $10,100 maximum is in `source_references`). The download was refused with HTTP 403 (`data/pbp/2027/sob/_blocked-403.html.txt`).
-2. **Decision 1 on 2 more PPO carriers (7.3).** Verified on 1 UnitedHealthcare plan (H2406-013). Confirm on 2 PPOs from other carriers, at least 1 of them among the 37 with the scope `100` (decision C3), before the importer is called 1.0.
-3. **Decision S1's verifying plan (7.12).** No Summary of Benefits in `data/pbp/2027/sob/` shows a service answered "No" to both; confirm on 1 of the 1,876 plans, for example H5425-140-000.
+1. **Decision 1 on 2 more PPO carriers (7.3).** Verified on 1 UnitedHealthcare plan (H2406-013). Confirm on 2 PPOs from other carriers, at least 1 of them among the 37 with the scope `100` (decision C3), before the importer is called 1.0.
+2. **Decision S1's verifying plan (7.12).** No Summary of Benefits in `data/pbp/2027/sob/` shows a service answered "No" to both; confirm on 1 of the 1,876 plans, for example H5425-140-000 (SCAN Costco Medicare Advantage, 14 such services). Its 2027 Summary of Benefits is not yet saved; start from Plan Finder, https://www.medicare.gov/plan-compare/#/plan-details/2027-H5425-140-0?year=2027&lang=en, and save the PDF as `data/pbp/2027/sob/H5425-140-000-2027-SB.pdf`.
+3. **Decision 4's out-of-network maximum.** H1609-028 has no POS maximum (`pbp_d_oon_max_enr_oopc_yn` "2"), so only the deductible half of decision 4 is confirmed. The 63 HMO-POS plans with `pbp_d_oon_max_enr_oopc_yn` "1" need 1 Summary of Benefits to confirm the maximum half.
+
+Open question from session 4: **O1** (7.14), a covered category the POS or out-of-network lists leave out.
 
 ## 8. Lossy and unmapped items
 
@@ -390,11 +400,11 @@ Each value below is carried verbatim in `source_references` (plan or benefit lev
 
 ### 9.3 Exporter limits met on the way to FHIR
 
-Run on 2026-10-06 over the 5 golden files with `scripts/to-insuranceplan.js` (unchanged). These are converter decisions, recorded here and not fixed:
+First run on 2026-10-06 (session 3) over the 5 golden files; updated in session 4:
 
-- **`POS` is refused.** The converter maps tiers `IN`, `IN2` and `OUT` and stops on any other network-class tier: H1609-028 (HMO-POS) gives `error: network tier "POS" is not IN, OUT or a second in-network tier; the converter does not guess its applicability`, exit 1, nothing written. Every HMO-POS plan (1,273) needs a converter decision before it reaches FHIR.
-- **The other 4 convert** (H2406-013, H1036-068, H5533-019, H5425-140): 1 `Bundle` each (`InsurancePlan` and `Organization`), 14 benefits under the 10 SBC categories and 13 listed by name in `bps-unmapped-benefit` (the 11 with no canonical key, and `observation_care`, `radiation_therapy`, `chiropractic_care`, `acupuncture`, which `fhir/carin-sbc-crosswalk.json` does not place, as they apply). The hospital cost tiers of H5533-019 (`IN_1A_TIER_1`, `IN_1A_TIER_2`, `tier_class` `cost_designation`) reach FHIR as cost qualifiers with the tier name as text.
-- **Not yet validated with the HL7 FHIR validator.** `network_tier` values on accumulators reach FHIR as text; `deductible` steps, `shared_limit_id`, `max_amount` and the limit types `treatments` and `hearing_aids` have not been run through the validator. The Bundles are not committed.
+- **`POS` maps since session 4.** Session 3's converter refused the tier (`error: network tier "POS" is not IN, OUT or a second in-network tier`), so no HMO-POS plan reached FHIR. `scripts/to-insuranceplan.js` now maps `POS` to `applicability` `out-of-network` with the text-only qualifier `Point-of-service option`, as it maps `IN2` (converter spec 6.3, which cites the H1609-028 Summary of Benefits and Plan Finder). The 10 published Bundles are byte-identical before and after.
+- **All 5 convert** to 1 `Bundle` each (`InsurancePlan` and `Organization`), written to `examples/fhir/` under the converter's naming (the `InsurancePlan` id, from `plan_id`; section 13). Each places the benefits with a crosswalked canonical key under the SBC categories and lists the rest by name in `bps-unmapped-benefit` (the 11 with no canonical key, and `observation_care`, `radiation_therapy`, `chiropractic_care`, `acupuncture`, which `fhir/carin-sbc-crosswalk.json` does not place, as they apply). The hospital cost tiers of H5533-019 (`IN_1A_TIER_1`, `IN_1A_TIER_2`, `tier_class` `cost_designation`) reach FHIR as cost qualifiers with the tier name as text. H1609-028 has 10 `Point-of-service option` entries.
+- **HL7 FHIR validator: not run.** `validator_cli.jar` is not on this machine (the `hl7.fhir.us.insurance-card#2.0.0-ballot` package is in the local package cache). The command and the table to fill are in section 13. Not yet checked by the validator: `network_tier` values on accumulators as text, `deductible` steps, the `Point-of-service option` qualifier, `max_amount`, and the limit types `treatments` and `hearing_aids` as text.
 
 ## 10. Determinism
 
@@ -446,8 +456,9 @@ Then write `data/pbp/2027/download.json` with at least `{"downloaded": "YYYY-MM-
 node scripts/from-pbp.js --year 2027 --contract H2406                        # list a contract's plans
 node scripts/from-pbp.js --year 2027 --plan H2406-013-000 --out h2406.json   # 1 plan, BPS v1.2.0
 node scripts/validate.js --schema schema/v1.2.0/benefit-plan.schema.json h2406.json
-node scripts/to-insuranceplan.js h2406.json -o h2406.bundle.json            # FHIR (not HMO-POS plans, 9.3)
+node scripts/to-insuranceplan.js h2406.json -o h2406.bundle.json            # FHIR (HMO-POS too since session 4, 9.3)
 node scripts/pbp-sob-check.js h2406.json docs/specs/pbp-sob-checks/H2406-013-000.json
+node scripts/pbp-sob-check.js examples/aetna-medicare-aetna-medicare-select-extra.pbp.json docs/specs/pbp-sob-checks/H1609-028-000.json
 node scripts/from-pbp.js --write-golden                                      # regenerate the 5 examples, on purpose only
 node scripts/from-pbp.js --write-fixtures                                    # re-cut test/fixtures/pbp/, on purpose only
 node --test scripts/from-pbp.test.js                                         # 28 pass with the full files
@@ -464,7 +475,7 @@ CMS updates the PBP Benefits files during the year and publishes a new contract 
 3. Run `node --test scripts/from-pbp.test.js`. The crosswalk test checks every column it names against the fixture headers, which are the previous release's; a renamed column shows up as an import error ("no column ...") on the first plan, so import 1 plan of the new release first.
 4. Run the whole-file build (`scratch/pbp-bulk2.js` or a loop over `--contract`) and read every error and warning. Any code outside the dictionary is an error with the column and value quoted; extend the reader only for codes the dictionary lists, and add a test case for each.
 5. For a new contract year: add golden plans for that year to `GOLDEN` in `scripts/from-pbp.js`, run `--write-fixtures` and `--write-golden`, and download 1 or more Summary of Benefits documents into `data/pbp/<year>/sob/` with an expectations file under `docs/specs/pbp-sob-checks/`. Every reading in "Known readings to confirm" (end of section 7) should be checked again.
-6. Import a few plans, validate them, convert the non-HMO-POS ones, and run the HL7 validator as in `examples/fhir/VALIDATION.md`.
+6. Import a few plans, validate them, convert them (HMO-POS included), and run the HL7 validator as in section 13.
 
 ## 13. Tests and golden files
 
@@ -480,7 +491,40 @@ Written by `node scripts/from-pbp.js --write-golden` from the full CY 2027 files
 | `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | 63,713 | H5533-019-000 UPMC for Life PPO Rx Choice (PPO), UPMC for Life, PA | Local PPO | Inpatient hospital cost tiers (`IN_1A_TIER_1` $175 and `IN_1A_TIER_2` $200 per day, days 1 to 3); out-of-network hearing aids at a $5,000 copay, as the file states (group 181) |
 | `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | 45,309 | H5425-140-000 SCAN Costco Medicare Advantage (HMO), SCAN Health Plan, CA | HMO | Hearing aids under the 18a maximum ($400 per year, `shared_limit_id` `PBP_18A_MAXPLAN` on hearing aids and routine hearing exams); 14 decision S1 $0 steps |
 
-`scripts/to-insuranceplan.js` reads only `examples/*_example.json`, so the golden files do not change the converter's corpus or its pinned Bundles.
+### FHIR Bundles and HL7 validation
+
+Since session 4 (2026-10-06) the 5 golden files are also converted with `scripts/to-insuranceplan.js` into `examples/fhir/`, named as the 10 SBC Bundles are: the `InsurancePlan` id (`plan_id` lowercased, `_` changed to `-`) plus `.json`. `node scripts/to-insuranceplan.js --write-golden` writes them with the 10; `scripts/to-insuranceplan.test.js` checks each against its file byte for byte and against a pinned SHA-256. `scripts/publish-fhir.js` reads only `examples/*_example.json`, so they are not published to the docs site, and the 10 published Bundles are byte-identical before and after the change (checked against `HEAD` and the pinned hashes).
+
+| Bundle (`examples/fhir/`) | Plan | Bytes | Placed / unmapped benefits | `cost[]` entries | Placeholders | Text-only qualifiers |
+|---|---|---|---|---|---|---|
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | H2406-013-000 | 163,303 | 14 / 13 | 30 | 2 | 0 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | H1036-068-000 | 142,572 | 14 / 13 | 29 | 13 | 0 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | H1609-028-000 | 160,596 | 14 / 13 | 29 | 4 | 10 (`Point-of-service option`) |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | H5533-019-000 | 163,544 | 14 / 13 | 31 | 2 | 4 (hospital tiers) |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | H5425-140-000 | 137,165 | 14 / 13 | 28 | 13 | 0 |
+
+**HL7 FHIR validator: not run on 2026-10-06.** `validator_cli.jar` is not on this machine; Java (OpenJDK 17.0.19) is, and `hl7.fhir.us.insurance-card#2.0.0-ballot` is in the local FHIR package cache (`~/.fhir/packages`). The command, the one the docs page "Validating" section and `examples/fhir/VALIDATION.md` give, limited to the 5 files, from the repository root (the latest `validator_cli.jar` is at https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar; the run uses `tx.fhir.org`):
+
+```
+java -jar validator_cli.jar -version 4.0.1 \
+  -ig hl7.fhir.us.insurance-card#2.0.0-ballot \
+  -ig fhir/definitions \
+  examples/fhir/aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json \
+  examples/fhir/humana-gold-plus-h1036-068-hmo-h1036-068-000.json \
+  examples/fhir/aetna-medicare-select-extra-hmo-pos-h1609-028-000.json \
+  examples/fhir/upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json \
+  examples/fhir/scan-costco-medicare-advantage-hmo-h5425-140-000.json
+```
+
+| File | Errors | Warnings | Information |
+|---|---|---|---|
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | not run | not run | not run |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | not run | not run | not run |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | not run | not run | not run |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | not run | not run | not run |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | not run | not run | not run |
+
+A Bundle with errors is fixed in the importer or the converter and regenerated, never edited by hand.
 
 ### Fixtures
 
@@ -500,7 +544,7 @@ Written by `node scripts/from-pbp.js --write-golden` from the full CY 2027 files
 - Altered fixture rows: an unreadable amount, an unknown code and a minimum above its maximum are errors that quote the cell, with no document; a Medicare-covered category with no answer is not written, with a warning and a source reference.
 - The Summary of Benefits checker: pointer and matching rules, and the H2406-013 golden file against its expectations with 0 differences (and 1 difference when a value is changed).
 
-**Output on 2026-10-06**, with the full files present: `tests 28, pass 28, fail 0, skipped 0` (about 20 seconds). In a copy of the repository without `data/`: `tests 28, pass 23, fail 0, skipped 5` (about 1.5 seconds). The Marketplace importer test (18 pass) and the converter test (62 pass) pass unchanged.
+**Output on 2026-10-06**, with the full files present: `tests 28, pass 28, fail 0, skipped 0` (about 20 seconds). In a copy of the repository without `data/`: `tests 28, pass 23, fail 0, skipped 5` (about 1.5 seconds). The Marketplace importer test (18 pass) and the converter test (62 pass) pass unchanged. **Session 4, 2026-10-06:** the same 28 pass here; the converter test has 65 (the 62, 2 of them now expecting the 5 PBP Bundles beside the 10 in `examples/fhir/`, and 3 new: the PBP Bundles, the `POS` tier on the Aetna golden file, and a misnamed point-of-service tier); the Marketplace importer test 18.
 
 ### Summary of Benefits check
 
@@ -613,6 +657,87 @@ READING    p9   Routine foot care, prior authorization [PODIATRY_ROUTINE]
 61 checks: 53 MATCH, 8 READING, 0 DIFFERENCE
 ```
 
+`docs/specs/pbp-sob-checks/H1609-028-000.json` (session 4) checks the Aetna HMO-POS plan against its 2027 Summary of Benefits, document ID `Y0001_H1609_028_HP32_SB2027_M`, pages 2 to 5: the deductible, both maximums, primary care, specialist, inpatient, outpatient hospital, diagnostic tests, lab, diagnostic radiology, X-rays, emergency and urgent care, hearing exams and hearing aids, both columns. The document's "out-of-network" column is the POS tier (decision 4). 0 differences; the 10 READING rows are: the combined maximum (7.1), 2 ranges where the document prints the top only (specialist $0-$38, which Plan Finder prints as a range; outpatient hospital $0-$350), the additional inpatient days with 0 intervals (5.5), emergency and urgent care on the in-network tier only (decision 5), and 4 rows the document prints "Not Covered" out of network where the importer writes no POS row (7.14, question O1). Output on 2026-10-06 for the golden file:
+
+```
+Summary of Benefits check: H1609-028-000 Aetna Medicare Select Extra (HMO-POS)
+Expectations: H1609-028-000, Y0001_H1609_028_HP32_SB2027_M (data/pbp/2027/sob/H1609-028-000-2027-SB.pdf)
+MATCH      p2   Plan deductible, in network
+MATCH      p2   Plan deductible, out of network (POS option)
+MATCH      p2   No deductible in network (primary care) [PRIMARY_CARE]
+MATCH      p3   Maximum out-of-pocket, in network
+READING    p3   Maximum out-of-pocket, in and out of network combined
+             text:     $10,100 for in- and out-of-network services combined
+             printed:  {"amount":10100}
+             document: (absent)  at /accumulators/oon_individual_oop_max
+             reading:  The file states the amount as the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt "10100.00"; pbp_d_oon_max_enr_oopc_yn "2"), and the document says "combined". BPS has no combined slot, so it is in source_references only (spec 7.1). Plan Finder prints it as the out-of-network maximum.
+MATCH      p3   Primary care (PCP), in network [PRIMARY_CARE]
+READING    p3   Primary care (PCP), out of network [PRIMARY_CARE]
+             text:     Not Covered
+             printed:  [{"tier_id":"IN"},{"tier_id":"POS","covered":false}]
+             document: [{"tier_id":"IN","covered":true,"cost_shares":[{"type":"copay","sequence":1,"amount":0,"applies_to_deductible":false,"applies_to_moop":true}],"notes":"pbp_b7...  at /benefits/0/network_cost_shares
+             reading:  No pbp_Section_C_POS group lists 7a, and pbp_c_pos_mc_bendesc_subcats leaves it out; the importer writes no POS row for a category no group lists (spec 5.4), so the document does not say "not covered". Question O1 (section 7).
+READING    p3   Specialist, in network [SPECIALIST]
+             text:     $38 copay
+             printed:  [{"type":"copay","amount":38}]
+             document: [{"type":"copay","sequence":1,"amount_min":0,"amount_max":38,"applies_to_deductible":false,"applies_to_moop":true}]  at /benefits/1/network_cost_shares/0/cost_shares
+             reading:  pbp_b7d_copay_amt_mc_min "0.00", _max "38.00". Plan Finder prints the in-network specialist as $0-$38; this document prints no $0 specialist row, so which service is $0 is not shown. The importer writes the range (spec 5.5).
+MATCH      p3   Specialist, out of network (POS option) [SPECIALIST]
+MATCH      p3   Inpatient hospital, in network, days 1 to 5 [INPATIENT_HOSPITAL]
+MATCH      p3   Inpatient hospital, in network, days 6 to 90 [INPATIENT_HOSPITAL]
+READING    p3   Inpatient hospital, in network, additional days [INPATIENT_HOSPITAL]
+             text:     $0 for additional days ("Inpatient (unlimited number of days)")
+             printed:  {"type":"copay","amount":0,"basis":"per_day"}
+             document: (absent)  at /benefits/2/network_cost_shares/0/cost_shares/2
+             reading:  pbp_b1a_bendesc_ad_up_nmcs "010" (additional days chosen), pbp_b1a_bendesc_amo_ad "2" (Mandatory), pbp_b1a_bendesc_lim_ad "1" (unlimited), pbp_b1a_copay_ad_intrvl_num_t1 "1" (Zero intervals). With 0 intervals the file gives no day range and no amount for the additional days, so the importer writes no step; the cell is quoted in the tier notes. Writing $0 would need a start day the file does not state.
+MATCH      p3   Inpatient hospital, out of network (POS option) [INPATIENT_HOSPITAL]
+READING    p3   Outpatient hospital, in network [OUTPATIENT_HOSPITAL]
+             text:     $350 copay
+             printed:  [{"type":"copay","amount":350}]
+             document: [{"type":"copay","sequence":1,"amount_min":0,"amount_max":350,"basis":"per_visit","applies_to_deductible":false,"applies_to_moop":true}]  at /benefits/3/network_cost_shares/0/cost_shares
+             reading:  pbp_b9a_copay_ohs_amt_min "0.00", _max "350.00". The document prints $350 only and no $0 outpatient row; on H2406-013 the $0 end was the colonoscopy (spec 5.5). The importer writes the range.
+MATCH      p3   Outpatient hospital, out of network (POS option) [OUTPATIENT_HOSPITAL]
+READING    p3   Emergency care, both networks [EMERGENCY]
+             text:     $130 copay for emergency care (in both columns)
+             printed:  [{"tier_id":"IN","cost_shares":[{"type":"copay","amount":130}]},{"tier_id":"POS","cost_shares":[{"type":"copay","amount":130}]}]
+             document: [{"tier_id":"IN","covered":true,"cost_shares":[{"type":"copay","sequence":1,"amount":130,"applies_to_deductible":false,"applies_to_moop":true,"notes":"Waived...  at /benefits/6/network_cost_shares
+             reading:  The file prices 4a once, with no network, and no POS group lists 4a; written on the in-network tier only with a note (decision 5, spec 7.13).
+READING    p3   Urgent care, both networks [URGENT_CARE]
+             text:     $30 copay for urgent care (in both columns)
+             printed:  [{"tier_id":"IN","cost_shares":[{"type":"copay","amount":30}]},{"tier_id":"POS","cost_shares":[{"type":"copay","amount":30}]}]
+             document: [{"tier_id":"IN","covered":true,"cost_shares":[{"type":"copay","sequence":1,"amount":30,"applies_to_deductible":false,"applies_to_moop":true}],"notes":"pbp_b...  at /benefits/7/network_cost_shares
+             reading:  As emergency care: 4b is priced once and no POS group lists it (decision 5).
+MATCH      p4   Diagnostic tests and procedures, in network [DIAGNOSTIC_TESTS]
+MATCH      p4   Diagnostic tests and procedures, out of network (POS option) [DIAGNOSTIC_TESTS]
+MATCH      p4   Lab services, in network [LAB_SERVICES]
+MATCH      p4   Lab services, out of network (POS option) [LAB_SERVICES]
+MATCH      p4   Diagnostic radiology services (CT/CAT scan, MRI), in network [DIAGNOSTIC_RADIOLOGY]
+MATCH      p4   Diagnostic radiology services, out of network (POS option) [DIAGNOSTIC_RADIOLOGY]
+MATCH      p4   Outpatient X-rays, in network [XRAY]
+MATCH      p4   Outpatient X-rays, out of network (POS option) [XRAY]
+MATCH      p4   Diagnostic hearing exam, in network [HEARING_EXAM]
+READING    p4   Diagnostic hearing exam, out of network [HEARING_EXAM]
+             text:     Not Covered
+             printed:  [{"tier_id":"IN"},{"tier_id":"POS","covered":false}]
+             document: [{"tier_id":"IN","covered":true,"cost_shares":[{"type":"copay","sequence":1,"amount":38,"applies_to_deductible":false,"applies_to_moop":true}],"notes":"pbp_b...  at /benefits/22/network_cost_shares
+             reading:  No POS group lists 18a, and pbp_c_pos_mc_bendesc_subcats leaves it out; no POS row is written (spec 5.4). Question O1 (section 7).
+MATCH      p4   Routine hearing exam, in network [HEARING_EXAM_ROUTINE]
+MATCH      p4   Routine hearing exam, 1 every year [HEARING_EXAM_ROUTINE]
+READING    p4   Routine hearing exam, out of network [HEARING_EXAM_ROUTINE]
+             text:     Not Covered
+             printed:  [{"tier_id":"IN"},{"tier_id":"POS","covered":false}]
+             document: [{"tier_id":"IN","covered":true,"cost_shares":[{"type":"copay","sequence":1,"amount":0,"applies_to_deductible":false,"applies_to_moop":true}],"notes":"pbp_b1...  at /benefits/23/network_cost_shares
+             reading:  No POS group lists 18a1, and pbp_c_pos_nmc_bendesc_subcats ("13d;13e;14c15;") leaves it out; no POS row is written (spec 5.4). Question O1 (section 7).
+MATCH      p5   Hearing aids, covered in network [HEARING_AIDS]
+MATCH      p5   Hearing aids, allowance [HEARING_AIDS]
+READING    p5   Hearing aids, out of network [HEARING_AIDS]
+             text:     Not Covered
+             printed:  [{"tier_id":"IN"},{"tier_id":"POS","covered":false}]
+             document: [{"tier_id":"IN","covered":true,"cost_shares":[{"type":"copay","sequence":1,"amount":0,"basis":"per_aid","applies_to_deductible":false,"applies_to_moop":fals...  at /benefits/26/network_cost_shares
+             reading:  No POS group lists 18b1, and pbp_c_pos_nmc_bendesc_subcats leaves it out; no POS row is written (spec 5.4). Question O1 (section 7).
+33 checks: 23 MATCH, 10 READING, 0 DIFFERENCE
+```
+
 ### Whole-file run
 
 `scratch/pbp-bulk2.js` over the CY 2027 file on 2026-10-06, after the session 3 decisions: **6,872 MVP plans built, 0 errors, 0 schema failures, 117 warnings**; 185,431 benefits written. Warnings by kind: `medicare-covered-cost-share-blank` 117 (inpatient on the 117 Part B-only plans, not written); `service-in-more-than-one-group` 0; `oon-category-without-group` 0; `supplemental-offer-blank` 0. `network_tier` values: `IN` 7,731, `OUT` 329, `POS` 95, `null` 48. Decision S1: 14,109 $0 steps. Decision 5: 3,757 plans. Decision A5: 12 plans.
@@ -620,5 +745,6 @@ READING    p9   Routine foot care, prior authorization [PODIATRY_ROUTINE]
 ### Open questions
 
 - P1 (carrier: marketing or legal name), H1 (coverage basis "Both"), H2 (per-pair hearing aid copays).
-- The converter's handling of `POS` (9.3).
+- O1 (a covered category the POS or out-of-network lists leave out, 7.14).
+- The HL7 validator run over the 5 PBP Bundles ("FHIR Bundles and HL7 validation" above).
 - The readings at the end of section 7.

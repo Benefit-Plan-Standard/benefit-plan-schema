@@ -1,0 +1,265 @@
+{
+  "plan": "H1609-028-000",
+  "document": {
+    "title": "Summary of Benefits 2027, Aetna Medicare Select Extra (HMO-POS)",
+    "id": "Y0001_H1609_028_HP32_SB2027_M",
+    "file": "data/pbp/2027/sob/H1609-028-000-2027-SB.pdf",
+    "pages": 14,
+    "read_with": "pdftotext -layout and pdftotext -raw; pages counted in the PDF, which equal the printed page numbers. The document's columns are \"Your in-network costs\" and \"Your out-of-network costs\"; the importer writes the out-of-network column's values to the POS tier (decision 4)."
+  },
+  "golden": "examples/aetna-medicare-aetna-medicare-select-extra.pbp.json",
+  "spec": "docs/specs/pbp-importer.md section 13",
+  "checks": [
+    {
+      "item": "Plan deductible, in network",
+      "page": 2,
+      "printed": "No in-network deductible",
+      "expected": { "$absent": true },
+      "path": "/accumulators/individual_deductible"
+    },
+    {
+      "item": "Plan deductible, out of network (POS option)",
+      "page": 2,
+      "printed": "$500 for certain out-of-network services",
+      "expected": { "amount": 500, "network_tier": "POS" },
+      "path": "/accumulators/oon_individual_deductible"
+    },
+    {
+      "item": "No deductible in network (primary care)",
+      "page": 2,
+      "printed": "No in-network deductible",
+      "expected": false,
+      "path": "/benefits/0/network_cost_shares/0/cost_shares/0/applies_to_deductible"
+    },
+    {
+      "item": "Maximum out-of-pocket, in network",
+      "page": 3,
+      "printed": "$6,750 for in-network services",
+      "expected": { "amount": 6750, "network_tier": "IN" },
+      "path": "/accumulators/individual_oop_max"
+    },
+    {
+      "item": "Maximum out-of-pocket, in and out of network combined",
+      "page": 3,
+      "printed": "$10,100 for in- and out-of-network services combined",
+      "expected": { "amount": 10100 },
+      "path": "/accumulators/oon_individual_oop_max",
+      "expected_reading": { "$absent": true },
+      "note": "The file states the amount as the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10100.00\"; pbp_d_oon_max_enr_oopc_yn \"2\"), and the document says \"combined\". BPS has no combined slot, so it is in source_references only (spec 7.1). Plan Finder prints it as the out-of-network maximum."
+    },
+    {
+      "item": "Primary care (PCP), in network",
+      "page": 3,
+      "printed": "$0 copay",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/0/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Primary care (PCP), out of network",
+      "page": 3,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "POS", "covered": false }],
+      "path": "/benefits/0/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }],
+      "note": "No pbp_Section_C_POS group lists 7a, and pbp_c_pos_mc_bendesc_subcats leaves it out; the importer writes no POS row for a category no group lists (spec 5.4), so the document does not say \"not covered\". Question O1 (section 7)."
+    },
+    {
+      "item": "Specialist, in network",
+      "page": 3,
+      "printed": "$38 copay",
+      "expected": [{ "type": "copay", "amount": 38 }],
+      "path": "/benefits/1/network_cost_shares/0/cost_shares",
+      "expected_reading": [{ "type": "copay", "amount_min": 0, "amount_max": 38, "applies_to_deductible": false }],
+      "note": "pbp_b7d_copay_amt_mc_min \"0.00\", _max \"38.00\". Plan Finder prints the in-network specialist as $0-$38; this document prints no $0 specialist row, so which service is $0 is not shown. The importer writes the range (spec 5.5)."
+    },
+    {
+      "item": "Specialist, out of network (POS option)",
+      "page": 3,
+      "printed": "$70 copay after your plan deductible is met",
+      "expected": { "tier_id": "POS", "covered": true, "cost_shares": [{ "type": "copay", "amount": 70, "applies_to_deductible": true }] },
+      "path": "/benefits/1/network_cost_shares/1"
+    },
+    {
+      "item": "Inpatient hospital, in network, days 1 to 5",
+      "page": 3,
+      "printed": "$375 per day, days 1-5",
+      "expected": { "type": "copay", "amount": 375, "basis": "per_day", "unit_range": { "from": 1, "to": 5 } },
+      "path": "/benefits/2/network_cost_shares/0/cost_shares/0"
+    },
+    {
+      "item": "Inpatient hospital, in network, days 6 to 90",
+      "page": 3,
+      "printed": "$0 per day, days 6-90",
+      "expected": { "type": "copay", "amount": 0, "basis": "per_day", "unit_range": { "from": 6, "to": 90 } },
+      "path": "/benefits/2/network_cost_shares/0/cost_shares/1"
+    },
+    {
+      "item": "Inpatient hospital, in network, additional days",
+      "page": 3,
+      "printed": "$0 for additional days (\"Inpatient (unlimited number of days)\")",
+      "expected": { "type": "copay", "amount": 0, "basis": "per_day" },
+      "path": "/benefits/2/network_cost_shares/0/cost_shares/2",
+      "expected_reading": { "$absent": true },
+      "note": "pbp_b1a_bendesc_ad_up_nmcs \"010\" (additional days chosen), pbp_b1a_bendesc_amo_ad \"2\" (Mandatory), pbp_b1a_bendesc_lim_ad \"1\" (unlimited), pbp_b1a_copay_ad_intrvl_num_t1 \"1\" (Zero intervals). With 0 intervals the file gives no day range and no amount for the additional days, so the importer writes no step; the cell is quoted in the tier notes. Writing $0 would need a start day the file does not state."
+    },
+    {
+      "item": "Inpatient hospital, out of network (POS option)",
+      "page": 3,
+      "printed": "50% per stay after your plan deductible is met",
+      "expected": { "tier_id": "POS", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.5, "basis": "per_stay", "applies_to_deductible": true }] },
+      "path": "/benefits/2/network_cost_shares/1"
+    },
+    {
+      "item": "Outpatient hospital, in network",
+      "page": 3,
+      "printed": "$350 copay",
+      "expected": [{ "type": "copay", "amount": 350 }],
+      "path": "/benefits/3/network_cost_shares/0/cost_shares",
+      "expected_reading": [{ "type": "copay", "amount_min": 0, "amount_max": 350, "basis": "per_visit" }],
+      "note": "pbp_b9a_copay_ohs_amt_min \"0.00\", _max \"350.00\". The document prints $350 only and no $0 outpatient row; on H2406-013 the $0 end was the colonoscopy (spec 5.5). The importer writes the range."
+    },
+    {
+      "item": "Outpatient hospital, out of network (POS option)",
+      "page": 3,
+      "printed": "50% coinsurance after your plan deductible is met",
+      "expected": { "tier_id": "POS", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }] },
+      "path": "/benefits/3/network_cost_shares/1"
+    },
+    {
+      "item": "Emergency care, both networks",
+      "page": 3,
+      "printed": "$130 copay for emergency care (in both columns)",
+      "expected": [{ "tier_id": "IN", "cost_shares": [{ "type": "copay", "amount": 130 }] }, { "tier_id": "POS", "cost_shares": [{ "type": "copay", "amount": 130 }] }],
+      "path": "/benefits/6/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 130 }] }],
+      "note": "The file prices 4a once, with no network, and no POS group lists 4a; written on the in-network tier only with a note (decision 5, spec 7.13)."
+    },
+    {
+      "item": "Urgent care, both networks",
+      "page": 3,
+      "printed": "$30 copay for urgent care (in both columns)",
+      "expected": [{ "tier_id": "IN", "cost_shares": [{ "type": "copay", "amount": 30 }] }, { "tier_id": "POS", "cost_shares": [{ "type": "copay", "amount": 30 }] }],
+      "path": "/benefits/7/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 30 }] }],
+      "note": "As emergency care: 4b is priced once and no POS group lists it (decision 5)."
+    },
+    {
+      "item": "Diagnostic tests and procedures, in network",
+      "page": 4,
+      "printed": "$0 - $200 copay",
+      "expected": [{ "type": "copay", "amount_min": 0, "amount_max": 200 }],
+      "path": "/benefits/10/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Diagnostic tests and procedures, out of network (POS option)",
+      "page": 4,
+      "printed": "50% coinsurance after your plan deductible is met",
+      "expected": { "tier_id": "POS", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }] },
+      "path": "/benefits/10/network_cost_shares/1"
+    },
+    {
+      "item": "Lab services, in network",
+      "page": 4,
+      "printed": "$0 - $30 copay",
+      "expected": [{ "type": "copay", "amount_min": 0, "amount_max": 30 }],
+      "path": "/benefits/11/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Lab services, out of network (POS option)",
+      "page": 4,
+      "printed": "50% coinsurance after your plan deductible is met",
+      "expected": { "tier_id": "POS", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }] },
+      "path": "/benefits/11/network_cost_shares/1"
+    },
+    {
+      "item": "Diagnostic radiology services (CT/CAT scan, MRI), in network",
+      "page": 4,
+      "printed": "$0 - $200 copay",
+      "expected": [{ "type": "copay", "amount_min": 0, "amount_max": 200 }],
+      "path": "/benefits/12/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Diagnostic radiology services, out of network (POS option)",
+      "page": 4,
+      "printed": "50% coinsurance after your plan deductible is met",
+      "expected": { "tier_id": "POS", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }] },
+      "path": "/benefits/12/network_cost_shares/1"
+    },
+    {
+      "item": "Outpatient X-rays, in network",
+      "page": 4,
+      "printed": "$10 copay",
+      "expected": [{ "type": "copay", "amount": 10 }],
+      "path": "/benefits/14/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient X-rays, out of network (POS option)",
+      "page": 4,
+      "printed": "50% coinsurance after your plan deductible is met",
+      "expected": { "tier_id": "POS", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }] },
+      "path": "/benefits/14/network_cost_shares/1"
+    },
+    {
+      "item": "Diagnostic hearing exam, in network",
+      "page": 4,
+      "printed": "$38 copay",
+      "expected": [{ "type": "copay", "amount": 38 }],
+      "path": "/benefits/22/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Diagnostic hearing exam, out of network",
+      "page": 4,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "POS", "covered": false }],
+      "path": "/benefits/22/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }],
+      "note": "No POS group lists 18a, and pbp_c_pos_mc_bendesc_subcats leaves it out; no POS row is written (spec 5.4). Question O1 (section 7)."
+    },
+    {
+      "item": "Routine hearing exam, in network",
+      "page": 4,
+      "printed": "$0 copay",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/23/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Routine hearing exam, 1 every year",
+      "page": 4,
+      "printed": "You get one routine hearing exam every year",
+      "expected": [{ "type": "visits", "value": 1, "period": "per_year" }],
+      "path": "/benefits/23/limits"
+    },
+    {
+      "item": "Routine hearing exam, out of network",
+      "page": 4,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "POS", "covered": false }],
+      "path": "/benefits/23/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }],
+      "note": "No POS group lists 18a1, and pbp_c_pos_nmc_bendesc_subcats (\"13d;13e;14c15;\") leaves it out; no POS row is written (spec 5.4). Question O1 (section 7)."
+    },
+    {
+      "item": "Hearing aids, covered in network",
+      "page": 5,
+      "printed": "You get an annual benefit amount (allowance) of $1,000 per ear",
+      "expected": { "tier_id": "IN", "covered": true },
+      "path": "/benefits/26/network_cost_shares/0"
+    },
+    {
+      "item": "Hearing aids, allowance",
+      "page": 5,
+      "printed": "an annual benefit amount (allowance) of $1,000 per ear",
+      "expected": { "type": "dollars", "value": 1000, "period": "per_year", "scope": "per_ear" },
+      "path": "/benefits/26/limits/1"
+    },
+    {
+      "item": "Hearing aids, out of network",
+      "page": 5,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "POS", "covered": false }],
+      "path": "/benefits/26/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }],
+      "note": "No POS group lists 18b1, and pbp_c_pos_nmc_bendesc_subcats leaves it out; no POS row is written (spec 5.4). Question O1 (section 7)."
+    }
+  ]
+}
