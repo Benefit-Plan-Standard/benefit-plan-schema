@@ -2,7 +2,7 @@
   "resourceType": "CodeSystem",
   "id": "canonical-benefits",
   "url": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "name": "BPSCanonicalBenefits",
   "title": "BPS Canonical Benefits",
   "status": "draft",
@@ -11,7 +11,7 @@
   "description": "The Benefit Plan Standard canonical benefit identifiers (vocabularies/canonical-benefits.json), as a FHIR CodeSystem. Non-normative and extensible in BPS; generated from the vocabulary file.",
   "caseSensitive": true,
   "content": "complete",
-  "count": 100,
+  "count": 106,
   "concept": [
     {
       "code": "aba_therapy",
@@ -339,6 +339,11 @@
       "definition": "Professional fees during inpatient hospital stay (e.g., surgeon, hospitalist)."
     },
     {
+      "code": "other_practitioner_office_visit",
+      "display": "Other practitioner office visit",
+      "definition": "Office visit with a practitioner who is not a physician, such as a nurse practitioner or physician assistant. Not primary_care or specialist."
+    },
+    {
       "code": "outpatient_surgery_professional",
       "display": "Outpatient surgery professional",
       "definition": "Professional fees for outpatient surgery (e.g., surgeon)."
@@ -387,6 +392,11 @@
       "code": "occupational_therapy",
       "display": "Occupational therapy",
       "definition": "Occupational therapy services."
+    },
+    {
+      "code": "physical_and_occupational_therapy",
+      "display": "Physical and occupational therapy",
+      "definition": "Rehabilitative physical therapy and occupational therapy as one combined benefit, for sources that state them in one row (the Marketplace Benefits and Cost Sharing PUF row \"Rehabilitative Occupational and Rehabilitative Physical Therapy\"). Where the source states them separately, use physical_therapy and occupational_therapy."
     },
     {
       "code": "physical_therapy",
@@ -464,6 +474,16 @@
       "definition": "Durable medical equipment (DME)."
     },
     {
+      "code": "hearing_aids",
+      "display": "Hearing aids",
+      "definition": "Hearing aids. In Medicare Advantage, the supplemental hearing aid benefit."
+    },
+    {
+      "code": "hearing_exam",
+      "display": "Hearing exam",
+      "definition": "Routine hearing exam. Not the Medicare-covered diagnostic hearing exam, which is a different benefit."
+    },
+    {
       "code": "home_infusion_therapy",
       "display": "Home infusion therapy",
       "definition": "Infusion therapy administered in the home."
@@ -499,6 +519,11 @@
       "definition": "Radiation therapy for cancer treatment."
     },
     {
+      "code": "routine_foot_care",
+      "display": "Routine foot care",
+      "definition": "Routine foot care. Not Medicare-covered podiatry services or diabetic routine foot care, which are different benefits."
+    },
+    {
       "code": "surgery_global",
       "display": "Surgery (global)",
       "definition": "Global surgical services including facility and professional components."
@@ -512,6 +537,11 @@
       "code": "pediatric_glasses",
       "display": "Pediatric glasses",
       "definition": "Pediatric vision glasses or lenses."
+    },
+    {
+      "code": "routine_eye_exam",
+      "display": "Routine eye exam",
+      "definition": "Routine eye exam for adults. Not the Medicare-covered diagnostic eye exam or the diabetic eye exam, which are different benefits."
     }
   ]
 }

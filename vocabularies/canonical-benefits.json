@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "vocabulary_id": "https://benefitplanstandard.org/vocabularies/v1.1.0/canonical-benefits.json",
+  "vocabulary_id": "https://benefitplanstandard.org/vocabularies/v1.2.0/canonical-benefits.json",
   "title": "BPS Recommended Canonical Benefit Vocabulary",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Non-normative recommended vocabulary of canonical benefit types for use in BPS `canonical_key` and `category` fields. Derived from production extraction across multiple U.S. carrier SBC and EOC documents. Adopters MAY extend with additional terms but SHOULD prefer these where applicable for cross-platform interoperability.",
   "license": "MIT",
   "categories": {
@@ -44,19 +44,19 @@
     },
     "professional_services": {
       "description": "Office and professional-fee services (PCP, specialist, chiropractic, acupuncture, telehealth, surgeon professional fees).",
-      "count": 11
+      "count": 12
     },
     "rehabilitation": {
       "description": "Physical, occupational, speech, cardiac, and pulmonary rehabilitation; habilitative services.",
-      "count": 10
+      "count": 11
     },
     "specialty_care": {
       "description": "Specialty treatments (chemotherapy, radiation, dialysis, DME, prosthetics, infertility, bariatric, nutrition).",
-      "count": 17
+      "count": 20
     },
     "vision": {
       "description": "Vision services (commonly pediatric on medical plans; full vision typically on a vision module).",
-      "count": 2
+      "count": 3
     }
   },
   "benefits": [
@@ -963,6 +963,17 @@
       ]
     },
     {
+      "canonical_key": "other_practitioner_office_visit",
+      "label": "Other practitioner office visit",
+      "description": "Office visit with a practitioner who is not a physician, such as a nurse practitioner or physician assistant. Not primary_care or specialist.",
+      "category": "professional_services",
+      "aliases": [
+        "other practitioner office visit",
+        "other practitioner office visit (nurse, physician assistant)"
+      ],
+      "sbc_label_patterns": []
+    },
+    {
       "canonical_key": "outpatient_surgery_professional",
       "label": "Outpatient surgery professional",
       "description": "Professional fees for outpatient surgery (e.g., surgeon).",
@@ -1101,6 +1112,17 @@
       "sbc_label_patterns": [
         "Occupational therapy"
       ]
+    },
+    {
+      "canonical_key": "physical_and_occupational_therapy",
+      "label": "Physical and occupational therapy",
+      "description": "Rehabilitative physical therapy and occupational therapy as one combined benefit, for sources that state them in one row (the Marketplace Benefits and Cost Sharing PUF row \"Rehabilitative Occupational and Rehabilitative Physical Therapy\"). Where the source states them separately, use physical_therapy and occupational_therapy.",
+      "category": "rehabilitation",
+      "aliases": [
+        "physical and occupational therapy",
+        "rehabilitative occupational and rehabilitative physical therapy"
+      ],
+      "sbc_label_patterns": []
     },
     {
       "canonical_key": "physical_therapy",
@@ -1297,6 +1319,32 @@
       ]
     },
     {
+      "canonical_key": "hearing_aids",
+      "label": "Hearing aids",
+      "description": "Hearing aids. In Medicare Advantage, the supplemental hearing aid benefit.",
+      "category": "specialty_care",
+      "aliases": [
+        "hearing aids",
+        "hearing aid",
+        "prescription hearing aids"
+      ],
+      "sbc_label_patterns": [
+        "Hearing aids"
+      ]
+    },
+    {
+      "canonical_key": "hearing_exam",
+      "label": "Hearing exam",
+      "description": "Routine hearing exam. Not the Medicare-covered diagnostic hearing exam, which is a different benefit.",
+      "category": "specialty_care",
+      "aliases": [
+        "hearing exam",
+        "routine hearing exam",
+        "routine hearing exams"
+      ],
+      "sbc_label_patterns": []
+    },
+    {
       "canonical_key": "home_infusion_therapy",
       "label": "Home infusion therapy",
       "description": "Infusion therapy administered in the home.",
@@ -1387,6 +1435,18 @@
       ]
     },
     {
+      "canonical_key": "routine_foot_care",
+      "label": "Routine foot care",
+      "description": "Routine foot care. Not Medicare-covered podiatry services or diabetic routine foot care, which are different benefits.",
+      "category": "specialty_care",
+      "aliases": [
+        "routine foot care"
+      ],
+      "sbc_label_patterns": [
+        "Routine foot care"
+      ]
+    },
+    {
       "canonical_key": "surgery_global",
       "label": "Surgery (global)",
       "description": "Global surgical services including facility and professional components.",
@@ -1423,6 +1483,21 @@
       ],
       "sbc_label_patterns": [
         "Pediatric glasses"
+      ]
+    },
+    {
+      "canonical_key": "routine_eye_exam",
+      "label": "Routine eye exam",
+      "description": "Routine eye exam for adults. Not the Medicare-covered diagnostic eye exam or the diabetic eye exam, which are different benefits.",
+      "category": "vision",
+      "aliases": [
+        "routine eye exam",
+        "routine eye exam (adult)",
+        "routine eye care (adult)",
+        "routine eye exams"
+      ],
+      "sbc_label_patterns": [
+        "Routine eye care (Adult)"
       ]
     }
   ]
