@@ -4,7 +4,7 @@
 **Reads with:** [`insuranceplan-converter.md`](insuranceplan-converter.md) (the exporter this importer feeds), [`marketplace-puf-parse-report.md`](marketplace-puf-parse-report.md) (every cost-share string in the PY2026 file and how it is read), [`marketplace-puf-vs-sbc-flblue-505.md`](marketplace-puf-vs-sbc-flblue-505.md) (the importer's Florida Blue output against the SBC example)
 **Map:** this importer, the Medicare Advantage importer and the converter in one diagram, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow)
 
-This spec defines the first importer for the Benefit Plan Standard (BPS): the CMS Health Insurance Exchange public use files (PUFs) in, one BPS v1.1.0 document per plan out. It follows the pattern of the FHIR converter: the benefit mapping lives in a data file, the output is deterministic, 3 golden files are committed, and a test checks them.
+This spec defines the first importer for the Benefit Plan Standard (BPS): the CMS Health Insurance Exchange public use files (PUFs) in, one BPS v1.1.0 document per plan out. It follows the pattern of the FHIR converter: the benefit mapping lives in a data file, the output is deterministic, 5 golden files are committed, and a test checks them.
 
 ---
 
@@ -112,7 +112,7 @@ v1.1.0 `source_references[]` items hold `page_number`, `page_range` and `excerpt
 
 `fhir/marketplace-puf-crosswalk.json` maps every distinct `BenefitName` in the PY2026 Benefits and Cost Sharing PUF (273 names, verbatim, including the file's own spellings and truncations such as "Austism Spectrum Disorders" and "Community Health Worke") to a `canonical_key` in `vocabularies/canonical-benefits.json` or to `null`. The rule is the CARIN crosswalk's: a name maps only when the public-file benefit clearly is the canonical service; there is no nearest fit. Each row has `puf_benefit_name`, `canonical_key`, `category` (a code from `vocabularies/categories.json`, or `null` when none fits) and `note` (one line where the decision is not obvious).
 
-**Counts: 71 mapped, 202 unmapped.** Of the 202, 51 are adult or pediatric dental rows (categories `DENTAL` and `DENTAL_PEDIATRIC`), and most of the rest are state-specific benefits with no canonical key. Notable decisions:
+**Counts: 77 mapped, 196 unmapped.** Of the 196, 51 are adult or pediatric dental rows (categories `DENTAL` and `DENTAL_PEDIATRIC`), and most of the rest are state-specific benefits with no canonical key. Notable decisions:
 
 | Public-file name | Decision | Why |
 |---|---|---|
@@ -123,8 +123,11 @@ v1.1.0 `source_references[]` items hold `page_number`, `page_range` and `excerpt
 | Delivery and All Inpatient Services for Maternity Care | `delivery_inpatient` | Covers facility and professional delivery together. |
 | Laboratory Outpatient and Professional Services; X-rays and Diagnostic Imaging | `diagnostic_lab`; `imaging_standard` | The SBC "Diagnostic test (x-ray, blood work)" row is 2 rows here. |
 | Prenatal and Postnatal Care | `null` | Combines `prenatal_care` and `postnatal_care`. |
-| Rehabilitative Occupational and Rehabilitative Physical Therapy | `null` | Combines `occupational_therapy` and `physical_therapy`. |
-| Other Practitioner Office Visit (Nurse, Physician Assistant) | `null` | No key for non-physician practitioner visits. |
+| Rehabilitative Occupational and Rehabilitative Physical Therapy | `physical_and_occupational_therapy` | The combined row gets the combined key (vocabulary 1.2.0); `physical_therapy` and `occupational_therapy` stay for sources that state them separately. |
+| Other Practitioner Office Visit (Nurse, Physician Assistant) | `other_practitioner_office_visit` | Non-physician practitioner visits; not `primary_care` or `specialist` (vocabulary 1.2.0). |
+| Hearing Aids; Hearing Exam; Routine Eye Exam (Adult); Routine Foot Care | `hearing_aids`; `hearing_exam`; `routine_eye_exam`; `routine_foot_care` | Keys added in vocabulary 1.2.0. A plan that does not cover the service gets a benefit with `covered` false on every tier, as for any other mapped row. |
+| Diabetic Routine Foot Care; Annual Diabetic Eye Exam and the other diabetic eye exam spellings | `null` | Narrower than `routine_foot_care` and `routine_eye_exam` (diabetic care only). |
+| Cochlear Implants; Post-Cochlear Implant Aural Rehabilitation Therapy; Adult Optical (hardware); Eye Glasses for Adult(s) | `null` | No key. |
 | Infusion Therapy | `null` | Site not stated; the vocabulary splits center and home infusion. |
 | Mental Health Office Visit, behavioral-health ER and urgent care rows | `null` | Narrower than the general keys. |
 | Telehealth, Virtual Visit, Telehealth - Primary Care and similar | `telehealth_visit` | |
@@ -283,7 +286,7 @@ Each case takes the reading that loses no information.
 These are not schema gaps, but they decide what reaches FHIR; they are recorded here and not fixed.
 
 - **Tier 2.** In PY2026, 5,351 of the 20,670 medical plan variants (26%) have tier 2 values; in PY2023, 6,797 of 30,911 (22%). The converter first refused any network tier other than `IN` and `OUT`; it now maps `IN2` to `in-network` with a `cost.qualifiers` entry (converter spec 6.2). The Cost Tier value set has no "tier 2" code, so the qualifier is text only unless the tier name says "Value Choice", and the validator warns once per tier 2 entry. The importer names the tier "In-Network Tier 2", because the public file does not name tiers (Florida Blue's "Value Choice Providers" appears only in Explanation text).
-- **Keys outside the CARIN crosswalk.** The importer uses canonical keys that `fhir/carin-sbc-crosswalk.json` does not place, so the converter lists them as `bps-unmapped-benefit`: in the 2 PY2026 Bundles, 17 benefits each, among them `delivery_inpatient`, `inpatient_hospital_professional`, `outpatient_surgery_professional`, `well_child_visit` and `substance_use_inpatient`. Some have an obvious SBC row (for example `outpatient_surgery_professional` and the SBC physician/surgeon fee row); adding them to the CARIN crosswalk is a converter decision.
+- **Keys outside the CARIN crosswalk.** The importer uses canonical keys that `fhir/carin-sbc-crosswalk.json` does not place, so the converter lists them as `bps-unmapped-benefit`: in each of the 5 Bundles, 22 benefits, among them `delivery_inpatient`, `inpatient_hospital_professional`, `outpatient_surgery_professional`, `well_child_visit` and `substance_use_inpatient`, and the 6 keys added in vocabulary 1.2.0 (`hearing_aids`, `hearing_exam`, `routine_eye_exam`, `routine_foot_care`, `other_practitioner_office_visit`, `physical_and_occupational_therapy`), which have no SBC benefit category code in the SBC InsurancePlan profile. Some have an obvious SBC row (for example `outpatient_surgery_professional` and the SBC physician/surgeon fee row); adding them to the CARIN crosswalk is a converter decision.
 - **Limit codes.** Limit types other than visits, days and dollars, and limit periods other than plan year, calendar year, benefit period and lifetime, are text-only in FHIR and raise validator warnings ([`../../examples/fhir-puf/README.md`](../../examples/fhir-puf/README.md)).
 
 ### 9.4 Limits with no benefit row
@@ -313,7 +316,7 @@ BPS v1.1.0 has no field for a dollar cap on a cost-share step. Both Aetna SBCs p
 | Text | Verbatim, trimmed at both ends; no other normalization. |
 | Serialization | `JSON.stringify(doc, null, 2)` plus `\n`, UTF-8, LF line endings. |
 
-The same 2 files and download date always give byte-identical output. The test checks it on the 3 golden plans; a separate run over every PY2026 plan variant gave no error.
+The same 2 files and download date always give byte-identical output. The test checks it on the 5 golden plans; a separate run over every PY2026 plan variant gave no error.
 
 ## 11. How to run
 
@@ -336,7 +339,7 @@ node scripts/from-marketplace-puf.js --year 2026 --plan 40220TX0080024-01 --out 
 node scripts/validate.js --schema schema/v1.1.0/benefit-plan.schema.json uhc-gold.json
 node scripts/to-insuranceplan.js uhc-gold.json -o uhc-gold.bundle.json             # FHIR
 node scripts/puf-parse-report.js                                                   # docs/specs/marketplace-puf-parse-report.md
-node scripts/from-marketplace-puf.js --write-golden                                # regenerate the 3 examples, on purpose only
+node scripts/from-marketplace-puf.js --write-golden                                # regenerate the 5 examples, on purpose only
 node --test scripts/from-marketplace-puf.test.js
 ```
 
@@ -361,8 +364,8 @@ Known data issue in PY2023: 33 plan variants of 1 Wyoming issuer (HIOS issuer 11
 - Limits and plan-attribute dollar cells.
 - `buildDocument` on a small synthetic plan: the mapping rules, tier 2 detection, an unreadable string stopping the import, determinism.
 - Crosswalk: unique names, keys and categories in the vocabularies, counts.
-- The 3 golden files validate against v1.1.0.
-- With the public files present: each golden plan is re-imported and compared byte for byte (after CRLF normalization), imported twice with identical output, and checked that every benefit row is either a benefit or listed as unmapped. Without the files these 3 tests are skipped and say why.
+- The 5 golden files validate against v1.1.0.
+- With the public files present: each golden plan is re-imported and compared byte for byte (after CRLF normalization), imported twice with identical output, and checked that every benefit row is either a benefit or listed as unmapped. Without the files these 5 tests are skipped and say why.
 
 The golden plans:
 
@@ -371,5 +374,7 @@ The golden plans:
 | `florida-blue-blueoptions-gold-1505.puf.json` | Florida Blue, BlueOptions Gold 1505, 16842FL0070120-01, Gold EPO | 2023 | The comparison with the BlueOptions 505 SBC example. No PY2023 row matches 505 (the comparison document gives the search). Has tier 2. |
 | `blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.puf.json` | Blue Cross and Blue Shield of Louisiana, Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits, 97176LA0340010-01, Silver PPO | 2026 | Separate medical deductible, out-of-network values, limits, long explanation text. |
 | `unitedhealthcare-uhc-gold-standard.puf.json` | UnitedHealthcare, UHC Gold Standard, 40220TX0080024-01, Texas, Gold HMO | 2026 | Integrated medical and drug accumulators, 100% out-of-network coinsurance, per-month drug limits. |
+| `unitedhealthcare-uhc-bronze-essential.puf.json` | UnitedHealthcare, UHC Bronze Essential ($0 Virtual Urgent Care), 68398FL0030058-01, Florida, Bronze HMO | 2026 | The first Bronze plan, HSA-eligible. Hearing Aids, Routine Eye Exam (Adult) and Routine Foot Care are Not Covered, so they are written with `covered` false. |
+| `avmed-avmed-entrust-gold-125.puf.json` | AvMed, AvMed Entrust Gold 125 (2026), 19898FL0340001-01, Florida, Gold HMO | 2026 | Has tier 2 (PY2026). Hearing Aids, Routine Eye Exam (Adult) and Routine Foot Care are Not Covered, so they are written with `covered` false. |
 
-FHIR Bundles for the 3 plans, and their validator record, are in `examples/fhir-puf/`. They are not golden files and are not published.
+FHIR Bundles for the 5 plans, and their validator record, are in `examples/fhir-puf/`. They are not golden files and are not published.

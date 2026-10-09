@@ -1,6 +1,6 @@
 # Spec: CMS Plan Benefit Package (PBP) Benefits to BPS importer
 
-**Status:** Draft, 2026-10-06. Phase 1 (sources, layout, MVP field map, 1 proven parse), phase 2 session 1 (the plan level), session 2 (the MVP benefits, checked line by line against the H2406-013-000 Summary of Benefits) and session 3 (decisions S1, N1, A5, C3 and 5; 5 golden files; the test on committed fixtures; the Summary of Benefits check script; sections 10 to 13) and session 4 (decision 4 confirmed on the Aetna H1609-028 Summary of Benefits; the converter maps the `POS` tier; the 5 golden files converted to FHIR; a second Summary of Benefits check) are done. Confirmed readings and readings still to confirm: end of section 7.
+**Status:** Draft6446576345163143161164137,646025077053784312662751226909 2026-10-06. Phase 1 (sources, layout, MVP field map, 1 proven parse), phase 2 session 1 (the plan level), session 2 (the MVP benefits, checked line by line against the H2406-013-000 Summary of Benefits) and session 3 (decisions S1, N1, A5, C3 and 5; 5 golden files; the test on committed fixtures; the Summary of Benefits check script; sections 10 to 13) and session 4 (decision 4 confirmed on the Aetna H1609-028 Summary of Benefits; the converter maps the `POS` tier; the 5 golden files converted to FHIR; a second Summary of Benefits check) are done. Confirmed readings and readings still to confirm: end of section 7.
 **Reads with:** [`pbp-record-layout-notes.md`](pbp-record-layout-notes.md) (every PBP file, its key and grain), [`marketplace-puf-importer.md`](marketplace-puf-importer.md) (the pattern this importer follows), [`../medicare-advantage-notes.md`](../medicare-advantage-notes.md) (gaps G1 to G14), [`../../fhir/pbp-crosswalk.json`](../../fhir/pbp-crosswalk.json) (the benefit-to-column mapping)
 **Map:** this importer, the Marketplace importer and the converter in one diagram, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow)
 
@@ -154,7 +154,7 @@ The plan's row in each B file the crosswalk names (exactly 1 row per plan; 0 row
 
 `fhir/pbp-crosswalk.json` has 1 row per BPS benefit the importer writes, 30 rows: `benefit_id`, `service_name`, `pbp_code` (the category code as the file writes it in category lists: `7a`, `7f_2`, `18b1`), `pbp_label` (the dictionary's label, written as `raw_label`), `medicare_covered`, `file`, `canonical_key` (a key in `vocabularies/canonical-benefits.json` or `null`), `category`, `benefit_type`, and the columns read: `copay`, `coins`, `service_deductible`, `offered` and `amo` for supplemental benefits, `limits`, `auth`, `refer`, `quote` (columns with no field, quoted verbatim), and a one-line `note` where the decision is not obvious. Column names differ between categories (`pbp_b7a_copay_amt_mc_min`, `pbp_b7b_copay_mc_amt_min`, `pbp_b18a_copay_amt`), so every column is named; none is built from a pattern. Every named column was checked against the file headers on 2026-10-06.
 
-The rule is the CARIN crosswalk's: a category maps only when it clearly is the canonical service; there is no nearest fit. **19 rows have a canonical key, 11 do not.** The 11 are still written, carried by `service_name` and `raw_label`, and listed in section 9.1.
+The rule is the CARIN crosswalk's: a category maps only when it clearly is the canonical service; there is no nearest fit. **23 rows have a canonical key, 7 do not.** The 7 are still written, carried by `service_name` and `raw_label`, and listed in section 9.1.
 
 | `benefit_id` | PBP category | `canonical_key` | Note |
 |---|---|---|---|
@@ -172,14 +172,17 @@ The rule is the CARIN crosswalk's: a category maps only when it clearly is the c
 | `DIAGNOSTIC_RADIOLOGY` | 8b1 Diagnostic Radiological Services | `imaging_advanced` | The dictionary says "(e.g., CT, MRI, etc.)"; as the Marketplace crosswalk maps "Imaging (CT/PET Scans, MRIs)". |
 | `THERAPEUTIC_RADIOLOGY` | 8b2 Therapeutic Radiological Services | `radiation_therapy` | |
 | `XRAY` | 8b3 Outpatient X-Ray Services | `imaging_standard` | |
-| `PHYSICAL_AND_SPEECH_THERAPY` | 7i Physical Therapy and Speech-Language Pathology Services | `null` | Combines `physical_therapy` and `speech_therapy` (the Marketplace crosswalk leaves the combined OT and PT row unmapped). |
+| `PHYSICAL_AND_SPEECH_THERAPY` | 7i Physical Therapy and Speech-Language Pathology Services | `null` | Combines `physical_therapy` and `speech_therapy`. `physical_and_occupational_therapy` (vocabulary 1.2.0) is a different combination, the Marketplace's combined OT and PT row. |
 | `OCCUPATIONAL_THERAPY` | 7c Occupational Therapy Services | `occupational_therapy` | |
 | `CHIROPRACTIC`, `CHIROPRACTIC_ROUTINE` | 7b Medicare-covered; 7b1 Routine Chiropractic Care | `chiropractic_care` (both) | `coverage_basis` tells them apart. |
-| `PODIATRY`, `PODIATRY_ROUTINE` | 7f Medicare-covered; 7f_2 Routine Foot Care | `null` | No podiatry key. |
+| `PODIATRY` | 7f Podiatry Services (Medicare-covered) | `null` | No podiatry key. |
+| `PODIATRY_ROUTINE` | 7f_2 Routine Foot Care | `routine_foot_care` | Since vocabulary 1.2.0 (2026-10-09). The key names the routine, supplemental service; the Medicare-covered row is a different benefit. |
 | `ACUPUNCTURE` | 13a Acupuncture Treatments (supplemental) | `acupuncture` | |
-| `HEARING_EXAM`, `HEARING_EXAM_ROUTINE` | 18a Medicare-covered; 18a1 Routine Hearing Exams | `null` | No hearing exam key. |
-| `EYE_EXAM`, `EYE_EXAM_ROUTINE` | 17a Medicare-covered; 17a1 Routine Eye Exams | `null` | Only `pediatric_eye_exam` exists. |
-| `HEARING_AIDS` | 18b1 Prescription Hearing Aids (all types) | `null` | No hearing aid key. |
+| `HEARING_EXAM` | 18a Hearing Exams (Medicare-covered) | `null` | The Medicare-covered diagnostic exam; `hearing_exam` is the routine one. |
+| `HEARING_EXAM_ROUTINE` | 18a1 Routine Hearing Exams | `hearing_exam` | Since vocabulary 1.2.0 (2026-10-09). |
+| `EYE_EXAM` | 17a Eye Exams (Medicare-covered) | `null` | The Medicare-covered diagnostic exam; `routine_eye_exam` is the routine one. |
+| `EYE_EXAM_ROUTINE` | 17a1 Routine Eye Exams | `routine_eye_exam` | Since vocabulary 1.2.0 (2026-10-09). |
+| `HEARING_AIDS` | 18b1 Prescription Hearing Aids (all types) | `hearing_aids` | Since vocabulary 1.2.0 (2026-10-09). |
 | `HEARING_AIDS_INNER_EAR`, `_OUTER_EAR`, `_OVER_THE_EAR` | 18b2, 18b3, 18b4 | `null` | Written only when the plan chooses that aid type (2 plans). |
 
 Cardiac and pulmonary rehabilitation (3-1 to 3-4) carry visit limits only on their supplemental "additional services" and are not in this first set (section 8).
@@ -383,7 +386,7 @@ Each value below is carried verbatim in `source_references` (plan or benefit lev
 | Regions of regional PPOs (`PlanRegionArea`; 73 plans) | Counties only | `source_references` | `service_area.regions[]` (`code`, `name`) |
 | Employer-only plan, SNP and SNP type (`pbp_a_eghp_yn`, `pbp_a_special_need_flag`, `pbp_a_special_need_plan_type`) | No field | `source_references` | `eligibility` object (`employer_group_only`, `special_needs_type`) |
 | Hospital cost-tier membership (which facilities are tier 1) | The files do not name them | Tier `description` | None needed: `provider_set` exists; the data is missing |
-| Services with no canonical key: hearing aids (4 rows), hearing exams (2), eye exams (2), podiatry and routine foot care (2), physical therapy and speech-language pathology combined (1) | No `canonical_key` in `vocabularies/canonical-benefits.json` | Written by `service_name` and `raw_label`, `canonical_key` omitted | Vocabulary (not a schema change): `hearing_aids`, `hearing_exam`, `eye_exam`, `podiatry`, `routine_foot_care`; the combined 7i row stays unmapped unless the vocabulary adds a combined key |
+| Services with no canonical key: hearing aids by single type (3 rows: 18b2, 18b3, 18b4), Medicare-covered hearing exams (18a), Medicare-covered eye exams (17a), Medicare-covered podiatry (7f), physical therapy and speech-language pathology combined (7i) | No `canonical_key` in `vocabularies/canonical-benefits.json` | Written by `service_name` and `raw_label`, `canonical_key` omitted | Vocabulary 1.2.0 (2026-10-09) added `hearing_aids` (18b1), `hearing_exam` (18a1), `routine_eye_exam` (17a1) and `routine_foot_care` (7f_2); each names the routine, supplemental service. Still open: keys for the Medicare-covered rows and the single aid types, a `podiatry` key, and a combined key for 7i |
 | UF and SSBCI group cost sharing (`pbp_vbid_group_id`) | Population-specific cost sharing, gap G13, open | Not read for the MVP | G13 `applies_to_population` |
 | Optional supplemental packages (`pbp_Section_D_opt`, step files) | Riders, gap G12, open | Not read for the MVP | G12 `riders[]` |
 
@@ -404,8 +407,8 @@ Each value below is carried verbatim in `source_references` (plan or benefit lev
 First run on 2026-10-06 (session 3) over the 5 golden files; updated in session 4:
 
 - **`POS` maps since session 4.** Session 3's converter refused the tier (`error: network tier "POS" is not IN, OUT or a second in-network tier`), so no HMO-POS plan reached FHIR. `scripts/to-insuranceplan.js` now maps `POS` to `applicability` `out-of-network` with the text-only qualifier `Point-of-service option`, as it maps `IN2` (converter spec 6.3, which cites the H1609-028 Summary of Benefits and Plan Finder). The 10 published Bundles are byte-identical before and after.
-- **All 5 convert** to 1 `Bundle` each (`InsurancePlan` and `Organization`), written to `examples/fhir/` under the converter's naming (the `InsurancePlan` id, from `plan_id`; section 13). Each places the benefits with a crosswalked canonical key under the SBC categories and lists the rest by name in `bps-unmapped-benefit` (the 11 with no canonical key, and `observation_care`, `radiation_therapy`, `chiropractic_care`, `acupuncture`, which `fhir/carin-sbc-crosswalk.json` does not place, as they apply). The hospital cost tiers of H5533-019 (`IN_1A_TIER_1`, `IN_1A_TIER_2`, `tier_class` `cost_designation`) reach FHIR as cost qualifiers with the tier name as text. H1609-028 has 10 `Point-of-service option` entries.
-- **HL7 FHIR validator: validated on 2026-10-06.** All 5 Bundles pass with 0 errors (15 warnings, 14 of them text-only `cost.qualifiers`, 1 the Aetna `plan.type`; section 13, `examples/fhir/VALIDATION.md`).
+- **All 5 convert** to 1 `Bundle` each (`InsurancePlan` and `Organization`), written to `examples/fhir/` under the converter's naming (the `InsurancePlan` id, from `plan_id`; section 13). Each places the benefits with a crosswalked canonical key under the SBC categories and lists the rest by name in `bps-unmapped-benefit` (the 7 with no canonical key; `hearing_aids`, `hearing_exam`, `routine_eye_exam` and `routine_foot_care`, which have no SBC benefit category code; and `observation_care`, `radiation_therapy`, `chiropractic_care`, `acupuncture`, which `fhir/carin-sbc-crosswalk.json` does not place, as they apply). The hospital cost tiers of H5533-019 (`IN_1A_TIER_1`, `IN_1A_TIER_2`, `tier_class` `cost_designation`) reach FHIR as cost qualifiers with the tier name as text. H1609-028 has 10 `Point-of-service option` entries.
+- **HL7 FHIR validator: validated on 2026-10-06 and again on 2026-10-09.** All 5 Bundles pass with 0 errors (15 warnings, 14 of them text-only `cost.qualifiers`, 1 the Aetna `plan.type`; section 13, `examples/fhir/VALIDATION.md`).
 - **The SBC Plan Type value set has no HMO-POS code** (1,273 CY2027 plans). Found by the validator on H1609-028: the converter emits `plan.type` as text, which raises 1 warning on the Aetna Bundle (the binding is extensible, so it is not an error). Candidate third ticket against the CARIN Digital Insurance Card IG: add an HMO-POS code to the SBC Plan Type value set.
 
 ## 10. Determinism
@@ -419,15 +422,15 @@ First run on 2026-10-06 (session 3) over the 5 golden files; updated in session 
 | Text | Cells are quoted verbatim as `column "value"`; names are trimmed; nothing else is normalized. |
 | Serialization | `JSON.stringify(doc, null, 2)` plus `\n`, UTF-8, LF line endings. |
 
-**Checked on 2026-10-06.** Each of the 5 golden plans imported twice from the full files with the CLI: both runs and the committed golden file have the same SHA-256.
+**Checked on 2026-10-06, and again on 2026-10-09 after 4 crosswalk rows gained canonical keys.** Each of the 5 golden plans imported twice from the full files with the CLI: both runs and the committed golden file have the same SHA-256.
 
 | Plan | SHA-256 (first 16 hex digits), run 1 = run 2 = golden |
 |---|---|
-| H2406-013-000 | `19c0418078997a53` |
-| H1036-068-000 | `d6bf06a4c27dd9d0` |
-| H1609-028-000 | `c174415a745a3d81` |
-| H5533-019-000 | `6cc883b75a27413d` |
-| H5425-140-000 | `5feec56088e2d6a6` |
+| H2406-013-000 | `97bc5d9e287b836b` |
+| H1036-068-000 | `3894377c23c5cbbb` |
+| H1609-028-000 | `0cc8f86e4a516e6a` |
+| H5533-019-000 | `09ec34e05166b242` |
+| H5425-140-000 | `db67c676aa9c0a73` |
 
 The test checks the same on every run, from the fixtures (a second build of each plan is byte-identical) and, when the full files are present, from the full files. A run over every MVP plan of the CY 2027 file gave 0 errors (section 13).
 
@@ -505,7 +508,7 @@ Since session 4 (2026-10-06) the 5 golden files are also converted with `scripts
 | `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | H5533-019-000 | 163,544 | 14 / 13 | 31 | 2 | 4 (hospital tiers) |
 | `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | H5425-140-000 | 137,165 | 14 / 13 | 28 | 13 | 0 |
 
-**HL7 FHIR validator: validated on 2026-10-06.** `validator_cli.jar` 7.0.0 (Git# 37795f3f571f, built 2026-10-06T19:02:34Z), OpenJDK 17.0.19, FHIR 4.0.1, packages `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions`. The command, the one `examples/fhir/VALIDATION.md` gives, limited to the 5 files, from the repository root (the latest `validator_cli.jar` is at https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar; the jar is git-ignored and downloaded per run, with its version recorded; `-Dfile.encoding=UTF-8` is there because the validator warns without it):
+**HL7 FHIR validator: validated on 2026-10-06, and again on 2026-10-09 after 4 benefits gained canonical keys, with the same counts.** `validator_cli.jar` 7.0.0 (Git# 37795f3f571f, built 2026-10-06T19:02:34Z), OpenJDK 17.0.19, FHIR 4.0.1, packages `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions`. The command, the one `examples/fhir/VALIDATION.md` gives, limited to the 5 files, from the repository root (the latest `validator_cli.jar` is at https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar; the jar is git-ignored and downloaded per run, with its version recorded; `-Dfile.encoding=UTF-8` is there because the validator warns without it):
 
 ```
 java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
@@ -526,7 +529,7 @@ java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
 | `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 | 104 |
 | `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 99 |
 
-All 5 pass with 0 errors. The 15 warnings: 14 are text-only `cost.qualifiers` (10 `Point-of-service option` on Aetna, 4 hospital cost tier names on UPMC), because the Cost Tier value set has only `value-choice`, `standard` and `virtual`; 1 is the Aetna `plan.type`, because the SBC Plan Type value set has no HMO-POS code (section 9.3). The information messages are the extension slicing messages, as for the SBC Bundles. The full record is the second run in `examples/fhir/VALIDATION.md`.
+All 5 pass with 0 errors. The 15 warnings: 14 are text-only `cost.qualifiers` (10 `Point-of-service option` on Aetna, 4 hospital cost tier names on UPMC), because the Cost Tier value set has only `value-choice`, `standard` and `virtual`; 1 is the Aetna `plan.type`, because the SBC Plan Type value set has no HMO-POS code (section 9.3). The information messages are the extension slicing messages, as for the SBC Bundles. The full record is the second and third runs in `examples/fhir/VALIDATION.md`.
 
 A Bundle with errors is fixed in the importer or the converter and regenerated, never edited by hand.
 

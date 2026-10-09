@@ -3,6 +3,23 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] – DRAFT (2026-10-09), canonical benefit keys from the CMS public files
+
+No schema change. `canonical_key` stays an optional free string.
+
+### Added
+
+- `vocabularies/canonical-benefits.json` is version 1.2.0 (was 1.1.0, `vocabulary_id` now under `/vocabularies/v1.2.0/`), 106 entries (was 100). 6 keys: `hearing_aids`, `hearing_exam` and `routine_foot_care` (`specialty_care`), `routine_eye_exam` (`vision`), `other_practitioner_office_visit` (`professional_services`) and `physical_and_occupational_therapy` (`rehabilitation`). Each of the first 4 names the routine service, not a Medicare-covered diagnostic row. `physical_and_occupational_therapy` is for a source that states the 2 therapies in one row; `physical_therapy` and `occupational_therapy` are unchanged. `fhir/definitions/CodeSystem-canonical-benefits.json` is rebuilt from it by `scripts/build-fhir-definitions.js` (version 1.2.0, 106 concepts).
+- 2 Marketplace examples from the PY2026 public files: `examples/unitedhealthcare-uhc-bronze-essential.puf.json` (UHC Bronze Essential ($0 Virtual Urgent Care), Florida, Bronze HMO, 68398FL0030058-01) and `examples/avmed-avmed-entrust-gold-125.puf.json` (AvMed Entrust Gold 125 (2026), Florida, Gold HMO, 19898FL0340001-01, with a second in-network tier). Their Bundles are in `examples/fhir-puf/`, not published and not in `fhir/index.json`: 0 errors, 12 and 31 warnings. Record in `examples/fhir-puf/README.md`.
+
+### Changed
+
+- `fhir/marketplace-puf-crosswalk.json`: Hearing Aids, Hearing Exam, Routine Eye Exam (Adult), Routine Foot Care, Other Practitioner Office Visit (Nurse, Physician Assistant) and Rehabilitative Occupational and Rehabilitative Physical Therapy have keys. 77 of 273 names mapped (was 71). Diabetic Routine Foot Care and the diabetic eye exam rows stay unmapped, as narrower.
+- `fhir/pbp-crosswalk.json`: 18b1 `hearing_aids`, 18a1 `hearing_exam`, 17a1 `routine_eye_exam` and 7f_2 `routine_foot_care`. 23 of 30 rows have a key (was 19). The Medicare-covered rows 18a, 17a and 7f, the single-type hearing aid rows 18b2 to 18b4, and 7i stay carried by name (`docs/specs/pbp-importer.md` section 9.1).
+- The 5 Marketplace examples have 49 benefits each (the 3 existing ones had 44). A row the plan does not cover is written with `covered` false on every tier, as before for other mapped rows. In each Bundle 27 benefits are placed in SBC benefit categories and 22 are listed in `bps-unmapped-benefit` (was 17), because none of the 6 keys has a code in the SBC InsurancePlan profile. All 5 Bundles: 0 errors.
+- The 5 Medicare Advantage examples carry `canonical_key` on 4 more benefits each. Their 5 Bundles in `examples/fhir/` are rewritten by `--write-golden` and re-pinned in `scripts/to-insuranceplan.test.js`: 0 errors and the same 15 warnings (third run in `examples/fhir/VALIDATION.md`). The Summary of Benefits checks still give 0 differences (H2406-013, 61 checks; H1609-028, 33 checks). The 10 published Bundles are byte-identical.
+- `scripts/from-marketplace-puf.test.js`: the synthetic plan's example of an unmapped row is now "Cochlear Implants", because "Hearing Aids" has a key.
+
 ## Medicare Advantage PBP importer (2026-10-06)
 
 No schema change.

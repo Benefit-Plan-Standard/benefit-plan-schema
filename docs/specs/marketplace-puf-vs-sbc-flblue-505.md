@@ -93,3 +93,5 @@ The SBC file records `period: per_year` on each slot; the PUF document records n
 | `nutritional_counseling` | PUF document ("Nutritional Counseling") | $20 copay | $60 copay | 50% coinsurance, deductible applies | none | none |
 
 The PUF document also lists, in its `source_references`, 31 Benefits and Cost Sharing PUF rows whose names have no canonical key (for example "Prenatal and Postnatal Care" and "Rehabilitative Occupational and Rehabilitative Physical Therapy"). They are not compared here.
+
+**Update, 2026-10-09.** This comparison was made on 2026-10-05 and is not redone here. Since vocabulary 1.2.0, 5 of those 31 rows have canonical keys and are benefits in the PUF document: `hearing_aids`, `routine_eye_exam`, `routine_foot_care`, `other_practitioner_office_visit` and `physical_and_occupational_therapy` ("Rehabilitative Occupational and Rehabilitative Physical Therapy"). The PUF document now has 49 benefits and lists 26 rows without a key. None of the 5 keys is in the SBC example, so each would be one more row in section 3, PUF document only.

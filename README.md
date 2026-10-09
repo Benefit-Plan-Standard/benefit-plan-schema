@@ -21,7 +21,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 - Vocabularies (canonical benefits, categories, markets, plan types): `vocabularies/`  
 - FHIR alignment: `docs/fhir-alignment.md`  
 - FHIR InsurancePlan converter (CARIN SBC profile): `scripts/to-insuranceplan.js`, spec `docs/specs/insuranceplan-converter.md`  
-- Importer from the CMS Marketplace public use files: `scripts/from-marketplace-puf.js`, spec `docs/specs/marketplace-puf-importer.md`, 3 examples in `examples/*.puf.json` and their Bundles in `examples/fhir-puf/`  
+- Importer from the CMS Marketplace public use files: `scripts/from-marketplace-puf.js`, spec `docs/specs/marketplace-puf-importer.md`, 5 examples in `examples/*.puf.json` and their Bundles in `examples/fhir-puf/`  
 - Importer from the CMS Medicare Advantage Plan Benefit Package files: `scripts/from-pbp.js`, spec `docs/specs/pbp-importer.md`, 5 examples in `examples/*.pbp.json` and their Bundles in `examples/fhir/`  
 - The 10 document-derived examples as FHIR InsurancePlan: `examples/fhir/` (which also holds the 5 PBP Bundles, not published), the 10 published at https://benefitplanstandard.org/fhir/index.json  
 - CARIN Digital Insurance Card reconciliation: `docs/carin-dic-reconciliation.md`  
@@ -92,7 +92,7 @@ examples/
   ├── scan_example.json
   ├── united_example.json
   ├── fhir/                          ← each document-derived and PBP example as a FHIR InsurancePlan Bundle, plus VALIDATION.md
-  ├── fhir-puf/                      ← the 3 Marketplace public-file examples as FHIR Bundles
+  ├── fhir-puf/                      ← the 5 Marketplace public-file examples as FHIR Bundles
   └── sources/                       ← the source PDF each example comes from
 fhir/
   ├── carin-sbc-crosswalk.json       ← BPS canonical keys to CARIN SBC benefit codes
@@ -150,7 +150,7 @@ These examples demonstrate how real-world plan documents (the SBC and the CMS Su
 
 The eight SBC examples (`aetna`, `aetna_ppo5000`, `ambetter`, `bluecross`, `cigna`, `gatorcare`, `kaiser`, `united`) are generated from the source Summary of Benefits and Coverage documents and verified value by value against them. The two Medicare Advantage examples (`scan_example.json` and `humana_example.json`) are different: they are read from their CMS Summary of Benefits documents, verified value by value against the cited pages, and they use fields added in the v1.2.0 draft, so they validate against that draft only. See `docs/medicare-advantage-notes.md`.
 
-The Marketplace public-file example set is 3 files (`*.puf.json`), written by `scripts/from-marketplace-puf.js` from the CMS Marketplace Plan Attributes and Benefits and Cost Sharing files, with no PDF read; the plans and their FHIR Bundles in `examples/fhir-puf/` are listed in [`examples/README.md`](examples/README.md).
+The Marketplace public-file example set is 5 files (`*.puf.json`), written by `scripts/from-marketplace-puf.js` from the CMS Marketplace Plan Attributes and Benefits and Cost Sharing files, with no PDF read; the plans and their FHIR Bundles in `examples/fhir-puf/` are listed in [`examples/README.md`](examples/README.md).
 
 The Medicare Advantage public-file example set is 5 files (`*.pbp.json`), written by `scripts/from-pbp.js` from the CMS Plan Benefit Package (PBP) Benefits files for 2027, with no PDF read; the plans and their FHIR Bundles in `examples/fhir/` are listed in [`examples/README.md`](examples/README.md).
 
