@@ -1127,6 +1127,7 @@
       "coverage_basis": "supplemental_mandatory",
       "category": "PODIATRY",
       "service_name": "Routine foot care",
+      "canonical_key": "routine_foot_care",
       "raw_label": "7f: Podiatry Services - Routine Foot Care",
       "network_cost_shares": [
         {
@@ -1170,7 +1171,7 @@
       "conditions": [],
       "source_references": [
         {
-          "excerpt": "PBP service category 7f: Podiatry Services - Routine Foot Care (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json; no canonical key, carried by name (spec section 9.1)."
+          "excerpt": "PBP service category 7f: Podiatry Services - Routine Foot Care (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json."
         }
       ]
     },
@@ -1258,6 +1259,7 @@
       "coverage_basis": "supplemental_mandatory",
       "category": "HEARING",
       "service_name": "Routine hearing exams",
+      "canonical_key": "hearing_exam",
       "raw_label": "18a1: Routine Hearing Exams",
       "network_cost_shares": [
         {
@@ -1301,7 +1303,7 @@
       "conditions": [],
       "source_references": [
         {
-          "excerpt": "PBP service category 18a1: Routine Hearing Exams (pbp_b18_hearing_exams_aids.txt), mapped by fhir/pbp-crosswalk.json; no canonical key, carried by name (spec section 9.1)."
+          "excerpt": "PBP service category 18a1: Routine Hearing Exams (pbp_b18_hearing_exams_aids.txt), mapped by fhir/pbp-crosswalk.json."
         }
       ]
     },
@@ -1359,6 +1361,7 @@
       "coverage_basis": "supplemental_mandatory",
       "category": "VISION",
       "service_name": "Routine eye exams",
+      "canonical_key": "routine_eye_exam",
       "raw_label": "17a1: Routine Eye Exams",
       "network_cost_shares": [
         {
@@ -1402,7 +1405,7 @@
       "conditions": [],
       "source_references": [
         {
-          "excerpt": "PBP service category 17a1: Routine Eye Exams (pbp_b17_eye_exams_wear.txt), mapped by fhir/pbp-crosswalk.json; no canonical key, carried by name (spec section 9.1)."
+          "excerpt": "PBP service category 17a1: Routine Eye Exams (pbp_b17_eye_exams_wear.txt), mapped by fhir/pbp-crosswalk.json."
         }
       ]
     },
@@ -1412,6 +1415,7 @@
       "coverage_basis": "supplemental_mandatory",
       "category": "HEARING",
       "service_name": "Prescription hearing aids (all types)",
+      "canonical_key": "hearing_aids",
       "raw_label": "18b1: Prescription Hearing Aids (all types)",
       "network_cost_shares": [
         {
@@ -1456,7 +1460,7 @@
       "conditions": [],
       "source_references": [
         {
-          "excerpt": "PBP service category 18b1: Prescription Hearing Aids (all types) (pbp_b18_hearing_exams_aids.txt), mapped by fhir/pbp-crosswalk.json; no canonical key, carried by name (spec section 9.1)."
+          "excerpt": "PBP service category 18b1: Prescription Hearing Aids (all types) (pbp_b18_hearing_exams_aids.txt), mapped by fhir/pbp-crosswalk.json."
         },
         {
           "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b18b_maxenr_yn \"2\"."

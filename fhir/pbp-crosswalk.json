@@ -33,8 +33,8 @@
   },
   "counts": {
     "benefits": 30,
-    "with_canonical_key": 19,
-    "without_canonical_key": 11
+    "with_canonical_key": 23,
+    "without_canonical_key": 7
   },
   "benefits": [
     {
@@ -674,7 +674,7 @@
         "pbp_b7i_maxenr_per",
         "pbp_b7i_maxenr_per_d"
       ],
-      "note": "Combines physical_therapy and speech_therapy, so no canonical key (as the Marketplace crosswalk leaves \"Rehabilitative Occupational and Rehabilitative Physical Therapy\" unmapped). Carried by name."
+      "note": "Combines physical_therapy and speech_therapy, so no canonical key. physical_and_occupational_therapy is a different combination (the Marketplace row \"Rehabilitative Occupational and Rehabilitative Physical Therapy\"). Carried by name."
     },
     {
       "benefit_id": "OCCUPATIONAL_THERAPY",
@@ -849,7 +849,7 @@
         "pbp_b7f_maxenr_per",
         "pbp_b7f_maxenr_per_d"
       ],
-      "note": "No canonical key for podiatry. Carried by name."
+      "note": "No canonical key for Medicare-covered podiatry; routine_foot_care is the routine row (7f_2). Carried by name."
     },
     {
       "benefit_id": "PODIATRY_ROUTINE",
@@ -858,7 +858,7 @@
       "pbp_label": "7f: Podiatry Services - Routine Foot Care",
       "medicare_covered": false,
       "file": "pbp_b7_health_prof.txt",
-      "canonical_key": null,
+      "canonical_key": "routine_foot_care",
       "category": "PODIATRY",
       "benefit_type": "medical",
       "offered": {
@@ -908,7 +908,7 @@
       "auth": "pbp_b7f_auth_yn",
       "refer": "pbp_b7f_refer_yn",
       "quote": [],
-      "note": "No canonical key for routine foot care. Carried by name."
+      "note": "The routine, supplemental row. Medicare-covered podiatry (7f) is a different benefit and is carried by name."
     },
     {
       "benefit_id": "ACUPUNCTURE",
@@ -1004,7 +1004,7 @@
         "pbp_b18a_maxenr_per",
         "pbp_b18a_maxenr_per_d"
       ],
-      "note": "No canonical key for hearing exams. Carried by name."
+      "note": "No canonical key for Medicare-covered hearing exams; hearing_exam is the routine row (18a1). Carried by name."
     },
     {
       "benefit_id": "HEARING_EXAM_ROUTINE",
@@ -1013,7 +1013,7 @@
       "pbp_label": "18a1: Routine Hearing Exams",
       "medicare_covered": false,
       "file": "pbp_b18_hearing_exams_aids.txt",
-      "canonical_key": null,
+      "canonical_key": "hearing_exam",
       "category": "HEARING",
       "benefit_type": "hearing",
       "offered": {
@@ -1068,7 +1068,7 @@
       "auth": "pbp_b18a_auth_yn",
       "refer": "pbp_b18a_refer_yn",
       "quote": [],
-      "note": "No canonical key for hearing exams. The visit count column is named pbp_b18a_bendesc_numv_cl in the file. Carried by name."
+      "note": "The routine, supplemental row. Medicare-covered hearing exams (18a) are a different benefit and are carried by name. The visit count column is named pbp_b18a_bendesc_numv_cl in the file."
     },
     {
       "benefit_id": "EYE_EXAM",
@@ -1106,7 +1106,7 @@
         "pbp_b17a_maxenr_per",
         "pbp_b17a_maxenr_per_d"
       ],
-      "note": "canonical-benefits has pediatric_eye_exam only. Carried by name."
+      "note": "No canonical key for Medicare-covered eye exams; routine_eye_exam is the routine row (17a1) and pediatric_eye_exam is for children. Carried by name."
     },
     {
       "benefit_id": "EYE_EXAM_ROUTINE",
@@ -1115,7 +1115,7 @@
       "pbp_label": "17a1: Routine Eye Exams",
       "medicare_covered": false,
       "file": "pbp_b17_eye_exams_wear.txt",
-      "canonical_key": null,
+      "canonical_key": "routine_eye_exam",
       "category": "VISION",
       "benefit_type": "vision",
       "offered": {
@@ -1165,7 +1165,7 @@
       "auth": "pbp_b17a_auth_yn",
       "refer": "pbp_b17a_refer_yn",
       "quote": [],
-      "note": "canonical-benefits has pediatric_eye_exam only. Carried by name."
+      "note": "The routine, supplemental row. Medicare-covered eye exams (17a) are a different benefit and are carried by name."
     },
     {
       "benefit_id": "HEARING_AIDS",
@@ -1174,7 +1174,7 @@
       "pbp_label": "18b1: Prescription Hearing Aids (all types)",
       "medicare_covered": false,
       "file": "pbp_b18_hearing_exams_aids.txt",
-      "canonical_key": null,
+      "canonical_key": "hearing_aids",
       "category": "HEARING",
       "benefit_type": "hearing",
       "offered": {
@@ -1239,7 +1239,7 @@
         "pbp_b18b_maxenr_per",
         "pbp_b18b_maxenr_per_d"
       ],
-      "note": "No canonical key for hearing aids (spec section 9.1). Carried by name. Written covered false when pbp_b18b_bendesc_yn is \"2\"; not written when the plan offers hearing aids but not the all-types option."
+      "note": "All hearing aid types. The single-type rows 18b2, 18b3 and 18b4 are carried by name (spec section 9.1). Written covered false when pbp_b18b_bendesc_yn is \"2\"; not written when the plan offers hearing aids but not the all-types option."
     },
     {
       "benefit_id": "HEARING_AIDS_INNER_EAR",
