@@ -662,6 +662,57 @@
       ]
     },
     {
+      "benefit_id": "HEARING_AIDS",
+      "benefit_type": "medical",
+      "category": "HEARING",
+      "service_name": "Hearing Aids",
+      "canonical_key": "hearing_aids",
+      "raw_label": "Hearing Aids",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.25,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"Not Applicable\"; CoinsInnTier1 \"25.00% Coinsurance after deductible\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "items",
+          "value": 1,
+          "period": "per_3_years"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Benefits are limited to a single purchase per hearing impaired ear every 3 years."
+        }
+      ]
+    },
+    {
       "benefit_id": "HOME_HEALTH_CARE_SERVICES",
       "benefit_type": "medical",
       "category": "HOME_HEALTH",
@@ -1093,6 +1144,46 @@
       ]
     },
     {
+      "benefit_id": "OTHER_PRACTITIONER_OFFICE_VISIT_NURSE_PHYSICIAN_ASSISTANT",
+      "benefit_type": "medical",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Other Practitioner Office Visit (Nurse, Physician Assistant)",
+      "canonical_key": "other_practitioner_office_visit",
+      "raw_label": "Other Practitioner Office Visit (Nurse, Physician Assistant)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.25,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"Not Applicable\"; CoinsInnTier1 \"25.00% Coinsurance after deductible\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
       "benefit_id": "OUTPATIENT_FACILITY_FEE_E_G_AMBULATORY_SURGERY_CENTER",
       "benefit_type": "medical",
       "category": "SURGICAL_SERVICES",
@@ -1440,6 +1531,57 @@
       "conditions": []
     },
     {
+      "benefit_id": "REHABILITATIVE_OCCUPATIONAL_AND_REHABILITATIVE_PHYSICAL_THERAPY",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Rehabilitative Occupational and Rehabilitative Physical Therapy",
+      "canonical_key": "physical_and_occupational_therapy",
+      "raw_label": "Rehabilitative Occupational and Rehabilitative Physical Therapy",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 30,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$30.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 35,
+          "period": "per_year"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "35 visits for any combination of physical therapy, occupational therapy, speech therapy, massage therapy, and manipulative treatments. Visit limits do not apply if the primary diagnnosis code is for Mental Health, Substance Use Disorder, or Autism Spectrum Disorder."
+        }
+      ]
+    },
+    {
       "benefit_id": "REHABILITATIVE_SPEECH_THERAPY",
       "benefit_type": "medical",
       "category": "REHABILITATION",
@@ -1491,6 +1633,28 @@
       ]
     },
     {
+      "benefit_id": "ROUTINE_EYE_EXAM_ADULT",
+      "benefit_type": "medical",
+      "category": "VISION",
+      "service_name": "Routine Eye Exam (Adult)",
+      "canonical_key": "routine_eye_exam",
+      "raw_label": "Routine Eye Exam (Adult)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
       "benefit_id": "ROUTINE_EYE_EXAM_FOR_CHILDREN",
       "benefit_type": "medical",
       "category": "VISION_PEDIATRIC",
@@ -1535,6 +1699,33 @@
         }
       ],
       "conditions": []
+    },
+    {
+      "benefit_id": "ROUTINE_FOOT_CARE",
+      "benefit_type": "medical",
+      "category": "PODIATRY",
+      "service_name": "Routine Foot Care",
+      "canonical_key": "routine_foot_care",
+      "raw_label": "Routine Foot Care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Covered when done for the prevention of complications associated with metabolic, neurologic, or peripheral vascular disease"
+        }
+      ]
     },
     {
       "benefit_id": "SKILLED_NURSING_FACILITY",
@@ -1890,7 +2081,7 @@
       "excerpt": "Accumulators from the Plan Attributes PUF. Deductibles: MedicalDrugDeductiblesIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Out-of-pocket maximums: MedicalDrugMaximumOutofPocketIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Every non-blank accumulator cell, verbatim: TEHBInnTier1IndividualMOOP \"$8,200\"; TEHBInnTier1FamilyPerPersonMOOP \"$8200 per person\"; TEHBInnTier1FamilyPerGroupMOOP \"$16400 per group\"; TEHBOutOfNetIndividualMOOP \"Not Applicable\"; TEHBOutOfNetFamilyPerPersonMOOP \"per person not applicable\"; TEHBOutOfNetFamilyPerGroupMOOP \"per group not applicable\"; TEHBCombInnOonIndividualMOOP \"Not Applicable\"; TEHBCombInnOonFamilyPerPersonMOOP \"per person not applicable\"; TEHBCombInnOonFamilyPerGroupMOOP \"per group not applicable\"; TEHBDedInnTier1Individual \"$2,000\"; TEHBDedInnTier1FamilyPerPerson \"$2000 per person\"; TEHBDedInnTier1FamilyPerGroup \"$4000 per group\"; TEHBDedInnTier1Coinsurance \"25.00%\"; TEHBDedOutOfNetIndividual \"Not Applicable\"; TEHBDedOutOfNetFamilyPerPerson \"per person not applicable\"; TEHBDedOutOfNetFamilyPerGroup \"per group not applicable\"; TEHBDedCombInnOonIndividual \"Not Applicable\"; TEHBDedCombInnOonFamilyPerPerson \"per person not applicable\"; TEHBDedCombInnOonFamilyPerGroup \"per group not applicable\"."
     },
     {
-      "excerpt": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (24): Abortion for Which Public Funding is Prohibited (Not Covered); Accidental Dental (Covered); Basic Dental Care - Adult (Not Covered); Basic Dental Care - Child (Covered); Cosmetic Surgery (Not Covered); Gender Affirming Care (Covered); Hearing Aids (Covered); Infusion Therapy (Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Major Dental Care - Adult (Not Covered); Major Dental Care - Child (Covered); Orthodontia - Adult (Not Covered); Orthodontia - Child (Covered); Other Practitioner Office Visit (Nurse, Physician Assistant) (Covered); Prenatal and Postnatal Care (Covered); Private-Duty Nursing (Covered); Reconstructive Surgery (Covered); Rehabilitative Occupational and Rehabilitative Physical Therapy (Covered); Routine Dental Services (Adult) (Not Covered); Routine Eye Exam (Adult) (Not Covered); Routine Foot Care (Not Covered); Transplant (Covered); Treatment for Temporomandibular Joint Disorders (Covered); Weight Loss Programs (Not Covered)."
+      "excerpt": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (19): Abortion for Which Public Funding is Prohibited (Not Covered); Accidental Dental (Covered); Basic Dental Care - Adult (Not Covered); Basic Dental Care - Child (Covered); Cosmetic Surgery (Not Covered); Gender Affirming Care (Covered); Infusion Therapy (Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Major Dental Care - Adult (Not Covered); Major Dental Care - Child (Covered); Orthodontia - Adult (Not Covered); Orthodontia - Child (Covered); Prenatal and Postnatal Care (Covered); Private-Duty Nursing (Covered); Reconstructive Surgery (Covered); Routine Dental Services (Adult) (Not Covered); Transplant (Covered); Treatment for Temporomandibular Joint Disorders (Covered); Weight Loss Programs (Not Covered)."
     }
   ],
   "schema_version": "1.1.0"

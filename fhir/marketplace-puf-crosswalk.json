@@ -4,8 +4,8 @@
   "plan_year": 2026,
   "counts": {
     "names": 273,
-    "mapped": 71,
-    "unmapped": 202
+    "mapped": 77,
+    "unmapped": 196
   },
   "map": [
     {
@@ -78,7 +78,7 @@
       "puf_benefit_name": "Annual Diabetic Eye Exam",
       "canonical_key": null,
       "category": "VISION",
-      "note": null
+      "note": "Narrower than routine_eye_exam (diabetic eye exam only)."
     },
     {
       "puf_benefit_name": "Applied Behavior Analysis Based Therapies",
@@ -384,25 +384,25 @@
       "puf_benefit_name": "Diabetes Retinal Eye Exam",
       "canonical_key": null,
       "category": "VISION",
-      "note": null
+      "note": "Narrower than routine_eye_exam (diabetic eye exam only)."
     },
     {
       "puf_benefit_name": "Diabetic Eye Exam",
       "canonical_key": null,
       "category": "VISION",
-      "note": null
+      "note": "Narrower than routine_eye_exam (diabetic eye exam only)."
     },
     {
       "puf_benefit_name": "Diabetic Retinal Eye Exam",
       "canonical_key": null,
       "category": "VISION",
-      "note": null
+      "note": "Narrower than routine_eye_exam (diabetic eye exam only)."
     },
     {
       "puf_benefit_name": "Diabetic Routine Foot Care",
       "canonical_key": null,
       "category": "PODIATRY",
-      "note": null
+      "note": "Narrower than routine_foot_care (diabetic foot care only)."
     },
     {
       "puf_benefit_name": "Diabetic Services Lab-work",
@@ -628,13 +628,13 @@
     },
     {
       "puf_benefit_name": "Hearing Aids",
-      "canonical_key": null,
+      "canonical_key": "hearing_aids",
       "category": "HEARING",
       "note": null
     },
     {
       "puf_benefit_name": "Hearing Exam",
-      "canonical_key": null,
+      "canonical_key": "hearing_exam",
       "category": "HEARING",
       "note": null
     },
@@ -1036,9 +1036,9 @@
     },
     {
       "puf_benefit_name": "Other Practitioner Office Visit (Nurse, Physician Assistant)",
-      "canonical_key": null,
+      "canonical_key": "other_practitioner_office_visit",
       "category": "PHYSICIAN_SERVICES",
-      "note": "Not primary_care or specialist; no key for non-physician practitioner visits."
+      "note": "Non-physician practitioner visits; not primary_care or specialist."
     },
     {
       "puf_benefit_name": "Outpatient Facility Fee (e.g., Ambulatory Surgery Center)",
@@ -1270,9 +1270,9 @@
     },
     {
       "puf_benefit_name": "Rehabilitative Occupational and Rehabilitative Physical Therapy",
-      "canonical_key": null,
+      "canonical_key": "physical_and_occupational_therapy",
       "category": "REHABILITATION",
-      "note": "Combines occupational_therapy and physical_therapy; no single key."
+      "note": "The combined row; physical_and_occupational_therapy is the combined key, not physical_therapy or occupational_therapy."
     },
     {
       "puf_benefit_name": "Rehabilitative Speech Therapy",
@@ -1324,7 +1324,7 @@
     },
     {
       "puf_benefit_name": "Routine Eye Exam (Adult)",
-      "canonical_key": null,
+      "canonical_key": "routine_eye_exam",
       "category": "VISION",
       "note": null
     },
@@ -1336,7 +1336,7 @@
     },
     {
       "puf_benefit_name": "Routine Foot Care",
-      "canonical_key": null,
+      "canonical_key": "routine_foot_care",
       "category": "PODIATRY",
       "note": null
     },

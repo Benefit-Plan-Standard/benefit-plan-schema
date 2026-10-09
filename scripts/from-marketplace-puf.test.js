@@ -108,7 +108,7 @@ function syntheticPlan() {
   const base = { PlanId: plan.PlanId, CopayInnTier2: '', CoinsInnTier2: '', IsEHB: 'Yes', QuantLimitOnSvc: '', LimitQty: '', LimitUnit: '', Exclusions: '', Explanation: '', IsExclFromInnMOOP: 'No', IsExclFromOonMOOP: 'No' };
   const rows = [
     { ...base, BenefitName: 'Specialist Visit', IsCovered: 'Covered', CopayInnTier1: '$50.00', CoinsInnTier1: 'Not Applicable', CopayOutofNet: 'Not Applicable', CoinsOutofNet: '40.00% Coinsurance after deductible', Explanation: 'Referral required.' },
-    { ...base, BenefitName: 'Hearing Aids', IsCovered: 'Not Covered', CopayInnTier1: '', CoinsInnTier1: '', CopayOutofNet: '', CoinsOutofNet: '' },
+    { ...base, BenefitName: 'Cochlear Implants', IsCovered: 'Not Covered', CopayInnTier1: '', CoinsInnTier1: '', CopayOutofNet: '', CoinsOutofNet: '' },
     { ...base, BenefitName: 'Skilled Nursing Facility', IsCovered: 'Covered', CopayInnTier1: '$300.00 Copay per Day with deductible', CoinsInnTier1: 'Not Applicable', CopayOutofNet: '', CoinsOutofNet: '', QuantLimitOnSvc: 'Yes', LimitQty: '25.0', LimitUnit: 'Days per Year' },
     { ...base, BenefitName: 'Acupuncture', IsCovered: '', CopayInnTier1: '', CoinsInnTier1: '', CopayOutofNet: '', CoinsOutofNet: '' },
   ];
@@ -138,7 +138,7 @@ test('buildDocument: mapping rules on a synthetic plan', () => {
   const acu = doc.benefits.find((b) => b.canonical_key === 'acupuncture');
   assert.ok(acu.network_cost_shares.every((r) => r.covered === false), 'blank IsCovered reads as not covered');
   assert.ok(doc.source_references[0].excerpt.includes('99999TX0010001-01'), 'the HIOS plan ID is in source_references');
-  assert.ok(doc.source_references.some((s) => s.excerpt.includes('Hearing Aids (Not Covered)')), 'unmapped benefits are listed');
+  assert.ok(doc.source_references.some((s) => s.excerpt.includes('Cochlear Implants (Not Covered)')), 'unmapped benefits are listed');
 });
 
 test('buildDocument: tier 2 appears only when the plan has tier 2 values', () => {

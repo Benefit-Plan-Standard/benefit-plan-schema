@@ -191,6 +191,52 @@
       ]
     },
     {
+      "benefit_id": "OTHER_PRACTITIONER_OFFICE_VISIT_NURSE_PHYSICIAN_ASSISTANT",
+      "benefit_type": "medical",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Other Practitioner Office Visit (Nurse, Physician Assistant)",
+      "canonical_key": "other_practitioner_office_visit",
+      "raw_label": "Other Practitioner Office Visit (Nurse, Physician Assistant)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 60,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$60.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"50.00% Coinsurance after deductible\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
       "benefit_id": "OUTPATIENT_FACILITY_FEE_E_G_AMBULATORY_SURGERY_CENTER",
       "benefit_type": "medical",
       "category": "SURGICAL_SERVICES",
@@ -335,6 +381,33 @@
       "service_name": "Infertility Treatment",
       "canonical_key": "infertility_treatment",
       "raw_label": "Infertility Treatment",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "IN2",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "ROUTINE_EYE_EXAM_ADULT",
+      "benefit_type": "medical",
+      "category": "VISION",
+      "service_name": "Routine Eye Exam (Adult)",
+      "canonical_key": "routine_eye_exam",
+      "raw_label": "Routine Eye Exam (Adult)",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -1395,6 +1468,33 @@
       "conditions": []
     },
     {
+      "benefit_id": "HEARING_AIDS",
+      "benefit_type": "medical",
+      "category": "HEARING",
+      "service_name": "Hearing Aids",
+      "canonical_key": "hearing_aids",
+      "raw_label": "Hearing Aids",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "IN2",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
       "benefit_id": "IMAGING_CT_PET_SCANS_MRIS",
       "benefit_type": "medical",
       "category": "DIAGNOSTIC_SERVICES",
@@ -1485,6 +1585,65 @@
       ],
       "limits": [],
       "conditions": []
+    },
+    {
+      "benefit_id": "ROUTINE_FOOT_CARE",
+      "benefit_type": "medical",
+      "category": "PODIATRY",
+      "service_name": "Routine Foot Care",
+      "canonical_key": "routine_foot_care",
+      "raw_label": "Routine Foot Care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 20,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$20.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 60,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier2 \"$60.00\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"50.00% Coinsurance after deductible\""
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Only covered when medically necessary. Reduced cost available at Value Choice Providers. Check your Online Provider Directory for providers in your area."
+        }
+      ]
     },
     {
       "benefit_id": "ACUPUNCTURE",
@@ -1651,6 +1810,63 @@
       "service_name": "Rehabilitative Speech Therapy",
       "canonical_key": "speech_therapy",
       "raw_label": "Rehabilitative Speech Therapy",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 60,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$60.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"50.00% Coinsurance after deductible\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 35,
+          "period": "per_benefit_period"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Combined limit for all outpatient therapy plus chiropractic."
+        }
+      ]
+    },
+    {
+      "benefit_id": "REHABILITATIVE_OCCUPATIONAL_AND_REHABILITATIVE_PHYSICAL_THERAPY",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Rehabilitative Occupational and Rehabilitative Physical Therapy",
+      "canonical_key": "physical_and_occupational_therapy",
+      "raw_label": "Rehabilitative Occupational and Rehabilitative Physical Therapy",
       "network_cost_shares": [
         {
           "tier_id": "IN",
@@ -2186,7 +2402,7 @@
       "excerpt": "Accumulators from the Plan Attributes PUF. Deductibles: MedicalDrugDeductiblesIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Out-of-pocket maximums: MedicalDrugMaximumOutofPocketIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Every non-blank accumulator cell, verbatim: TEHBInnTier1IndividualMOOP \"$5,500\"; TEHBInnTier1FamilyPerPersonMOOP \"$5500 per person\"; TEHBInnTier1FamilyPerGroupMOOP \"$11000 per group\"; TEHBInnTier2IndividualMOOP \"$5,500\"; TEHBInnTier2FamilyPerPersonMOOP \"$5500 per person\"; TEHBInnTier2FamilyPerGroupMOOP \"$11000 per group\"; TEHBOutOfNetIndividualMOOP \"$11,000\"; TEHBOutOfNetFamilyPerPersonMOOP \"$11000 per person\"; TEHBOutOfNetFamilyPerGroupMOOP \"$22000 per group\"; TEHBCombInnOonIndividualMOOP \"Not Applicable\"; TEHBCombInnOonFamilyPerPersonMOOP \"per person not applicable\"; TEHBCombInnOonFamilyPerGroupMOOP \"per group not applicable\"; TEHBDedInnTier1Individual \"$0\"; TEHBDedInnTier1FamilyPerPerson \"$0 per person\"; TEHBDedInnTier1FamilyPerGroup \"$0 per group\"; TEHBDedInnTier1Coinsurance \"40.00%\"; TEHBDedInnTier2Individual \"$0\"; TEHBDedInnTier2FamilyPerPerson \"$0 per person\"; TEHBDedInnTier2FamilyPerGroup \"$0 per group\"; TEHBDedInnTier2Coinsurance \"40.00%\"; TEHBDedOutOfNetIndividual \"$500\"; TEHBDedOutOfNetFamilyPerPerson \"$500 per person\"; TEHBDedOutOfNetFamilyPerGroup \"per group not applicable\"; TEHBDedCombInnOonIndividual \"Not Applicable\"; TEHBDedCombInnOonFamilyPerPerson \"per person not applicable\"; TEHBDedCombInnOonFamilyPerGroup \"per group not applicable\"."
     },
     {
-      "excerpt": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (31): Other Practitioner Office Visit (Nurse, Physician Assistant) (Covered); Routine Dental Services (Adult) (Not Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Private-Duty Nursing (Not Covered); Routine Eye Exam (Adult) (Not Covered); Cosmetic Surgery (Not Covered); Prenatal and Postnatal Care (Covered); Hearing Aids (Not Covered); Routine Foot Care (Covered); Weight Loss Programs (Not Covered); Rehabilitative Occupational and Rehabilitative Physical Therapy (Covered); Basic Dental Care - Child (Not Covered); Orthodontia - Child (Not Covered); Major Dental Care - Child (Not Covered); Basic Dental Care - Adult (Not Covered); Orthodontia - Adult (Not Covered); Major Dental Care - Adult (Not Covered); Abortion for Which Public Funding is Prohibited (Not Covered); Transplant (Covered); Accidental Dental (Covered); Infusion Therapy (Covered); Treatment for Temporomandibular Joint Disorders (Covered); Reconstructive Surgery (Covered); Gender Affirming Care (Covered); Diabetes Care Management (Covered); Off Label Prescription Drugs (Covered); Dental Anesthesia (Covered); Congenital Anomaly, including Cleft Lip/Palate (Covered); Bone Marrow Transplant (Covered); Nutrition/Formulas (Covered); Osteoporosis (Covered)."
+      "excerpt": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (26): Routine Dental Services (Adult) (Not Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Private-Duty Nursing (Not Covered); Cosmetic Surgery (Not Covered); Prenatal and Postnatal Care (Covered); Weight Loss Programs (Not Covered); Basic Dental Care - Child (Not Covered); Orthodontia - Child (Not Covered); Major Dental Care - Child (Not Covered); Basic Dental Care - Adult (Not Covered); Orthodontia - Adult (Not Covered); Major Dental Care - Adult (Not Covered); Abortion for Which Public Funding is Prohibited (Not Covered); Transplant (Covered); Accidental Dental (Covered); Infusion Therapy (Covered); Treatment for Temporomandibular Joint Disorders (Covered); Reconstructive Surgery (Covered); Gender Affirming Care (Covered); Diabetes Care Management (Covered); Off Label Prescription Drugs (Covered); Dental Anesthesia (Covered); Congenital Anomaly, including Cleft Lip/Palate (Covered); Bone Marrow Transplant (Covered); Nutrition/Formulas (Covered); Osteoporosis (Covered)."
     }
   ],
   "schema_version": "1.1.0"

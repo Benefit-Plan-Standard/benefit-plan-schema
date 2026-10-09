@@ -733,6 +733,61 @@
       ]
     },
     {
+      "benefit_id": "HEARING_AIDS",
+      "benefit_type": "medical",
+      "category": "HEARING",
+      "service_name": "Hearing Aids",
+      "canonical_key": "hearing_aids",
+      "raw_label": "Hearing Aids",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"Not Applicable\"; CoinsInnTier1 \"50.00% Coinsurance after deductible\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "items",
+          "value": 1,
+          "period": "per_3_years"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "exclusion",
+          "description": "Certain exclusion apply - Please see the contract book. \\nBenefits are available for hearing aids for covered Members when obtained from a Network Provider or another Provider approved by Us. This Benefit is limited to one hearing aid, per ear, in a thirty-six (36) month period. The hearing aid must be fitted and dispensed by a licensed audiologist or licensed hearing aid specialist or hearing aid dealer following the medical clearance of a Physician and an audiological evaluation medically appropriate to the patient."
+        },
+        {
+          "type": "explanation",
+          "description": "1 hearing aid per ear every 3 years; hearing aids or for examinations for the prescribing or fitting of hearing aids. Benefits are available for hearing aids for covered Members when obtained from a Network Provider or another Provider approved by Us."
+        }
+      ]
+    },
+    {
       "benefit_id": "HOME_HEALTH_CARE_SERVICES",
       "benefit_type": "medical",
       "category": "HOME_HEALTH",
@@ -1193,6 +1248,46 @@
       ]
     },
     {
+      "benefit_id": "OTHER_PRACTITIONER_OFFICE_VISIT_NURSE_PHYSICIAN_ASSISTANT",
+      "benefit_type": "medical",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Other Practitioner Office Visit (Nurse, Physician Assistant)",
+      "canonical_key": "other_practitioner_office_visit",
+      "raw_label": "Other Practitioner Office Visit (Nurse, Physician Assistant)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 40,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$40.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"50.00% Coinsurance after deductible\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
       "benefit_id": "OUTPATIENT_FACILITY_FEE_E_G_AMBULATORY_SURGERY_CENTER",
       "benefit_type": "medical",
       "category": "SURGICAL_SERVICES",
@@ -1566,6 +1661,51 @@
       "conditions": []
     },
     {
+      "benefit_id": "REHABILITATIVE_OCCUPATIONAL_AND_REHABILITATIVE_PHYSICAL_THERAPY",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Rehabilitative Occupational and Rehabilitative Physical Therapy",
+      "canonical_key": "physical_and_occupational_therapy",
+      "raw_label": "Rehabilitative Occupational and Rehabilitative Physical Therapy",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"Not Applicable\"; CoinsInnTier1 \"50.00% Coinsurance after deductible\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"50.00% Coinsurance after deductible\""
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Rehabilitative Care Benefits will be available for Services provided on a Inpatient or Outpatient basis, including services for Occupational Therapy, Physical Therapy, Speech/Language Pathology Therapy, and/or Chiropractic Services."
+        }
+      ]
+    },
+    {
       "benefit_id": "REHABILITATIVE_SPEECH_THERAPY",
       "benefit_type": "medical",
       "category": "REHABILITATION",
@@ -1609,6 +1749,28 @@
           "description": "Rehabilitative Care Benefits will be available for Services provided on a Inpatient or Outpatient basis, including services for Occupational Therapy, Physical Therapy, Speech/Language Pathology Therapy, and/or Chiropractic Services."
         }
       ]
+    },
+    {
+      "benefit_id": "ROUTINE_EYE_EXAM_ADULT",
+      "benefit_type": "medical",
+      "category": "VISION",
+      "service_name": "Routine Eye Exam (Adult)",
+      "canonical_key": "routine_eye_exam",
+      "raw_label": "Routine Eye Exam (Adult)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": []
     },
     {
       "benefit_id": "ROUTINE_EYE_EXAM_FOR_CHILDREN",
@@ -1662,6 +1824,33 @@
         }
       ],
       "conditions": []
+    },
+    {
+      "benefit_id": "ROUTINE_FOOT_CARE",
+      "benefit_type": "medical",
+      "category": "PODIATRY",
+      "service_name": "Routine Foot Care",
+      "canonical_key": "routine_foot_care",
+      "raw_label": "Routine Foot Care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Benefits are excluded for palliative or cosmetic care or treatment of the foot; supportive devices of the foot; and treatment of flat feet, except for Medically Necessary Surgery. \\nBenefits are excluded for routine foot care, except as specifically provided."
+        }
+      ]
     },
     {
       "benefit_id": "SKILLED_NURSING_FACILITY",
@@ -2016,7 +2205,7 @@
       "excerpt": "Accumulators from the Plan Attributes PUF. Deductibles: MedicalDrugDeductiblesIntegrated \"No\"; the medical (MEHB) columns are used. Out-of-pocket maximums: MedicalDrugMaximumOutofPocketIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Every non-blank accumulator cell, verbatim: TEHBInnTier1IndividualMOOP \"$9,900\"; TEHBInnTier1FamilyPerPersonMOOP \"$9900 per person\"; TEHBInnTier1FamilyPerGroupMOOP \"$19800 per group\"; TEHBOutOfNetIndividualMOOP \"$29,700\"; TEHBOutOfNetFamilyPerPersonMOOP \"$29700 per person\"; TEHBOutOfNetFamilyPerGroupMOOP \"$59400 per group\"; TEHBCombInnOonIndividualMOOP \"$39,600\"; TEHBCombInnOonFamilyPerPersonMOOP \"$39600 per person\"; TEHBCombInnOonFamilyPerGroupMOOP \"$79200 per group\"; MEHBDedInnTier1Individual \"$3,300\"; MEHBDedInnTier1FamilyPerPerson \"$3300 per person\"; MEHBDedInnTier1FamilyPerGroup \"$9900 per group\"; MEHBDedInnTier1Coinsurance \"50.00%\"; MEHBDedOutOfNetIndividual \"$9,900\"; MEHBDedOutOfNetFamilyPerPerson \"$9900 per person\"; MEHBDedOutOfNetFamilyPerGroup \"$29700 per group\"; MEHBDedCombInnOonIndividual \"$13,200\"; MEHBDedCombInnOonFamilyPerPerson \"$13200 per person\"; MEHBDedCombInnOonFamilyPerGroup \"$39600 per group\"; DEHBDedInnTier1Individual \"$500\"; DEHBDedInnTier1FamilyPerPerson \"$500 per person\"; DEHBDedInnTier1FamilyPerGroup \"per group not applicable\"; DEHBDedInnTier1Coinsurance \"20.00%\"; DEHBDedOutOfNetIndividual \"$500\"; DEHBDedOutOfNetFamilyPerPerson \"$500 per person\"; DEHBDedOutOfNetFamilyPerGroup \"per group not applicable\"; DEHBDedCombInnOonIndividual \"$500\"; DEHBDedCombInnOonFamilyPerPerson \"$500 per person\"; DEHBDedCombInnOonFamilyPerGroup \"per group not applicable\"."
     },
     {
-      "excerpt": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (31): Abortion for Which Public Funding is Prohibited (Not Covered); Accidental Dental (Covered); Attention Deficit Disorder (Covered); Basic Dental Care - Adult (Not Covered); Basic Dental Care - Child (Covered); Clinical Trials (Covered); Congenital Anomaly, including Cleft Lip/Palate (Covered); Cosmetic Surgery (Not Covered); Dental Anesthesia (Covered); Diabetes Care Management (Covered); Hearing Aids (Covered); Infusion Therapy (Covered); Inherited Metabolic Disorder - PKU (Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Major Dental Care - Adult (Not Covered); Major Dental Care - Child (Covered); Non-Emergency Care When Traveling Outside the U.S. (Covered); Orthodontia - Adult (Not Covered); Orthodontia - Child (Covered); Other Practitioner Office Visit (Nurse, Physician Assistant) (Covered); Prenatal and Postnatal Care (Covered); Prescription Drugs Other (Covered); Private-Duty Nursing (Covered); Reconstructive Surgery (Covered); Rehabilitative Occupational and Rehabilitative Physical Therapy (Covered); Routine Dental Services (Adult) (Not Covered); Routine Eye Exam (Adult) (Not Covered); Routine Foot Care (Not Covered); Transplant (Covered); Treatment for Temporomandibular Joint Disorders (Not Covered); Weight Loss Programs (Not Covered)."
+      "excerpt": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (26): Abortion for Which Public Funding is Prohibited (Not Covered); Accidental Dental (Covered); Attention Deficit Disorder (Covered); Basic Dental Care - Adult (Not Covered); Basic Dental Care - Child (Covered); Clinical Trials (Covered); Congenital Anomaly, including Cleft Lip/Palate (Covered); Cosmetic Surgery (Not Covered); Dental Anesthesia (Covered); Diabetes Care Management (Covered); Infusion Therapy (Covered); Inherited Metabolic Disorder - PKU (Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Major Dental Care - Adult (Not Covered); Major Dental Care - Child (Covered); Non-Emergency Care When Traveling Outside the U.S. (Covered); Orthodontia - Adult (Not Covered); Orthodontia - Child (Covered); Prenatal and Postnatal Care (Covered); Prescription Drugs Other (Covered); Private-Duty Nursing (Covered); Reconstructive Surgery (Covered); Routine Dental Services (Adult) (Not Covered); Transplant (Covered); Treatment for Temporomandibular Joint Disorders (Not Covered); Weight Loss Programs (Not Covered)."
     }
   ],
   "schema_version": "1.1.0"
