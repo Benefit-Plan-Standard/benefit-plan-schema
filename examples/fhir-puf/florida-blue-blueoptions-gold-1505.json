@@ -15,7 +15,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>BlueOptions Gold 1505 ($0 Virtual Visits / $20 PCP Visits / $15 Generic Meds / Rewards $$$)</b></p><p>Carrier: Florida Blue (BlueCross BlueShield FL). Plan type: EPO. Period: 2023-01-01 to 2023-12-31.</p><p>27 benefits are placed in CARIN SBC benefit categories. 17 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document FLORIDA_BLUE_BLUEOPTIONS_GOLD_1505 (schema version 1.1.0).</p></div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>BlueOptions Gold 1505 ($0 Virtual Visits / $20 PCP Visits / $15 Generic Meds / Rewards $$$)</b></p><p>Carrier: Florida Blue (BlueCross BlueShield FL). Plan type: EPO. Period: 2023-01-01 to 2023-12-31.</p><p>27 benefits are placed in CARIN SBC benefit categories. 22 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document FLORIDA_BLUE_BLUEOPTIONS_GOLD_1505 (schema version 1.1.0).</p></div>"
         },
         "extension": [
           {
@@ -66,10 +66,31 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (31): Other Practitioner Office Visit (Nurse, Physician Assistant) (Covered); Routine Dental Services (Adult) (Not Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Private-Duty Nursing (Not Covered); Routine Eye Exam (Adult) (Not Covered); Cosmetic Surgery (Not Covered); Prenatal and Postnatal Care (Covered); Hearing Aids (Not Covered); Routine Foot Care (Covered); Weight Loss Programs (Not Covered); Rehabilitative Occupational and Rehabilitative Physical Therapy (Covered); Basic Dental Care - Child (Not Covered); Orthodontia - Child (Not Covered); Major Dental Care - Child (Not Covered); Basic Dental Care - Adult (Not Covered); Orthodontia - Adult (Not Covered); Major Dental Care - Adult (Not Covered); Abortion for Which Public Funding is Prohibited (Not Covered); Transplant (Covered); Accidental Dental (Covered); Infusion Therapy (Covered); Treatment for Temporomandibular Joint Disorders (Covered); Reconstructive Surgery (Covered); Gender Affirming Care (Covered); Diabetes Care Management (Covered); Off Label Prescription Drugs (Covered); Dental Anesthesia (Covered); Congenital Anomaly, including Cleft Lip/Palate (Covered); Bone Marrow Transplant (Covered); Nutrition/Formulas (Covered); Osteoporosis (Covered)."
+                "valueString": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (26): Routine Dental Services (Adult) (Not Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Private-Duty Nursing (Not Covered); Cosmetic Surgery (Not Covered); Prenatal and Postnatal Care (Covered); Weight Loss Programs (Not Covered); Basic Dental Care - Child (Not Covered); Orthodontia - Child (Not Covered); Major Dental Care - Child (Not Covered); Basic Dental Care - Adult (Not Covered); Orthodontia - Adult (Not Covered); Major Dental Care - Adult (Not Covered); Abortion for Which Public Funding is Prohibited (Not Covered); Transplant (Covered); Accidental Dental (Covered); Infusion Therapy (Covered); Treatment for Temporomandibular Joint Disorders (Covered); Reconstructive Surgery (Covered); Gender Affirming Care (Covered); Diabetes Care Management (Covered); Off Label Prescription Drugs (Covered); Dental Anesthesia (Covered); Congenital Anomaly, including Cleft Lip/Palate (Covered); Bone Marrow Transplant (Covered); Nutrition/Formulas (Covered); Osteoporosis (Covered)."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "OTHER_PRACTITIONER_OFFICE_VISIT_NURSE_PHYSICIAN_ASSISTANT"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "other_practitioner_office_visit"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Other Practitioner Office Visit (Nurse, Physician Assistant)"
+              },
+              {
+                "url": "category",
+                "valueString": "PHYSICIAN_SERVICES"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
           },
           {
             "extension": [
@@ -109,6 +130,27 @@
               {
                 "url": "category",
                 "valueString": "INFERTILITY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "ROUTINE_EYE_EXAM_ADULT"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "routine_eye_exam"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Routine Eye Exam (Adult)"
+              },
+              {
+                "url": "category",
+                "valueString": "VISION"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
@@ -243,6 +285,48 @@
             "extension": [
               {
                 "url": "benefitId",
+                "valueString": "HEARING_AIDS"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "hearing_aids"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Hearing Aids"
+              },
+              {
+                "url": "category",
+                "valueString": "HEARING"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "ROUTINE_FOOT_CARE"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "routine_foot_care"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Routine Foot Care"
+              },
+              {
+                "url": "category",
+                "valueString": "PODIATRY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
                 "valueString": "ACUPUNCTURE"
               },
               {
@@ -256,6 +340,27 @@
               {
                 "url": "category",
                 "valueString": "ACUPUNCTURE"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "REHABILITATIVE_OCCUPATIONAL_AND_REHABILITATIVE_PHYSICAL_THERAPY"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "physical_and_occupational_therapy"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Rehabilitative Occupational and Rehabilitative Physical Therapy"
+              },
+              {
+                "url": "category",
+                "valueString": "REHABILITATION"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"

@@ -123,13 +123,14 @@ const GOLDEN_SHA256 = {
 };
 
 // SHA-256 of the 5 Bundles converted from the PBP importer's golden files
-// (examples/*.pbp.json), pinned 2026-10-06 when the converter learned the POS tier.
+// (examples/*.pbp.json), pinned 2026-10-06 when the converter learned the POS tier and
+// re-pinned 2026-10-09 when 18b1, 18a1, 17a1 and 7f_2 gained canonical keys.
 const PBP_BUNDLE_SHA256 = {
-  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': 'cba2d9ea6ff995d581837ffcaf4fea1c9210d71178dc1d0b1ba65670babb58eb',
-  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': '44cc8069595a78147fb4fd3acfc9d2f00c95fa1efb9666c4c57f63824390d6dd',
-  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '441fe9846714206898be8ac6dd0ce2b26b008fed1db4ad600c3f03f51a8324c6',
-  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': 'ce122d5b576c6126bdb797b0994a39e9821219d576006dc7ca130bdc6d002cf2',
-  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': '34235b958c96e909ae24462d3c7f5952ebe0f9fdcb138d60c0d2a1567d8974a9',
+  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': '408cf9c85421800313af4e39d932e0b258e3ade14c08ebadc9e2760c684ac677',
+  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': 'a7ccea01cf368f66171450821998f86d3f4e63407699b5351d4f5510026613db',
+  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '859520d65ab88bde369ba69a348d4c8151cbd2217186d41e84f748a3cca550df',
+  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': 'e87f3f9242a21aa2b81ac27a28926203e6631ed7d59d500fe33b764d93ff9870',
+  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': 'b942b743559afedda9d51f003ac8a6e86a04a95bd79843d393db4a14e2f7a2d4',
 };
 
 test('the 10 golden files are byte-identical to the pinned versions, and the converter reproduces them', () => {

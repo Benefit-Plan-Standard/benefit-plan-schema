@@ -1,7 +1,7 @@
 # Validation record
 
 **Date:** 2026-09-24; United, Ambetter and Kaiser re-validated 2026-09-25 after data fixes; the 8 SBC files re-validated 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs; Aetna PPO 1500, Aetna PPO 5000, GatorCare and United re-validated 2026-10-05 after the deductible flags on silent cells were set (no count changed)
-**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run, at the end of this file): 0 errors, 15 warnings.
+**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run) and again on 2026-10-09 after 4 of their benefits gained canonical keys (third run), both at the end of this file: 0 errors, 15 warnings.
 
 ## Setup
 
@@ -140,3 +140,19 @@ java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
 | `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 99 |
 
 **Warnings explained (15).** 14 are text-only `cost.qualifiers` (10 `Point-of-service option` on Aetna and 4 hospital cost tier names on UPMC), because the Cost Tier value set has only `value-choice`, `standard` and `virtual`. 1 is the Aetna `plan.type`, because the SBC Plan Type value set has no HMO-POS code (listed in the PBP importer spec, section 9.3). The information messages are the extension slicing messages, as for the SBC Bundles above.
+
+## Third run: 2026-10-09, the 5 PBP Bundles after the canonical keys
+
+**What changed.** `fhir/pbp-crosswalk.json` now gives 4 of the 30 service categories a canonical key: 18b1 `hearing_aids`, 18a1 `hearing_exam`, 17a1 `routine_eye_exam` and 7f_2 `routine_foot_care` (vocabulary 1.2.0). None of the 4 keys has an SBC benefit category code, so each benefit stays in the `bps-unmapped-benefit` extension, which now carries its `canonicalKey`. Nothing else in the Bundles moved.
+
+**Result:** all 5 files pass with **0 errors**. 15 warnings, the same 15 as the second run. Same validator (`validator_cli.jar` 7.0.0, Git# 37795f3f571f), Java, packages and command as the second run.
+
+| File | Errors | Warnings | Information |
+|---|---|---|---|
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 | 104 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 | 99 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 11 | 103 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 | 104 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 99 |
+
+The counts match the second run file by file: a `canonicalKey` sub-extension inside an existing `bps-unmapped-benefit` extension adds no message.

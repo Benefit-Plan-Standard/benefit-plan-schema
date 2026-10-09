@@ -273,6 +273,10 @@
                 "valueString": "PODIATRY_ROUTINE"
               },
               {
+                "url": "canonicalKey",
+                "valueString": "routine_foot_care"
+              },
+              {
                 "url": "serviceName",
                 "valueString": "Routine foot care"
               },
@@ -328,6 +332,10 @@
                 "valueString": "HEARING_EXAM_ROUTINE"
               },
               {
+                "url": "canonicalKey",
+                "valueString": "hearing_exam"
+              },
+              {
                 "url": "serviceName",
                 "valueString": "Routine hearing exams"
               },
@@ -362,6 +370,10 @@
                 "valueString": "EYE_EXAM_ROUTINE"
               },
               {
+                "url": "canonicalKey",
+                "valueString": "routine_eye_exam"
+              },
+              {
                 "url": "serviceName",
                 "valueString": "Routine eye exams"
               },
@@ -377,6 +389,10 @@
               {
                 "url": "benefitId",
                 "valueString": "HEARING_AIDS"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "hearing_aids"
               },
               {
                 "url": "serviceName",
