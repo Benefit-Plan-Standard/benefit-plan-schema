@@ -1,6 +1,6 @@
 # Examples
 
-18 plans expressed in the Benefit Plan Standard. 10 are read from a published plan document, which ships alongside them in `sources/`. 3 are imported from the CMS Marketplace public use files and 5 from the CMS Medicare Advantage Plan Benefit Package files. Use them to see how a real plan maps into the standard, to test a parser or importer, or as input to the FHIR converter.
+20 plans expressed in the Benefit Plan Standard. 10 are read from a published plan document, which ships alongside them in `sources/`. 5 are imported from the CMS Marketplace public use files and 5 from the CMS Medicare Advantage Plan Benefit Package files. Use them to see how a real plan maps into the standard, to test a parser or importer, or as input to the FHIR converter.
 
 How the CMS files become these examples and their FHIR Bundles, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow).
 
@@ -25,11 +25,13 @@ How the CMS files become these examples and their FHIR Bundles, with every comma
 
 | File | Plan | Issuer | State | Market | Metal level | Plan year | Schema | Benefits placed | Source | FHIR Bundle in `fhir-puf/` |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.puf.json` | Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits, 97176LA0340010-01 | Blue Cross and Blue Shield of Louisiana | LA | Individual | Silver | 2026 | v1.1.0 | 44 of 75 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
-| `florida-blue-blueoptions-gold-1505.puf.json` | BlueOptions Gold 1505, 16842FL0070120-01 | Florida Blue (BlueCross BlueShield FL) | FL | Individual | Gold | 2023 | v1.1.0 | 44 of 75 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2023 | Yes |
-| `unitedhealthcare-uhc-gold-standard.puf.json` | UHC Gold Standard, 40220TX0080024-01 | UnitedHealthcare | TX | Individual | Gold | 2026 | v1.1.0 | 44 of 68 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
+| `avmed-avmed-entrust-gold-125.puf.json` | AvMed Entrust Gold 125 (2026), 19898FL0340001-01 | AvMed | FL | Individual | Gold | 2026 | v1.1.0 | 49 of 73 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
+| `blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.puf.json` | Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits, 97176LA0340010-01 | Blue Cross and Blue Shield of Louisiana | LA | Individual | Silver | 2026 | v1.1.0 | 49 of 75 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
+| `florida-blue-blueoptions-gold-1505.puf.json` | BlueOptions Gold 1505, 16842FL0070120-01 | Florida Blue (BlueCross BlueShield FL) | FL | Individual | Gold | 2023 | v1.1.0 | 49 of 75 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2023 | Yes |
+| `unitedhealthcare-uhc-bronze-essential.puf.json` | UHC Bronze Essential ($0 Virtual Urgent Care), 68398FL0030058-01 | UnitedHealthcare | FL | Individual | Bronze | 2026 | v1.1.0 | 49 of 68 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
+| `unitedhealthcare-uhc-gold-standard.puf.json` | UHC Gold Standard, 40220TX0080024-01 | UnitedHealthcare | TX | Individual | Gold | 2026 | v1.1.0 | 49 of 68 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
 
-"Benefits placed" is the number of entries in `benefits[]` out of the plan's rows in the Benefits and Cost Sharing PUF. A row is placed when its benefit name maps to a canonical key in `../fhir/marketplace-puf-crosswalk.json`; the other rows (31, 31 and 24) are listed by name and coverage in `source_references[]`. The plan ID after each name is the HIOS plan ID, which v1.1.0 has no field for.
+"Benefits placed" is the number of entries in `benefits[]` out of the plan's rows in the Benefits and Cost Sharing PUF. A row is placed when its benefit name maps to a canonical key in `../fhir/marketplace-puf-crosswalk.json`; the other rows (24, 26, 26, 19 and 19) are listed by name and coverage in `source_references[]`. The plan ID after each name is the HIOS plan ID, which v1.1.0 has no field for.
 
 ## The 5 Medicare Advantage public-file examples
 
@@ -47,7 +49,7 @@ How the CMS files become these examples and their FHIR Bundles, with every comma
 
 - **The 8 SBC examples** are generated from the source Summary of Benefits and Coverage and verified value by value against it. On 2026-10-05 the 8 were corrected against their PDFs for limits and deductible flags; [`../docs/changelog.md`](../docs/changelog.md) has the detail. Also on 2026-10-05, the deductible flags on cost shares whose cell is silent about the deductible were set from the issuer's annotation convention and the SBC template footnote, with the page 1 answer to "Are there services covered before you meet your deductible?". They validate against v1.1.0 and, unchanged, against the v1.2.0 draft.
 - **The 2 Medicare Advantage examples** are read from the CMS Summary of Benefits and verified value by value against the cited pages. They use fields added in the v1.2.0 draft, so they validate against that draft only. See [`../docs/medicare-advantage-notes.md`](../docs/medicare-advantage-notes.md).
-- **The 3 public-file examples** are produced by `scripts/from-marketplace-puf.js` from 2 CMS files for the plan year: the Plan Attributes PUF and the Benefits and Cost Sharing PUF. No PDF is read. The output is deterministic: the same 2 files and download date always give byte-identical output. They validate against v1.1.0 and the v1.2.0 draft. See [`../docs/specs/marketplace-puf-importer.md`](../docs/specs/marketplace-puf-importer.md).
+- **The 5 Marketplace public-file examples** are produced by `scripts/from-marketplace-puf.js` from 2 CMS files for the plan year: the Plan Attributes PUF and the Benefits and Cost Sharing PUF. No PDF is read. The output is deterministic: the same 2 files and download date always give byte-identical output. They validate against v1.1.0 and the v1.2.0 draft. See [`../docs/specs/marketplace-puf-importer.md`](../docs/specs/marketplace-puf-importer.md).
 - **The 5 Medicare Advantage public-file examples** are produced by `scripts/from-pbp.js` from the CMS Plan Benefit Package (PBP) Benefits files for contract year 2027. No PDF is read by the importer. The output is deterministic: the same files and download date always give byte-identical output. They are v1.2.0 documents. Two of them were checked against the carrier's 2027 Summary of Benefits with `scripts/pbp-sob-check.js`: H2406-013 (UnitedHealthcare) and H1609-028 (Aetna). See [`../docs/specs/pbp-importer.md`](../docs/specs/pbp-importer.md).
 
 ## Source references

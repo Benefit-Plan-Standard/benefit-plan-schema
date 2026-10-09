@@ -1,0 +1,2407 @@
+{
+  "plan_id": "AVMED_AVMED_ENTRUST_GOLD_125",
+  "plan_name": "AvMed Entrust Gold 125 (2026)",
+  "carrier": "AvMed",
+  "plan_type": "HMO",
+  "plan_year": 2026,
+  "effective_date": "2026-01-01",
+  "expiry_date": "2026-12-31",
+  "market": "individual",
+  "network_tiers": [
+    {
+      "tier_id": "IN",
+      "name": "In-Network Tier 1",
+      "description": "Benefits and Cost Sharing PUF columns CopayInnTier1 and CoinsInnTier1"
+    },
+    {
+      "tier_id": "IN2",
+      "name": "In-Network Tier 2",
+      "description": "Benefits and Cost Sharing PUF columns CopayInnTier2 and CoinsInnTier2"
+    },
+    {
+      "tier_id": "OUT",
+      "name": "Out-of-Network",
+      "description": "Benefits and Cost Sharing PUF columns CopayOutofNet and CoinsOutofNet"
+    }
+  ],
+  "accumulators": {
+    "individual_deductible": {
+      "amount": 2000,
+      "currency": "USD",
+      "network_tier": "in-network",
+      "applies_to": "integrated"
+    },
+    "family_deductible": {
+      "amount": 4000,
+      "currency": "USD",
+      "network_tier": "in-network",
+      "applies_to": "integrated",
+      "embedded": true
+    },
+    "individual_oop_max": {
+      "amount": 5850,
+      "currency": "USD",
+      "network_tier": "in-network",
+      "applies_to": "integrated"
+    },
+    "family_oop_max": {
+      "amount": 11700,
+      "currency": "USD",
+      "network_tier": "in-network",
+      "applies_to": "integrated",
+      "embedded": true
+    }
+  },
+  "benefits": [
+    {
+      "benefit_id": "ACUPUNCTURE",
+      "benefit_type": "medical",
+      "category": "ACUPUNCTURE",
+      "service_name": "Acupuncture",
+      "canonical_key": "acupuncture",
+      "raw_label": "Acupuncture",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "IN2",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "ALLERGY_TESTING",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Allergy Testing",
+      "canonical_key": "allergy_testing",
+      "raw_label": "Allergy Testing",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 70,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$70.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "BARIATRIC_SURGERY",
+      "benefit_type": "medical",
+      "category": "BARIATRIC_SURGERY",
+      "service_name": "Bariatric Surgery",
+      "canonical_key": "bariatric_surgery",
+      "raw_label": "Bariatric Surgery",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "IN2",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "CHEMOTHERAPY",
+      "benefit_type": "medical",
+      "category": "CHEMOTHERAPY",
+      "service_name": "Chemotherapy",
+      "canonical_key": "chemotherapy",
+      "raw_label": "Chemotherapy",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"Not Applicable\"; CoinsInnTier1 \"50.00% Coinsurance after deductible\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "CHIROPRACTIC_CARE",
+      "benefit_type": "medical",
+      "category": "CHIROPRACTIC",
+      "service_name": "Chiropractic Care",
+      "canonical_key": "chiropractic_care",
+      "raw_label": "Chiropractic Care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 35,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$35.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 35,
+          "period": "per_benefit_period"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Combined limit for all outpatient therapy plus chiropractic."
+        }
+      ]
+    },
+    {
+      "benefit_id": "DELIVERY_AND_ALL_INPATIENT_SERVICES_FOR_MATERNITY_CARE",
+      "benefit_type": "medical",
+      "category": "MATERNITY_CARE",
+      "service_name": "Delivery and All Inpatient Services for Maternity Care",
+      "canonical_key": "delivery_inpatient",
+      "raw_label": "Delivery and All Inpatient Services for Maternity Care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 850,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$850.00 Copay after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "DENTAL_CHECK_UP_FOR_CHILDREN",
+      "benefit_type": "medical",
+      "category": "DENTAL_PEDIATRIC",
+      "service_name": "Dental Check-Up for Children",
+      "canonical_key": "pediatric_dental_checkup",
+      "raw_label": "Dental Check-Up for Children",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"No Charge\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "exams",
+          "value": 1,
+          "period": "per_6_months"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Bundled with medical through separate dental provider"
+        }
+      ]
+    },
+    {
+      "benefit_id": "DIABETES_EDUCATION",
+      "benefit_type": "medical",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Diabetes Education",
+      "canonical_key": "diabetes_management",
+      "raw_label": "Diabetes Education",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 70,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$70.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "DIALYSIS",
+      "benefit_type": "medical",
+      "category": "DIALYSIS",
+      "service_name": "Dialysis",
+      "canonical_key": "dialysis",
+      "raw_label": "Dialysis",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 650,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$650.00 Copay after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 650,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier2 \"$650.00 Copay after deductible\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "DURABLE_MEDICAL_EQUIPMENT",
+      "benefit_type": "medical",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "service_name": "Durable Medical Equipment",
+      "canonical_key": "durable_medical_equipment",
+      "raw_label": "Durable Medical Equipment",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 100,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$100.00 Copay after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "EMERGENCY_ROOM_SERVICES",
+      "benefit_type": "medical",
+      "category": "EMERGENCY_CARE",
+      "service_name": "Emergency Room Services",
+      "canonical_key": "emergency_room",
+      "raw_label": "Emergency Room Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 500,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$500.00 Copay after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 500,
+              "applies_to_deductible": true,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"$500.00 Copay after deductible\"; CoinsOutofNet \"Not Applicable\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "EMERGENCY_TRANSPORTATION_AMBULANCE",
+      "benefit_type": "medical",
+      "category": "EMERGENCY_CARE",
+      "service_name": "Emergency Transportation/Ambulance",
+      "canonical_key": "ambulance",
+      "raw_label": "Emergency Transportation/Ambulance",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 200,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$200.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 200,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"$200.00\"; CoinsOutofNet \"Not Applicable\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "EYE_GLASSES_FOR_CHILDREN",
+      "benefit_type": "medical",
+      "category": "VISION_PEDIATRIC",
+      "service_name": "Eye Glasses for Children",
+      "canonical_key": "pediatric_glasses",
+      "raw_label": "Eye Glasses for Children",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"No Charge\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "items",
+          "value": 1,
+          "period": "per_benefit_period"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "benefit_id": "GENERIC_DRUGS",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Generic Drugs",
+      "canonical_key": "generic_drugs",
+      "raw_label": "Generic Drugs",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 30,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$30.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "HABILITATION_SERVICES",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Habilitation Services",
+      "canonical_key": "habilitative_services",
+      "raw_label": "Habilitation Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 70,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$70.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 70,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier2 \"$70.00 Copay after deductible\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 35,
+          "period": "per_benefit_period"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Supplementing with the federal definition of habilitative services: Health care services that help a person keep, learn, or improve skills and functioning for daily living. Examples include therapy for a child who is not walking or talking at the expected age. These services may include physical and occupational therapy, speech-language pathology and other services for people with disabilities in a variety of inpatient and/or outpatient settings."
+        }
+      ]
+    },
+    {
+      "benefit_id": "HEARING_AIDS",
+      "benefit_type": "medical",
+      "category": "HEARING",
+      "service_name": "Hearing Aids",
+      "canonical_key": "hearing_aids",
+      "raw_label": "Hearing Aids",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "IN2",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "HOME_HEALTH_CARE_SERVICES",
+      "benefit_type": "medical",
+      "category": "HOME_HEALTH",
+      "service_name": "Home Health Care Services",
+      "canonical_key": "home_health_care",
+      "raw_label": "Home Health Care Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 70,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$70.00 Copay after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 20,
+          "period": "per_benefit_period"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "benefit_id": "HOSPICE_SERVICES",
+      "benefit_type": "medical",
+      "category": "HOME_HEALTH",
+      "service_name": "Hospice Services",
+      "canonical_key": "hospice_care",
+      "raw_label": "Hospice Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"No Charge after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "IMAGING_CT_PET_SCANS_MRIS",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Imaging (CT/PET Scans, MRIs)",
+      "canonical_key": "imaging_advanced",
+      "raw_label": "Imaging (CT/PET Scans, MRIs)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 250,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$250.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 500,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier2 \"$500.00\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "INFERTILITY_TREATMENT",
+      "benefit_type": "medical",
+      "category": "INFERTILITY",
+      "service_name": "Infertility Treatment",
+      "canonical_key": "infertility_treatment",
+      "raw_label": "Infertility Treatment",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "IN2",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "INPATIENT_HOSPITAL_SERVICES_E_G_HOSPITAL_STAY",
+      "benefit_type": "medical",
+      "category": "HOSPITAL_SERVICES",
+      "service_name": "Inpatient Hospital Services (e.g., Hospital Stay)",
+      "canonical_key": "inpatient_hospital",
+      "raw_label": "Inpatient Hospital Services (e.g., Hospital Stay)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 850,
+              "basis": "per_stay",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$850.00 Copay per Stay after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "INPATIENT_PHYSICIAN_AND_SURGICAL_SERVICES",
+      "benefit_type": "medical",
+      "category": "HOSPITAL_SERVICES",
+      "service_name": "Inpatient Physician and Surgical Services",
+      "canonical_key": "inpatient_hospital_professional",
+      "raw_label": "Inpatient Physician and Surgical Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"No Charge after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "LABORATORY_OUTPATIENT_AND_PROFESSIONAL_SERVICES",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "Laboratory Outpatient and Professional Services",
+      "canonical_key": "diagnostic_lab",
+      "raw_label": "Laboratory Outpatient and Professional Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 10,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$10.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "MENTAL_BEHAVIORAL_HEALTH_INPATIENT_SERVICES",
+      "benefit_type": "medical",
+      "category": "BEHAVIORAL_HEALTH",
+      "service_name": "Mental/Behavioral Health Inpatient Services",
+      "canonical_key": "mental_health_inpatient",
+      "raw_label": "Mental/Behavioral Health Inpatient Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 850,
+              "basis": "per_stay",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$850.00 Copay per Stay after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "MENTAL_BEHAVIORAL_HEALTH_OUTPATIENT_SERVICES",
+      "benefit_type": "medical",
+      "category": "BEHAVIORAL_HEALTH",
+      "service_name": "Mental/Behavioral Health Outpatient Services",
+      "canonical_key": "mental_health_outpatient",
+      "raw_label": "Mental/Behavioral Health Outpatient Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 35,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$35.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "The cost sharing applies to outpatient office visits only. All other outpatient services [e.g., Detox, Neuropsychology, Psychological Testing] may be subject to additional cost sharing."
+        }
+      ]
+    },
+    {
+      "benefit_id": "NON_PREFERRED_BRAND_DRUGS",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Non-Preferred Brand Drugs",
+      "canonical_key": "nonpreferred_brand_drugs",
+      "raw_label": "Non-Preferred Brand Drugs",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 120,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$120.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "NUTRITIONAL_COUNSELING",
+      "benefit_type": "medical",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Nutritional Counseling",
+      "canonical_key": "nutritional_counseling",
+      "raw_label": "Nutritional Counseling",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 70,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$70.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 3,
+          "period": "per_benefit_period"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Diabetes coverage includes 'nutrition counseling'; home health services include 'nutritional guidance.'"
+        }
+      ]
+    },
+    {
+      "benefit_id": "OTHER_PRACTITIONER_OFFICE_VISIT_NURSE_PHYSICIAN_ASSISTANT",
+      "benefit_type": "medical",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Other Practitioner Office Visit (Nurse, Physician Assistant)",
+      "canonical_key": "other_practitioner_office_visit",
+      "raw_label": "Other Practitioner Office Visit (Nurse, Physician Assistant)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 35,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$35.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "OUTPATIENT_FACILITY_FEE_E_G_AMBULATORY_SURGERY_CENTER",
+      "benefit_type": "medical",
+      "category": "SURGICAL_SERVICES",
+      "service_name": "Outpatient Facility Fee (e.g., Ambulatory Surgery Center)",
+      "canonical_key": "outpatient_surgery_facility",
+      "raw_label": "Outpatient Facility Fee (e.g., Ambulatory Surgery Center)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 650,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$650.00 Copay after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 650,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier2 \"$650.00 Copay after deductible\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "OUTPATIENT_REHABILITATION_SERVICES",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Outpatient Rehabilitation Services",
+      "canonical_key": "rehabilitation_services",
+      "raw_label": "Outpatient Rehabilitation Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 70,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$70.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 70,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier2 \"$70.00 Copay after deductible\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 35,
+          "period": "per_benefit_period"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Combined limit for all outpatient therapy plus chiropractic."
+        }
+      ]
+    },
+    {
+      "benefit_id": "OUTPATIENT_SURGERY_PHYSICIAN_SURGICAL_SERVICES",
+      "benefit_type": "medical",
+      "category": "SURGICAL_SERVICES",
+      "service_name": "Outpatient Surgery Physician/Surgical Services",
+      "canonical_key": "outpatient_surgery_professional",
+      "raw_label": "Outpatient Surgery Physician/Surgical Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"No Charge after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "PREFERRED_BRAND_DRUGS",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Preferred Brand Drugs",
+      "canonical_key": "preferred_brand_drugs",
+      "raw_label": "Preferred Brand Drugs",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 60,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$60.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "PREVENTIVE_CARE_SCREENING_IMMUNIZATION",
+      "benefit_type": "medical",
+      "category": "PREVENTIVE_CARE",
+      "service_name": "Preventive Care/Screening/Immunization",
+      "canonical_key": "preventive_care",
+      "raw_label": "Preventive Care/Screening/Immunization",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"No Charge\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Preventive colonoscopy (age 50+) 1 every 10 years. High risk colonoscopy - 1 every 2 years."
+        }
+      ]
+    },
+    {
+      "benefit_id": "PRIMARY_CARE_VISIT_TO_TREAT_AN_INJURY_OR_ILLNESS",
+      "benefit_type": "medical",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Primary Care Visit to Treat an Injury or Illness",
+      "canonical_key": "primary_care",
+      "raw_label": "Primary Care Visit to Treat an Injury or Illness",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 35,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$35.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "PROSTHETIC_DEVICES",
+      "benefit_type": "medical",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "service_name": "Prosthetic Devices",
+      "canonical_key": "dme_prosthetics",
+      "raw_label": "Prosthetic Devices",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 100,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$100.00 Copay after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "RADIATION",
+      "benefit_type": "medical",
+      "category": "RADIATION_THERAPY",
+      "service_name": "Radiation",
+      "canonical_key": "radiation_therapy",
+      "raw_label": "Radiation",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 650,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$650.00 Copay after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 650,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier2 \"$650.00 Copay after deductible\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "REHABILITATIVE_OCCUPATIONAL_AND_REHABILITATIVE_PHYSICAL_THERAPY",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Rehabilitative Occupational and Rehabilitative Physical Therapy",
+      "canonical_key": "physical_and_occupational_therapy",
+      "raw_label": "Rehabilitative Occupational and Rehabilitative Physical Therapy",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 70,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$70.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 70,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier2 \"$70.00 Copay after deductible\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 35,
+          "period": "per_benefit_period"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Combined limit for all outpatient therapy plus chiropractic."
+        }
+      ]
+    },
+    {
+      "benefit_id": "REHABILITATIVE_SPEECH_THERAPY",
+      "benefit_type": "medical",
+      "category": "REHABILITATION",
+      "service_name": "Rehabilitative Speech Therapy",
+      "canonical_key": "speech_therapy",
+      "raw_label": "Rehabilitative Speech Therapy",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 70,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$70.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 70,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier2 \"$70.00 Copay after deductible\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 35,
+          "period": "per_benefit_period"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "explanation",
+          "description": "Combined limit for all outpatient therapy plus chiropractic."
+        }
+      ]
+    },
+    {
+      "benefit_id": "ROUTINE_EYE_EXAM_ADULT",
+      "benefit_type": "medical",
+      "category": "VISION",
+      "service_name": "Routine Eye Exam (Adult)",
+      "canonical_key": "routine_eye_exam",
+      "raw_label": "Routine Eye Exam (Adult)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "IN2",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "ROUTINE_EYE_EXAM_FOR_CHILDREN",
+      "benefit_type": "medical",
+      "category": "VISION_PEDIATRIC",
+      "service_name": "Routine Eye Exam for Children",
+      "canonical_key": "pediatric_eye_exam",
+      "raw_label": "Routine Eye Exam for Children",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"No Charge\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "exams",
+          "value": 1,
+          "period": "per_benefit_period"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "benefit_id": "ROUTINE_FOOT_CARE",
+      "benefit_type": "medical",
+      "category": "PODIATRY",
+      "service_name": "Routine Foot Care",
+      "canonical_key": "routine_foot_care",
+      "raw_label": "Routine Foot Care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "IN2",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "SKILLED_NURSING_FACILITY",
+      "benefit_type": "medical",
+      "category": "SKILLED_NURSING",
+      "service_name": "Skilled Nursing Facility",
+      "canonical_key": "skilled_nursing_facility",
+      "raw_label": "Skilled Nursing Facility",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 250,
+              "basis": "per_day",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$250.00 Copay per Day after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [
+        {
+          "type": "days",
+          "value": 60,
+          "period": "per_benefit_period"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "benefit_id": "SPECIALIST_VISIT",
+      "benefit_type": "medical",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Specialist Visit",
+      "canonical_key": "specialist",
+      "raw_label": "Specialist Visit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 70,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$70.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "SPECIALTY_DRUGS",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Specialty Drugs",
+      "canonical_key": "specialty_drugs",
+      "raw_label": "Specialty Drugs",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.5,
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"Not Applicable\"; CoinsInnTier1 \"50.00% Coinsurance after deductible\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "SUBSTANCE_ABUSE_DISORDER_INPATIENT_SERVICES",
+      "benefit_type": "medical",
+      "category": "BEHAVIORAL_HEALTH",
+      "service_name": "Substance Abuse Disorder Inpatient Services",
+      "canonical_key": "substance_use_inpatient",
+      "raw_label": "Substance Abuse Disorder Inpatient Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 850,
+              "basis": "per_stay",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$850.00 Copay per Stay after deductible\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "SUBSTANCE_ABUSE_DISORDER_OUTPATIENT_SERVICES",
+      "benefit_type": "medical",
+      "category": "BEHAVIORAL_HEALTH",
+      "service_name": "Substance Abuse Disorder Outpatient Services",
+      "canonical_key": "substance_use_outpatient",
+      "raw_label": "Substance Abuse Disorder Outpatient Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 35,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$35.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "URGENT_CARE_CENTERS_OR_FACILITIES",
+      "benefit_type": "medical",
+      "category": "URGENT_CARE",
+      "service_name": "Urgent Care Centers or Facilities",
+      "canonical_key": "urgent_care",
+      "raw_label": "Urgent Care Centers or Facilities",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 125,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$125.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 250,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier2 \"$250.00\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 250,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"$250.00\"; CoinsOutofNet \"Not Applicable\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "WELL_BABY_VISITS_AND_CARE",
+      "benefit_type": "medical",
+      "category": "PREVENTIVE_CARE",
+      "service_name": "Well Baby Visits and Care",
+      "canonical_key": "well_child_visit",
+      "raw_label": "Well Baby Visits and Care",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"No Charge\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [],
+          "notes": "PUF CopayInnTier2 \"Not Applicable\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
+      "benefit_id": "X_RAYS_AND_DIAGNOSTIC_IMAGING",
+      "benefit_type": "medical",
+      "category": "DIAGNOSTIC_SERVICES",
+      "service_name": "X-rays and Diagnostic Imaging",
+      "canonical_key": "imaging_standard",
+      "raw_label": "X-rays and Diagnostic Imaging",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 75,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier1 \"$75.00\"; CoinsInnTier1 \"Not Applicable\""
+        },
+        {
+          "tier_id": "IN2",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 150,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "PUF CopayInnTier2 \"$150.00\"; CoinsInnTier2 \"Not Applicable\""
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 1,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "PUF CopayOutofNet \"Not Applicable\"; CoinsOutofNet \"100.00%\""
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    }
+  ],
+  "source_references": [
+    {
+      "excerpt": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05. HIOS plan ID 19898FL0340001-01 (the Benefit Plan Standard v1.1.0 schema has no identifier field, so the ID is recorded here). SBC URL from the Plan Attributes PUF: https://apps.avmed.com/Public/OHBRFileManager/DownloadFile.aspx?filePath=%2Fpresales%2FAvMed%2F2026%2FSBC%2FIFP%2FAVINHG16510101260625.pdf."
+    },
+    {
+      "excerpt": "Plan Attributes PUF values with no Benefit Plan Standard v1.1.0 field, verbatim: StandardComponentId \"19898FL0340001\"; CSRVariationType \"Standard Gold On Exchange Plan\"; PlanVariantMarketingName \"AvMed Entrust Gold 125 (2026)\"; MetalLevel \"Gold\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"Yes\"; FirstTierUtilization \"40%\"; SecondTierUtilization \"60%\"; NetworkId \"FLN001\"; ServiceAreaId \"FLS001\"; FormularyId \"FLF001\"; NationalNetwork \"No\"; IsReferralRequiredForSpecialist \"Yes\"; SpecialistRequiringReferral \"All except OB/Gyn, Chiropractor, and Podiatrist for diabetic foot care.\"; OutOfCountryCoverage \"Yes\"; OutOfServiceAreaCoverage \"Yes\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; IssuerActuarialValue \"79.04%\"; FormularyURL \"https://shc-p-001.sitecorecontenthub.cloud/api/public/content/2026-Individual-and-Family-Plan-Formulary-Non-Standard-pdf\"; PlanBrochure \"https://shc-p-001.sitecorecontenthub.cloud/api/public/content/2026-Avmed-Buyers-Guide-pdf\"."
+    },
+    {
+      "excerpt": "Accumulators from the Plan Attributes PUF. Deductibles: MedicalDrugDeductiblesIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Out-of-pocket maximums: MedicalDrugMaximumOutofPocketIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Every non-blank accumulator cell, verbatim: TEHBInnTier1IndividualMOOP \"$5,850\"; TEHBInnTier1FamilyPerPersonMOOP \"$5850 per person\"; TEHBInnTier1FamilyPerGroupMOOP \"$11700 per group\"; TEHBInnTier2IndividualMOOP \"$5,850\"; TEHBInnTier2FamilyPerPersonMOOP \"$5850 per person\"; TEHBInnTier2FamilyPerGroupMOOP \"$11700 per group\"; TEHBOutOfNetIndividualMOOP \"Not Applicable\"; TEHBOutOfNetFamilyPerPersonMOOP \"per person not applicable\"; TEHBOutOfNetFamilyPerGroupMOOP \"per group not applicable\"; TEHBCombInnOonIndividualMOOP \"Not Applicable\"; TEHBCombInnOonFamilyPerPersonMOOP \"per person not applicable\"; TEHBCombInnOonFamilyPerGroupMOOP \"per group not applicable\"; TEHBDedInnTier1Individual \"$2,000\"; TEHBDedInnTier1FamilyPerPerson \"$2000 per person\"; TEHBDedInnTier1FamilyPerGroup \"$4000 per group\"; TEHBDedInnTier1Coinsurance \"50.00%\"; TEHBDedInnTier2Individual \"$2,000\"; TEHBDedInnTier2FamilyPerPerson \"$2000 per person\"; TEHBDedInnTier2FamilyPerGroup \"$4000 per group\"; TEHBDedInnTier2Coinsurance \"50.00%\"; TEHBDedOutOfNetIndividual \"Not Applicable\"; TEHBDedOutOfNetFamilyPerPerson \"per person not applicable\"; TEHBDedOutOfNetFamilyPerGroup \"per group not applicable\"; TEHBDedCombInnOonIndividual \"Not Applicable\"; TEHBDedCombInnOonFamilyPerPerson \"per person not applicable\"; TEHBDedCombInnOonFamilyPerGroup \"per group not applicable\"."
+    },
+    {
+      "excerpt": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (24): Abortion for Which Public Funding is Prohibited (Not Covered); Accidental Dental (Covered); Basic Dental Care - Adult (Not Covered); Basic Dental Care - Child (Covered); Bone Marrow Transplant (Covered); Congenital Anomaly, including Cleft Lip/Palate (Covered); Cosmetic Surgery (Not Covered); Dental Anesthesia (Covered); Diabetes Care Management (Covered); Infusion Therapy (Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Major Dental Care - Adult (Not Covered); Major Dental Care - Child (Covered); Nutrition/Formulas (Covered); Orthodontia - Adult (Not Covered); Orthodontia - Child (Covered); Osteoporosis (Covered); Prenatal and Postnatal Care (Covered); Private-Duty Nursing (Not Covered); Reconstructive Surgery (Covered); Routine Dental Services (Adult) (Not Covered); Transplant (Covered); Treatment for Temporomandibular Joint Disorders (Covered); Weight Loss Programs (Not Covered)."
+    }
+  ],
+  "schema_version": "1.1.0"
+}
