@@ -107,7 +107,7 @@ test('crosswalk: every column it names is in the header of its file', () => {
   const columns = (o, out = []) => {
     for (const [k, v] of Object.entries(o)) {
       if (['benefit_id', 'service_name', 'pbp_code', 'pbp_label', 'file', 'canonical_key', 'category', 'benefit_type', 'note', 'prefix',
-        'handler', 'shared', 'shared_limit_id', 'when', 'value', 'kind', 'type', 'when_not_chosen', 'basis', 'basis_codes'].includes(k)) continue;
+        'handler', 'shared', 'shared_limit_id', 'when', 'value', 'kind', 'type', 'when_not_chosen', 'basis', 'basis_codes', 'code', 'section_c', 'section', 'label', 'source', 'covers', 'codes'].includes(k)) continue;
       if (typeof v === 'string') out.push(v);
       else if (v && typeof v === 'object') columns(v, out);
     }
@@ -270,7 +270,7 @@ test('sob-check: H2406-013-000 golden file against its Summary of Benefits, 0 di
   const doc = readJson(path.join(EXAMPLES_DIR, (await built()).find((x) => x.g.plan === 'H2406-013-000').file));
   const expectations = readJson(path.join(SOB_CHECKS, 'H2406-013-000.json'));
   const { counts, results } = runChecks(doc, expectations);
-  assert.deepStrictEqual(counts, { MATCH: 53, READING: 8, DIFFERENCE: 0 });
+  assert.deepStrictEqual(counts, { MATCH: 68, READING: 10, DIFFERENCE: 0 });
   for (const r of results) if (r.status === 'READING') assert.ok(r.check.note, `${r.check.item}: a READING row needs a note`);
   doc.benefits[1].network_cost_shares[1].cost_shares[0].amount = 90;
   const changed = runChecks(doc, expectations);

@@ -1242,11 +1242,476 @@
           "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b18b_maxenr_yn \"2\"."
         }
       ]
+    },
+    {
+      "benefit_id": "MENTAL_HEALTH_INDIVIDUAL",
+      "benefit_type": "behavioral_health",
+      "coverage_basis": "medicare_covered",
+      "category": "BEHAVIORAL_HEALTH",
+      "service_name": "Mental health specialty services, individual sessions",
+      "canonical_key": "mental_health_office_visit",
+      "raw_label": "7e1: Individual Sessions for Mental Health Specialty Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 10,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b7_health_prof.txt cells: pbp_b7e_copay_yn \"1\", pbp_b7e_copay_ehc \"11\", pbp_b7e_copay_mcis_minamt \"10.00\", pbp_b7e_copay_mcis_maxamt \"10.00\", pbp_b7e_coins_yn \"2\", pbp_b7e_ded_yn \"2\"."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b7e_auth_yn \"1\")."
+        },
+        {
+          "type": "referral",
+          "description": "Referral required (pbp_b7e_refer_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 7e1: Individual Sessions for Mental Health Specialty Services (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b7e_maxenr_yn \"2\"; pbp_b7e_copay_mcgs_minamt \"10.00\"; pbp_b7e_copay_mcgs_maxamt \"10.00\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "HOME_HEALTH",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "HOME_HEALTH",
+      "service_name": "Home health services",
+      "canonical_key": "home_health_care",
+      "raw_label": "6: Home Health Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b6_home_health.txt cells: pbp_b6_copay_yn \"1\", pbp_b6_copay_mc_amt_min \"0.00\", pbp_b6_copay_mc_amt_max \"0.00\", pbp_b6_coins_yn \"2\", pbp_b6_ded_yn \"2\"."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b6_auth_yn \"1\")."
+        },
+        {
+          "type": "referral",
+          "description": "Referral required (pbp_b6_refer_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 6: Home Health Services (pbp_b6_home_health.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b6_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "SKILLED_NURSING_FACILITY",
+      "benefit_type": "medical",
+      "coverage_basis": "medicare_covered",
+      "category": "SKILLED_NURSING",
+      "service_name": "Skilled nursing facility",
+      "canonical_key": "skilled_nursing_facility",
+      "raw_label": "2: Skilled Nursing Facility (SNF)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "basis": "per_day",
+              "unit_range": {
+                "from": 1,
+                "to": 20
+              },
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            },
+            {
+              "type": "copay",
+              "sequence": 2,
+              "amount": 160,
+              "basis": "per_day",
+              "unit_range": {
+                "from": 21,
+                "to": 100
+              },
+              "applies_to_deductible": false,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "pbp_b2_snf.txt cells: pbp_b2_copay_yn \"1\", pbp_b2_copay_mcs_int_num_t1 \"3\", pbp_b2_copay_mcs_amt_int1_t1 \"0.00\", pbp_b2_copay_mcs_bgnd_int1_t1 \"1\", pbp_b2_copay_mcs_endd_int1_t1 \"20\", pbp_b2_copay_mcs_amt_int2_t1 \"160.00\", pbp_b2_copay_mcs_bgnd_int2_t1 \"21\", pbp_b2_copay_mcs_endd_int2_t1 \"100\"."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b2_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 2: Skilled Nursing Facility (SNF) (pbp_b2_snf.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b2_maxenr_yn \"2\"; pbp_b2_hosp_ben_period \"1\"; pbp_b2_bendesc_yn \"1\"; pbp_b2_bendesc_pr_hosp_yn \"1\"; pbp_b2_bendesc_pr_hosp_num \"1\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "DENTAL_CLEANING",
+      "benefit_type": "dental",
+      "coverage_basis": "supplemental_mandatory",
+      "category": "DENTAL",
+      "service_name": "Dental cleaning (prophylaxis)",
+      "canonical_key": "dental_cleaning",
+      "raw_label": "16b4: Prophylaxis (Cleaning)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_b16_dental.txt cells: pbp_b16b_copay_pc_yn \"1\", pbp_b16b_copay_pc_amt_min \"0.00\", pbp_b16b_copay_pc_amt_max \"0.00\", pbp_b16b_coins_pc_yn \"2\", pbp_b16b_ded_pv_yn \"2\"."
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 2,
+          "period": "per_year",
+          "raw_text": "pbp_b16b_bendesc_pc_lim \"2\", pbp_b16b_bendesc_pc_num \"2\", pbp_b16b_bendesc_pc_per \"3\" (Every year)."
+        },
+        {
+          "type": "dollars",
+          "value": 1500,
+          "period": "per_year",
+          "shared_limit_id": "PBP_16B_MAXPLAN",
+          "raw_text": "Maximum plan benefit coverage: pbp_b16b_maxplan_pv_yn \"1\", pbp_b16b_maxplan_pv_amt \"1500.00\", pbp_b16b_maxplan_pv_per \"3\" (Every year); pbp_b16c_maxplan_cmp_type \"1\": 16c comprehensive dental services are covered under this maximum; the columns cover 16b (all preventive dental services)."
+        }
+      ],
+      "conditions": [],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 16b4: Prophylaxis (Cleaning) (pbp_b16_dental.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b16b_maxplan_excl_csg_yn \"2\"; pbp_b16b_maxenr_pv_yn \"2\"; pbp_b16b_coins_ov_yn \"2\"; pbp_b16b_copay_ov_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "DENTAL_FILLINGS",
+      "benefit_type": "dental",
+      "coverage_basis": "supplemental_mandatory",
+      "category": "DENTAL",
+      "service_name": "Dental restorative services (fillings)",
+      "canonical_key": "dental_filling",
+      "raw_label": "16c1: Restorative Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_b16_dental.txt cells: pbp_b16c_copay_rs_yn \"1\", pbp_b16c_copay_rs_amt_min \"0.00\", pbp_b16c_copay_rs_amt_max \"0.00\", pbp_b16c_coins_rs_yn \"2\", pbp_b16c_ded_cmp_yn \"2\"."
+        }
+      ],
+      "limits": [
+        {
+          "type": "visits",
+          "value": 4,
+          "period": null,
+          "raw_text": "pbp_b16c_bendesc_rs_lim \"2\", pbp_b16c_bendesc_rs_num \"4\", pbp_b16c_bendesc_rs_per \"6\", pbp_b16c_bendesc_rs_desc \"core buildup/prefab post/core, crown 1/tooth/5 yrs, crown recement 1/2 yrs, filling 1 per tooth per surface/2 yrs\" (Other, Describe)."
+        },
+        {
+          "type": "dollars",
+          "value": 1500,
+          "period": "per_year",
+          "shared_limit_id": "PBP_16B_MAXPLAN",
+          "raw_text": "Maximum plan benefit coverage: pbp_b16b_maxplan_pv_yn \"1\", pbp_b16b_maxplan_pv_amt \"1500.00\", pbp_b16b_maxplan_pv_per \"3\" (Every year); pbp_b16c_maxplan_cmp_yn \"1\", pbp_b16c_maxplan_cmp_type \"1\" (Covered under Diagnostic and Preventive Dental (16b)), so the amount is the 16b maximum; the columns cover 16b preventive and 16c comprehensive dental services."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b16c_auth_rs_yn \"1\")."
+        },
+        {
+          "type": "referral",
+          "description": "Referral required (pbp_b16c_refer_rs_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 16c1: Restorative Services (pbp_b16_dental.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b16c_maxenr_cmp_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "EYEGLASSES",
+      "benefit_type": "vision",
+      "coverage_basis": "supplemental_mandatory",
+      "category": "VISION",
+      "service_name": "Eyeglasses (lenses and frames)",
+      "canonical_key": "eyeglasses",
+      "raw_label": "17b2: Eyeglasses (lenses and frames)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_b17_eye_exams_wear.txt cells: pbp_b17b_copay_yn \"1\", pbp_b17b_copay_ehc \"011100\", pbp_b17b_copay_amt_egs_min \"0.00\", pbp_b17b_copay_amt_egs_max \"0.00\", pbp_b17b_coins_yn \"2\", pbp_b17b_ded_nmc_yn \"2\"."
+        }
+      ],
+      "limits": [
+        {
+          "type": "dollars",
+          "value": 300,
+          "period": "per_year",
+          "raw_text": "Maximum plan benefit coverage: pbp_b17b_comb_maxplan_yn \"1\", pbp_b17b_comb_maxplan_amt \"300.00\", pbp_b17b_comb_maxplan_per \"3\" (Every year); pbp_b17b_maxplan_yn \"1\"; pbp_b17b_maxplan_type \"2\"; the columns cover all 17b eyewear (combined maximum)."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b17b_auth_yn \"1\")."
+        },
+        {
+          "type": "referral",
+          "description": "Referral required (pbp_b17b_refer_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 17b2: Eyeglasses (lenses and frames) (pbp_b17_eye_exams_wear.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b17b_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "OTC_ITEMS",
+      "benefit_type": "non_clinical",
+      "coverage_basis": "supplemental_mandatory",
+      "category": "OVER_THE_COUNTER",
+      "service_name": "Over-the-counter (OTC) items",
+      "canonical_key": "otc_allowance",
+      "raw_label": "13b: OTC Items",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_b13_other_services.txt cells: pbp_b13b_copay_yn \"1\", pbp_b13b_copay_amt_min \"0.00\", pbp_b13b_copay_amt_max \"0.00\", pbp_b13b_coins_yn \"2\", pbp_b13b_ded_yn \"2\"."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 13b: OTC Items (pbp_b13_other_services.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b13b_maxenr_yn \"2\"; pbp_b13b_nrt_yn \"1\"; pbp_b13b_nrt_attestation \"1\"; pbp_b13b_naloxone_yn \"1\"; pbp_b13b_cms_otc_list_yn \"2\"; pbp_b13b_mode \"01000\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "MEALS",
+      "benefit_type": "non_clinical",
+      "coverage_basis": "supplemental_mandatory",
+      "category": "MEALS",
+      "service_name": "Meal benefit",
+      "canonical_key": "meals",
+      "raw_label": "13c: Meal Benefit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_b13_other_services.txt cells: pbp_b13c_copay_yn \"1\", pbp_b13c_copay_amt_min \"0.00\", pbp_b13c_copay_amt_max \"0.00\", pbp_b13c_coins_yn \"2\", pbp_b13c_ded_yn \"2\"."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b13c_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 13c: Meal Benefit (pbp_b13_other_services.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b13c_meal_type_chk \"011\"; pbp_b13c_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "TRANSPORTATION",
+      "benefit_type": "non_clinical",
+      "coverage_basis": "supplemental_mandatory",
+      "category": "TRANSPORTATION",
+      "service_name": "Transportation services",
+      "canonical_key": "transportation",
+      "raw_label": "10b: Transportation Services",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_b10_amb_trans.txt cells: pbp_b10b_copay_yn \"1\", pbp_b10b_copay_amt_min \"0.00\", pbp_b10b_copay_amt_max \"0.00\", pbp_b10b_coins_yn \"2\", pbp_b10b_ded_yn \"2\"."
+        }
+      ],
+      "limits": [
+        {
+          "type": "trips",
+          "value": 50,
+          "period": "per_year",
+          "raw_text": "Plan Approved Health-related Location: pbp_b10b_bendesc_lim_pal \"2\", pbp_b10b_bendesc_amt_pal \"50\", pbp_b10b_bendesc_per_pal \"3\" (Every year); pbp_b10b_bendesc_tt_pal \"1\" (One-way)."
+        }
+      ],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b10b_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 10b: Transportation Services (pbp_b10_amb_trans.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b10b_bendesc_trn \"1\"; pbp_b10b_bendesc_mt_pal \"101010\"; pbp_b10b_bendesc_mt_pal_d \"Car, Wheelchair Access Vehicle\"; pbp_b10b_maxenr_yn \"2\"."
+        }
+      ]
+    },
+    {
+      "benefit_id": "FITNESS",
+      "benefit_type": "non_clinical",
+      "coverage_basis": "supplemental_mandatory",
+      "category": "FITNESS",
+      "service_name": "Fitness benefit",
+      "canonical_key": "fitness_benefit",
+      "raw_label": "14c4: Fitness Benefit",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": false
+            }
+          ],
+          "notes": "pbp_b14_preventive.txt cells: pbp_b14c_copay_yn \"1\", pbp_b14c_copay_ehc \"14c4;14c21;\", pbp_b14c_copay_mhc_min_amt \"0.00\", pbp_b14c_copay_mhc_max_amt \"0.00\", pbp_b14c_coins_yn \"2\", pbp_b14c_ded_yn \"2\"."
+        }
+      ],
+      "limits": [],
+      "conditions": [
+        {
+          "type": "authorization",
+          "description": "Authorization required (pbp_b14c_auth_yn \"1\")."
+        }
+      ],
+      "source_references": [
+        {
+          "excerpt": "PBP service category 14c4: Fitness Benefit (pbp_b14_preventive.txt), mapped by fhir/pbp-crosswalk.json."
+        },
+        {
+          "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b14c_bendesc_typ_mhc \"0100\"; pbp_b14c_maxenr_yn \"2\"."
+        }
+      ]
     }
   ],
   "source_references": [
     {
-      "excerpt": "CMS Plan Benefit Package (PBP) Benefits, contract year 2027, release \"PBP Benefits-2027\" (https://www.cms.gov/files/zip/pbp-benefits-2027.zip), downloaded 2026-10-06. Files read: pbp_Section_A.txt, pbp_Section_C.txt, pbp_Section_C_OON.txt, pbp_Section_C_POS.txt, pbp_Section_D.txt, pbp_b10_amb_trans.txt, pbp_b13_other_services.txt, pbp_b17_eye_exams_wear.txt, pbp_b18_hearing_exams_aids.txt, pbp_b1a_inpat_hosp.txt, pbp_b1b_inpat_hosp.txt, pbp_b2_snf.txt, pbp_b4_emerg_urgent.txt, pbp_b7_health_prof.txt, pbp_b8_clin_diag_ther.txt, pbp_b9_outpat_hosp.txt, PlanArea.txt, PlanRegionArea.txt. PBP key: pbp_a_hnumber \"H1036\", pbp_a_plan_identifier \"068\", segment_id \"0\" (written padded to 3 digits in plan_identifiers)."
+      "excerpt": "CMS Plan Benefit Package (PBP) Benefits, contract year 2027, release \"PBP Benefits-2027\" (https://www.cms.gov/files/zip/pbp-benefits-2027.zip), downloaded 2026-10-06. Files read: pbp_Section_A.txt, pbp_Section_C.txt, pbp_Section_C_OON.txt, pbp_Section_C_POS.txt, pbp_Section_D.txt, pbp_b10_amb_trans.txt, pbp_b13_other_services.txt, pbp_b14_preventive.txt, pbp_b16_dental.txt, pbp_b17_eye_exams_wear.txt, pbp_b18_hearing_exams_aids.txt, pbp_b1a_inpat_hosp.txt, pbp_b1b_inpat_hosp.txt, pbp_b2_snf.txt, pbp_b4_emerg_urgent.txt, pbp_b6_home_health.txt, pbp_b7_health_prof.txt, pbp_b8_clin_diag_ther.txt, pbp_b9_outpat_hosp.txt, PlanArea.txt, PlanRegionArea.txt. PBP key: pbp_a_hnumber \"H1036\", pbp_a_plan_identifier \"068\", segment_id \"0\" (written padded to 3 digits in plan_identifiers)."
     },
     {
       "excerpt": "Plan type: pbp_a_plan_type \"01\" (HMO), written as plan_type \"HMO\"."
@@ -1267,7 +1732,7 @@
       "excerpt": "Every non-blank Section D deductible and out-of-pocket cell, verbatim, in file order: pbp_d_inn_deduct_yn \"2\"; pbp_d_out_pocket_amt_yn \"1\"; pbp_d_out_pocket_amt_type \"1\"; pbp_d_out_pocket_amt \"3300.00\"; pbp_d_inn_max_enr_oopc_bens \"11\"; pbp_d_inn_max_enr_m_yn \"1\"; pbp_d_inn_max_enr_m_cat_ex \"1a;1b;2;3-1;3-2;3-3;3-4;4a;4b;5a;5b;6;7a;7b;7c;7d;7e1;7e2;7f;7g;7h1;7h2;7i;7j;7k;8a1;8a2;8b1;8b2;8b3;9a1;9a2;9b;9c1;9c2;9d;10a1;10a2;11a;11b1;11b2;11c1;11c2;11c3;12;14a;14d;14e1;14e2;14e4;14e5;15-1-I;15-2;15-3;16a;17a;17b;18a;\"; pbp_d_inn_max_enr_nm_yn \"2\"; pbp_d_inn_max_enr_nm_cat_ex \"4c1;4c2;4c3;\"."
     },
     {
-      "excerpt": "Benefits: the 30 service categories in fhir/pbp-crosswalk.json (the workgroup MVP), 27 written. Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8)."
+      "excerpt": "Benefits: the 40 service categories in fhir/pbp-crosswalk.json (the workgroup MVP), 37 written. Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8)."
     }
   ],
   "schema_version": "1.2.0"

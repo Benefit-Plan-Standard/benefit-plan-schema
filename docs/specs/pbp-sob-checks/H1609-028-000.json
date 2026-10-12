@@ -260,6 +260,200 @@
       "path": "/benefits/26/network_cost_shares",
       "expected_reading": [{ "tier_id": "IN", "covered": true }],
       "note": "No POS group lists 18b1, and pbp_c_pos_nmc_bendesc_subcats leaves it out; no POS row is written (spec 5.4). Question O1 (section 7)."
+    },
+    {
+      "item": "Outpatient mental health therapy, individual sessions, in network",
+      "page": 6,
+      "printed": "$35 copay for individual sessions",
+      "expected": [{ "type": "copay", "amount": 35 }],
+      "path": "/benefits/27/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient mental health therapy, individual sessions, out of network",
+      "page": 6,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "POS", "covered": false }],
+      "path": "/benefits/27/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }],
+      "note": "No pbp_Section_C_POS group lists 7e1, and pbp_c_pos_mc_bendesc_subcats leaves it out; no POS row is written (spec 5.4). Question O1 (section 7)."
+    },
+    {
+      "item": "Mental health services, prior authorization",
+      "page": 6,
+      "printed": "Your provider may need approval from us before we cover these services. This is called prior authorization or precertification.",
+      "expected": [{ "type": "authorization" }],
+      "path": "/benefits/27/conditions"
+    },
+    {
+      "item": "SNF care, in network",
+      "page": 6,
+      "printed": "$0 per day, days 1-20; $221 per day, days 21-100",
+      "expected": [{ "type": "copay", "amount": 0, "basis": "per_day", "unit_range": { "from": 1, "to": 20 } }, { "type": "copay", "amount": 221, "basis": "per_day", "unit_range": { "from": 21, "to": 100 } }],
+      "path": "/benefits/29/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "SNF care, out of network",
+      "page": 6,
+      "printed": "50% per stay after your plan deductible is met",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "basis": "per_stay", "applies_to_deductible": true }],
+      "path": "/benefits/29/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "SNF care, prior authorization",
+      "page": 6,
+      "printed": "Your provider may need approval from us before we cover these services. This is called prior authorization or precertification.",
+      "expected": [{ "type": "authorization" }],
+      "path": "/benefits/29/conditions"
+    },
+    {
+      "item": "SNF care, up to 100 days per benefit period",
+      "page": 6,
+      "printed": "Our plan covers up to 100 days per benefit period.",
+      "expected": [{ "type": "days", "value": 100, "period": "per_benefit_period" }],
+      "path": "/benefits/29/limits",
+      "expected_reading": [],
+      "note": "The 100 days are the Medicare-covered SNF benefit; pbp_b2_snf.txt has no column for them (only the day intervals of the cost share, which end at day 100), so no limit is written."
+    },
+    {
+      "item": "Home health care, in network",
+      "page": 11,
+      "printed": "$0 copay for Medicare-covered home health care services",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/28/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Home health care, out of network",
+      "page": 11,
+      "printed": "50% coinsurance for Medicare-covered home health care services after your plan deductible is met",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/28/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Home health care, prior authorization",
+      "page": 11,
+      "printed": "Your provider may need approval from us before we cover these services. This is called prior authorization or precertification.",
+      "expected": [{ "type": "authorization" }],
+      "path": "/benefits/28/conditions"
+    },
+    {
+      "item": "Dental services (non-Medicare covered), cleanings, in network",
+      "page": 5,
+      "printed": "$0 copay for covered services ... Covered services include oral exams, cleanings, fillings, extractions, crowns, dentures, and more.",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/30/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Dental services (non-Medicare covered), fillings, in network",
+      "page": 5,
+      "printed": "$0 copay for covered services ... Covered services include oral exams, cleanings, fillings, extractions, crowns, dentures, and more.",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/31/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Dental services, annual allowance of $1,000, cleanings",
+      "page": 5,
+      "printed": "You get an annual benefit amount (allowance) of $1,000 for covered services.",
+      "expected": { "type": "dollars", "value": 1000, "period": "per_year", "shared_limit_id": "PBP_16B_MAXPLAN" },
+      "path": "/benefits/30/limits/1"
+    },
+    {
+      "item": "Dental services, annual allowance of $1,000, fillings (the same allowance)",
+      "page": 5,
+      "printed": "You get an annual benefit amount (allowance) of $1,000 for covered services.",
+      "expected": { "type": "dollars", "value": 1000, "period": "per_year", "shared_limit_id": "PBP_16B_MAXPLAN" },
+      "path": "/benefits/31/limits/1"
+    },
+    {
+      "item": "Dental services, out of network",
+      "page": 5,
+      "printed": "You must use an in-network provider for your dental services to be covered.",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "POS", "covered": false }],
+      "path": "/benefits/30/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }],
+      "note": "No pbp_Section_C_POS group lists 16b4, and pbp_c_pos_nmc_bendesc_subcats leaves it out; no POS row is written (spec 5.4). Question O1 (section 7)."
+    },
+    {
+      "item": "Dental services, prior authorization, fillings",
+      "page": 5,
+      "printed": "Your provider may need approval from us before we cover these services. This is called prior authorization or precertification.",
+      "expected": [{ "type": "authorization" }],
+      "path": "/benefits/31/conditions"
+    },
+    {
+      "item": "Dental services, prior authorization, cleanings",
+      "page": 5,
+      "printed": "Your provider may need approval from us before we cover these services. This is called prior authorization or precertification.",
+      "expected": [{ "type": "authorization" }],
+      "path": "/benefits/30/conditions",
+      "expected_reading": [],
+      "note": "pbp_b16b_auth_pc_yn \"2\": the file requires no authorization for cleanings; the page's sentence covers the dental section as a whole (pbp_b16c_auth_rs_yn \"1\" for restorative services)."
+    },
+    {
+      "item": "Contacts and eyeglasses, eyeglasses at no cost, in network",
+      "page": 6,
+      "printed": "Eyeglasses: Up to two pairs every year from the iCare \"covered in full\" eyewear collection at no cost",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/32/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Contacts and eyeglasses, up to two pairs every year",
+      "page": 6,
+      "printed": "Eyeglasses: Up to two pairs every year",
+      "expected": { "type": "pairs_of_eyeglasses", "value": 2, "period": "per_year" },
+      "path": "/benefits/32/limits/0"
+    },
+    {
+      "item": "Contacts and eyeglasses, annual allowance of $100",
+      "page": 6,
+      "printed": "An annual benefit amount (allowance) of $100 for prescription eyewear including contact lenses or eyeglasses (including lenses and frames)",
+      "expected": { "type": "dollars", "value": 100, "period": "per_year" },
+      "path": "/benefits/32/limits/1"
+    },
+    {
+      "item": "Contacts and eyeglasses, out of network",
+      "page": 6,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "POS", "covered": false }],
+      "path": "/benefits/32/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }],
+      "note": "No pbp_Section_C_POS group lists 17b2, and pbp_c_pos_nmc_bendesc_subcats leaves it out; no POS row is written (spec 5.4). Question O1 (section 7)."
+    },
+    {
+      "item": "CVS Over-the-Counter (OTC) Wallet, quarterly allowance",
+      "page": 9,
+      "printed": "You get a $35 quarterly benefit amount (allowance) on the Aetna Medicare Extra Benefits Card.",
+      "expected": [{ "type": "dollars", "value": 35, "period": "per_3_months" }],
+      "path": "/benefits/33/limits"
+    },
+    {
+      "item": "CVS Over-the-Counter (OTC) Wallet, covered in network",
+      "page": 9,
+      "printed": "You can use your CVS Over-the-Counter (OTC) Wallet to help pay for certain OTC health and wellness products",
+      "expected": true,
+      "path": "/benefits/33/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Routine, non-emergency transportation, in network",
+      "page": 7,
+      "printed": "Not Covered",
+      "expected": false,
+      "path": "/benefits/35/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Basic SilverSneakers fitness membership, in network",
+      "page": 10,
+      "printed": "$0 copay",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/36/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Basic SilverSneakers fitness membership, out of network",
+      "page": 10,
+      "printed": "The fitness benefit is not covered out-of-network.",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "POS", "covered": false }],
+      "path": "/benefits/36/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }],
+      "note": "No pbp_Section_C_POS group lists 14c4, and pbp_c_pos_nmc_bendesc_subcats leaves it out; no POS row is written (spec 5.4). Question O1 (section 7)."
     }
   ]
 }

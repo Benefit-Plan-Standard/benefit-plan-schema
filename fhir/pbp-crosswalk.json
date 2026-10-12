@@ -2,7 +2,7 @@
   "description": "CMS Plan Benefit Package (PBP) service categories to Benefit Plan Standard benefits, for scripts/from-pbp.js. One row per BPS benefit the importer writes: the PBP category code (as used in the Section C out-of-network and point-of-service groups and the Section D category lists), the B file and columns it reads, and a canonical_key from vocabularies/canonical-benefits.json or null. A category maps only when the PBP category clearly is the canonical service; there is no nearest fit (the CARIN crosswalk rule). canonical_key null means the benefit is still written, carried by service_name and pbp_code, and listed in docs/specs/pbp-importer.md section 9.1. See docs/specs/pbp-importer.md section 5.",
   "source": "PBP_Benefits_2027_dictionary.xlsx and the CY 2027 PBP Benefits files (https://www.cms.gov/files/zip/pbp-benefits-2027.zip): column names verbatim, lowercased as the importer reads them.",
   "contract_year": 2027,
-  "scope": "The workgroup MVP: primary care, specialist, inpatient hospital, outpatient hospital (outpatient hospital services, observation, ambulatory surgical center), emergency, urgently needed services, ambulance, diagnostic tests, lab and imaging, physical and speech therapy, occupational therapy, services with visit limits (routine chiropractic, routine foot care, acupuncture, routine hearing and eye exams, with their Medicare-covered rows), and hearing aids.",
+  "scope": "The workgroup MVP: primary care, specialist, inpatient hospital, outpatient hospital (outpatient hospital services, observation, ambulatory surgical center), emergency, urgently needed services, ambulance, diagnostic tests, lab and imaging, physical and speech therapy, occupational therapy, services with visit limits (routine chiropractic, routine foot care, acupuncture, routine hearing and eye exams, with their Medicare-covered rows), and hearing aids; since 2026-10-11 also mental health individual sessions, home health, skilled nursing facility, dental cleaning and restorative services (fillings), eyeglasses, over-the-counter items, meals, transportation and fitness.",
   "field_guide": {
     "pbp_code": "The service category code as the file writes it in category lists (pbp_c_oon_mc_bendesc_cats, pbp_c_oon_nmc_bendesc_cats, pbp_c_pos_*_subcats, pbp_d_*_cats).",
     "medicare_covered": "true: a Medicare-covered category (coverage_basis medicare_covered, always covered). false: a supplemental category, offered when offered.yn is 1 and offered.ehc has a 1 at offered.position.",
@@ -11,7 +11,13 @@
     "service_deductible": "The category-level \"Is there a deductible?\" column and its amount, written as a cost_shares step of type deductible. shared: the column covers more than this benefit.",
     "limits": "quantity: lim (1 unlimited, 2 limited), num, per (periodicity code), per_d. dollars: the maximum plan benefit coverage columns; via: when type_col holds via.when, the amount is read from the via columns and both benefits carry via.shared_limit_id (hearing aids covered under the 18a maximum); shared_when: the same shared_limit_id on the 18a benefit.",
     "quote": "Columns with no BPS field, quoted verbatim in the benefit source_references when not blank.",
-    "in_network_only_note": "true: on a plan with an OUT or POS tier and no group listing the category, the in-network row notes that the file prices it once (decision 5)."
+    "in_network_only_note": "true: on a plan with an OUT or POS tier and no group listing the category, the in-network row notes that the file prices it once (decision 5).",
+    "offered (no ehc)": "A supplemental row with no offered.ehc (13b, 13c, 10b) is offered when offered.yn is 1.",
+    "offered.filled": "Dental (16b4, 16c1): the file has no offer column, so the row is covered when this \"type of benefit\" column is filled (it also gives coverage_basis), and covered false on every network tier, with a note that the plan filed no entry in the PBP offered.section section, when it is blank.",
+    "code": "On offered, copay, coins or a limit option: the \"which benefits\" column (ehc) is a list of codes such as \"14c1;14c4;\" (14c), and the row or step applies when the list names this code.",
+    "variant": "col: a code column whose value picks pbp_code and columns from values (10b: pbp_b10b_bendesc_trn 1 plan-approved location 10b1, 2 any location 10b2).",
+    "inpatient": "For handler inpatient_acute: the column names where the category differs from 1a (2, Skilled Nursing Facility: stay_amount false, deductible_amount null, additional_days, section_c \"snf\").",
+    "limits (more)": "dollars options: the maximum is in 1 of several sets of columns, the first whose yn is 1 or whose ehc names the service; carryover: col and codes giving the limit carryover; quantity label and with: the limit text starts with label and quotes the with columns with their code labels; via.label, via.source and shared_when.covers name the shared maximum in raw_text."
   },
   "periodicity": {
     "1": "per_3_years",
@@ -32,8 +38,8 @@
     "7": "Every month"
   },
   "counts": {
-    "benefits": 30,
-    "with_canonical_key": 23,
+    "benefits": 40,
+    "with_canonical_key": 33,
     "without_canonical_key": 7
   },
   "benefits": [
@@ -1159,7 +1165,13 @@
           "per": "pbp_b17a_maxplan_per",
           "per_d": "pbp_b17a_maxplan_per_d",
           "in_oon": "pbp_b17a_maxplan_in_oon",
-          "shared": "17a supplemental benefits"
+          "shared": "17a supplemental benefits",
+          "shared_when": {
+            "col": "pbp_b17b_maxplan_type",
+            "value": "1",
+            "shared_limit_id": "PBP_17A_MAXPLAN",
+            "covers": "17b eyewear benefits"
+          }
         }
       ],
       "auth": "pbp_b17a_auth_yn",
@@ -1480,6 +1492,699 @@
         "pbp_b18b_maxenr_per_d"
       ],
       "note": "Written only when the plan chooses this aid type in pbp_b18b_bendesc_ehc. The per-two-aids copays have no basis value in BPS and are quoted (question H2)."
+    },
+    {
+      "benefit_id": "MENTAL_HEALTH_INDIVIDUAL",
+      "service_name": "Mental health specialty services, individual sessions",
+      "pbp_code": "7e1",
+      "pbp_label": "7e1: Individual Sessions for Mental Health Specialty Services",
+      "medicare_covered": true,
+      "file": "pbp_b7_health_prof.txt",
+      "canonical_key": "mental_health_office_visit",
+      "category": "BEHAVIORAL_HEALTH",
+      "benefit_type": "behavioral_health",
+      "copay": {
+        "yn": "pbp_b7e_copay_yn",
+        "ehc": "pbp_b7e_copay_ehc",
+        "position": 2,
+        "min": "pbp_b7e_copay_mcis_minamt",
+        "max": "pbp_b7e_copay_mcis_maxamt"
+      },
+      "coins": {
+        "yn": "pbp_b7e_coins_yn",
+        "ehc": "pbp_b7e_coins_ehc",
+        "position": 2,
+        "min": "pbp_b7e_coins_mcis_minpct",
+        "max": "pbp_b7e_coins_mcis_maxpct"
+      },
+      "service_deductible": {
+        "yn": "pbp_b7e_ded_yn",
+        "amt": "pbp_b7e_ded_amt",
+        "shared": "7e (individual and group sessions)"
+      },
+      "auth": "pbp_b7e_auth_yn",
+      "refer": "pbp_b7e_refer_yn",
+      "quote": [
+        "pbp_b7e_maxenr_yn",
+        "pbp_b7e_maxenr_amt",
+        "pbp_b7e_maxenr_per",
+        "pbp_b7e_maxenr_per_d",
+        "pbp_b7e_copay_mcgs_minamt",
+        "pbp_b7e_copay_mcgs_maxamt",
+        "pbp_b7e_coins_mcgs_minpct",
+        "pbp_b7e_coins_mcgs_maxpct"
+      ],
+      "note": "Individual sessions only: the copay and coinsurance ehc columns have position 1 Medicare-covered Group Sessions and position 2 Medicare-covered Individual Sessions; the row reads position 2 and the mcis columns. Group sessions (7e2, the mcgs columns) are quoted, not mapped. The deductible and maximum columns cover all of 7e."
+    },
+    {
+      "benefit_id": "HOME_HEALTH",
+      "service_name": "Home health services",
+      "pbp_code": "6",
+      "pbp_label": "6: Home Health Services",
+      "medicare_covered": true,
+      "file": "pbp_b6_home_health.txt",
+      "canonical_key": "home_health_care",
+      "category": "HOME_HEALTH",
+      "benefit_type": "medical",
+      "copay": {
+        "yn": "pbp_b6_copay_yn",
+        "min": "pbp_b6_copay_mc_amt_min",
+        "max": "pbp_b6_copay_mc_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b6_coins_yn",
+        "min": "pbp_b6_coins_pct_mc_min",
+        "max": "pbp_b6_coins_pct_mc_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b6_ded_yn",
+        "amt": "pbp_b6_ded_amt"
+      },
+      "auth": "pbp_b6_auth_yn",
+      "refer": "pbp_b6_refer_yn",
+      "quote": [
+        "pbp_b6_maxenr_yn",
+        "pbp_b6_maxenr_amt",
+        "pbp_b6_maxenr_per",
+        "pbp_b6_maxenr_per_d"
+      ],
+      "note": "Same shape as 7a. pbp_b6_home_health.txt has no supplemental columns."
+    },
+    {
+      "benefit_id": "SKILLED_NURSING_FACILITY",
+      "service_name": "Skilled nursing facility",
+      "pbp_code": "2",
+      "pbp_label": "2: Skilled Nursing Facility (SNF)",
+      "medicare_covered": true,
+      "file": "pbp_b2_snf.txt",
+      "canonical_key": "skilled_nursing_facility",
+      "category": "SKILLED_NURSING",
+      "benefit_type": "medical",
+      "handler": "inpatient_acute",
+      "prefix": "pbp_b2",
+      "inpatient": {
+        "stay_amount": false,
+        "deductible_amount": null,
+        "additional_days": {
+          "code": "2-1",
+          "chosen": "pbp_b2_bendesc_ad_nmcs",
+          "position": 1,
+          "lim": "pbp_b2_benedesc_lim_ad",
+          "num": "pbp_b2_bendesc_ad"
+        },
+        "section_c": "snf"
+      },
+      "auth": "pbp_b2_auth_yn",
+      "refer": "pbp_b2_refer_yn",
+      "quote": [
+        "pbp_b2_maxenr_yn",
+        "pbp_b2_maxenr_amt",
+        "pbp_b2_maxenr_per",
+        "pbp_b2_maxenr_per_d",
+        "pbp_b2_hosp_ben_period",
+        "pbp_b2_hosp_ben_period_oth",
+        "pbp_b2_cost_discharge_yn",
+        "pbp_b2_bendesc_yn",
+        "pbp_b2_bendesc_ad_nmcs",
+        "pbp_b2_bendesc_amo_ad",
+        "pbp_b2_bendesc_pr_hosp_yn",
+        "pbp_b2_bendesc_pr_hosp_num",
+        "pbp_b2_bendesc_yn_bonly",
+        "pbp_b2_bendesc_amo_bonly",
+        "pbp_b2_bendesc_snf_unlm_bonly",
+        "pbp_b2_bende_al_ad_prior_bonly",
+        "pbp_b2_bendesc_snf_per_bonly",
+        "pbp_b2_bendesc_snf_per_bonly_d",
+        "pbp_b2_bendesc_hostay_bonly_yn",
+        "pbp_b2_bende_nmday_prior_bonly",
+        "pbp_b2_maxplan_yn_bonly",
+        "pbp_b2_maxplan_amt_bonly",
+        "pbp_b2_maxplan_per_bonly",
+        "pbp_b2_maxplan_per_bonly_d",
+        "pbp_b2_maxenr_yn_bonly",
+        "pbp_b2_maxenr_amt_bonly",
+        "pbp_b2_maxenr_per_bonly",
+        "pbp_b2_maxenr_per_bonly_d",
+        "pbp_b2_coins_yn_bonly",
+        "pbp_b2_coins_pct_bonly",
+        "pbp_b2_coins_ps_num_bonly",
+        "pbp_b2_coins_ps_pct1_bonly",
+        "pbp_b2_coins_ps_bgnd1_bonly",
+        "pbp_b2_coins_ps_endd1_bonly",
+        "pbp_b2_coins_ps_pct2_bonly",
+        "pbp_b2_coins_ps_bgnd2_bonly",
+        "pbp_b2_coins_ps_endd2_bonly",
+        "pbp_b2_coins_ps_pct3_bonly",
+        "pbp_b2_coins_ps_bgnd3_bonly",
+        "pbp_b2_coins_ps_endd3_bonly",
+        "pbp_b2_ded_yn_bonly",
+        "pbp_b2_ded_amt_bonly",
+        "pbp_b2_copay_yn_bonly",
+        "pbp_b2_copay_ps_amt_bonly",
+        "pbp_b2_copay_ps_num_bonly",
+        "pbp_b2_copay_ps_amt1_bonly",
+        "pbp_b2_copay_ps_bgnd1_bonly",
+        "pbp_b2_copay_ps_endd1_bonly",
+        "pbp_b2_copay_ps_amt2_bonly",
+        "pbp_b2_copay_ps_bgnd2_bonly",
+        "pbp_b2_copay_ps_endd2_bonly",
+        "pbp_b2_copay_ps_amt3_bonly",
+        "pbp_b2_copay_ps_bgnd3_bonly",
+        "pbp_b2_copay_ps_endd3_bonly",
+        "pbp_b2_auth_yn_bonly",
+        "pbp_b2_refer_yn_bonly"
+      ],
+      "note": "Read by the inpatient_acute handler, as 1a, with the SNF column names the file uses: no per-stay amount (the stay is priced by day interval only), no deductible amount column (pbp_b2_ded_yn \"1\" is an error; blank on all 7,365 rows of the CY 2027 file), additional days (2-1) at position 1 of pbp_b2_bendesc_ad_nmcs with the limit in pbp_b2_benedesc_lim_ad (spelled so in the file) and pbp_b2_bendesc_ad. Out-of-network and point-of-service stays come from the pbp_c_oon_*_snf_* and pbp_c_pos_*_snf_* columns of pbp_Section_C. Part B-only columns (_bonly) are quoted, not mapped."
+    },
+    {
+      "benefit_id": "DENTAL_CLEANING",
+      "service_name": "Dental cleaning (prophylaxis)",
+      "pbp_code": "16b4",
+      "pbp_label": "16b4: Prophylaxis (Cleaning)",
+      "medicare_covered": false,
+      "file": "pbp_b16_dental.txt",
+      "canonical_key": "dental_cleaning",
+      "category": "DENTAL",
+      "benefit_type": "dental",
+      "offered": {
+        "filled": "pbp_b16b_bendesc_pc_amo",
+        "section": "dental"
+      },
+      "amo": "pbp_b16b_bendesc_pc_amo",
+      "copay": {
+        "yn": "pbp_b16b_copay_pc_yn",
+        "min": "pbp_b16b_copay_pc_amt_min",
+        "max": "pbp_b16b_copay_pc_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b16b_coins_pc_yn",
+        "min": "pbp_b16b_coins_pc_pct_min",
+        "max": "pbp_b16b_coins_pc_pct_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b16b_ded_pv_yn",
+        "amt": "pbp_b16b_ded_pv_amt",
+        "shared": "16b (all preventive dental services)"
+      },
+      "limits": [
+        {
+          "kind": "quantity",
+          "type": "visits",
+          "lim": "pbp_b16b_bendesc_pc_lim",
+          "num": "pbp_b16b_bendesc_pc_num",
+          "per": "pbp_b16b_bendesc_pc_per",
+          "per_d": "pbp_b16b_bendesc_pc_desc"
+        },
+        {
+          "kind": "dollars",
+          "yn": "pbp_b16b_maxplan_pv_yn",
+          "amt": "pbp_b16b_maxplan_pv_amt",
+          "per": "pbp_b16b_maxplan_pv_per",
+          "per_d": "pbp_b16b_maxplan_pv_per_desc",
+          "in_oon": "pbp_b16b_maxplan_pv_in_oon",
+          "shared": "16b (all preventive dental services)",
+          "shared_when": {
+            "col": "pbp_b16c_maxplan_cmp_type",
+            "value": "1",
+            "shared_limit_id": "PBP_16B_MAXPLAN",
+            "covers": "16c comprehensive dental services"
+          }
+        }
+      ],
+      "auth": "pbp_b16b_auth_pc_yn",
+      "refer": "pbp_b16b_refer_pc_yn",
+      "quote": [
+        "pbp_b16b_maxplan_excl_csg_yn",
+        "pbp_b16b_maxplan_csg_groups",
+        "pbp_b16b_maxenr_pv_yn",
+        "pbp_b16b_maxenr_pv_amt",
+        "pbp_b16b_maxenr_pv_per",
+        "pbp_b16b_maxenr_pv_per_desc",
+        "pbp_b16b_coins_ov_yn",
+        "pbp_b16b_coins_ov_svcs",
+        "pbp_b16b_coins_ov_pct",
+        "pbp_b16b_coins_ov_pct_min",
+        "pbp_b16b_coins_ov_pct_max",
+        "pbp_b16b_copay_ov_yn",
+        "pbp_b16b_copay_ov_svcs",
+        "pbp_b16b_copay_ov_amt",
+        "pbp_b16b_copay_ov_amt_min",
+        "pbp_b16b_copay_ov_amt_max"
+      ],
+      "note": "The pc (Prophylaxis (cleaning), 16b4) columns of 16b give the cost share, visit limit, authorization and referral. The category-level 16b maximum plan benefit (maxplan_pv) and deductible (ded_pv) cover all of 16b and are written on this row marked shared. pbp_b16_dental.txt has no offer column: the row is covered when pbp_b16b_bendesc_pc_amo is filled, and covered false, with a not-filed note, when it is blank. The single cost per office visit columns (ov), which can combine cleaning with other 16b services, are quoted, not mapped."
+    },
+    {
+      "benefit_id": "DENTAL_FILLINGS",
+      "service_name": "Dental restorative services (fillings)",
+      "pbp_code": "16c1",
+      "pbp_label": "16c1: Restorative Services",
+      "medicare_covered": false,
+      "file": "pbp_b16_dental.txt",
+      "canonical_key": "dental_filling",
+      "category": "DENTAL",
+      "benefit_type": "dental",
+      "offered": {
+        "filled": "pbp_b16c_bendesc_rs_amo",
+        "section": "dental"
+      },
+      "amo": "pbp_b16c_bendesc_rs_amo",
+      "copay": {
+        "yn": "pbp_b16c_copay_rs_yn",
+        "min": "pbp_b16c_copay_rs_amt_min",
+        "max": "pbp_b16c_copay_rs_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b16c_coins_rs_yn",
+        "min": "pbp_b16c_coins_rs_pct_min",
+        "max": "pbp_b16c_coins_rs_pct_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b16c_ded_cmp_yn",
+        "amt": "pbp_b16c_ded_cmp_amt",
+        "shared": "16c (all comprehensive dental services)"
+      },
+      "limits": [
+        {
+          "kind": "quantity",
+          "type": "visits",
+          "lim": "pbp_b16c_bendesc_rs_lim",
+          "num": "pbp_b16c_bendesc_rs_num",
+          "per": "pbp_b16c_bendesc_rs_per",
+          "per_d": "pbp_b16c_bendesc_rs_desc"
+        },
+        {
+          "kind": "dollars",
+          "yn": "pbp_b16c_maxplan_cmp_yn",
+          "amt": "pbp_b16c_maxplan_cmp_amt",
+          "per": "pbp_b16c_maxplan_cmp_per",
+          "per_d": "pbp_b16c_maxplan_cmp_per_desc",
+          "in_oon": "pbp_b16c_maxplan_cmp_in_oon",
+          "type_col": "pbp_b16c_maxplan_cmp_type",
+          "shared": "16c (all comprehensive dental services)",
+          "via": {
+            "when": "1",
+            "yn": "pbp_b16b_maxplan_pv_yn",
+            "amt": "pbp_b16b_maxplan_pv_amt",
+            "per": "pbp_b16b_maxplan_pv_per",
+            "per_d": "pbp_b16b_maxplan_pv_per_desc",
+            "shared": "16b preventive and 16c comprehensive dental services",
+            "shared_limit_id": "PBP_16B_MAXPLAN",
+            "label": "Covered under Diagnostic and Preventive Dental (16b)",
+            "source": "16b"
+          }
+        }
+      ],
+      "auth": "pbp_b16c_auth_rs_yn",
+      "refer": "pbp_b16c_refer_rs_yn",
+      "quote": [
+        "pbp_b16c_maxplan_excl_csg_yn",
+        "pbp_b16c_maxplan_csg_groups",
+        "pbp_b16c_maxenr_cmp_yn",
+        "pbp_b16c_maxenr_cmp_type",
+        "pbp_b16c_maxenr_cmp_amt",
+        "pbp_b16c_maxenr_cmp_per",
+        "pbp_b16c_maxenr_cmp_per_desc"
+      ],
+      "note": "The rs (Restorative Services, 16c1) columns of 16c give the cost share, visit limit, authorization and referral; the dictionary title is Restorative Services, which the file does not split into fillings and crowns (plans describe both in pbp_b16c_bendesc_rs_desc). The category-level 16c maximum plan benefit (maxplan_cmp) and deductible (ded_cmp) cover all of 16c and are written on this row marked shared; when pbp_b16c_maxplan_cmp_type is \"1\" (Covered under Diagnostic and Preventive Dental (16b)) the amount is the 16b maximum, with shared_limit_id PBP_16B_MAXPLAN on both dental rows. Covered false, with a not-filed note, when pbp_b16c_bendesc_rs_amo is blank."
+    },
+    {
+      "benefit_id": "EYEGLASSES",
+      "service_name": "Eyeglasses (lenses and frames)",
+      "pbp_code": "17b2",
+      "pbp_label": "17b2: Eyeglasses (lenses and frames)",
+      "medicare_covered": false,
+      "file": "pbp_b17_eye_exams_wear.txt",
+      "canonical_key": "eyeglasses",
+      "category": "VISION",
+      "benefit_type": "vision",
+      "offered": {
+        "yn": "pbp_b17b_bendesc_yn",
+        "ehc": "pbp_b17b_bendesc_ehc",
+        "position": 3,
+        "when_not_chosen": "skip_unless_excluded"
+      },
+      "amo": "pbp_b17b_bendesc_amo_egs",
+      "copay": {
+        "yn": "pbp_b17b_copay_yn",
+        "ehc": "pbp_b17b_copay_ehc",
+        "position": 4,
+        "min": "pbp_b17b_copay_amt_egs_min",
+        "max": "pbp_b17b_copay_amt_egs_max"
+      },
+      "coins": {
+        "yn": "pbp_b17b_coins_yn",
+        "ehc": "pbp_b17b_coins_ehc",
+        "position": 4,
+        "min": "pbp_b17b_coins_pct_egs_min",
+        "max": "pbp_b17b_coins_pct_egs_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b17b_ded_nmc_yn",
+        "amt": "pbp_b17b_ded_nmc_amt",
+        "shared": "17b supplemental eyewear"
+      },
+      "limits": [
+        {
+          "kind": "quantity",
+          "type": "pairs_of_eyeglasses",
+          "lim": "pbp_b17b_bendesc_lim_egs",
+          "num": "pbp_b17b_bendesc_numv_egs",
+          "per": "pbp_b17b_bendesc_per_egs",
+          "per_d": "pbp_b17b_bendesc_per_egs_d"
+        },
+        {
+          "kind": "dollars",
+          "yn": "pbp_b17b_maxplan_yn",
+          "in_oon": "pbp_b17b_maxplan_in_oon",
+          "type_col": "pbp_b17b_maxplan_type",
+          "via": {
+            "when": "1",
+            "yn": "pbp_b17a_maxplan_yn",
+            "amt": "pbp_b17a_maxplan_amt",
+            "per": "pbp_b17a_maxplan_per",
+            "per_d": "pbp_b17a_maxplan_per_d",
+            "shared": "17a supplemental eye exams and 17b eyewear",
+            "shared_limit_id": "PBP_17A_MAXPLAN",
+            "label": "Covered under Eye exams Category (17a)",
+            "source": "17a"
+          },
+          "options": [
+            {
+              "yn": "pbp_b17b_comb_maxplan_yn",
+              "amt": "pbp_b17b_comb_maxplan_amt",
+              "per": "pbp_b17b_comb_maxplan_per",
+              "per_d": "pbp_b17b_comb_maxplan_per_d",
+              "shared": "all 17b eyewear (combined maximum)"
+            },
+            {
+              "ehc": "pbp_b17b_indv_maxplan_bendesc",
+              "position": 3,
+              "amt": "pbp_b17b_indv_maxplan_amt_egs",
+              "per": "pbp_b17b_indv_maxplan_per_egs",
+              "per_d": "pbp_b17b_ind_maxplan_per_egs_d"
+            }
+          ]
+        }
+      ],
+      "auth": "pbp_b17b_auth_yn",
+      "refer": "pbp_b17b_refer_yn",
+      "quote": [
+        "pbp_b17b_maxenr_yn",
+        "pbp_b17b_maxenr_type",
+        "pbp_b17b_maxenr_amt",
+        "pbp_b17b_maxenr_per",
+        "pbp_b17b_maxenr_per_d"
+      ],
+      "note": "The egs (Eyeglasses (lenses and frames), 17b2) columns: offered at position 3 of pbp_b17b_bendesc_ehc, cost share at position 4 of the copay and coinsurance ehc columns. Eyeglass lenses (egl, 17b3) and frames (egf, 17b4) are separate types the plan may also file, and contact lenses (cl, 17b1) and upgrades (upg, 17b5) are out of scope; none is mapped. The maximum is the combined maximum for all eyewear (comb_maxplan) when the plan has one, else the eyeglasses maximum (indv_maxplan, position 3 of pbp_b17b_indv_maxplan_bendesc), and the 17a maximum when pbp_b17b_maxplan_type is \"1\", with shared_limit_id PBP_17A_MAXPLAN on this row and the routine eye exam row. Written covered false when pbp_b17b_bendesc_yn is \"2\"; not written when the plan offers eyewear but not eyeglasses (lenses and frames)."
+    },
+    {
+      "benefit_id": "OTC_ITEMS",
+      "service_name": "Over-the-counter (OTC) items",
+      "pbp_code": "13b",
+      "pbp_label": "13b: OTC Items",
+      "medicare_covered": false,
+      "file": "pbp_b13_other_services.txt",
+      "canonical_key": "otc_allowance",
+      "category": "OVER_THE_COUNTER",
+      "benefit_type": "non_clinical",
+      "offered": {
+        "yn": "pbp_b13b_bendesc_otc",
+        "when_not_chosen": "not_covered"
+      },
+      "amo": "pbp_b13b_bendesc_amo",
+      "copay": {
+        "yn": "pbp_b13b_copay_yn",
+        "min": "pbp_b13b_copay_amt_min",
+        "max": "pbp_b13b_copay_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b13b_coins_yn",
+        "min": "pbp_b13b_coins_pct_min",
+        "max": "pbp_b13b_coins_pct_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b13b_ded_yn",
+        "amt": "pbp_b13b_ded_amt"
+      },
+      "limits": [
+        {
+          "kind": "dollars",
+          "yn": "pbp_b13b_maxplan_yn",
+          "amt": "pbp_b13b_maxplan_amt",
+          "per": "pbp_b13b_otc_maxplan_per",
+          "carryover": {
+            "col": "pbp_b13b_maxplan_prd_yn",
+            "codes": {
+              "1": "next_period",
+              "2": "none"
+            }
+          }
+        }
+      ],
+      "auth": null,
+      "refer": null,
+      "quote": [
+        "pbp_b13b_maxenr_yn",
+        "pbp_b13b_maxenr_amt",
+        "pbp_b13b_maxenr_per",
+        "pbp_b13b_maxenr_per_d",
+        "pbp_b13b_nrt_yn",
+        "pbp_b13b_nrt_attestation",
+        "pbp_b13b_naloxone_yn",
+        "pbp_b13b_cms_otc_list_yn",
+        "pbp_b13b_mode",
+        "pbp_b13b_mode_desc"
+      ],
+      "note": "The allowance is the maximum plan benefit coverage, written as a dollars limit; the file has no periodicity description column for it (pbp_b13b_otc_maxplan_per only). pbp_b13b_maxplan_prd_yn (\"Does your Maximum Plan Benefit Coverage amount carry forward to the next period if it is unused?\") is written as carryover: 1 next_period, 2 none. 13b has no authorization or referral column."
+    },
+    {
+      "benefit_id": "MEALS",
+      "service_name": "Meal benefit",
+      "pbp_code": "13c",
+      "pbp_label": "13c: Meal Benefit",
+      "medicare_covered": false,
+      "file": "pbp_b13_other_services.txt",
+      "canonical_key": "meals",
+      "category": "MEALS",
+      "benefit_type": "non_clinical",
+      "offered": {
+        "yn": "pbp_b13c_bendesc_service",
+        "when_not_chosen": "not_covered"
+      },
+      "amo": "pbp_b13c_bendesc_amo",
+      "copay": {
+        "yn": "pbp_b13c_copay_yn",
+        "min": "pbp_b13c_copay_amt_min",
+        "max": "pbp_b13c_copay_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b13c_coins_yn",
+        "min": "pbp_b13c_coins_pct_min",
+        "max": "pbp_b13c_coins_pct_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b13c_ded_yn",
+        "amt": "pbp_b13c_ded_amt"
+      },
+      "limits": [
+        {
+          "kind": "dollars",
+          "yn": "pbp_b13c_maxplan_yn",
+          "amt": "pbp_b13c_maxplan_amt",
+          "per": "pbp_b13c_maxplan_per",
+          "per_d": "pbp_b13c_maxplan_per_d"
+        }
+      ],
+      "auth": "pbp_b13c_auth_yn",
+      "refer": "pbp_b13c_refer_yn",
+      "quote": [
+        "pbp_b13c_meal_type_chk",
+        "pbp_b13c_maxenr_yn",
+        "pbp_b13c_maxenr_amt",
+        "pbp_b13c_maxenr_per",
+        "pbp_b13c_maxenr_per_d"
+      ],
+      "note": "The file gives no number of meals for 13c, so only the maximum plan benefit coverage is written as a limit. The meal type (pbp_b13c_meal_type_chk: after surgery or a hospital stay, a chronic illness, or a condition that keeps the member at home) is quoted."
+    },
+    {
+      "benefit_id": "TRANSPORTATION",
+      "service_name": "Transportation services",
+      "pbp_code": "10b",
+      "pbp_label": "10b: Transportation Services",
+      "medicare_covered": false,
+      "file": "pbp_b10_amb_trans.txt",
+      "canonical_key": "transportation",
+      "category": "TRANSPORTATION",
+      "benefit_type": "non_clinical",
+      "offered": {
+        "yn": "pbp_b10b_bendesc_yn",
+        "when_not_chosen": "not_covered"
+      },
+      "amo": "pbp_b10b_bendesc_amo_pal",
+      "variant": {
+        "col": "pbp_b10b_bendesc_trn",
+        "values": {
+          "1": {
+            "pbp_code": "10b1",
+            "amo": "pbp_b10b_bendesc_amo_pal"
+          },
+          "2": {
+            "pbp_code": "10b2",
+            "amo": "pbp_b10b_bendesc_amo_al"
+          }
+        }
+      },
+      "copay": {
+        "yn": "pbp_b10b_copay_yn",
+        "min": "pbp_b10b_copay_amt_min",
+        "max": "pbp_b10b_copay_amt_max"
+      },
+      "coins": {
+        "yn": "pbp_b10b_coins_yn",
+        "min": "pbp_b10b_coins_pct_min",
+        "max": "pbp_b10b_coins_pct_max"
+      },
+      "service_deductible": {
+        "yn": "pbp_b10b_ded_yn",
+        "amt": "pbp_b10b_ded_amt"
+      },
+      "limits": [
+        {
+          "kind": "quantity",
+          "type": "trips",
+          "label": "Plan Approved Health-related Location",
+          "lim": "pbp_b10b_bendesc_lim_pal",
+          "num": "pbp_b10b_bendesc_amt_pal",
+          "per": "pbp_b10b_bendesc_per_pal",
+          "per_d": "pbp_b10b_bendesc_per_pal_d",
+          "with": [
+            {
+              "col": "pbp_b10b_bendesc_tt_pal",
+              "codes": {
+                "1": "One-way",
+                "2": "Round Trip",
+                "3": "Hours",
+                "4": "Days"
+              }
+            },
+            {
+              "col": "pbp_b10b_bendesc_tt_pal_d"
+            },
+            {
+              "col": "pbp_b10b_bendesc_amt_pal_days"
+            }
+          ]
+        },
+        {
+          "kind": "quantity",
+          "type": "trips",
+          "label": "Any Health-related Location",
+          "lim": "pbp_b10b_bendesc_lim_al",
+          "num": "pbp_b10b_bendesc_amt_al",
+          "per": "pbp_b10b_bendesc_per_al",
+          "per_d": "pbp_b10b_bendesc_per_al_d",
+          "with": [
+            {
+              "col": "pbp_b10b_bendesc_tt_al",
+              "codes": {
+                "1": "One-way",
+                "2": "Round Trip",
+                "3": "Hours",
+                "4": "Days"
+              }
+            },
+            {
+              "col": "pbp_b10b_bendesc_tt_al_d"
+            },
+            {
+              "col": "pbp_b10b_bendesc_amt_al_days"
+            }
+          ]
+        },
+        {
+          "kind": "dollars",
+          "yn": "pbp_b10b_maxplan_yn",
+          "amt": "pbp_b10b_maxplan_amt",
+          "per": "pbp_b10b_maxplan_per",
+          "per_d": "pbp_b10b_maxplan_per_d"
+        }
+      ],
+      "auth": "pbp_b10b_auth_yn",
+      "refer": "pbp_b10b_refer_yn",
+      "quote": [
+        "pbp_b10b_bendesc_trn",
+        "pbp_b10b_bendesc_mt_pal",
+        "pbp_b10b_bendesc_mt_pal_d",
+        "pbp_b10b_bendesc_mt_al",
+        "pbp_b10b_bendesc_mt_al_d",
+        "pbp_b10b_maxenr_yn",
+        "pbp_b10b_maxenr_amt",
+        "pbp_b10b_maxenr_per",
+        "pbp_b10b_maxenr_per_d"
+      ],
+      "note": "One row for both location types: pbp_b10b_bendesc_trn holds 1 code, 1 Plan Approved Health-related Location (10b1, the pal columns) or 2 Any Health-related Location (10b2, the al columns), which picks the category code read in the out-of-network and point-of-service groups and the type of benefit column. The trips of each location type are a limit with the location type in its text; the trip type (tt) is quoted in the limit text with its dictionary label, and the mode of transportation (mt) in source_references."
+    },
+    {
+      "benefit_id": "FITNESS",
+      "service_name": "Fitness benefit",
+      "pbp_code": "14c4",
+      "pbp_label": "14c4: Fitness Benefit",
+      "medicare_covered": false,
+      "file": "pbp_b14_preventive.txt",
+      "canonical_key": "fitness_benefit",
+      "category": "FITNESS",
+      "benefit_type": "non_clinical",
+      "offered": {
+        "yn": "pbp_b14c_bendesc_yn",
+        "ehc": "pbp_b14c_bendesc_ehc",
+        "code": "14c4",
+        "when_not_chosen": "not_covered"
+      },
+      "amo": "pbp_b14c_bendesc_amo_mhc",
+      "copay": {
+        "yn": "pbp_b14c_copay_yn",
+        "ehc": "pbp_b14c_copay_ehc",
+        "code": "14c4",
+        "min": "pbp_b14c_copay_mhc_min_amt",
+        "max": "pbp_b14c_copay_mhc_max_amt"
+      },
+      "coins": {
+        "yn": "pbp_b14c_coins_yn",
+        "ehc": "pbp_b14c_coins_ehc",
+        "code": "14c4",
+        "min": "pbp_b14c_coins_pct_min_mhc",
+        "max": "pbp_b14c_coins_pct_max_mhc"
+      },
+      "service_deductible": {
+        "yn": "pbp_b14c_ded_yn",
+        "amt": "pbp_b14c_ded_amt",
+        "shared": "14c (all other defined supplemental benefits)"
+      },
+      "limits": [
+        {
+          "kind": "dollars",
+          "yn": "pbp_b14c_maxplan_yn",
+          "options": [
+            {
+              "ehc": "pbp_b14c_maxplan_ehc",
+              "code": "14c4",
+              "amt": "pbp_b14c_maxplan_amt_mhc",
+              "per": "pbp_b14c_maxplan_per_mhc",
+              "per_d": "pbp_b14c_maxplan_per_mhc_d"
+            }
+          ]
+        }
+      ],
+      "auth": "pbp_b14c_auth_yn",
+      "refer": "pbp_b14c_refer_yn",
+      "quote": [
+        "pbp_b14c_bendesc_typ_mhc",
+        "pbp_b14c_maxenr_yn",
+        "pbp_b14c_maxenr_amt_mhc",
+        "pbp_b14c_maxenr_per_mhc",
+        "pbp_b14c_maxenr_per_mhc_d"
+      ],
+      "note": "Fitness is code 14c4 (\"14c4: Fitness Benefit*\"; its columns end in mhc) of the 14c list columns, which are lists of codes such as \"14c1;14c4;\", not position strings: offered when pbp_b14c_bendesc_ehc lists 14c4, and the copay, coinsurance and maximum apply when pbp_b14c_copay_ehc, pbp_b14c_coins_ehc and pbp_b14c_maxplan_ehc list it. The deductible, authorization and referral columns cover all of 14c. The type of fitness benefit (pbp_b14c_bendesc_typ_mhc: activity tracker, physical fitness, memory fitness, fitness equipment or kit) is quoted."
     }
   ]
 }

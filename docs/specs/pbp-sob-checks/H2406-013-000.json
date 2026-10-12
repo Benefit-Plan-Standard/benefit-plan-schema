@@ -472,6 +472,129 @@
       "path": "/benefits/20/conditions",
       "expected_reading": [{ "type": "authorization" }],
       "note": "pbp_b7f_auth_yn \"1\" covers service category 7f as a whole; the document marks only foot exams and treatment (spec 7.10)."
+    },
+    {
+      "item": "Mental health, outpatient individual therapy visit, in network",
+      "page": 5,
+      "printed": "$25 copay",
+      "expected": [{ "type": "copay", "amount": 25 }],
+      "path": "/benefits/27/network_cost_shares/0/cost_shares",
+      "expected_reading": [{ "type": "copay", "amount_min": 0, "amount_max": 25 }],
+      "note": "pbp_b7e_copay_mcis_minamt \"0.00\", pbp_b7e_copay_mcis_maxamt \"25.00\". Page 5 also prints \"Virtual mental health visits $0 copay\"; the file states the range for individual sessions and not which service is $0 (spec 5.5)."
+    },
+    {
+      "item": "Mental health, outpatient individual therapy visit, out of network",
+      "page": 5,
+      "printed": "$40 copay",
+      "expected": [{ "type": "copay", "amount": 40 }],
+      "path": "/benefits/27/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Mental health, outpatient individual therapy visit, prior authorization",
+      "page": 5,
+      "printed": "Outpatient individual therapy visit2 (footnote 2, page 9: may require prior authorization)",
+      "expected": [{ "type": "authorization" }],
+      "path": "/benefits/27/conditions"
+    },
+    {
+      "item": "Skilled nursing facility, in network",
+      "page": 6,
+      "printed": "$0 copay per day: days 1-20; $221 copay per day: days 21-100",
+      "expected": [{ "type": "copay", "amount": 0, "basis": "per_day", "unit_range": { "from": 1, "to": 20 } }, { "type": "copay", "amount": 221, "basis": "per_day", "unit_range": { "from": 21, "to": 100 } }],
+      "path": "/benefits/29/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Skilled nursing facility, out of network",
+      "page": 6,
+      "printed": "$250 copay per day: days 1-100",
+      "expected": [{ "type": "copay", "amount": 250, "basis": "per_day", "unit_range": { "from": 1, "to": 100 } }],
+      "path": "/benefits/29/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Skilled nursing facility, prior authorization",
+      "page": 6,
+      "printed": "Skilled nursing facility (SNF)2",
+      "expected": [{ "type": "authorization" }],
+      "path": "/benefits/29/conditions"
+    },
+    {
+      "item": "Skilled nursing facility, up to 100 days",
+      "page": 6,
+      "printed": "Our plan covers up to 100 days in a SNF.",
+      "expected": [{ "type": "days", "value": 100 }],
+      "path": "/benefits/29/limits",
+      "expected_reading": [],
+      "note": "The 100 days are the Medicare-covered SNF benefit; pbp_b2_snf.txt has no column for them (only the day intervals of the cost share, which end at day 100), so no limit is written."
+    },
+    {
+      "item": "Home health care, in network",
+      "page": 9,
+      "printed": "$0 copay",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/28/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Home health care, out of network",
+      "page": 9,
+      "printed": "50% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.5 }],
+      "path": "/benefits/28/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Home health care, prior authorization",
+      "page": 9,
+      "printed": "Home health care2",
+      "expected": [{ "type": "authorization" }],
+      "path": "/benefits/28/conditions"
+    },
+    {
+      "item": "Routine dental, cleanings, in network",
+      "page": 5,
+      "printed": "$0 copay for covered preventive services like oral exams, X-rays, routine cleanings and fluoride; No annual deductible",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/30/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Routine dental, comprehensive services (fillings) not listed",
+      "page": 5,
+      "printed": "Routine dental benefits list preventive services only (oral exams, X-rays, routine cleanings and fluoride)",
+      "expected": false,
+      "path": "/benefits/31/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Routine eyewear, allowance, in network",
+      "page": 5,
+      "printed": "$200 allowance every 2 years for 1 pair of eyeglasses (lenses and frames) or contacts",
+      "expected": { "type": "dollars", "value": 200, "period": "per_2_years" },
+      "path": "/benefits/32/limits/1"
+    },
+    {
+      "item": "Routine eyewear, 1 pair of eyeglasses every 2 years",
+      "page": 5,
+      "printed": "$200 allowance every 2 years for 1 pair of eyeglasses (lenses and frames) or contacts",
+      "expected": { "type": "pairs_of_eyeglasses", "value": 1, "period": "per_2_years" },
+      "path": "/benefits/32/limits/0"
+    },
+    {
+      "item": "Routine eyewear, out of network",
+      "page": 5,
+      "printed": "If you use an out-of-network provider, you are responsible for 90% of the allowance amount",
+      "expected": [{ "type": "coinsurance", "rate": 0.9 }],
+      "path": "/benefits/32/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Fitness program, in network",
+      "page": 8,
+      "printed": "$0 copay",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/36/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Fitness program, out of network",
+      "page": 8,
+      "printed": "If you use an out-of-network provider, you pay 90% of the total cost",
+      "expected": [{ "type": "coinsurance", "rate": 0.9 }],
+      "path": "/benefits/36/network_cost_shares/1/cost_shares"
     }
   ]
 }

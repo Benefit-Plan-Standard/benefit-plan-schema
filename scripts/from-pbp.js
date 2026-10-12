@@ -504,6 +504,13 @@ function cats(v) {
   return v.split(';').map((x) => x.trim()).filter(Boolean);
 }
 
+// Whether a "which services" column names this service: a position string read
+// at spec.position, or (spec.code) a list of codes such as "14c1;14c4;" (14c).
+function inEhc(row, spec) {
+  const v = q(row, spec.ehc);
+  return spec.code ? cats(v).includes(spec.code) : chosen(v, spec.position);
+}
+
 // A whole-percent column: "40" -> 40. Blank -> null.
 function percent(row, col, errors) {
   const v = q(row, col);
@@ -540,8 +547,8 @@ function costStep(row, spec, kind, errors) {
   if (spec.ehc) {
     const e = q(row, spec.ehc);
     cells.push(cell(row, spec.ehc));
-    if (!/^[01]+$/.test(e)) { errors.push(`${spec.ehc} "${e}" is not a position string while ${spec.yn} is "${v}"`); return null; }
-    if (!chosen(e, spec.position)) return null;
+    if (!spec.code && !/^[01]+$/.test(e)) { errors.push(`${spec.ehc} "${e}" is not a position string while ${spec.yn} is "${v}"`); return null; }
+    if (!inEhc(row, spec)) return null;
   }
   const read = kind === 'copay' ? amount : percent;
   const lo = read(row, spec.min, errors);
@@ -587,7 +594,7 @@ function answeredNo(row, spec) {
   if (!spec) return false;
   const v = q(row, spec.yn);
   if (v === '2') return true;
-  return (v === '1' || v === '3') && !!spec.ehc && !chosen(q(row, spec.ehc), spec.position);
+  return (v === '1' || v === '3') && !!spec.ehc && !inEhc(row, spec);
 }
 
 function noCostShareStep(row, copaySpec, coinsSpec) {
@@ -612,7 +619,7 @@ function serviceDeductibleStep(row, spec, errors) {
   const cells = [cell(row, spec.yn)];
   if (spec.ehc) {
     cells.push(cell(row, spec.ehc));
-    if (!chosen(q(row, spec.ehc), spec.position)) return null;
+    if (!inEhc(row, spec)) return null;
   }
   const amt = amount(row, spec.amt, errors);
   cells.push(cell(row, spec.amt));
@@ -652,8 +659,9 @@ function intervalSteps(row, kind, numCol, valCol, bgnCol, endCol, errors) {
 // per-stay amount beside day intervals is quoted in the tier notes only).
 function stayCostShares(row, kind, cols, errors) {
   const out = { steps: [], cells: [], notes: [] };
-  const stay = kind === 'copay' ? amount(row, cols.stay, errors) : percent(row, cols.stay, errors);
-  if (q(row, cols.stay) !== '') out.cells.push(cell(row, cols.stay));
+  // cols.stay null: the file has no per-stay column (2, Skilled Nursing Facility).
+  const stay = !cols.stay ? null : (kind === 'copay' ? amount(row, cols.stay, errors) : percent(row, cols.stay, errors));
+  if (cols.stay && q(row, cols.stay) !== '') out.cells.push(cell(row, cols.stay));
   const iv = intervalSteps(row, kind, cols.num, cols.val, cols.bgn, cols.end, errors);
   out.cells.push(...iv.cells);
   if (stay !== null && (iv.steps.length === 0 || stay > 0)) {
@@ -795,6 +803,39 @@ function groupTierRow(tierId, b, groups, errors, warn) {
   return { steps, notes: notes.join('; ') + '.' };
 }
 
+// Section C Skilled Nursing Facility stay (2) for the out-of-network (oon) or
+// point-of-service (pos) tier: the pbp_c_<kind>_*_snf_* columns, which have no
+// benefit-type position string and 1 deductible amount.
+function sectionCSnf(c, kind, errors) {
+  const p = `pbp_c_${kind}`;
+  const out = { steps: [], cells: [], notes: [] };
+  for (const [k, costKind, valName] of [['coins', 'coinsurance', 'pct'], ['copay', 'copay', 'amt']]) {
+    const yesCol = `${p}_${k}_snf_yn`;
+    if (q(c, yesCol) !== '1') continue;
+    out.cells.push(cell(c, yesCol));
+    const mcCostCol = `${p}_${k}_snf_mc_cost_yn`;
+    if (q(c, mcCostCol) === '1') {
+      out.notes.push(`The plan charges the Medicare-defined ${costKind} for the stay, which the file does not state (${cell(c, mcCostCol)}; spec section 9.1).`);
+      continue;
+    }
+    const r = stayCostShares(c, costKind, {
+      stay: `${p}_${k}_snf_${valName}`, num: `${p}_${k}_snf_intrvl_num`,
+      val: (i) => `${p}_${k}_snf_${valName}_i${i}`, bgn: (i) => `${p}_${k}_snf_bgnd_i${i}`, end: (i) => `${p}_${k}_snf_endd_i${i}`,
+    }, errors);
+    out.steps.push(...r.steps);
+    out.cells.push(...r.cells);
+  }
+  const none = noCostShareStep(c, { yn: `${p}_copay_snf_yn` }, { yn: `${p}_coins_snf_yn` });
+  if (none) out.steps.push(none.step);
+  const dedYn = `${p}_snf_ded_yn`;
+  if (q(c, dedYn) === '1') {
+    const amt = amount(c, `${p}_snf_ded_amt`, errors);
+    if (amt === null) errors.push(`${dedYn} "1" but ${cell(c, `${p}_snf_ded_amt`)}`);
+    else out.steps.unshift({ type: 'deductible', amount: amt, notes: `Service-level deductible for the stay, separate from the plan deductible: ${cellsOf(c, [dedYn, `${p}_snf_ded_amt`]).join(', ')}.` });
+  }
+  return out;
+}
+
 // Section C inpatient-acute stay for the out-of-network (oon) or point-of-service (pos) tier.
 function sectionCInpatient(c, kind, errors) {
   const p = `pbp_c_${kind}`;
@@ -900,8 +941,13 @@ function buildLimits(b, row, errors) {
       if (!/^\d+$/.test(n)) { errors.push(`${l.lim} "2" but ${cell(row, l.num)}`); continue; }
       const p = periodOf(row, l.per, l.per_d, errors);
       if (!p.ok) continue;
+      // label: what the count is of (10b: the location type); with: code columns
+      // quoted after it with their dictionary labels (10b: the trip type).
+      const withText = (l.with || []).filter((w) => q(row, w.col) !== '')
+        .map((w) => `${cell(row, w.col)}${w.codes ? ` (${w.codes[q(row, w.col)] || 'not a dictionary code'})` : ''}`);
       limits.push({ type: l.type, value: Number(n), period: p.period,
-        raw_text: `${cellsOf(row, [l.lim, l.num, l.per, l.per_d]).join(', ')} (${p.label}).` });
+        raw_text: `${l.label ? `${l.label}: ` : ''}${cellsOf(row, [l.lim, l.num, l.per, l.per_d]).join(', ')} (${p.label})` +
+          `${withText.length ? '; ' + withText.join(', ') : ''}.` });
     } else if (l.kind === 'dollars') {
       const v = q(row, l.yn);
       if (v !== '1') { if (!['', '2'].includes(v)) errors.push(`${l.yn} "${v}" is not 1 or 2`); continue; }
@@ -909,7 +955,12 @@ function buildLimits(b, row, errors) {
       // aids "Covered under Hearing Exams Category (18a)"): that category's
       // amount, with a shared_limit_id (v1.2.0) on both benefits.
       const via = l.via && q(row, l.type_col) === l.via.when ? l.via : null;
-      const src = via || l;
+      // options: where the category's maximum is stated in one of several sets of
+      // columns (17b eyewear: a combined maximum for all eyewear, or one per
+      // eyewear type chosen in a position string), the first whose condition holds.
+      const option = !via && l.options ? l.options.find((o) => (o.ehc ? inEhc(row, o) : q(row, o.yn) === '1')) : null;
+      if (!via && l.options && !option) continue;
+      const src = via || (option ? { ...option, yn: option.yn || option.ehc } : l);
       if (via && q(row, via.yn) !== '1') { errors.push(`${cell(row, l.type_col)} but ${cell(row, via.yn)}`); continue; }
       const amt = amount(row, src.amt, errors);
       if (amt === null) { errors.push(`${src.yn} "1" but ${cell(row, src.amt)}`); continue; }
@@ -919,7 +970,15 @@ function buildLimits(b, row, errors) {
       const shared = via ? via.shared_limit_id : (l.shared_when && q(row, l.shared_when.col) === l.shared_when.value ? l.shared_when.shared_limit_id : null);
       if (shared) lim.shared_limit_id = shared;
       const extra = [];
-      if (via) extra.push(`${cell(row, l.yn)}, ${cell(row, l.type_col)} (Covered under Hearing Exams Category (18a)), so the amount is the 18a maximum`);
+      if (via) extra.push(`${cell(row, l.yn)}, ${cell(row, l.type_col)} (${via.label || 'Covered under Hearing Exams Category (18a)'}), so the amount is the ${via.source || '18a'} maximum`);
+      if (option) extra.push(cell(row, l.yn));
+      // carryover: "Does your Maximum Plan Benefit Coverage amount carry forward to
+      // the next period if it is unused?" (13b): 1 next_period, 2 none.
+      if (l.carryover && q(row, l.carryover.col) !== '') {
+        const cv = l.carryover.codes[q(row, l.carryover.col)];
+        if (cv) lim.carryover = cv;
+        extra.push(`${cell(row, l.carryover.col)}${cv ? ` (carryover ${cv})` : ' (not a dictionary code)'}`);
+      }
       if (l.perear) {
         const e = q(row, l.perear);
         if (PEREAR[e]) lim.scope = PEREAR[e];
@@ -927,7 +986,7 @@ function buildLimits(b, row, errors) {
       }
       if (l.in_oon && q(row, l.in_oon) !== '') extra.push(`${cell(row, l.in_oon)} (${IN_OON_LABELS[q(row, l.in_oon)] || 'not a dictionary code'})`);
       if (!via && l.type_col && q(row, l.type_col) !== '') extra.push(cell(row, l.type_col));
-      if (shared && !via) extra.push(`${cell(row, l.shared_when.col)}: hearing aids are covered under this maximum`);
+      if (shared && !via) extra.push(`${cell(row, l.shared_when.col)}: ${l.shared_when.covers || 'hearing aids'} are covered under this maximum`);
       lim.raw_text = `Maximum plan benefit coverage: ${cellsOf(row, [src.yn, src.amt, src.per, src.per_d]).join(', ')} (${p.label})` +
         `${extra.length ? '; ' + extra.join('; ') : ''}${src.shared ? `; the columns cover ${src.shared}` : ''}.`;
       limits.push(lim);
@@ -947,23 +1006,46 @@ function buildConditions(b, row, errors) {
   return out;
 }
 
-// Inpatient acute (1a): per hospital cost tier, the Medicare-covered stay and
-// the additional days (spec 5.5). Returns the in-network tier rows and limits.
+// The column names the inpatient_acute handler reads. 1a's are the defaults; a
+// crosswalk row's "inpatient" object names another category's (2, Skilled
+// Nursing Facility: no per-stay amount, no deductible amount, additional days at
+// another position and under other names).
+function inpatientCols(b) {
+  const p = b.prefix;
+  const o = b.inpatient || {};
+  const ad = o.additional_days || {};
+  return {
+    stay: o.stay_amount !== false,
+    dedAmt: o.deductible_amount === null ? null : (t) => `${p}_ded_amt_t${t}`,
+    ad: {
+      code: ad.code || '1a1', chosen: ad.chosen || `${p}_bendesc_ad_up_nmcs`, position: ad.position || 2,
+      amo: `${p}_bendesc_amo_ad`, lim: ad.lim || `${p}_bendesc_lim_ad`, num: ad.num || `${p}_bendesc_amt_ad`,
+    },
+    sectionC: o.section_c || 'inpatient_acute',
+  };
+}
+
+// Inpatient acute (1a) and Skilled Nursing Facility (2): per facility cost tier,
+// the Medicare-covered stay and the additional days (spec 5.5). Returns the
+// in-network tier rows and limits.
 function inpatientInNetwork(b, row, ctx, errors) {
   const p = b.prefix;
+  const ic = inpatientCols(b);
   const vary = q(row, `${p}_cost_vary_tiers_yn`) === '1' || q(row, `${p}_ad_cost_vary_tiers_yn`) === '1';
   const n = vary ? Number(q(row, `${p}_cost_vary_tiers_yn`) === '1' ? q(row, `${p}_cost_vary_tier_num`) : q(row, `${p}_ad_cost_vary_tier_num`)) : 1;
-  const addDays = chosen(q(row, `${p}_bendesc_ad_up_nmcs`), 2);
+  const addDays = chosen(q(row, ic.ad.chosen), ic.ad.position);
   const rows = [];
   for (let t = 1; t <= n; t++) {
     const tierId = vary ? `IN_${b.pbp_code.toUpperCase()}_TIER_${t}` : 'IN';
     const steps = [];
     const cells = [];
     const notes = [];
-    if (q(row, `${p}_ded_yn`) === '1') {
-      const dedCells = [cell(row, `${p}_ded_yn`), cell(row, `${p}_ded_amt_t${t}`)];
+    if (q(row, `${p}_ded_yn`) === '1' && !ic.dedAmt) {
+      errors.push(`${cell(row, `${p}_ded_yn`)} but ${b.file} has no deductible amount column (docs/specs/pbp-importer.md section 5.5)`);
+    } else if (q(row, `${p}_ded_yn`) === '1') {
+      const dedCells = [cell(row, `${p}_ded_yn`), cell(row, ic.dedAmt(t))];
       const mcCost = [`${p}_mc_copay_cstshr_yn_t${t}`, `${p}_mc_coins_cstshr_yn_t${t}`].filter((col) => q(row, col) === '1');
-      const amt = amount(row, `${p}_ded_amt_t${t}`, errors);
+      const amt = amount(row, ic.dedAmt(t), errors);
       if (amt !== null) steps.push({ type: 'deductible', amount: amt, notes: `Service-level deductible, separate from the plan deductible: ${dedCells.join(', ')}.` });
       else if (mcCost.length) {
         // On every such plan the stay is charged the Medicare-defined cost share,
@@ -981,7 +1063,7 @@ function inpatientInNetwork(b, row, ctx, errors) {
       if (q(row, mcCost) === '1') {
         notes.push(`The plan charges the Medicare-defined ${kind} for the stay, which the file does not state (${cell(row, mcCost)}; spec section 9.1).`);
       } else {
-        const stayCol = kind === 'copay' ? `${p}_copay_mcs_amt_t${t}` : `${p}_coins_mcs_pct_t${t}`;
+        const stayCol = !ic.stay ? null : (kind === 'copay' ? `${p}_copay_mcs_amt_t${t}` : `${p}_coins_mcs_pct_t${t}`);
         const valName = kind === 'copay' ? 'amt' : 'pct';
         const r = stayCostShares(row, kind, {
           stay: stayCol, num: `${p}_${k}_mcs_int_num_t${t}`,
@@ -993,7 +1075,7 @@ function inpatientInNetwork(b, row, ctx, errors) {
       if (addDays) {
         const iv = intervalSteps(row, kind, `${p}_${k}_ad_intrvl_num_t${t}`,
           (i) => `${p}_${k}_ad_${kind === 'copay' ? 'amt' : 'pct'}_int${i}_t${t}`, (i) => `${p}_${k}_ad_bgnd_int${i}_t${t}`, (i) => `${p}_${k}_ad_endd_int${i}_t${t}`, errors);
-        for (const s of iv.steps) s.notes = `Additional days (1a1, supplemental): ${cell(row, `${p}_bendesc_amo_ad`)} (${AMO_LABELS[q(row, `${p}_bendesc_amo_ad`)] || 'not a dictionary code'}), ${cell(row, `${p}_bendesc_lim_ad`)}.`;
+        for (const s of iv.steps) s.notes = `Additional days (${ic.ad.code}, supplemental): ${cell(row, ic.ad.amo)} (${AMO_LABELS[q(row, ic.ad.amo)] || 'not a dictionary code'}), ${cell(row, ic.ad.lim)}.`;
         steps.push(...iv.steps);
         cells.push(...iv.cells);
       }
@@ -1004,11 +1086,11 @@ function inpatientInNetwork(b, row, ctx, errors) {
     rows.push(r);
   }
   const limits = [];
-  if (addDays && q(row, `${p}_bendesc_lim_ad`) === '2') {
-    const n2 = q(row, `${p}_bendesc_amt_ad`);
-    if (!/^\d+$/.test(n2)) errors.push(`${p}_bendesc_lim_ad "2" but ${cell(row, `${p}_bendesc_amt_ad`)}`);
+  if (addDays && q(row, ic.ad.lim) === '2') {
+    const n2 = q(row, ic.ad.num);
+    if (!/^\d+$/.test(n2)) errors.push(`${ic.ad.lim} "2" but ${cell(row, ic.ad.num)}`);
     else limits.push({ type: 'days', value: Number(n2), period: 'per_benefit_period',
-      raw_text: `Additional days (1a1): ${cellsOf(row, [`${p}_bendesc_lim_ad`, `${p}_bendesc_amt_ad`]).join(', ')}.` });
+      raw_text: `Additional days (${ic.ad.code}): ${cellsOf(row, [ic.ad.lim, ic.ad.num]).join(', ')}.` });
   }
   return { rows, limits };
 }
@@ -1016,23 +1098,47 @@ function inpatientInNetwork(b, row, ctx, errors) {
 function buildBenefit(b, rows, ctx, errors, warn) {
   const row = rows.b[b.file];
   if (!row) { errors.push(`no ${b.file} row for ${b.benefit_id}`); return null; }
+  // variant: a code column that picks the category code and columns the plan
+  // filed (10b transportation: plan-approved location 10b1 or any location 10b2).
+  if (b.variant) {
+    const vv = q(row, b.variant.col);
+    if (b.variant.values[vv]) b = { ...b, ...b.variant.values[vv] };
+    else if (vv !== '') { errors.push(`${b.variant.col} "${vv}" is not a dictionary code`); return null; }
+  }
   const networkTiers = ctx.tiers.filter((t) => t.tier_class === 'network').map((t) => t.tier_id);
   const refs = [];
   let coverage_basis = 'medicare_covered';
   let covered = true;
   let notCoveredWhy = null;
-  if (!b.medicare_covered) {
+  if (!b.medicare_covered && b.offered.filled) {
+    // The dental file has no "is this offered" column (16b, 16c): the service's
+    // "type of benefit" column is filled when the plan filed it. A blank one is
+    // written covered false on every network tier, with a note that says the
+    // plan filed no entry (spec 5.4).
+    const amo = q(row, b.offered.filled);
+    if (amo === '') {
+      covered = false;
+      coverage_basis = null;
+      notCoveredWhy = `${cell(row, b.offered.filled)}: the plan filed no entry for this service in the PBP ${b.offered.section} section ` +
+        `(${b.file} has no "is this benefit offered" column), so this is not a filed "not covered" answer`;
+    } else {
+      coverage_basis = AMO[amo] || null;
+      if (amo === '4') refs.push(`Coverage basis not written: ${cell(row, b.amo)} (Both mandatory and optional; question H1).`);
+      else if (!AMO[amo]) { errors.push(`${b.amo} "${amo}" is not 2, 3 or 4`); return null; }
+    }
+  } else if (!b.medicare_covered) {
     const o = b.offered;
     const v = q(row, o.yn);
     if (v === '') { warn('supplemental-offer-blank', `${b.benefit_id} ${cell(row, o.yn)}`); return null; }
     if (v !== '1' && v !== '2') { errors.push(`${o.yn} "${v}" is not 1 or 2`); return null; }
-    const isChosen = v === '1' && chosen(q(row, o.ehc), o.position);
+    // No ehc: the "yn" column alone says whether the plan offers it (13b, 13c, 10b).
+    const isChosen = v === '1' && (!o.ehc || inEhc(row, o));
     if (!isChosen) {
       if (o.when_not_chosen === 'skip' || (o.when_not_chosen === 'skip_unless_excluded' && v === '1')) return null;
       covered = false;
       coverage_basis = null;
       notCoveredWhy = v === '2' ? `${cell(row, o.yn)}: the plan does not offer this supplemental benefit` :
-        `${cell(row, o.yn)}, ${cell(row, o.ehc)}: position ${o.position} not chosen`;
+        `${cell(row, o.yn)}, ${cell(row, o.ehc)}: ${o.code ? `${o.code} not listed` : `position ${o.position} not chosen`}`;
     } else {
       const amo = q(row, b.amo);
       coverage_basis = AMO[amo] || null;
@@ -1082,7 +1188,7 @@ function buildBenefit(b, rows, ctx, errors, warn) {
       const kind = tierId === 'OUT' ? 'oon' : 'pos';
       const listCol = tierId === 'OUT' ? 'pbp_c_oon_mc_bendesc_cats' : 'pbp_c_pos_mc_bendesc_subcats';
       if (!rows.c || !cats(q(rows.c, listCol)).includes(b.pbp_code)) continue;
-      const r = sectionCInpatient(rows.c, kind, errors);
+      const r = (inpatientCols(b).sectionC === 'snf' ? sectionCSnf : sectionCInpatient)(rows.c, kind, errors);
       ncs.push(tierRow(tierId, tierId, b, {
         steps: r.steps, notes: [`pbp_Section_C (${listCol} lists ${b.pbp_code}): ${r.cells.join(', ')}.`, ...r.notes].join(' '),
       }, ctx));
