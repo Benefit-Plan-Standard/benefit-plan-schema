@@ -8,11 +8,11 @@
   "categories": {
     "behavioral_health": {
       "description": "Mental health, substance use, autism, and behavioral therapy services.",
-      "count": 8
+      "count": 9
     },
     "dental": {
       "description": "Dental services (commonly pediatric on medical plans; full dental typically on a dental module).",
-      "count": 1
+      "count": 3
     },
     "diagnostic": {
       "description": "Diagnostic tests, laboratory, and imaging (standard and advanced).",
@@ -32,7 +32,7 @@
     },
     "other": {
       "description": "Other services (emergency, urgent care, ambulance, excluded/non-covered placeholders).",
-      "count": 5
+      "count": 6
     },
     "pharmacy": {
       "description": "Prescription drugs by formulary tier (generic, preferred brand, non-preferred brand, specialty, preventive).",
@@ -52,11 +52,11 @@
     },
     "specialty_care": {
       "description": "Specialty treatments (chemotherapy, radiation, dialysis, DME, prosthetics, infertility, bariatric, nutrition).",
-      "count": 20
+      "count": 23
     },
     "vision": {
       "description": "Vision services (commonly pediatric on medical plans; full vision typically on a vision module).",
-      "count": 3
+      "count": 4
     }
   },
   "benefits": [
@@ -138,6 +138,19 @@
       ]
     },
     {
+      "canonical_key": "mental_health_office_visit",
+      "label": "Mental health office visit",
+      "description": "Office visit with a mental health professional, individual session. Narrower than mental_health_outpatient, which covers all outpatient mental health services.",
+      "category": "behavioral_health",
+      "aliases": [
+        "mental health office visit",
+        "mental health individual session",
+        "individual therapy session",
+        "outpatient mental health office visit"
+      ],
+      "sbc_label_patterns": []
+    },
+    {
       "canonical_key": "mental_health_outpatient",
       "label": "Mental health outpatient",
       "description": "Outpatient mental and behavioral health services.",
@@ -176,6 +189,33 @@
       "sbc_label_patterns": [
         "Substance use outpatient"
       ]
+    },
+    {
+      "canonical_key": "dental_cleaning",
+      "label": "Dental cleaning",
+      "description": "Dental cleaning (prophylaxis). In Medicare Advantage, the cleaning row of the supplemental preventive dental benefit.",
+      "category": "dental",
+      "aliases": [
+        "dental cleaning",
+        "prophylaxis",
+        "prophylaxis (cleaning)",
+        "teeth cleaning"
+      ],
+      "sbc_label_patterns": []
+    },
+    {
+      "canonical_key": "dental_filling",
+      "label": "Dental filling",
+      "description": "Dental fillings and other restorative dental services. In Medicare Advantage, the restorative services row of the supplemental comprehensive dental benefit.",
+      "category": "dental",
+      "aliases": [
+        "dental filling",
+        "dental fillings",
+        "fillings",
+        "restorative services",
+        "restorative dental services"
+      ],
+      "sbc_label_patterns": []
     },
     {
       "canonical_key": "pediatric_dental_checkup",
@@ -634,6 +674,19 @@
         "Not covered",
         "You pay all costs"
       ]
+    },
+    {
+      "canonical_key": "transportation",
+      "label": "Transportation",
+      "description": "Non-emergency transportation to health-related locations. Not ambulance services, which are a different benefit.",
+      "category": "other",
+      "aliases": [
+        "transportation",
+        "non-emergency transportation",
+        "transportation services",
+        "rides to medical appointments"
+      ],
+      "sbc_label_patterns": []
     },
     {
       "canonical_key": "urgent_care",
@@ -1319,6 +1372,19 @@
       ]
     },
     {
+      "canonical_key": "fitness_benefit",
+      "label": "Fitness benefit",
+      "description": "Fitness benefit, such as a gym membership, fitness program or fitness kit. In Medicare Advantage, the supplemental fitness benefit.",
+      "category": "specialty_care",
+      "aliases": [
+        "fitness benefit",
+        "fitness program",
+        "gym membership",
+        "fitness benefit - adult"
+      ],
+      "sbc_label_patterns": []
+    },
+    {
       "canonical_key": "hearing_aids",
       "label": "Hearing aids",
       "description": "Hearing aids. In Medicare Advantage, the supplemental hearing aid benefit.",
@@ -1397,6 +1463,19 @@
       ]
     },
     {
+      "canonical_key": "meals",
+      "label": "Meals",
+      "description": "Health-related meals for a limited time, such as after a hospital stay or for a chronic illness. In Medicare Advantage, the supplemental meal benefit.",
+      "category": "specialty_care",
+      "aliases": [
+        "meals",
+        "meal benefit",
+        "home-delivered meals",
+        "post-discharge meals"
+      ],
+      "sbc_label_patterns": []
+    },
+    {
       "canonical_key": "nutritional_counseling",
       "label": "Nutritional counseling",
       "description": "Nutrition counseling services.",
@@ -1408,6 +1487,19 @@
       "sbc_label_patterns": [
         "Nutritional counseling"
       ]
+    },
+    {
+      "canonical_key": "otc_allowance",
+      "label": "Over-the-counter allowance",
+      "description": "Allowance for over-the-counter health items. In Medicare Advantage, the supplemental over-the-counter (OTC) items benefit.",
+      "category": "specialty_care",
+      "aliases": [
+        "over-the-counter items",
+        "OTC items",
+        "OTC allowance",
+        "over-the-counter allowance"
+      ],
+      "sbc_label_patterns": []
     },
     {
       "canonical_key": "prosthetics",
@@ -1458,6 +1550,19 @@
       "sbc_label_patterns": [
         "Surgery (global)"
       ]
+    },
+    {
+      "canonical_key": "eyeglasses",
+      "label": "Eyeglasses",
+      "description": "Eyeglasses (lenses and frames) for adults. Not contact lenses or pediatric glasses, which are different benefits.",
+      "category": "vision",
+      "aliases": [
+        "eyeglasses",
+        "eye glasses",
+        "eyeglasses (lenses and frames)",
+        "eye glasses for adults"
+      ],
+      "sbc_label_patterns": []
     },
     {
       "canonical_key": "pediatric_eye_exam",

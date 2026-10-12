@@ -11,7 +11,7 @@
   "description": "The Benefit Plan Standard canonical benefit identifiers (vocabularies/canonical-benefits.json), as a FHIR CodeSystem. Non-normative and extensible in BPS; generated from the vocabulary file.",
   "caseSensitive": true,
   "content": "complete",
-  "count": 106,
+  "count": 114,
   "concept": [
     {
       "code": "aba_therapy",
@@ -39,6 +39,11 @@
       "definition": "Inpatient mental and behavioral health services."
     },
     {
+      "code": "mental_health_office_visit",
+      "display": "Mental health office visit",
+      "definition": "Office visit with a mental health professional, individual session. Narrower than mental_health_outpatient, which covers all outpatient mental health services."
+    },
+    {
       "code": "mental_health_outpatient",
       "display": "Mental health outpatient",
       "definition": "Outpatient mental and behavioral health services."
@@ -52,6 +57,16 @@
       "code": "substance_use_outpatient",
       "display": "Substance use outpatient",
       "definition": "Outpatient substance use disorder services."
+    },
+    {
+      "code": "dental_cleaning",
+      "display": "Dental cleaning",
+      "definition": "Dental cleaning (prophylaxis). In Medicare Advantage, the cleaning row of the supplemental preventive dental benefit."
+    },
+    {
+      "code": "dental_filling",
+      "display": "Dental filling",
+      "definition": "Dental fillings and other restorative dental services. In Medicare Advantage, the restorative services row of the supplemental comprehensive dental benefit."
     },
     {
       "code": "pediatric_dental_checkup",
@@ -222,6 +237,11 @@
       "code": "not_covered_service",
       "display": "Not covered service",
       "definition": "Service not covered by the plan."
+    },
+    {
+      "code": "transportation",
+      "display": "Transportation",
+      "definition": "Non-emergency transportation to health-related locations. Not ambulance services, which are a different benefit."
     },
     {
       "code": "urgent_care",
@@ -474,6 +494,11 @@
       "definition": "Durable medical equipment (DME)."
     },
     {
+      "code": "fitness_benefit",
+      "display": "Fitness benefit",
+      "definition": "Fitness benefit, such as a gym membership, fitness program or fitness kit. In Medicare Advantage, the supplemental fitness benefit."
+    },
+    {
       "code": "hearing_aids",
       "display": "Hearing aids",
       "definition": "Hearing aids. In Medicare Advantage, the supplemental hearing aid benefit."
@@ -504,9 +529,19 @@
       "definition": "Dialysis services for kidney failure."
     },
     {
+      "code": "meals",
+      "display": "Meals",
+      "definition": "Health-related meals for a limited time, such as after a hospital stay or for a chronic illness. In Medicare Advantage, the supplemental meal benefit."
+    },
+    {
       "code": "nutritional_counseling",
       "display": "Nutritional counseling",
       "definition": "Nutrition counseling services."
+    },
+    {
+      "code": "otc_allowance",
+      "display": "Over-the-counter allowance",
+      "definition": "Allowance for over-the-counter health items. In Medicare Advantage, the supplemental over-the-counter (OTC) items benefit."
     },
     {
       "code": "prosthetics",
@@ -527,6 +562,11 @@
       "code": "surgery_global",
       "display": "Surgery (global)",
       "definition": "Global surgical services including facility and professional components."
+    },
+    {
+      "code": "eyeglasses",
+      "display": "Eyeglasses",
+      "definition": "Eyeglasses (lenses and frames) for adults. Not contact lenses or pediatric glasses, which are different benefits."
     },
     {
       "code": "pediatric_eye_exam",
