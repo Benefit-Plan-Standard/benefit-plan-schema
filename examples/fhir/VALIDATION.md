@@ -1,7 +1,7 @@
 # Validation record
 
 **Date:** 2026-09-24; United, Ambetter and Kaiser re-validated 2026-09-25 after data fixes; the 8 SBC files re-validated 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs; Aetna PPO 1500, Aetna PPO 5000, GatorCare and United re-validated 2026-10-05 after the deductible flags on silent cells were set (no count changed)
-**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run) and again on 2026-10-09 after 4 of their benefits gained canonical keys (third run), both at the end of this file: 0 errors, 15 warnings.
+**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run) again on 2026-10-09 after 4 of their benefits gained canonical keys (third run), and on 2026-10-11 after the importer gained 10 service categories (fourth run), all at the end of this file: 0 errors; 15 warnings in the second and third runs, 16 in the fourth.
 
 ## Setup
 
@@ -156,3 +156,19 @@ java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
 | `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 99 |
 
 The counts match the second run file by file: a `canonicalKey` sub-extension inside an existing `bps-unmapped-benefit` extension adds no message.
+
+## Fourth run: 2026-10-11, the 5 PBP Bundles after 10 new service categories
+
+**What changed.** `fhir/pbp-crosswalk.json` has 40 service categories, 33 with a canonical key (was 30 and 23): 7e1 mental health individual sessions, 6 home health, 2 skilled nursing facility, 16b4 dental cleaning, 16c1 dental restorative services, 17b2 eyeglasses, 13b over-the-counter items, 13c meals, 10b transportation and 14c4 fitness, all keyed (vocabulary 1.2.0, 114 entries). Each PBP example now writes 37 of the 40 (was 27 of 30). Of the 10 new benefits only the skilled nursing facility has an SBC benefit category code (`skilled-nursing`), so each Bundle places 15 benefits (was 14) and lists 22 in `bps-unmapped-benefit` extensions (was 13). The 10 SBC Bundles above are byte-identical to the third run's.
+
+**Result:** all 5 files pass with **0 errors**. 16 warnings. Same validator (`validator_cli.jar` 7.0.0, Git# 37795f3f571f), Java, packages and command as the second run.
+
+| File | Errors | Warnings | Information |
+|---|---|---|---|
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 | 120 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 | 114 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 12 | 119 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 | 120 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 115 |
+
+**Warnings explained (16).** The 15 of the third run, plus 1: the skilled nursing facility benefit on Aetna has a point-of-service cost (50% per stay), so it carries the text-only `Point-of-service option` qualifier (11 on Aetna, was 10). All 588 information messages are the extension slicing message, as above; there are 16 more than in the third run on 4 files and 15 more on Humana, from the extensions of the new benefits.

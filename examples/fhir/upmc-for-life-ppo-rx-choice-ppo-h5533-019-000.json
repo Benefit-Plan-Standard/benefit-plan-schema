@@ -15,7 +15,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>UPMC for Life PPO Rx Choice (PPO)</b></p><p>Carrier: UPMC for Life. Plan type: PPO. Period: 2027 to 2027.</p><p>14 benefits are placed in CARIN SBC benefit categories. 13 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document UPMC_FOR_LIFE_PPO_RX_CHOICE_PPO_H5533_019_000 (schema version 1.2.0).</p></div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>UPMC for Life PPO Rx Choice (PPO)</b></p><p>Carrier: UPMC for Life. Plan type: PPO. Period: 2027 to 2027.</p><p>15 benefits are placed in CARIN SBC benefit categories. 22 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document UPMC_FOR_LIFE_PPO_RX_CHOICE_PPO_H5533_019_000 (schema version 1.2.0).</p></div>"
         },
         "extension": [
           {
@@ -47,7 +47,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "CMS Plan Benefit Package (PBP) Benefits, contract year 2027, release \"PBP Benefits-2027\" (https://www.cms.gov/files/zip/pbp-benefits-2027.zip), downloaded 2026-10-06. Files read: pbp_Section_A.txt, pbp_Section_C.txt, pbp_Section_C_OON.txt, pbp_Section_C_POS.txt, pbp_Section_D.txt, pbp_b10_amb_trans.txt, pbp_b13_other_services.txt, pbp_b17_eye_exams_wear.txt, pbp_b18_hearing_exams_aids.txt, pbp_b1a_inpat_hosp.txt, pbp_b1b_inpat_hosp.txt, pbp_b2_snf.txt, pbp_b4_emerg_urgent.txt, pbp_b7_health_prof.txt, pbp_b8_clin_diag_ther.txt, pbp_b9_outpat_hosp.txt, PlanArea.txt, PlanRegionArea.txt. PBP key: pbp_a_hnumber \"H5533\", pbp_a_plan_identifier \"019\", segment_id \"0\" (written padded to 3 digits in plan_identifiers)."
+                "valueString": "CMS Plan Benefit Package (PBP) Benefits, contract year 2027, release \"PBP Benefits-2027\" (https://www.cms.gov/files/zip/pbp-benefits-2027.zip), downloaded 2026-10-06. Files read: pbp_Section_A.txt, pbp_Section_C.txt, pbp_Section_C_OON.txt, pbp_Section_C_POS.txt, pbp_Section_D.txt, pbp_b10_amb_trans.txt, pbp_b13_other_services.txt, pbp_b14_preventive.txt, pbp_b16_dental.txt, pbp_b17_eye_exams_wear.txt, pbp_b18_hearing_exams_aids.txt, pbp_b1a_inpat_hosp.txt, pbp_b1b_inpat_hosp.txt, pbp_b2_snf.txt, pbp_b4_emerg_urgent.txt, pbp_b6_home_health.txt, pbp_b7_health_prof.txt, pbp_b8_clin_diag_ther.txt, pbp_b9_outpat_hosp.txt, PlanArea.txt, PlanRegionArea.txt. PBP key: pbp_a_hnumber \"H5533\", pbp_a_plan_identifier \"019\", segment_id \"0\" (written padded to 3 digits in plan_identifiers)."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -119,7 +119,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Benefits: the 30 service categories in fhir/pbp-crosswalk.json (the workgroup MVP), 27 written. Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8)."
+                "valueString": "Benefits: the 40 service categories in fhir/pbp-crosswalk.json (the workgroup MVP), 37 written. Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8)."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -377,6 +377,195 @@
               {
                 "url": "category",
                 "valueString": "HEARING"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "MENTAL_HEALTH_INDIVIDUAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "mental_health_office_visit"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Mental health specialty services, individual sessions"
+              },
+              {
+                "url": "category",
+                "valueString": "BEHAVIORAL_HEALTH"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "HOME_HEALTH"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "home_health_care"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Home health services"
+              },
+              {
+                "url": "category",
+                "valueString": "HOME_HEALTH"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "DENTAL_CLEANING"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "dental_cleaning"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Dental cleaning (prophylaxis)"
+              },
+              {
+                "url": "category",
+                "valueString": "DENTAL"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "DENTAL_FILLINGS"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "dental_filling"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Dental restorative services (fillings)"
+              },
+              {
+                "url": "category",
+                "valueString": "DENTAL"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "EYEGLASSES"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "eyeglasses"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Eyeglasses (lenses and frames)"
+              },
+              {
+                "url": "category",
+                "valueString": "VISION"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "OTC_ITEMS"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "otc_allowance"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Over-the-counter (OTC) items"
+              },
+              {
+                "url": "category",
+                "valueString": "OVER_THE_COUNTER"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "MEALS"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "meals"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Meal benefit"
+              },
+              {
+                "url": "category",
+                "valueString": "MEALS"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "TRANSPORTATION"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "transportation"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Transportation services"
+              },
+              {
+                "url": "category",
+                "valueString": "TRANSPORTATION"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "FITNESS"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "fitness_benefit"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Fitness benefit"
+              },
+              {
+                "url": "category",
+                "valueString": "FITNESS"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
@@ -1576,6 +1765,95 @@
                   "text": "Occupational therapy services"
                 },
                 "requirement": "Authorization required (pbp_b7c_auth_yn \"1\")."
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "skilled-nursing",
+                  "display": "Skilled Nursing Care"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "SKILLED_NURSING_FACILITY"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "SKILLED_NURSING"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "2: Skilled Nursing Facility (SNF)"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Authorization required (pbp_b2_auth_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 2: Skilled Nursing Facility (SNF) (pbp_b2_snf.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "Values with no Benefit Plan Standard field, verbatim: pbp_b2_maxenr_yn \"2\"; pbp_b2_hosp_ben_period \"1\"; pbp_b2_bendesc_yn \"1\"; pbp_b2_bendesc_pr_hosp_yn \"1\"; pbp_b2_bendesc_pr_hosp_num \"1\"."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "skilled-nursing",
+                      "display": "Skilled Nursing Care"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "skilled_nursing_facility",
+                      "display": "Skilled nursing facility"
+                    }
+                  ],
+                  "text": "Skilled nursing facility"
+                },
+                "requirement": "Authorization required (pbp_b2_auth_yn \"1\")."
               }
             ]
           }
@@ -3703,6 +3981,221 @@
                               {
                                 "url": "note",
                                 "valueString": "pbp_Section_C_OON.txt group 109 (label \"7c\", pbp_c_oon_out_mc_bendesc_cats \"7c;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no accumulator slot (spec section 9.1)."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copaypct",
+                              "display": "Copay Percentage"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 40,
+                          "unit": "%",
+                          "system": "http://unitsofmeasure.org",
+                          "code": "%"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "skilled-nursing",
+                      "display": "Skilled Nursing Care"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "skilled-nursing",
+                          "display": "Skilled Nursing Care"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "skilled_nursing_facility",
+                          "display": "Skilled nursing facility"
+                        }
+                      ],
+                      "text": "Skilled nursing facility"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "basis",
+                                "valueString": "per_day"
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "unitRangeFrom",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "unitRangeTo",
+                                "valueInteger": 20
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b2_snf.txt cells: pbp_b2_copay_yn \"1\", pbp_b2_copay_mcs_int_num_t1 \"3\", pbp_b2_copay_mcs_amt_int1_t1 \"10.00\", pbp_b2_copay_mcs_bgnd_int1_t1 \"1\", pbp_b2_copay_mcs_endd_int1_t1 \"20\", pbp_b2_copay_mcs_amt_int2_t1 \"221.00\", pbp_b2_copay_mcs_bgnd_int2_t1 \"21\", pbp_b2_copay_mcs_endd_int2_t1 \"100\"."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 10,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 2
+                              },
+                              {
+                                "url": "basis",
+                                "valueString": "per_day"
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "unitRangeFrom",
+                                "valueInteger": 21
+                              },
+                              {
+                                "url": "unitRangeTo",
+                                "valueInteger": 100
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 221,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "basis",
+                                "valueString": "per_stay"
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_Section_C (pbp_c_oon_mc_bendesc_cats lists 2): pbp_c_oon_coins_snf_yn \"1\", pbp_c_oon_coins_snf_pct \"40\", pbp_c_oon_coins_snf_intrvl_num \"1\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no accumulator slot (spec section 9.1)."
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"

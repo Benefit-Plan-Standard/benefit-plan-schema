@@ -126,11 +126,11 @@ const GOLDEN_SHA256 = {
 // (examples/*.pbp.json), pinned 2026-10-06 when the converter learned the POS tier and
 // re-pinned 2026-10-09 when 18b1, 18a1, 17a1 and 7f_2 gained canonical keys.
 const PBP_BUNDLE_SHA256 = {
-  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': '408cf9c85421800313af4e39d932e0b258e3ade14c08ebadc9e2760c684ac677',
-  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': 'a7ccea01cf368f66171450821998f86d3f4e63407699b5351d4f5510026613db',
-  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '859520d65ab88bde369ba69a348d4c8151cbd2217186d41e84f748a3cca550df',
-  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': 'e87f3f9242a21aa2b81ac27a28926203e6631ed7d59d500fe33b764d93ff9870',
-  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': 'b942b743559afedda9d51f003ac8a6e86a04a95bd79843d393db4a14e2f7a2d4',
+  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': '695fc1a3601720f5237a0a070fa6d8d1d3224a9327cbcc51eb9574609b0fbb30',
+  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': '673ec53d8f672bf8825d8003d3f3926c3c6e7ff3a0c2efff04dba730d2076ec4',
+  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '775df82cb4d46a24c8778c21671cac40c493994870757b556e2a566a50a22480',
+  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': '3f336b5586c29e206220937d0108e3ae8c3557e2a9303e1df4d264c318aa1bc3',
+  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': 'b5888c7b9c52925c2ede51d1f311cfecc467b522fe7b517ccfd3553a4d8de9e5',
 };
 
 test('the 10 golden files are byte-identical to the pinned versions, and the converter reproduces them', () => {
@@ -229,7 +229,7 @@ test('the POS tier (Aetna H1609-028 golden) maps to out-of-network with the "Poi
   assert.deepStrictEqual(specialist[1].value, { value: 70, unit: 'USD', system: 'urn:iso:std:iso:4217', code: 'USD' });
   assert.ok(specialist[1].extension.some((e) => e.url.endsWith('/deductible-applies') && e.valueBoolean === true));
   const pos = benefits.flatMap((b) => b.cost).filter((c) => c.qualifiers && c.qualifiers[0].text === 'Point-of-service option');
-  assert.strictEqual(pos.length, 10);
+  assert.strictEqual(pos.length, 11);
   assert.ok(pos.every((c) => c.applicability.coding[0].code === 'out-of-network' && !c.qualifiers[0].coding));
   // A benefit priced in network and at the POS option has no placeholder; primary care (IN only) has 1.
   assert.ok(specialist.every((c) => c.type.text !== 'Not stated in the BPS document'));
