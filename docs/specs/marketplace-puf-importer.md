@@ -112,7 +112,7 @@ v1.1.0 `source_references[]` items hold `page_number`, `page_range` and `excerpt
 
 `fhir/marketplace-puf-crosswalk.json` maps every distinct `BenefitName` in the PY2026 Benefits and Cost Sharing PUF (273 names, verbatim, including the file's own spellings and truncations such as "Austism Spectrum Disorders" and "Community Health Worke") to a `canonical_key` in `vocabularies/canonical-benefits.json` or to `null`. The rule is the CARIN crosswalk's: a name maps only when the public-file benefit clearly is the canonical service; there is no nearest fit. Each row has `puf_benefit_name`, `canonical_key`, `category` (a code from `vocabularies/categories.json`, or `null` when none fits) and `note` (one line where the decision is not obvious).
 
-**Counts: 77 mapped, 196 unmapped.** Of the 196, 51 are adult or pediatric dental rows (categories `DENTAL` and `DENTAL_PEDIATRIC`), and most of the rest are state-specific benefits with no canonical key. Notable decisions:
+**Counts: 81 mapped, 192 unmapped** (77 and 196 before 2026-10-11). Of the 192, 51 are adult or pediatric dental rows (categories `DENTAL` and `DENTAL_PEDIATRIC`), and most of the rest are state-specific benefits with no canonical key. Notable decisions:
 
 | Public-file name | Decision | Why |
 |---|---|---|
@@ -127,9 +127,11 @@ v1.1.0 `source_references[]` items hold `page_number`, `page_range` and `excerpt
 | Other Practitioner Office Visit (Nurse, Physician Assistant) | `other_practitioner_office_visit` | Non-physician practitioner visits; not `primary_care` or `specialist` (vocabulary 1.2.0). |
 | Hearing Aids; Hearing Exam; Routine Eye Exam (Adult); Routine Foot Care | `hearing_aids`; `hearing_exam`; `routine_eye_exam`; `routine_foot_care` | Keys added in vocabulary 1.2.0. A plan that does not cover the service gets a benefit with `covered` false on every tier, as for any other mapped row. |
 | Diabetic Routine Foot Care; Annual Diabetic Eye Exam and the other diabetic eye exam spellings | `null` | Narrower than `routine_foot_care` and `routine_eye_exam` (diabetic care only). |
-| Cochlear Implants; Post-Cochlear Implant Aural Rehabilitation Therapy; Adult Optical (hardware); Eye Glasses for Adult(s) | `null` | No key. |
+| Cochlear Implants; Post-Cochlear Implant Aural Rehabilitation Therapy; Adult Optical (hardware) | `null` | No key. |
+| Eye Glasses for Adult; Eye Glasses for Adults; Fitness Benefit - Adult | `eyeglasses`; `fitness_benefit` | Keys added in vocabulary 1.2.0 on 2026-10-11 for the Medicare Advantage eyeglasses and fitness rows. "Active & Fit" stays `null`: it names a branded program. None of the 5 golden plans has these rows, so no example changed. |
 | Infusion Therapy | `null` | Site not stated; the vocabulary splits center and home infusion. |
-| Mental Health Office Visit, behavioral-health ER and urgent care rows | `null` | Narrower than the general keys. |
+| Mental Health Office Visit | `mental_health_office_visit` | Narrower than `mental_health_outpatient` (office visits only); the key was added in vocabulary 1.2.0 on 2026-10-11, with the Medicare Advantage individual-session row. None of the 5 golden plans has this row. |
+| Behavioral-health ER and urgent care rows | `null` | Narrower than the general keys. |
 | Telehealth, Virtual Visit, Telehealth - Primary Care and similar | `telehealth_visit` | |
 | Well Baby Visits and Care; Child Health Supervision | `well_child_visit` | |
 

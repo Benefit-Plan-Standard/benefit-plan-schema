@@ -4,8 +4,8 @@
   "plan_year": 2026,
   "counts": {
     "names": 273,
-    "mapped": 77,
-    "unmapped": 196
+    "mapped": 81,
+    "unmapped": 192
   },
   "map": [
     {
@@ -532,13 +532,13 @@
     },
     {
       "puf_benefit_name": "Eye Glasses for Adult",
-      "canonical_key": null,
+      "canonical_key": "eyeglasses",
       "category": "VISION",
       "note": null
     },
     {
       "puf_benefit_name": "Eye Glasses for Adults",
-      "canonical_key": null,
+      "canonical_key": "eyeglasses",
       "category": "VISION",
       "note": null
     },
@@ -556,7 +556,7 @@
     },
     {
       "puf_benefit_name": "Fitness Benefit - Adult",
-      "canonical_key": null,
+      "canonical_key": "fitness_benefit",
       "category": "FITNESS",
       "note": null
     },
@@ -838,9 +838,9 @@
     },
     {
       "puf_benefit_name": "Mental Health Office Visit",
-      "canonical_key": null,
+      "canonical_key": "mental_health_office_visit",
       "category": "BEHAVIORAL_HEALTH",
-      "note": "Narrower than mental_health_outpatient (office visits only)."
+      "note": "Narrower than mental_health_outpatient (office visits only); mental_health_office_visit is the office visit key (vocabulary 1.2.0)."
     },
     {
       "puf_benefit_name": "Mental Health Other",
