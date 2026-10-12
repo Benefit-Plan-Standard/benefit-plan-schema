@@ -3,6 +3,24 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] – DRAFT (2026-10-11), Medicare Advantage supplemental benefits and use case 2 settings
+
+No schema change. The vocabulary version stays 1.2.0.
+
+### Added
+
+- `vocabularies/canonical-benefits.json`: 114 entries (was 106). 8 keys: `mental_health_office_visit` (`behavioral_health`; an individual session, narrower than `mental_health_outpatient`), `dental_cleaning` and `dental_filling` (`dental`), `eyeglasses` (`vision`), `otc_allowance`, `meals` and `fitness_benefit` (`specialty_care`) and `transportation` (`other`, beside ambulance). `fhir/definitions/CodeSystem-canonical-benefits.json` rebuilt.
+- `fhir/pbp-crosswalk.json`: 10 rows, 40 in all, 33 with a key (was 30 and 23): 7e1 mental health individual sessions, 6 home health (`home_health_care`), 2 skilled nursing facility (`skilled_nursing_facility`), 16b4 dental cleaning, 16c1 dental restorative services, 17b2 eyeglasses (lenses and frames), 13b over-the-counter items, 13c meals, 10b transportation and 14c4 fitness. The 7 rows with no key are unchanged.
+- `scripts/from-pbp.js`: the skilled nursing facility through the inpatient reader with its own column names (no per-stay amount, no deductible amount column, additional days at another position) and the SNF columns of Section C for out-of-network and point-of-service stays; supplemental rows offered on a yes or no answer alone (13b, 13c, 10b); 14c "which benefits" columns read as lists of codes; dental rows with no offer column, written `covered` false with a "the plan filed no entry" note when the type of benefit is blank; a transportation row whose location type picks its category code; eyewear maximums from the combined, per-type or 17a columns; `carryover` on the OTC allowance; `shared_limit_id` `PBP_16B_MAXPLAN` (fillings under the 16b maximum) and `PBP_17A_MAXPLAN` (eyeglasses under the 17a maximum, on the routine eye exam row too).
+- 3 fixture files in `test/fixtures/pbp/2027/` (`pbp_b6_home_health.txt`, `pbp_b14_preventive.txt`, `pbp_b16_dental.txt`): 21 files, 272 records.
+
+### Changed
+
+- The 5 Medicare Advantage examples write 37 of the 40 rows each (was 27 of 30). Their 5 Bundles in `examples/fhir/` are rewritten and re-pinned: 15 benefits placed and 22 listed in `bps-unmapped-benefit` each (was 14 and 13; only the skilled nursing facility has an SBC benefit category code); 0 errors, 16 warnings (the 15 before, plus the skilled nursing facility's `Point-of-service option` qualifier on Aetna; fourth run in `examples/fhir/VALIDATION.md`). The 10 published Bundles are byte-identical.
+- Summary of Benefits checks: H2406-013 78 checks (68 MATCH, 10 READING), H1609-028 59 checks (43 MATCH, 16 READING), 0 differences; the new checks cover the new rows where the documents print a value.
+- `fhir/marketplace-puf-crosswalk.json`: Mental Health Office Visit `mental_health_office_visit`, Eye Glasses for Adult and Eye Glasses for Adults `eyeglasses`, Fitness Benefit - Adult `fitness_benefit`. 81 of 273 names mapped (was 77). Active & Fit stays unmapped (a branded program). None of the 5 Marketplace golden plans has these rows: their documents and Bundles are byte-identical and validate with the same counts.
+- Whole-file run over the 6,872 MVP plans of contract year 2027: 0 errors, 0 schema failures, 253,928 benefits written (`docs/specs/pbp-importer.md` section 13).
+
 ## [1.2.0] – DRAFT (2026-10-09), canonical benefit keys from the CMS public files
 
 No schema change. `canonical_key` stays an optional free string.

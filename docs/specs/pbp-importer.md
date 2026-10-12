@@ -1,6 +1,6 @@
 # Spec: CMS Plan Benefit Package (PBP) Benefits to BPS importer
 
-**Status:** Draft6446576345163143161164137,646025077053784312662751226909 2026-10-06. Phase 1 (sources, layout, MVP field map, 1 proven parse), phase 2 session 1 (the plan level), session 2 (the MVP benefits, checked line by line against the H2406-013-000 Summary of Benefits) and session 3 (decisions S1, N1, A5, C3 and 5; 5 golden files; the test on committed fixtures; the Summary of Benefits check script; sections 10 to 13) and session 4 (decision 4 confirmed on the Aetna H1609-028 Summary of Benefits; the converter maps the `POS` tier; the 5 golden files converted to FHIR; a second Summary of Benefits check) are done. Confirmed readings and readings still to confirm: end of section 7.
+**Status:** Draft, 2026-10-06; 10 service categories added 2026-10-11. Phase 1 (sources, layout, MVP field map, 1 proven parse), phase 2 session 1 (the plan level), session 2 (the MVP benefits, checked line by line against the H2406-013-000 Summary of Benefits) and session 3 (decisions S1, N1, A5, C3 and 5; 5 golden files; the test on committed fixtures; the Summary of Benefits check script; sections 10 to 13) and session 4 (decision 4 confirmed on the Aetna H1609-028 Summary of Benefits; the converter maps the `POS` tier; the 5 golden files converted to FHIR; a second Summary of Benefits check) are done, and on 2026-10-11 (session 5) the 8 Medicare Advantage benefits of the workgroup's list and the 2 use case 2 settings were added: mental health individual sessions, dental cleaning and fillings, eyeglasses, over-the-counter items, meals, transportation and fitness, plus skilled nursing facility and home health (section 5.2). Confirmed readings and readings still to confirm: end of section 7.
 **Reads with:** [`pbp-record-layout-notes.md`](pbp-record-layout-notes.md) (every PBP file, its key and grain), [`marketplace-puf-importer.md`](marketplace-puf-importer.md) (the pattern this importer follows), [`../medicare-advantage-notes.md`](../medicare-advantage-notes.md) (gaps G1 to G14), [`../../fhir/pbp-crosswalk.json`](../../fhir/pbp-crosswalk.json) (the benefit-to-column mapping)
 **Map:** this importer, the Marketplace importer and the converter in one diagram, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow)
 
@@ -13,7 +13,7 @@ This spec defines the second importer for the Benefit Plan Standard (BPS): the C
 - One direction: PBP files to BPS JSON. The importer never writes FHIR.
 - One plan in, one BPS v1.2.0 document out. A plan is 1 PBP key: contract (`pbp_a_hnumber`), plan (`pbp_a_plan_identifier`) and segment (`segment_id`), written `H2406-013-000` (section 4.1).
 - Medicare Advantage plan types only for the MVP: 01 HMO, 02 HMOPOS, 04 Local PPO, 31 Regional PPO. Part D-only plans (29, 30), PACE (20), MSA (07), PFFS (09) and cost plans (18) are refused until someone asks for them; the B files hold no cost shares for PACE, MSA and 3 cost plans anyway (layout notes, section 2).
-- Benefits: the workgroup MVP, 30 rows in `fhir/pbp-crosswalk.json` (section 5.2). Other service categories are not imported yet (section 8).
+- Benefits: the workgroup MVP, 40 rows in `fhir/pbp-crosswalk.json` (section 5.2). Other service categories are not imported yet (section 8).
 - The importer never adds a value the files do not contain. In particular it does not fill in Medicare-defined amounts (the Part A or Part B deductible, the Medicare-defined inpatient cost share) that the files name but do not state (section 7).
 - Nothing is dropped silently: a value with no BPS field goes to `source_references` (plan or benefit level) or to a tier or step `notes`, as in the Marketplace importer.
 - The schema is not changed. Section 9 lists the gaps. The only vocabulary change is `HMO_POS` in `vocabularies/plan-types.json` (decision 3, section 4.1).
@@ -51,10 +51,10 @@ The index page also lists CY 2026 (`pbp-benefits-2026`), CY 2026 JSON (`pbp-bene
 - **Where the files go.** `data/pbp/<year>/`, unzipped next to the zip. `data/` is in `.gitignore`.
 - **Download record.** `data/pbp/2027/download.json`: `downloaded` (2026-10-06), `source_page`, `index_page`, `release_label`, `report_period`, `quarter` (null, see layout notes Question 1), `urls`, `zip_last_modified`, `zip_bytes`, and `sha256` of the zip and each of the 144 files in it.
 - **Reading.** Tab-delimited, CRLF, header row, no quoting, read as Windows-1252 (layout notes, section 2). The files are streamed; each chunk decodes on its own because Windows-1252 is 1 byte per character. A record whose field count differs from the header, or a CR or LF inside a record, is an error. Columns are matched by lowercased name; a repeated name must hold the same value in both places or it is an error. File names are matched case-insensitively. No npm dependency is added.
-- **Files read.** `pbp_Section_A`, `pbp_Section_C`, `pbp_Section_C_OON` and `pbp_Section_C_POS` (the plan's groups), `pbp_Section_D`, the B files named in the crosswalk and the hospital tier files (`pbp_b1a_inpat_hosp`, `pbp_b1b_inpat_hosp`, `pbp_b2_snf`, `pbp_b4_emerg_urgent`, `pbp_b7_health_prof`, `pbp_b8_clin_diag_ther`, `pbp_b9_outpat_hosp`, `pbp_b10_amb_trans`, `pbp_b13_other_services`, `pbp_b17_eye_exams_wear`, `pbp_b18_hearing_exams_aids`), `PlanArea`, `PlanRegionArea`. One plan takes about 5 seconds, most of it the 172 MB `PlanArea.txt`.
+- **Files read.** `pbp_Section_A`, `pbp_Section_C`, `pbp_Section_C_OON` and `pbp_Section_C_POS` (the plan's groups), `pbp_Section_D`, the B files named in the crosswalk and the hospital tier files (`pbp_b1a_inpat_hosp`, `pbp_b1b_inpat_hosp`, `pbp_b2_snf`, `pbp_b4_emerg_urgent`, `pbp_b6_home_health`, `pbp_b7_health_prof`, `pbp_b8_clin_diag_ther`, `pbp_b9_outpat_hosp`, `pbp_b10_amb_trans`, `pbp_b13_other_services`, `pbp_b14_preventive`, `pbp_b16_dental`, `pbp_b17_eye_exams_wear`, `pbp_b18_hearing_exams_aids`), `PlanArea`, `PlanRegionArea`: 21 files since 2026-10-11 (`pbp_b6_home_health`, `pbp_b14_preventive` and `pbp_b16_dental` added). One plan takes about 5 seconds, most of it the 172 MB `PlanArea.txt`.
 - **Rows.** For each file, the rows whose `pbp_a_hnumber` and `pbp_a_plan_identifier` equal the key and whose `segment_id`, read as a number, equals the key's segment. More than 1 row in a 1-per-plan file is an error; no row in `pbp_Section_A` is an error. The out-of-network and point-of-service group files have 1 row per group.
 - **Output.** 1 BPS v1.2.0 document, checked against the v1.2.0 schema with the same local Ajv setup as the Marketplace importer before it is written. A document that fails is not written. `buildDocument` also returns warnings (conditions that do not stop the import); the CLI prints them to stderr. Golden files: `examples/<slug>.pbp.json` (section 13).
-- **Fixtures.** `test/fixtures/pbp/2027/`: the header and the golden plans' records of each of the 18 files read, cut byte for byte from the full files by `--write-fixtures`, with a `download.json` that keeps the release label and download date. Committed, 135 KB; `data/` is git-ignored, so they cannot live there. `.gitattributes` marks them `-text`, because the reader requires CRLF and the repository default is `eol=lf`.
+- **Fixtures.** `test/fixtures/pbp/2027/`: the header and the golden plans' records of each of the 21 files read, cut byte for byte from the full files by `--write-fixtures`, with a `download.json` that keeps the release label and download date. Committed, 129,724 bytes on 2026-10-11; `data/` is git-ignored, so they cannot live there. `.gitattributes` marks them `-text`, because the reader requires CRLF and the repository default is `eol=lf`.
 
 ## 4. Plan-level mapping
 
@@ -152,9 +152,11 @@ The plan's row in each B file the crosswalk names (exactly 1 row per plan; 0 row
 
 ### 5.2 Crosswalk
 
-`fhir/pbp-crosswalk.json` has 1 row per BPS benefit the importer writes, 30 rows: `benefit_id`, `service_name`, `pbp_code` (the category code as the file writes it in category lists: `7a`, `7f_2`, `18b1`), `pbp_label` (the dictionary's label, written as `raw_label`), `medicare_covered`, `file`, `canonical_key` (a key in `vocabularies/canonical-benefits.json` or `null`), `category`, `benefit_type`, and the columns read: `copay`, `coins`, `service_deductible`, `offered` and `amo` for supplemental benefits, `limits`, `auth`, `refer`, `quote` (columns with no field, quoted verbatim), and a one-line `note` where the decision is not obvious. Column names differ between categories (`pbp_b7a_copay_amt_mc_min`, `pbp_b7b_copay_mc_amt_min`, `pbp_b18a_copay_amt`), so every column is named; none is built from a pattern. Every named column was checked against the file headers on 2026-10-06.
+`fhir/pbp-crosswalk.json` has 1 row per BPS benefit the importer writes, 40 rows: `benefit_id`, `service_name`, `pbp_code` (the category code as the file writes it in category lists: `7a`, `7f_2`, `18b1`), `pbp_label` (the dictionary's label, written as `raw_label`), `medicare_covered`, `file`, `canonical_key` (a key in `vocabularies/canonical-benefits.json` or `null`), `category`, `benefit_type`, and the columns read: `copay`, `coins`, `service_deductible`, `offered` and `amo` for supplemental benefits, `limits`, `auth`, `refer`, `quote` (columns with no field, quoted verbatim), and a one-line `note` where the decision is not obvious. Column names differ between categories (`pbp_b7a_copay_amt_mc_min`, `pbp_b7b_copay_mc_amt_min`, `pbp_b18a_copay_amt`), so every column is named; none is built from a pattern. Every named column was checked against the file headers on 2026-10-06, and those of the 10 rows added on 2026-10-11 on that day (the test checks every column against the fixture headers on each run).
 
-The rule is the CARIN crosswalk's: a category maps only when it clearly is the canonical service; there is no nearest fit. **23 rows have a canonical key, 7 do not.** The 7 are still written, carried by `service_name` and `raw_label`, and listed in section 9.1.
+The rows added on 2026-10-11 use these further crosswalk fields: `inpatient` (2: the column names the `inpatient_acute` handler reads where they differ from 1a's), `offered.filled` and `offered.section` (16b4, 16c1: the dental file has no offer column, 5.4), `code` on `offered`, `copay`, `coins` and a limit option (14c4: the 14c "which benefits" columns are lists of codes, not position strings), `variant` (10b: the location type picks the category code and columns), limit `options` (17b2, 14c4: the maximum is in 1 of several sets of columns), and `carryover`, `label` and `with` on limits (13b, 10b). `via.label`, `via.source` and `shared_when.covers` name the shared maximum in the limit text (16c1 under 16b, 17b2 under 17a).
+
+The rule is the CARIN crosswalk's: a category maps only when it clearly is the canonical service; there is no nearest fit. **33 rows have a canonical key, 7 do not.** The 7 are still written, carried by `service_name` and `raw_label`, and listed in section 9.1.
 
 | `benefit_id` | PBP category | `canonical_key` | Note |
 |---|---|---|---|
@@ -184,6 +186,16 @@ The rule is the CARIN crosswalk's: a category maps only when it clearly is the c
 | `EYE_EXAM_ROUTINE` | 17a1 Routine Eye Exams | `routine_eye_exam` | Since vocabulary 1.2.0 (2026-10-09). |
 | `HEARING_AIDS` | 18b1 Prescription Hearing Aids (all types) | `hearing_aids` | Since vocabulary 1.2.0 (2026-10-09). |
 | `HEARING_AIDS_INNER_EAR`, `_OUTER_EAR`, `_OVER_THE_EAR` | 18b2, 18b3, 18b4 | `null` | Written only when the plan chooses that aid type (2 plans). |
+| `MENTAL_HEALTH_INDIVIDUAL` | 7e1 Individual Sessions for Mental Health Specialty Services | `mental_health_office_visit` | Since 2026-10-11. Position 2 (Medicare-covered Individual Sessions) of `pbp_b7e_copay_ehc` and `pbp_b7e_coins_ehc`, and the `mcis` columns; group sessions (7e2, `mcgs`) are quoted, not mapped. |
+| `HOME_HEALTH` | 6 Home Health Services | `home_health_care` | Since 2026-10-11. Same shape as 7a. |
+| `SKILLED_NURSING_FACILITY` | 2 Skilled Nursing Facility (SNF) | `skilled_nursing_facility` | Since 2026-10-11. The 1a reader with the SNF column names (5.5). Part B-only columns (`_bonly`) are quoted. |
+| `DENTAL_CLEANING` | 16b4 Prophylaxis (Cleaning) | `dental_cleaning` | Since 2026-10-11. The `pc` columns of 16b; the 16b maximum (`maxplan_pv`) and deductible (`ded_pv`) are written marked shared. Covered false with a not-filed note when `pbp_b16b_bendesc_pc_amo` is blank (5.4). |
+| `DENTAL_FILLINGS` | 16c1 Restorative Services | `dental_filling` | Since 2026-10-11. The `rs` columns of 16c; the dictionary title is Restorative Services, which plans describe as fillings and crowns (`pbp_b16c_bendesc_rs_desc`). The 16c maximum (`maxplan_cmp`) and deductible (`ded_cmp`) marked shared; the 16b maximum when `pbp_b16c_maxplan_cmp_type` is 1 (5.6). |
+| `EYEGLASSES` | 17b2 Eyeglasses (lenses and frames) | `eyeglasses` | Since 2026-10-11. The `egs` columns: offer position 3 of `pbp_b17b_bendesc_ehc`, cost-share position 4. Lenses only (`egl`, 17b3), frames only (`egf`, 17b4), contact lenses and upgrades are not mapped. Not written when the plan offers eyewear but not eyeglasses (lenses and frames). |
+| `OTC_ITEMS` | 13b OTC Items | `otc_allowance` | Since 2026-10-11. The allowance is the maximum plan benefit (5.6). |
+| `MEALS` | 13c Meal Benefit | `meals` | Since 2026-10-11. The file gives no number of meals, so only the maximum plan benefit is a limit. |
+| `TRANSPORTATION` | 10b Transportation Services (10b1 plan-approved location, 10b2 any location) | `transportation` | Since 2026-10-11. 1 row; `pbp_b10b_bendesc_trn` (1 code per plan) picks the location type (5.6). |
+| `FITNESS` | 14c4 Fitness Benefit | `fitness_benefit` | Since 2026-10-11. Offered when `pbp_b14c_bendesc_ehc` lists `14c4` (5.4). |
 
 Cardiac and pulmonary rehabilitation (3-1 to 3-4) carry visit limits only on their supplemental "additional services" and are not in this first set (section 8).
 
@@ -193,7 +205,7 @@ One BPS benefit per crosswalk row, in crosswalk order, except a supplemental row
 
 | BPS | Rule |
 |---|---|
-| `benefit_id`, `benefit_type`, `category`, `service_name`, `canonical_key` | From the crosswalk. `canonical_key` is omitted when `null`. `benefit_type` `medical`, `hearing` (18a, 18b) or `vision` (17a). |
+| `benefit_id`, `benefit_type`, `category`, `service_name`, `canonical_key` | From the crosswalk. `canonical_key` is omitted when `null`. `benefit_type` `medical`, `hearing` (18a, 18b), `vision` (17a, 17b2), `behavioral_health` (7e1), `dental` (16b4, 16c1) or `non_clinical` (13b, 13c, 10b, 14c4). |
 | `coverage_basis` | `medicare_covered` for a Medicare-covered category. For a supplemental one, the `amo` column: 2 Mandatory `supplemental_mandatory`, 3 Optional `supplemental_optional`, 4 Both `null` with a benefit `source_references` entry (question H1; 30 hearing aid rows). `null` on a supplemental benefit the plan does not offer. |
 | `raw_label` | The dictionary's category label, for example `7d: Physician Specialist Services`. |
 | `network_cost_shares` | 5.4 and 5.5. |
@@ -203,8 +215,9 @@ One BPS benefit per crosswalk row, in crosswalk order, except a supplemental row
 
 ### 5.4 Tier rows and `covered`
 
-- **Medicare-covered category: covered** (question D1, answered here: Medicare Advantage plans must cover these). The `IN` row has `covered: true` and the steps of 5.5. When the copay and coinsurance answers are both "No" the row has a $0 copay step whose note quotes both answers (decision S1, 7.12): primary care on 1,876 plans, inpatient on 111. When both answers are blank the benefit is not written, the warning `medicare-covered-cost-share-blank` is raised and a plan `source_references` entry names the category and quotes `pbp_a_ben_cov`: inpatient on the 117 Part B-only plans (`pbp_a_ben_cov` "2"), whose Part A categories the file leaves blank.
-- **Supplemental category.** `offered.yn` (`<p>_bendesc_yn`) 1 and position `offered.position` of `offered.ehc` chosen: covered, as above. `offered.yn` 2, or 1 with the position not chosen: `covered: false` on every network-class tier (`IN`, `OUT`, `POS`), empty `cost_shares`, `notes` quoting the cells (the Marketplace importer's not-covered row). For the 3 per-type hearing aid rows a type not chosen writes nothing; for `HEARING_AIDS` (all types) "not chosen" writes nothing when the plan offers hearing aids by type, and `covered: false` when `pbp_b18b_bendesc_yn` is 2 (1,720 plans). Blank `offered.yn` writes nothing and raises the warning `supplemental-offer-blank` (0 in CY 2027).
+- **Medicare-covered category: covered** (question D1, answered here: Medicare Advantage plans must cover these). The `IN` row has `covered: true` and the steps of 5.5. When the copay and coinsurance answers are both "No" the row has a $0 copay step whose note quotes both answers (decision S1, 7.12): primary care on 1,876 plans, inpatient on 111. When both answers are blank the benefit is not written, the warning `medicare-covered-cost-share-blank` is raised and a plan `source_references` entry names the category and quotes `pbp_a_ben_cov`: inpatient on the 117 Part B-only plans (`pbp_a_ben_cov` "2"), whose Part A categories the file leaves blank, and since 2026-10-11 the skilled nursing facility on the same 117 plans (234 warnings over the file).
+- **Supplemental category.** `offered.yn` (`<p>_bendesc_yn`) 1 and position `offered.position` of `offered.ehc` chosen: covered, as above. `offered.yn` 2, or 1 with the position not chosen: `covered: false` on every network-class tier (`IN`, `OUT`, `POS`), empty `cost_shares`, `notes` quoting the cells (the Marketplace importer's not-covered row). For the 3 per-type hearing aid rows a type not chosen writes nothing; for `HEARING_AIDS` (all types) "not chosen" writes nothing when the plan offers hearing aids by type, and `covered: false` when `pbp_b18b_bendesc_yn` is 2 (1,720 plans). Blank `offered.yn` writes nothing and raises the warning `supplemental-offer-blank` (0 in CY 2027). Rows with no `offered.ehc` (13b `pbp_b13b_bendesc_otc`, 13c `pbp_b13c_bendesc_service`, 10b `pbp_b10b_bendesc_yn`) are offered on `offered.yn` 1 alone. 14c4 reads `offered.ehc` as a list of codes: offered when `pbp_b14c_bendesc_ehc` lists `14c4` (for example `14c1;14c4;`), and its copay, coinsurance and maximum apply when `pbp_b14c_copay_ehc`, `pbp_b14c_coins_ehc` and `pbp_b14c_maxplan_ehc` list it. For eyeglasses (17b2), as for `HEARING_AIDS`, "not chosen" writes nothing when the plan offers other eyewear, and `covered: false` when `pbp_b17b_bendesc_yn` is 2.
+- **Dental (16b4, 16c1): no offer column.** `pbp_b16_dental.txt` has no "is this benefit offered" column for 16b or 16c. A service the plan filed has its "type of benefit" column (`pbp_b16b_bendesc_pc_amo`, `pbp_b16c_bendesc_rs_amo`: 2 Mandatory, 3 Optional, 4 Both) filled; that column gives `coverage_basis`. When it is blank the benefit is written `covered: false` on every network-class tier, and the tier notes and benefit `source_references` say that the plan filed no entry for this service in the PBP dental section, so it is not a filed "not covered" answer (decided 2026-10-11; H2406-013 has no 16c entry, and its Summary of Benefits lists preventive dental only).
 - **Every tier row** has `notes` quoting the cells it was read from, for example `pbp_b7_health_prof.txt cells: pbp_b7d_copay_yn "1", pbp_b7d_copay_amt_mc_min "0.00", pbp_b7d_copay_amt_mc_max "65.00", pbp_b7d_coins_yn "2", pbp_b7d_ded_yn "2".`
 - **`OUT` and `POS`** come from the plan's groups (5.8), and for inpatient from `pbp_Section_C` (5.5). A category no group lists gets no `OUT` or `POS` row: emergency and urgent care are in no out-of-network list on any plan, so they have an `IN` row only. A category the plan-level list `pbp_c_oon_mc_bendesc_cats` names but no group lists would raise the warning `oon-category-without-group` (0 in CY 2027).
 - **Hospital cost tiers.** When `pbp_b1a_cost_vary_tiers_yn` or `pbp_b1a_ad_cost_vary_tiers_yn` is 1, the inpatient benefit has 1 row per `IN_1A_TIER_<n>` read from the `_t<n>` columns, and no `IN` row.
@@ -216,8 +229,9 @@ The B files use 1 pattern per service; the crosswalk names each column.
 | Column | Dictionary | BPS |
 |---|---|---|
 | `copay.yn` | "Is there a copayment?" 1 Yes, 2 No, 3 Yes with a min & max | 1 or 3: a `copay` step; 2 or blank: none; any other value is an error |
-| `copay.ehc`, `copay.position` | "Which ... Services have a Copayment", a position string | When the category shares 1 `yn` column between services (8a, 8b, 9a, 10a, 7b, 7f, 17a, 18a, 18b by type), the step is written only when the service's position is 1 |
+| `copay.ehc`, `copay.position` | "Which ... Services have a Copayment", a position string | When the category shares 1 `yn` column between services (8a, 8b, 9a, 10a, 7b, 7e, 7f, 17a, 17b, 18a, 18b by type), the step is written only when the service's position is 1 |
 | `copay.min`, `copay.max` | Minimum, maximum copayment (NUM, 2 decimals) | equal: `amount`; different: `amount_min`, `amount_max`; minimum above maximum, or 1 blank, is an error |
+| `copay.code` | 14c only: the "which benefits" column is a list of codes (`14c1;14c4;`) | The step is written only when the list names the code |
 | `coins.*` | The same for coinsurance (whole percent) | equal: `rate` = pct / 100; different: `rate_min`, `rate_max` |
 | `basis` | | Written only where the dictionary title states it: `per_visit` (9a1, 7b, 7f), `per_aid` (18b), `per_day` or `per_stay` from `pbp_b9a_copay_obs_per` (observation; 3 Other quotes the description in the step `notes`) |
 | `coins.max_amount` | `pbp_b4a_max_visit`, `pbp_b4b_max_visit` "Maximum per visit amount" | `max_amount`, `max_basis` `per_visit` on the coinsurance step (1,603 emergency, 1,886 urgent care rows) |
@@ -229,6 +243,8 @@ Steps are numbered from 1: service deductible, copay, coinsurance (inpatient: pe
 **Ranges.** Different minimum and maximum columns are common: specialist on 1,226 of 4,204 plans with a 7d copay, urgent care on 1,610 of 4,680, outpatient hospital, ASC and diagnostic radiology on several thousand. **Reading (question C1, answered for H2406-013):** the minimum and maximum are the lowest and highest cost share among the services the category covers. The file shows it where the Summary of Benefits splits a row: 9a1 `$0`-`$550` is "$0 copay for a colonoscopy, $550 copay otherwise", 9b `$0`-`$500` the same, 8b1 `$0`-`$320` is "$0 copay for each diagnostic mammogram, $320 copay otherwise", while every row with 1 price has minimum equal to maximum (7a, 7c, 7i, 9a2, 4a). Where the Summary of Benefits prints 1 value against a file range (specialist `$0`-`$65` against $65, urgent care `$0`-`$50` against $50, mental health individual sessions `$0`-`$25` against $25), its $0 is on another row: "Virtual medical visits $0 copay" and "Virtual mental health visits $0 copay", priced inside the Medicare-covered category (`pbp_b7j_bendesc_yn` "2": no supplemental telehealth benefit). Over the file, 1,104 of the 1,226 specialist ranges and 1,585 of the 1,610 urgent care ranges start at $0, and the 7j answer does not separate them (644 Yes, 582 No among the specialist ranges). The file never says which service carries the minimum, so the importer writes the range as the file states it and never 1 end of it (gap 9.1: an unlabeled range).
 
 **Inpatient (1a), per tier `t`.** Copay: `pbp_b1a_copay_yn`; `pbp_b1a_mc_copay_cstshr_yn_t<t>` 1 means the Medicare-defined cost share, which the file does not state: no step, tier `notes` (gap 9.1). Otherwise `pbp_b1a_copay_mcs_amt_t<t>` ("Copayment for Medicare-covered stay") is a `per_stay` step when there are no intervals or it is not 0, and `pbp_b1a_copay_mcs_int_num_t<t>` (1 Zero, 2 One, 3 Two, 4 Three intervals) gives 1 `per_day` step per interval with `unit_range` `{from, to}` from `_bgnd_int<n>_t<t>` and `_endd_int<n>_t<t>`. A $0.00 per-stay amount beside intervals is quoted in the tier `notes` only (4,007 MVP plans; question C2 answered: it is the per-stay amount, and `pbp_b1a_hosp_ben_period` says whether the intervals restart per admission, quoted). Coinsurance: the same with `coins`. Additional days (1a1, supplemental), when `pbp_b1a_bendesc_ad_up_nmcs` position 2 is 1: further `per_day` steps from `_ad_` intervals, with a step note quoting the type (Mandatory or Optional) and `pbp_b1a_bendesc_lim_ad`; the file writes an unlimited span as end day `999` (H2406-013: days 91 to 999), written as is. Additional days chosen with the interval count `1` (Zero intervals) give no day range and no amount, so no step is written and the cell is quoted in the tier `notes` (H1609-028, whose Summary of Benefits prints "$0 for additional days"; section 13). Service deductible: `pbp_b1a_ded_yn` with `pbp_b1a_ded_amt_t<t>`; on the 39 plans that answer Yes with no amount, the stay is charged the Medicare-defined cost share, and the tier `notes` say so (no step). `OUT` and `POS`: `pbp_c_oon_*` and `pbp_c_pos_*` inpatient columns of Section C (coinsurance, copay, intervals, Medicare-defined flags, the inpatient deductible), when 1a is in `pbp_c_oon_mc_bendesc_cats` or `pbp_c_pos_mc_bendesc_subcats`.
+
+**Skilled nursing facility (2), since 2026-10-11.** The same reader with prefix `pbp_b2`, and the column names the crosswalk row's `inpatient` object gives where `pbp_b2_snf.txt` differs from 1a: there is no per-stay amount (`_copay_mcs_amt_t<t>`, `_coins_mcs_pct_t<t>`), so the stay is the day intervals only; there is no deductible amount column, so `pbp_b2_ded_yn` 1 is an error (blank on all 7,365 rows of the CY 2027 file); additional days (2-1) are position 1 of `pbp_b2_bendesc_ad_nmcs` (1a: position 2 of `_bendesc_ad_up_nmcs`), with the limit in `pbp_b2_benedesc_lim_ad` (spelled so in the file and the dictionary) and `pbp_b2_bendesc_ad`. Hospital cost tiers (`IN_2_TIER_<n>`, 4.2) and the Medicare-defined flags read as for 1a. `OUT` and `POS` come from the SNF columns of Section C, `pbp_c_oon_{coins,copay}_snf_*`, `pbp_c_oon_snf_ded_*` and the `pbp_c_pos_` equivalents, which have no benefit-type position string; the per-stay column there (`_coins_snf_pct`, `_copay_snf_amt`) reads as 1a's. The 100 Medicare-covered SNF days have no column; no limit is written for them.
 
 **`applies_to_deductible`** (decision: written where the file states it, omitted otherwise):
 
@@ -247,10 +263,15 @@ When a true flag refers to a deductible with no slot (Medicare-defined Part B de
 
 | Pattern | Columns | BPS `limits[]` |
 |---|---|---|
-| Quantity per period | `lim` (1 unlimited, 2 limited), `num`, `per`, `per_d` | `lim` 2: `type` from the crosswalk (`visits`, `treatments`, `hearing_aids`), `value`, `period` from the periodicity code (1 `per_3_years`, 2 `per_2_years`, 3 `per_year`, 4 `per_6_months`, 5 `per_3_months`, 6 `null`, 7 `per_month`), `raw_text` quoting the cells with the code's label and, for 6, the description. 1 or blank: no limit. |
+| Quantity per period | `lim` (1 unlimited, 2 limited), `num`, `per`, `per_d` | `lim` 2: `type` from the crosswalk (`visits`, `treatments`, `hearing_aids`, `pairs_of_eyeglasses`, `trips`), `value`, `period` from the periodicity code (1 `per_3_years`, 2 `per_2_years`, 3 `per_year`, 4 `per_6_months`, 5 `per_3_months`, 6 `null`, 7 `per_month`), `raw_text` quoting the cells with the code's label and, for 6, the description. 1 or blank: no limit. |
 | Dollar maximum | `<p>_maxplan_yn`, `_amt`, `_per`, `_per_d` | `type` `dollars`; `raw_text` quotes the cells, the per-ear and in-or-out-of-network answers, and which benefits the columns cover |
 | Hearing aid maximum covered under 18a | `pbp_b18b_maxplan_type` 1 "Covered under Hearing Exams Category (18a)" (34 plans) | The amount is `pbp_b18a_maxplan_amt`; the hearing aid and routine hearing exam limits both carry `shared_limit_id` `PBP_18A_MAXPLAN` (v1.2.0) |
-| Additional inpatient days | `pbp_b1a_bendesc_lim_ad` 2, `pbp_b1a_bendesc_amt_ad` | `type` `days`, `period` `per_benefit_period` (167 plans) |
+| Additional inpatient days | `pbp_b1a_bendesc_lim_ad` 2, `pbp_b1a_bendesc_amt_ad` | `type` `days`, `period` `per_benefit_period` (167 plans); SNF the same from `pbp_b2_benedesc_lim_ad`, `pbp_b2_bendesc_ad` |
+| Dental category maximum and deductible | 16b `pbp_b16b_maxplan_pv_*`, `pbp_b16b_ded_pv_*`; 16c `pbp_b16c_maxplan_cmp_*`, `pbp_b16c_ded_cmp_*` | On the cleaning (16b4) and fillings (16c1) rows, `raw_text` or the step `notes` naming the category the columns cover. `pbp_b16c_maxplan_cmp_type` 1 "Covered under Diagnostic and Preventive Dental (16b)": the fillings amount is the 16b maximum, and both dental rows carry `shared_limit_id` `PBP_16B_MAXPLAN` (H1036-068 $1,500, H1609-028 $1,000 per year) |
+| Eyewear maximum | `pbp_b17b_maxplan_yn`, `_type`; `pbp_b17b_comb_maxplan_*` (all eyewear); `pbp_b17b_indv_maxplan_bendesc` position 3 with `_indv_maxplan_amt_egs`, `_per_egs`, `_ind_maxplan_per_egs_d` | The combined maximum when `pbp_b17b_comb_maxplan_yn` is 1, else the eyeglasses maximum when position 3 is chosen. `pbp_b17b_maxplan_type` 1 "Covered under Eye exams Category (17a)": the amount is `pbp_b17a_maxplan_amt`, and the eyeglasses and routine eye exam limits carry `shared_limit_id` `PBP_17A_MAXPLAN` (H5425-140 $300 per year) |
+| Allowance carryover | `pbp_b13b_maxplan_prd_yn` "Does your Maximum Plan Benefit Coverage amount carry forward to the next period if it is unused?" | `carryover` on the OTC limit: 1 `next_period`, 2 `none` |
+| Transportation trips | `pbp_b10b_bendesc_lim_pal`, `_amt_pal`, `_per_pal` (plan-approved location) or the `_al` columns (any location), with `_tt_<l>` (1 One-way, 2 Round Trip, 3 Hours, 4 Days) | `type` `trips`; `raw_text` starts with the location type and quotes the trip type with its label (H1036-068: 50 one-way trips per year) |
+| Fitness maximum | `pbp_b14c_maxplan_yn`; `pbp_b14c_maxplan_ehc` listing `14c4` with `_maxplan_amt_mhc`, `_per_mhc` | `type` `dollars` when the list names 14c4 |
 
 Periodicity "Every year" is `per_year`; the files do not say plan or calendar year (7.5). Not a limit, and with no BPS field: the service-specific MOOP `<p>_maxenr_*` (quoted; gap 9.1).
 
@@ -333,26 +354,25 @@ Open question from session 4: **O1** (7.14), a covered category the POS or out-o
 
 | PBP content | Where it goes | Recoverable from the BPS document? |
 |---|---|---|
-| Service categories outside the crosswalk (1b, 2, 3, 5, 6, 7e, 7g, 7h, 7j, 7k, 9c, 9d, 10b, 11, 12, 13b to 13i, 14, 15, 16, 17b, 18c, 20) | Not read | No |
+| Service categories outside the crosswalk (1b, 3, 5, 7e2, 7g, 7h, 7j, 7k, 9c, 9d, 11, 12, 13d to 13i, 14 other than 14c4, 15, 16a, 16b other than 16b4, 16c other than 16c1, 17b other than 17b2, 18c, 20) | Not read, except the columns a crosswalked row quotes (7e2 group sessions on the 7e1 row) | No |
 | Which service carries a range's minimum | Not in the file | No |
 | Service-specific out-of-pocket maximums (`<p>_maxenr_*`) | Benefit `source_references` | Yes, as text |
 | Out-of-pocket maximum type, combined accumulators, Medicare-defined deductibles, Section C POS deductible and maximum | Plan `source_references` | Yes, as text |
-| Inpatient lifetime reserve days, upgrades, Part B-only stays, benefit period, cost sharing on discharge day | Benefit `source_references` (`pbp_b1a_hosp_ben_period`, `pbp_b1a_cost_discharge_yn`, upgrades) or not read (lifetime reserve day intervals) | Partly |
+| Inpatient lifetime reserve days, upgrades, Part B-only stays, benefit period, cost sharing on discharge day | Benefit `source_references` (`pbp_b1a_hosp_ben_period`, `pbp_b1a_cost_discharge_yn`, upgrades; for SNF `pbp_b2_hosp_ben_period`, `pbp_b2_cost_discharge_yn`, the prior hospital stay answers and the Part B-only `_bonly` columns) or not read (lifetime reserve day intervals) | Partly |
+| Mental health group sessions (7e2, `pbp_b7e_*_mcgs_*`), dental single cost per office visit (`pbp_b16b_*_ov_*`), meal type, fitness type, transportation mode | Benefit `source_references` | Yes, as text |
 | Out-of-network group maximum plan benefit (`pbp_c_oon_outpt_maxplan_*`) | Tier `notes` | Yes, as text |
 | Point-of-service authorization and referral (`pbp_c_pos_auth_*`, `pbp_c_pos_refer_*`) | Not read | No |
 | "Counts toward a plan-level deductible" (`pbp_b4a_deduct_yn`, `pbp_b4b_deduct_yn`), multiple-services maximum copay (`pbp_b8a_copay_max_yn`) | Benefit `source_references` | Yes, as text |
 | Hearing aid copays per 2 aids | Benefit `source_references` | Yes, as text |
 | Employer-only and SNP flags, UF and SSBCI group cost sharing, optional supplemental packages | Plan `source_references` (flags) or not read | Flags only |
 
-**Later, not mapped now.** Where the non-MVP supplemental benefits sit:
+**Later, not mapped now.** OTC items (13b), meals (13c), transportation (10b), fitness (14c4), dental cleaning (16b4) and fillings (16c1) and eyeglasses (17b2) are mapped since 2026-10-11, from the base B files only; their UF and SSBCI group files and optional supplemental step files (`pbp_b13_b19b_other_services_vbid_uf`, `pbp_step13`, `pbp_b10_b19b_amb_trans_vbid_uf`, `pbp_step10b`, `pbp_b14c_b19b_preventive_vbid_uf`, `pbp_step14`, `pbp_b16_b19b_dental_vbid_uf`, `pbp_step16`, `pbp_b17_b19b_eye_exams_wear_vbid_uf`, `pbp_step17b`) are not read. Where the rest sit:
 
 | Benefit | File | Column prefix | Also in |
 |---|---|---|---|
-| OTC items | `pbp_b13_other_services` | `pbp_b13b_` (53 columns; `pbp_b13b_bendesc_otc` 1 Yes, 2 No; `pbp_b13b_maxplan_amt`) | `pbp_b13_b19b_other_services_vbid_uf`, `pbp_step13` |
-| Meals | `pbp_b13_other_services` | `pbp_b13c_` (47 columns) | same |
-| Transportation | `pbp_b10_amb_trans` | `pbp_b10b_` (99 columns) | `pbp_b10_b19b_amb_trans_vbid_uf`, `pbp_step10b` |
-| Dental | `pbp_b16_dental` | `pbp_b16a_` Medicare-covered, `pbp_b16b_` preventive (238 columns), `pbp_b16c_` comprehensive (338) | `pbp_b16_b19b_dental_vbid_uf`, `pbp_step16` |
-| Vision eyewear | `pbp_b17_eye_exams_wear` | `pbp_b17b_` eyewear (198) | `pbp_b17_b19b_eye_exams_wear_vbid_uf`, `pbp_step17b` |
+| Dental, other services | `pbp_b16_dental` | `pbp_b16a_` Medicare-covered; `pbp_b16b_` oral exams, X-rays, other diagnostic, fluoride, other preventive (`oe`, `dx`, `ods`, `ft`, `ops`); `pbp_b16c_` endodontics, periodontics, prosthodontics, implants, oral surgery, orthodontics, adjunctive services | `pbp_b16_b19b_dental_vbid_uf`, `pbp_step16` |
+| Vision eyewear, other types | `pbp_b17_eye_exams_wear` | `pbp_b17b_` contact lenses (`cl`), eyeglass lenses (`egl`), frames (`egf`), upgrades (`upg`) | `pbp_b17_b19b_eye_exams_wear_vbid_uf`, `pbp_step17b` |
+| Other defined supplemental benefits | `pbp_b14_preventive` | `pbp_b14c_` codes other than 14c4 (health education, PERS, in-home support and 18 more) | `pbp_b14c_b19b_preventive_vbid_uf`, `pbp_step14` |
 | Cardiac and pulmonary rehabilitation | `pbp_b3_cardiac_rehab` | `pbp_b3_` (Medicare-covered and additional services, with visit limits) | `pbp_b3_b19b_cardiac_rehab_vbid_uf` |
 | Non-health SSBCI (food, produce, non-medical transportation) | `pbp_b13i_b19b_services_vbid_ssbci`, `pbp_b13i_b19b_other_services_vbid_ssbci` | `pbp_b13i_` | |
 
@@ -386,9 +406,11 @@ Each value below is carried verbatim in `source_references` (plan or benefit lev
 | Regions of regional PPOs (`PlanRegionArea`; 73 plans) | Counties only | `source_references` | `service_area.regions[]` (`code`, `name`) |
 | Employer-only plan, SNP and SNP type (`pbp_a_eghp_yn`, `pbp_a_special_need_flag`, `pbp_a_special_need_plan_type`) | No field | `source_references` | `eligibility` object (`employer_group_only`, `special_needs_type`) |
 | Hospital cost-tier membership (which facilities are tier 1) | The files do not name them | Tier `description` | None needed: `provider_set` exists; the data is missing |
-| Services with no canonical key: hearing aids by single type (3 rows: 18b2, 18b3, 18b4), Medicare-covered hearing exams (18a), Medicare-covered eye exams (17a), Medicare-covered podiatry (7f), physical therapy and speech-language pathology combined (7i) | No `canonical_key` in `vocabularies/canonical-benefits.json` | Written by `service_name` and `raw_label`, `canonical_key` omitted | Vocabulary 1.2.0 (2026-10-09) added `hearing_aids` (18b1), `hearing_exam` (18a1), `routine_eye_exam` (17a1) and `routine_foot_care` (7f_2); each names the routine, supplemental service. Still open: keys for the Medicare-covered rows and the single aid types, a `podiatry` key, and a combined key for 7i |
+| Services with no canonical key: hearing aids by single type (3 rows: 18b2, 18b3, 18b4), Medicare-covered hearing exams (18a), Medicare-covered eye exams (17a), Medicare-covered podiatry (7f), physical therapy and speech-language pathology combined (7i) | No `canonical_key` in `vocabularies/canonical-benefits.json` | Written by `service_name` and `raw_label`, `canonical_key` omitted | Vocabulary 1.2.0 (2026-10-09) added `hearing_aids` (18b1), `hearing_exam` (18a1), `routine_eye_exam` (17a1) and `routine_foot_care` (7f_2); each names the routine, supplemental service. On 2026-10-11 the same version added `mental_health_office_visit` (7e1), `dental_cleaning` (16b4), `dental_filling` (16c1), `eyeglasses` (17b2), `otc_allowance` (13b), `meals` (13c), `transportation` (10b) and `fitness_benefit` (14c4); 2 and 6 use the existing `skilled_nursing_facility` and `home_health_care`. The 7 rows with no key are unchanged. Still open: keys for the Medicare-covered rows and the single aid types, a `podiatry` key, and a combined key for 7i |
 | UF and SSBCI group cost sharing (`pbp_vbid_group_id`) | Population-specific cost sharing, gap G13, open | Not read for the MVP | G13 `applies_to_population` |
 | Optional supplemental packages (`pbp_Section_D_opt`, step files) | Riders, gap G12, open | Not read for the MVP | G12 `riders[]` |
+| A dental service the plan filed no entry for (16b, 16c have no offer column; H2406-013 16c) | `covered: false` cannot say "not filed" apart from a filed "not covered" | `covered: false` with tier notes and a benefit `source_references` entry saying the plan filed no entry (5.4) | `network_cost_shares[].not_covered_reason` (for example `not_filed`, `excluded`) |
+| Mental health group sessions (7e2) beside individual sessions (7e1) | 1 benefit per session type would need a second key or a qualifier | 7e1 written; the 7e2 `mcgs` columns quoted on it | A `mental_health_group_session` key, or `place_of_service`-style session qualifiers |
 
 ### 9.2 In BPS, not in the PBP files
 
@@ -407,8 +429,8 @@ Each value below is carried verbatim in `source_references` (plan or benefit lev
 First run on 2026-10-06 (session 3) over the 5 golden files; updated in session 4:
 
 - **`POS` maps since session 4.** Session 3's converter refused the tier (`error: network tier "POS" is not IN, OUT or a second in-network tier`), so no HMO-POS plan reached FHIR. `scripts/to-insuranceplan.js` now maps `POS` to `applicability` `out-of-network` with the text-only qualifier `Point-of-service option`, as it maps `IN2` (converter spec 6.3, which cites the H1609-028 Summary of Benefits and Plan Finder). The 10 published Bundles are byte-identical before and after.
-- **All 5 convert** to 1 `Bundle` each (`InsurancePlan` and `Organization`), written to `examples/fhir/` under the converter's naming (the `InsurancePlan` id, from `plan_id`; section 13). Each places the benefits with a crosswalked canonical key under the SBC categories and lists the rest by name in `bps-unmapped-benefit` (the 7 with no canonical key; `hearing_aids`, `hearing_exam`, `routine_eye_exam` and `routine_foot_care`, which have no SBC benefit category code; and `observation_care`, `radiation_therapy`, `chiropractic_care`, `acupuncture`, which `fhir/carin-sbc-crosswalk.json` does not place, as they apply). The hospital cost tiers of H5533-019 (`IN_1A_TIER_1`, `IN_1A_TIER_2`, `tier_class` `cost_designation`) reach FHIR as cost qualifiers with the tier name as text. H1609-028 has 10 `Point-of-service option` entries.
-- **HL7 FHIR validator: validated on 2026-10-06 and again on 2026-10-09.** All 5 Bundles pass with 0 errors (15 warnings, 14 of them text-only `cost.qualifiers`, 1 the Aetna `plan.type`; section 13, `examples/fhir/VALIDATION.md`).
+- **All 5 convert** to 1 `Bundle` each (`InsurancePlan` and `Organization`), written to `examples/fhir/` under the converter's naming (the `InsurancePlan` id, from `plan_id`; section 13). Each places the benefits with a crosswalked canonical key under the SBC categories and lists the rest by name in `bps-unmapped-benefit` (the 7 with no canonical key; `hearing_aids`, `hearing_exam`, `routine_eye_exam`, `routine_foot_care`, and since 2026-10-11 `mental_health_office_visit`, `home_health_care`, `dental_cleaning`, `dental_filling`, `eyeglasses`, `otc_allowance`, `meals`, `transportation` and `fitness_benefit`, which have no SBC benefit category code; and `observation_care`, `radiation_therapy`, `chiropractic_care`, `acupuncture`, which `fhir/carin-sbc-crosswalk.json` does not place, as they apply). `skilled_nursing_facility` is placed under `skilled-nursing`. The hospital cost tiers of H5533-019 (`IN_1A_TIER_1`, `IN_1A_TIER_2`, `tier_class` `cost_designation`) reach FHIR as cost qualifiers with the tier name as text. H1609-028 has 11 `Point-of-service option` entries (10 before the skilled nursing facility row).
+- **HL7 FHIR validator: validated on 2026-10-06, 2026-10-09 and 2026-10-11.** All 5 Bundles pass with 0 errors (2026-10-11: 16 warnings, 15 of them text-only `cost.qualifiers`, 1 the Aetna `plan.type`; section 13, `examples/fhir/VALIDATION.md`).
 - **The SBC Plan Type value set has no HMO-POS code** (1,273 CY2027 plans). Found by the validator on H1609-028: the converter emits `plan.type` as text, which raises 1 warning on the Aetna Bundle (the binding is extensible, so it is not an error). Candidate third ticket against the CARIN Digital Insurance Card IG: add an HMO-POS code to the SBC Plan Type value set.
 
 ## 10. Determinism
@@ -422,15 +444,15 @@ First run on 2026-10-06 (session 3) over the 5 golden files; updated in session 
 | Text | Cells are quoted verbatim as `column "value"`; names are trimmed; nothing else is normalized. |
 | Serialization | `JSON.stringify(doc, null, 2)` plus `\n`, UTF-8, LF line endings. |
 
-**Checked on 2026-10-06, and again on 2026-10-09 after 4 crosswalk rows gained canonical keys.** Each of the 5 golden plans imported twice from the full files with the CLI: both runs and the committed golden file have the same SHA-256.
+**Checked on 2026-10-06, again on 2026-10-09 after 4 crosswalk rows gained canonical keys, and again on 2026-10-11 after the 10 rows were added.** Each of the 5 golden plans imported twice from the full files with the CLI: both runs and the committed golden file have the same SHA-256. The values of 2026-10-11:
 
 | Plan | SHA-256 (first 16 hex digits), run 1 = run 2 = golden |
 |---|---|
-| H2406-013-000 | `97bc5d9e287b836b` |
-| H1036-068-000 | `3894377c23c5cbbb` |
-| H1609-028-000 | `0cc8f86e4a516e6a` |
-| H5533-019-000 | `09ec34e05166b242` |
-| H5425-140-000 | `db67c676aa9c0a73` |
+| H2406-013-000 | `ed4ab2859e5c6bc4` |
+| H1036-068-000 | `10c80aa281dadedb` |
+| H1609-028-000 | `7aac9050a8e40ada` |
+| H5533-019-000 | `3d873e38ef19d678` |
+| H5425-140-000 | `9f351e19a3c25a8b` |
 
 The test checks the same on every run, from the fixtures (a second build of each plan is byte-identical) and, when the full files are present, from the full files. A run over every MVP plan of the CY 2027 file gave 0 errors (section 13).
 
@@ -488,27 +510,29 @@ CMS updates the PBP Benefits files during the year and publishes a new contract 
 
 Written by `node scripts/from-pbp.js --write-golden` from the full CY 2027 files and never by hand. Slug: carrier and plan name, text in parentheses dropped, cut back at `_` to 64 characters, lowercased, `_` changed to `-`, as the Marketplace importer names its examples; when 2 golden plans would share a slug, the contract-plan-segment is appended to both (none do).
 
-| File | Bytes | Plan | Type | Why |
+Each writes 37 of the 40 crosswalk rows (2026-10-11; 27 of 30 before): the 3 single-type hearing aid rows are not written on any of them.
+
+| File | Bytes (2026-10-11) | Plan | Type | Why |
 |---|---|---|---|---|
-| `unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json` | 64,960 | H2406-013-000 AARP Medicare Advantage from UHC FL-0021 (PPO), UnitedHealthcare, FL | Local PPO | The Summary of Benefits check plan; decision 1 out-of-network deductible; ranges; emergency note (decision 5) |
-| `humana-humana-gold-plus-h1036-068.pbp.json` | 46,277 | H1036-068-000 Humana Gold Plus H1036-068 (HMO), Humana, FL | HMO | No deductible (decision 2); copay ranges; acupuncture limit |
-| `aetna-medicare-aetna-medicare-select-extra.pbp.json` | 57,748 | H1609-028-000 Aetna Medicare Select Extra (HMO-POS), Aetna Medicare, FL | HMO-POS | Point-of-service groups; decision 4 POS deductible; Section C quoted |
-| `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | 63,713 | H5533-019-000 UPMC for Life PPO Rx Choice (PPO), UPMC for Life, PA | Local PPO | Inpatient hospital cost tiers (`IN_1A_TIER_1` $175 and `IN_1A_TIER_2` $200 per day, days 1 to 3); out-of-network hearing aids at a $5,000 copay, as the file states (group 181) |
-| `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | 45,309 | H5425-140-000 SCAN Costco Medicare Advantage (HMO), SCAN Health Plan, CA | HMO | Hearing aids under the 18a maximum ($400 per year, `shared_limit_id` `PBP_18A_MAXPLAN` on hearing aids and routine hearing exams); 14 decision S1 $0 steps |
+| `unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json` | 84,100 | H2406-013-000 AARP Medicare Advantage from UHC FL-0021 (PPO), UnitedHealthcare, FL | Local PPO | The Summary of Benefits check plan; decision 1 out-of-network deductible; ranges; emergency note (decision 5) |
+| `humana-humana-gold-plus-h1036-068.pbp.json` | 63,798 | H1036-068-000 Humana Gold Plus H1036-068 (HMO), Humana, FL | HMO | No deductible (decision 2); copay ranges; acupuncture limit |
+| `aetna-medicare-aetna-medicare-select-extra.pbp.json` | 75,529 | H1609-028-000 Aetna Medicare Select Extra (HMO-POS), Aetna Medicare, FL | HMO-POS | Point-of-service groups; decision 4 POS deductible; Section C quoted |
+| `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | 86,050 | H5533-019-000 UPMC for Life PPO Rx Choice (PPO), UPMC for Life, PA | Local PPO | Inpatient hospital cost tiers (`IN_1A_TIER_1` $175 and `IN_1A_TIER_2` $200 per day, days 1 to 3); out-of-network hearing aids at a $5,000 copay, as the file states (group 181) |
+| `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | 62,537 | H5425-140-000 SCAN Costco Medicare Advantage (HMO), SCAN Health Plan, CA | HMO | Hearing aids under the 18a maximum ($400 per year, `shared_limit_id` `PBP_18A_MAXPLAN` on hearing aids and routine hearing exams); 14 decision S1 $0 steps |
 
 ### FHIR Bundles and HL7 validation
 
 Since session 4 (2026-10-06) the 5 golden files are also converted with `scripts/to-insuranceplan.js` into `examples/fhir/`, named as the 10 SBC Bundles are: the `InsurancePlan` id (`plan_id` lowercased, `_` changed to `-`) plus `.json`. `node scripts/to-insuranceplan.js --write-golden` writes them with the 10; `scripts/to-insuranceplan.test.js` checks each against its file byte for byte and against a pinned SHA-256. `scripts/publish-fhir.js` reads only `examples/*_example.json`, so they are not published to the docs site, and the 10 published Bundles are byte-identical before and after the change (checked against `HEAD` and the pinned hashes).
 
-| Bundle (`examples/fhir/`) | Plan | Bytes | Placed / unmapped benefits | `cost[]` entries | Placeholders | Text-only qualifiers |
+| Bundle (`examples/fhir/`) | Plan | Bytes (2026-10-11) | Placed / unmapped benefits | `cost[]` entries | Placeholders | Text-only qualifiers |
 |---|---|---|---|---|---|---|
-| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | H2406-013-000 | 163,303 | 14 / 13 | 30 | 2 | 0 |
-| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | H1036-068-000 | 142,572 | 14 / 13 | 29 | 13 | 0 |
-| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | H1609-028-000 | 160,596 | 14 / 13 | 29 | 4 | 10 (`Point-of-service option`) |
-| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | H5533-019-000 | 163,544 | 14 / 13 | 31 | 2 | 4 (hospital tiers) |
-| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | H5425-140-000 | 137,165 | 14 / 13 | 28 | 13 | 0 |
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | H2406-013-000 | 183,528 | 15 / 22 | 33 | 2 | 0 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | H1036-068-000 | 159,575 | 15 / 22 | 31 | 13 | 0 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | H1609-028-000 | 180,562 | 15 / 22 | 32 | 4 | 11 (`Point-of-service option`) |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | H5533-019-000 | 183,324 | 15 / 22 | 34 | 2 | 4 (hospital tiers) |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | H5425-140-000 | 154,727 | 15 / 22 | 30 | 13 | 0 |
 
-**HL7 FHIR validator: validated on 2026-10-06, and again on 2026-10-09 after 4 benefits gained canonical keys, with the same counts.** `validator_cli.jar` 7.0.0 (Git# 37795f3f571f, built 2026-10-06T19:02:34Z), OpenJDK 17.0.19, FHIR 4.0.1, packages `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions`. The command, the one `examples/fhir/VALIDATION.md` gives, limited to the 5 files, from the repository root (the latest `validator_cli.jar` is at https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar; the jar is git-ignored and downloaded per run, with its version recorded; `-Dfile.encoding=UTF-8` is there because the validator warns without it):
+**HL7 FHIR validator: validated on 2026-10-06, again on 2026-10-09 after 4 benefits gained canonical keys (the same counts), and on 2026-10-11 after the 10 rows were added (the table below).** `validator_cli.jar` 7.0.0 (Git# 37795f3f571f, built 2026-10-06T19:02:34Z), OpenJDK 17.0.19, FHIR 4.0.1, packages `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions`. The command, the one `examples/fhir/VALIDATION.md` gives, limited to the 5 files, from the repository root (the latest `validator_cli.jar` is at https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar; the jar is git-ignored and downloaded per run, with its version recorded; `-Dfile.encoding=UTF-8` is there because the validator warns without it):
 
 ```
 java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
@@ -523,19 +547,19 @@ java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
 
 | File | Errors | Warnings | Information |
 |---|---|---|---|
-| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 | 104 |
-| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 | 99 |
-| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 11 | 103 |
-| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 | 104 |
-| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 99 |
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 | 120 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 | 114 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 12 | 119 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 | 120 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 115 |
 
-All 5 pass with 0 errors. The 15 warnings: 14 are text-only `cost.qualifiers` (10 `Point-of-service option` on Aetna, 4 hospital cost tier names on UPMC), because the Cost Tier value set has only `value-choice`, `standard` and `virtual`; 1 is the Aetna `plan.type`, because the SBC Plan Type value set has no HMO-POS code (section 9.3). The information messages are the extension slicing messages, as for the SBC Bundles. The full record is the second and third runs in `examples/fhir/VALIDATION.md`.
+All 5 pass with 0 errors. The 16 warnings: 15 are text-only `cost.qualifiers` (11 `Point-of-service option` on Aetna, the 11th on the skilled nursing facility row, 4 hospital cost tier names on UPMC), because the Cost Tier value set has only `value-choice`, `standard` and `virtual`; 1 is the Aetna `plan.type`, because the SBC Plan Type value set has no HMO-POS code (section 9.3). The information messages are the extension slicing messages, as for the SBC Bundles. The full record is the second, third and fourth runs in `examples/fhir/VALIDATION.md`.
 
 A Bundle with errors is fixed in the importer or the converter and regenerated, never edited by hand.
 
 ### Fixtures
 
-`test/fixtures/pbp/2027/` holds the 18 files the importer reads (section 3), each with its original header line and the 5 golden plans' records, byte for byte (257 records, 135 KB), plus `download.json` (description, download date, release label, the 5 plans, the record count per file). Written by `node scripts/from-pbp.js --write-fixtures`. The importer reads them through the same streaming reader as the full files (`--data test/fixtures/pbp`).
+`test/fixtures/pbp/2027/` holds the 21 files the importer reads (section 3), each with its original header line and the 5 golden plans' records, byte for byte (2026-10-11: 272 records, 129,724 bytes with `download.json`), plus `download.json` (description, download date, release label, the 5 plans, the record count per file). Written by `node scripts/from-pbp.js --write-fixtures`. The importer reads them through the same streaming reader as the full files (`--data test/fixtures/pbp`).
 
 ### The test
 
@@ -553,6 +577,8 @@ A Bundle with errors is fixed in the importer or the converter and regenerated, 
 
 **Output on 2026-10-06**, with the full files present: `tests 28, pass 28, fail 0, skipped 0` (about 20 seconds). In a copy of the repository without `data/`: `tests 28, pass 23, fail 0, skipped 5` (about 1.5 seconds). The Marketplace importer test (18 pass) and the converter test (62 pass) pass unchanged. **Session 4, 2026-10-06:** the same 28 pass here; the converter test has 65 (the 62, 2 of them now expecting the 5 PBP Bundles beside the 10 in `examples/fhir/`, and 3 new: the PBP Bundles, the `POS` tier on the Aetna golden file, and a misnamed point-of-service tier); the Marketplace importer test 18.
 
+**Session 5, 2026-10-11** (the 10 rows), with the full files present: `tests 28, pass 28, fail 0`. The converter test: 65 pass (the 5 PBP Bundles re-pinned; the Aetna golden file has 11 `Point-of-service option` entries, 10 before). The Marketplace importer test: 22 pass. The crosswalk test skips the non-column keys the new rows use (`code`, `section_c`, `section`, `label`, `source`, `covers`, `codes`), and the H2406-013 check test expects 68 MATCH, 10 READING.
+
 ### Summary of Benefits check
 
 `scripts/pbp-sob-check.js <document.json> <expectations.json>` compares a document with the values its Summary of Benefits prints. Expectations: 1 JSON per plan in `docs/specs/pbp-sob-checks/`, `{plan, document, golden, spec, checks}`, where each check is `{item, page, printed?, expected, path, expected_reading?, note?}`:
@@ -562,6 +588,8 @@ A Bundle with errors is fixed in the importer or the converter and regenerated, 
 - `expected_reading`: on a row where the importer's reading differs from the printed value on purpose, the value the document holds instead; `note` says why. `printed` is the document's text.
 
 Each check prints `MATCH`, `READING` (the expected reading, not the printed value) or `DIFFERENCE`; the exit code is 1 when there is a difference. The checker is plain Node.js with no dependency; reading the PDF (`pdftotext -layout`, `pdftotext -raw`) stays a maintainer step that produces the expectations file.
+
+**Since 2026-10-11** both expectation files also check the 10 new rows where the Summary of Benefits prints a value, with the page: H2406-013 17 more checks (mental health individual sessions, skilled nursing facility, home health, dental cleaning, fillings not listed, eyewear, fitness), 78 in all, `78 checks: 68 MATCH, 10 READING, 0 DIFFERENCE`; H1609-028 26 more (the same, plus the $1,000 dental allowance shared by cleanings and fillings, the $35 quarterly OTC allowance and routine transportation "Not Covered"), 59 in all, `59 checks: 43 MATCH, 16 READING, 0 DIFFERENCE`. The new READING rows: the mental health range $0-$25 against "$25 copay" (H2406-013, 5.5), "up to 100 days" in a SNF (both plans; no column), the cleanings authorization (H1609-028: the page's sentence covers the whole dental section, `pbp_b16b_auth_pc_yn` "2"), and 4 H1609-028 "Not Covered" out-of-network rows with no POS row (question O1: mental health individual sessions, dental, eyeglasses, fitness). Neither document prints a transportation trip limit or a meal benefit for a plan that offers them, so those 2 limits are checked by the test only. The outputs below are those of 2026-10-06.
 
 `docs/specs/pbp-sob-checks/H2406-013-000.json` holds session 2's check table as 61 checks. The 7 table rows that differ from the printed value carry `expected_reading`; they are 8 checks, because the routine foot care row also covered the routine eye exam. Output on 2026-10-06 for the golden file:
 
@@ -748,6 +776,8 @@ READING    p5   Hearing aids, out of network [HEARING_AIDS]
 ### Whole-file run
 
 `scratch/pbp-bulk2.js` over the CY 2027 file on 2026-10-06, after the session 3 decisions: **6,872 MVP plans built, 0 errors, 0 schema failures, 117 warnings**; 185,431 benefits written. Warnings by kind: `medicare-covered-cost-share-blank` 117 (inpatient on the 117 Part B-only plans, not written); `service-in-more-than-one-group` 0; `oon-category-without-group` 0; `supplemental-offer-blank` 0. `network_tier` values: `IN` 7,731, `OUT` 329, `POS` 95, `null` 48. Decision S1: 14,109 $0 steps. Decision 5: 3,757 plans. Decision A5: 12 plans.
+
+**Again on 2026-10-11, after the 10 rows were added:** 6,872 MVP plans built, 0 errors, 0 schema failures; 253,928 benefits written. Warnings: `medicare-covered-cost-share-blank` 234 on 117 plans (inpatient and skilled nursing facility on the Part B-only plans); the other 3 kinds 0. `network_tier` values, decision 5 (3,757 plans) and decision A5 (12 plans) unchanged. Decision S1: 29,536 $0 steps. Not covered on every tier: dental cleaning 1,609 plans, fillings 2,201, eyeglasses 1,617, fitness 2,077, meals 4,191, OTC items 2,934, transportation 5,056. Coverage basis "Both" (`null`, question H1): dental cleaning 647, fillings 355, eyeglasses 213, transportation 12, hearing aids 30.
 
 ### Open questions
 
