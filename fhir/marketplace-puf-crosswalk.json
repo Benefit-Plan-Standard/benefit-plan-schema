@@ -4,8 +4,8 @@
   "plan_year": 2026,
   "counts": {
     "names": 273,
-    "mapped": 81,
-    "unmapped": 192
+    "mapped": 84,
+    "unmapped": 189
   },
   "map": [
     {
@@ -130,9 +130,9 @@
     },
     {
       "puf_benefit_name": "Basic Dental Care - Adult",
-      "canonical_key": null,
+      "canonical_key": "dental_basic_adult",
       "category": "DENTAL",
-      "note": null
+      "note": "The class (fillings, simple extractions as the issuer defines it), not the single service dental_filling (vocabulary 1.2.0, 2026-10-13)."
     },
     {
       "puf_benefit_name": "Basic Dental Care - Child",
@@ -778,9 +778,9 @@
     },
     {
       "puf_benefit_name": "Major Dental Care - Adult",
-      "canonical_key": null,
+      "canonical_key": "dental_major_adult",
       "category": "DENTAL",
-      "note": null
+      "note": "The class (crowns, root canals, dentures as the issuer defines it); no single-service key (vocabulary 1.2.0, 2026-10-13)."
     },
     {
       "puf_benefit_name": "Major Dental Care - Child",
@@ -1318,9 +1318,9 @@
     },
     {
       "puf_benefit_name": "Routine Dental Services (Adult)",
-      "canonical_key": null,
+      "canonical_key": "dental_routine_adult",
       "category": "DENTAL",
-      "note": null
+      "note": "The class (exams, cleanings, x-rays as the issuer defines it), not the single service dental_cleaning (vocabulary 1.2.0, 2026-10-13)."
     },
     {
       "puf_benefit_name": "Routine Eye Exam (Adult)",

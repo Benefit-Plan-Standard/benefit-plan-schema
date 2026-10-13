@@ -132,6 +132,28 @@
       "conditions": []
     },
     {
+      "benefit_id": "BASIC_DENTAL_CARE_ADULT",
+      "benefit_type": "medical",
+      "category": "DENTAL",
+      "service_name": "Basic Dental Care - Adult",
+      "canonical_key": "dental_basic_adult",
+      "raw_label": "Basic Dental Care - Adult",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
       "benefit_id": "CHEMOTHERAPY",
       "benefit_type": "medical",
       "category": "CHEMOTHERAPY",
@@ -941,6 +963,28 @@
       "conditions": []
     },
     {
+      "benefit_id": "MAJOR_DENTAL_CARE_ADULT",
+      "benefit_type": "medical",
+      "category": "DENTAL",
+      "service_name": "Major Dental Care - Adult",
+      "canonical_key": "dental_major_adult",
+      "raw_label": "Major Dental Care - Adult",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
       "benefit_id": "MENTAL_BEHAVIORAL_HEALTH_INPATIENT_SERVICES",
       "benefit_type": "medical",
       "category": "BEHAVIORAL_HEALTH",
@@ -1611,6 +1655,28 @@
       ]
     },
     {
+      "benefit_id": "ROUTINE_DENTAL_SERVICES_ADULT",
+      "benefit_type": "medical",
+      "category": "DENTAL",
+      "service_name": "Routine Dental Services (Adult)",
+      "canonical_key": "dental_routine_adult",
+      "raw_label": "Routine Dental Services (Adult)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "cost_shares": []
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": []
+    },
+    {
       "benefit_id": "ROUTINE_EYE_EXAM_ADULT",
       "benefit_type": "medical",
       "category": "VISION",
@@ -2059,7 +2125,7 @@
       "excerpt": "Accumulators from the Plan Attributes PUF. Deductibles: MedicalDrugDeductiblesIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Out-of-pocket maximums: MedicalDrugMaximumOutofPocketIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Every non-blank accumulator cell, verbatim: TEHBInnTier1IndividualMOOP \"$10,600\"; TEHBInnTier1FamilyPerPersonMOOP \"$10600 per person\"; TEHBInnTier1FamilyPerGroupMOOP \"$21200 per group\"; TEHBOutOfNetIndividualMOOP \"Not Applicable\"; TEHBOutOfNetFamilyPerPersonMOOP \"per person not applicable\"; TEHBOutOfNetFamilyPerGroupMOOP \"per group not applicable\"; TEHBCombInnOonIndividualMOOP \"Not Applicable\"; TEHBCombInnOonFamilyPerPersonMOOP \"per person not applicable\"; TEHBCombInnOonFamilyPerGroupMOOP \"per group not applicable\"; TEHBDedInnTier1Individual \"$10,600\"; TEHBDedInnTier1FamilyPerPerson \"$10600 per person\"; TEHBDedInnTier1FamilyPerGroup \"$21200 per group\"; TEHBDedInnTier1Coinsurance \"0.00%\"; TEHBDedOutOfNetIndividual \"Not Applicable\"; TEHBDedOutOfNetFamilyPerPerson \"per person not applicable\"; TEHBDedOutOfNetFamilyPerGroup \"per group not applicable\"; TEHBDedCombInnOonIndividual \"Not Applicable\"; TEHBDedCombInnOonFamilyPerPerson \"per person not applicable\"; TEHBDedCombInnOonFamilyPerGroup \"per group not applicable\"."
     },
     {
-      "excerpt": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (19): Abortion for Which Public Funding is Prohibited (Not Covered); Accidental Dental (Covered); Basic Dental Care - Adult (Not Covered); Basic Dental Care - Child (Covered); Cosmetic Surgery (Not Covered); Gender Affirming Care (Covered); Infusion Therapy (Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Major Dental Care - Adult (Not Covered); Major Dental Care - Child (Covered); Orthodontia - Adult (Not Covered); Orthodontia - Child (Covered); Prenatal and Postnatal Care (Covered); Private-Duty Nursing (Not Covered); Reconstructive Surgery (Covered); Routine Dental Services (Adult) (Not Covered); Transplant (Covered); Treatment for Temporomandibular Joint Disorders (Covered); Weight Loss Programs (Not Covered)."
+      "excerpt": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (16): Abortion for Which Public Funding is Prohibited (Not Covered); Accidental Dental (Covered); Basic Dental Care - Child (Covered); Cosmetic Surgery (Not Covered); Gender Affirming Care (Covered); Infusion Therapy (Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Major Dental Care - Child (Covered); Orthodontia - Adult (Not Covered); Orthodontia - Child (Covered); Prenatal and Postnatal Care (Covered); Private-Duty Nursing (Not Covered); Reconstructive Surgery (Covered); Transplant (Covered); Treatment for Temporomandibular Joint Disorders (Covered); Weight Loss Programs (Not Covered)."
     }
   ],
   "schema_version": "1.1.0"
