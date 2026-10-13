@@ -25,13 +25,13 @@ How the CMS files become these examples and their FHIR Bundles, with every comma
 
 | File | Plan | Issuer | State | Market | Metal level | Plan year | Schema | Benefits placed | Source | FHIR Bundle in `fhir-puf/` |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `avmed-avmed-entrust-gold-125.puf.json` | AvMed Entrust Gold 125 (2026), 19898FL0340001-01 | AvMed | FL | Individual | Gold | 2026 | v1.1.0 | 49 of 73 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
-| `blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.puf.json` | Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits, 97176LA0340010-01 | Blue Cross and Blue Shield of Louisiana | LA | Individual | Silver | 2026 | v1.1.0 | 49 of 75 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
-| `florida-blue-blueoptions-gold-1505.puf.json` | BlueOptions Gold 1505, 16842FL0070120-01 | Florida Blue (BlueCross BlueShield FL) | FL | Individual | Gold | 2023 | v1.1.0 | 49 of 75 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2023 | Yes |
-| `unitedhealthcare-uhc-bronze-essential.puf.json` | UHC Bronze Essential ($0 Virtual Urgent Care), 68398FL0030058-01 | UnitedHealthcare | FL | Individual | Bronze | 2026 | v1.1.0 | 49 of 68 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
-| `unitedhealthcare-uhc-gold-standard.puf.json` | UHC Gold Standard, 40220TX0080024-01 | UnitedHealthcare | TX | Individual | Gold | 2026 | v1.1.0 | 49 of 68 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
+| `avmed-avmed-entrust-gold-125.puf.json` | AvMed Entrust Gold 125 (2026), 19898FL0340001-01 | AvMed | FL | Individual | Gold | 2026 | v1.1.0 | 52 of 73 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
+| `blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.puf.json` | Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits, 97176LA0340010-01 | Blue Cross and Blue Shield of Louisiana | LA | Individual | Silver | 2026 | v1.1.0 | 52 of 75 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
+| `florida-blue-blueoptions-gold-1505.puf.json` | BlueOptions Gold 1505, 16842FL0070120-01 | Florida Blue (BlueCross BlueShield FL) | FL | Individual | Gold | 2023 | v1.1.0 | 52 of 75 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2023 | Yes |
+| `unitedhealthcare-uhc-bronze-essential.puf.json` | UHC Bronze Essential ($0 Virtual Urgent Care), 68398FL0030058-01 | UnitedHealthcare | FL | Individual | Bronze | 2026 | v1.1.0 | 52 of 68 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
+| `unitedhealthcare-uhc-gold-standard.puf.json` | UHC Gold Standard, 40220TX0080024-01 | UnitedHealthcare | TX | Individual | Gold | 2026 | v1.1.0 | 52 of 68 | Plan Attributes PUF and Benefits and Cost Sharing PUF, PY2026 | Yes |
 
-"Benefits placed" is the number of entries in `benefits[]` out of the plan's rows in the Benefits and Cost Sharing PUF. A row is placed when its benefit name maps to a canonical key in `../fhir/marketplace-puf-crosswalk.json`; the other rows (24, 26, 26, 19 and 19) are listed by name and coverage in `source_references[]`. The plan ID after each name is the HIOS plan ID, which v1.1.0 has no field for.
+"Benefits placed" is the number of entries in `benefits[]` out of the plan's rows in the Benefits and Cost Sharing PUF. A row is placed when its benefit name maps to a canonical key in `../fhir/marketplace-puf-crosswalk.json`; the other rows (21, 23, 23, 16 and 16) are listed by name and coverage in `source_references[]`. The plan ID after each name is the HIOS plan ID, which v1.1.0 has no field for.
 
 ## The 5 Medicare Advantage public-file examples
 
