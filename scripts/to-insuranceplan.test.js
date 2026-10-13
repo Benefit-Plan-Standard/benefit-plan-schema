@@ -5,7 +5,8 @@
  *
  * Fails if the converter's output drifts from the golden files in examples/fhir/,
  * if output is not deterministic, if a plan-level source reference reaches a
- * benefit, if a benefit is lost, or if fhir/definitions/ is out of date.
+ * benefit, if a benefit is lost, if fhir/definitions/ is out of date, or if the
+ * derived excluded-services extension lists the wrong benefits.
  * Regenerate goldens on purpose with: node scripts/to-insuranceplan.js --write-golden
  */
 
@@ -201,6 +202,58 @@ test('the Florida Blue 1505 public-file document converts: tier 2 entries are in
   assert.ok(tier2.length > 0);
   assert.ok(tier2.every((c) => c.applicability.coding[0].code === 'in-network'));
   assert.strictEqual(costs.filter((c) => c.type.text === 'Not stated in the BPS document').length, 0);
+});
+
+// ---- excluded-services, derived from coverage flags (spec 10.1) ------------------
+const EXCLUDED = 'http://hl7.org/fhir/us/insurance-card/StructureDefinition/excluded-services';
+const LABELS = Object.fromEntries(readJson(path.join(__dirname, '..', 'vocabularies', 'canonical-benefits.json')).benefits
+  .map((b) => [b.canonical_key, b.label]));
+const excludedTexts = (bps, options) => toInsurancePlanBundle(bps, options).entry[0].resource.extension
+  .filter((e) => e.url === EXCLUDED)
+  .flatMap((e) => e.extension.map((s) => s.extension.find((x) => x.url === 'serviceType').valueCodeableConcept.text));
+
+test('excluded-services: a benefit not covered on any tier gets an entry; one not covered out of network only gets none', () => {
+  const bps = readJson(path.join(EXAMPLES_DIR, 'unitedhealthcare-uhc-gold-standard.puf.json'));
+  const before = excludedTexts(bps, { excludedServices: true });
+  const specialist = bps.benefits.find((b) => b.canonical_key === 'specialist');
+  const primary = bps.benefits.find((b) => b.canonical_key === 'primary_care');
+  assert.ok(specialist.network_cost_shares.every((r) => r.covered) && primary.network_cost_shares.every((r) => r.covered));
+  specialist.network_cost_shares.forEach((r) => { r.covered = false; r.cost_shares = []; });
+  primary.network_cost_shares.find((r) => r.tier_id === 'OUT').covered = false;
+  const after = excludedTexts(bps, { excludedServices: true });
+  assert.strictEqual(after.length, before.length + 1);
+  assert.ok(after.includes(LABELS.specialist), 'covered false on every tier: listed');
+  assert.ok(!after.includes(LABELS.primary_care), 'covered false out of network only: not listed');
+  const ext = toInsurancePlanBundle(bps, { excludedServices: true }).entry[0].resource.extension.find((e) => e.url === EXCLUDED);
+  const entry = ext.extension.find((s) => s.extension[0].valueCodeableConcept.text === LABELS.specialist);
+  assert.deepStrictEqual(entry, {
+    extension: [
+      { url: 'serviceType', valueCodeableConcept: { text: LABELS.specialist } },
+      { url: 'description', valueString: "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section." },
+    ],
+    url: 'service',
+  });
+});
+
+test('excluded-services: only with the option; on each Marketplace golden it lists every benefit not covered on any tier, in input order', () => {
+  for (const file of fs.readdirSync(EXAMPLES_DIR).filter((f) => f.endsWith('.puf.json'))) {
+    const bps = readJson(path.join(EXAMPLES_DIR, file));
+    assert.deepStrictEqual(excludedTexts(bps), [], `${file}: no extension without the option`);
+    const want = bps.benefits.filter((b) => b.network_cost_shares.length && b.network_cost_shares.every((r) => !r.covered))
+      .map((b) => LABELS[b.canonical_key]);
+    assert.deepStrictEqual(excludedTexts(bps, { excludedServices: true }), want, file);
+    for (const key of ['dental_routine_adult', 'dental_basic_adult', 'dental_major_adult']) assert.ok(want.includes(LABELS[key]), `${file}: ${key}`);
+  }
+});
+
+test('excluded-services: refused for a document not from the Benefits and Cost Sharing PUF, and for a key with no label', () => {
+  for (const file of [...examples, ...pbpExampleFiles()]) {
+    assert.throws(() => toInsurancePlanBundle(readJson(path.join(EXAMPLES_DIR, file)), { excludedServices: true }),
+      /does not come from it/, file);
+  }
+  const bps = readJson(path.join(EXAMPLES_DIR, 'unitedhealthcare-uhc-gold-standard.puf.json'));
+  bps.benefits.find((b) => b.canonical_key === 'acupuncture').canonical_key = 'not_in_the_vocabulary';
+  assert.throws(() => toInsurancePlanBundle(bps, { excludedServices: true }), /has no label/);
 });
 
 // ---- PBP golden files and the point-of-service tier (spec 6.3) ------------------

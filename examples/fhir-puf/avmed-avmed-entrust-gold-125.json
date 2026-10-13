@@ -15,7 +15,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>AvMed Entrust Gold 125 (2026)</b></p><p>Carrier: AvMed. Plan type: HMO. Period: 2026-01-01 to 2026-12-31.</p><p>27 benefits are placed in CARIN SBC benefit categories. 22 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document AVMED_AVMED_ENTRUST_GOLD_125 (schema version 1.1.0).</p></div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>AvMed Entrust Gold 125 (2026)</b></p><p>Carrier: AvMed. Plan type: HMO. Period: 2026-01-01 to 2026-12-31.</p><p>27 benefits are placed in CARIN SBC benefit categories. 25 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>9 benefits are not covered on any tier and are listed in the excluded-services extension, derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p><p>Converted from Benefit Plan Standard document AVMED_AVMED_ENTRUST_GOLD_125 (schema version 1.1.0).</p></div>"
         },
         "extension": [
           {
@@ -66,7 +66,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (24): Abortion for Which Public Funding is Prohibited (Not Covered); Accidental Dental (Covered); Basic Dental Care - Adult (Not Covered); Basic Dental Care - Child (Covered); Bone Marrow Transplant (Covered); Congenital Anomaly, including Cleft Lip/Palate (Covered); Cosmetic Surgery (Not Covered); Dental Anesthesia (Covered); Diabetes Care Management (Covered); Infusion Therapy (Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Major Dental Care - Adult (Not Covered); Major Dental Care - Child (Covered); Nutrition/Formulas (Covered); Orthodontia - Adult (Not Covered); Orthodontia - Child (Covered); Osteoporosis (Covered); Prenatal and Postnatal Care (Covered); Private-Duty Nursing (Not Covered); Reconstructive Surgery (Covered); Routine Dental Services (Adult) (Not Covered); Transplant (Covered); Treatment for Temporomandibular Joint Disorders (Covered); Weight Loss Programs (Not Covered)."
+                "valueString": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (21): Abortion for Which Public Funding is Prohibited (Not Covered); Accidental Dental (Covered); Basic Dental Care - Child (Covered); Bone Marrow Transplant (Covered); Congenital Anomaly, including Cleft Lip/Palate (Covered); Cosmetic Surgery (Not Covered); Dental Anesthesia (Covered); Diabetes Care Management (Covered); Infusion Therapy (Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Major Dental Care - Child (Covered); Nutrition/Formulas (Covered); Orthodontia - Adult (Not Covered); Orthodontia - Child (Covered); Osteoporosis (Covered); Prenatal and Postnatal Care (Covered); Private-Duty Nursing (Not Covered); Reconstructive Surgery (Covered); Transplant (Covered); Treatment for Temporomandibular Joint Disorders (Covered); Weight Loss Programs (Not Covered)."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -130,6 +130,27 @@
               {
                 "url": "category",
                 "valueString": "BARIATRIC_SURGERY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "BASIC_DENTAL_CARE_ADULT"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "dental_basic_adult"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Basic Dental Care - Adult"
+              },
+              {
+                "url": "category",
+                "valueString": "DENTAL"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
@@ -327,6 +348,27 @@
             "extension": [
               {
                 "url": "benefitId",
+                "valueString": "MAJOR_DENTAL_CARE_ADULT"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "dental_major_adult"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Major Dental Care - Adult"
+              },
+              {
+                "url": "category",
+                "valueString": "DENTAL"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
                 "valueString": "NUTRITIONAL_COUNSELING"
               },
               {
@@ -453,6 +495,27 @@
             "extension": [
               {
                 "url": "benefitId",
+                "valueString": "ROUTINE_DENTAL_SERVICES_ADULT"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "dental_routine_adult"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Routine Dental Services (Adult)"
+              },
+              {
+                "url": "category",
+                "valueString": "DENTAL"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
                 "valueString": "ROUTINE_EYE_EXAM_ADULT"
               },
               {
@@ -532,6 +595,146 @@
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "extension": [
+                  {
+                    "url": "serviceType",
+                    "valueCodeableConcept": {
+                      "text": "Acupuncture"
+                    }
+                  },
+                  {
+                    "url": "description",
+                    "valueString": "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section."
+                  }
+                ],
+                "url": "service"
+              },
+              {
+                "extension": [
+                  {
+                    "url": "serviceType",
+                    "valueCodeableConcept": {
+                      "text": "Bariatric surgery"
+                    }
+                  },
+                  {
+                    "url": "description",
+                    "valueString": "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section."
+                  }
+                ],
+                "url": "service"
+              },
+              {
+                "extension": [
+                  {
+                    "url": "serviceType",
+                    "valueCodeableConcept": {
+                      "text": "Basic dental care (adult)"
+                    }
+                  },
+                  {
+                    "url": "description",
+                    "valueString": "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section."
+                  }
+                ],
+                "url": "service"
+              },
+              {
+                "extension": [
+                  {
+                    "url": "serviceType",
+                    "valueCodeableConcept": {
+                      "text": "Hearing aids"
+                    }
+                  },
+                  {
+                    "url": "description",
+                    "valueString": "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section."
+                  }
+                ],
+                "url": "service"
+              },
+              {
+                "extension": [
+                  {
+                    "url": "serviceType",
+                    "valueCodeableConcept": {
+                      "text": "Infertility treatment"
+                    }
+                  },
+                  {
+                    "url": "description",
+                    "valueString": "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section."
+                  }
+                ],
+                "url": "service"
+              },
+              {
+                "extension": [
+                  {
+                    "url": "serviceType",
+                    "valueCodeableConcept": {
+                      "text": "Major dental care (adult)"
+                    }
+                  },
+                  {
+                    "url": "description",
+                    "valueString": "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section."
+                  }
+                ],
+                "url": "service"
+              },
+              {
+                "extension": [
+                  {
+                    "url": "serviceType",
+                    "valueCodeableConcept": {
+                      "text": "Routine dental services (adult)"
+                    }
+                  },
+                  {
+                    "url": "description",
+                    "valueString": "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section."
+                  }
+                ],
+                "url": "service"
+              },
+              {
+                "extension": [
+                  {
+                    "url": "serviceType",
+                    "valueCodeableConcept": {
+                      "text": "Routine eye exam"
+                    }
+                  },
+                  {
+                    "url": "description",
+                    "valueString": "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section."
+                  }
+                ],
+                "url": "service"
+              },
+              {
+                "extension": [
+                  {
+                    "url": "serviceType",
+                    "valueCodeableConcept": {
+                      "text": "Routine foot care"
+                    }
+                  },
+                  {
+                    "url": "description",
+                    "valueString": "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section."
+                  }
+                ],
+                "url": "service"
+              }
+            ],
+            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/excluded-services"
           }
         ],
         "identifier": [

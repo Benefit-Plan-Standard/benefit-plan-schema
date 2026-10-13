@@ -8,12 +8,16 @@
  * exists only in hl7.fhir.us.insurance-card#2.0.0-ballot (draft, experimental).
  * Spec: docs/specs/insuranceplan-converter.md
  *
- * toInsurancePlanBundle(bps) is a pure function: no network, no clock, no
- * randomness, no state. The same input always produces the same output.
+ * toInsurancePlanBundle(bps, options) is a pure function: no network, no clock, no
+ * randomness, no state. The same input and options always produce the same output.
  *
  * Usage:
  *   node scripts/to-insuranceplan.js <bps.json>               Bundle to stdout
  *   node scripts/to-insuranceplan.js <bps.json> -o <out.json> Bundle to a file
+ *   node scripts/to-insuranceplan.js --excluded-services <bps.json>
+ *                                                             also write the CARIN excluded-services extension,
+ *                                                             derived from coverage flags (Marketplace public-file
+ *                                                             documents only; spec section 10.1)
  *   node scripts/to-insuranceplan.js --write-golden           regenerate examples/fhir/ (10 examples, 5 PBP files)
  *   node scripts/to-insuranceplan.js --no-validate <bps.json> skip the input schema check
  *
@@ -41,6 +45,7 @@ const SBC_PROFILE = CARIN + 'StructureDefinition/sbc-insurance-plan';
 const EXT_DEDUCTIBLE_APPLIES = CARIN + 'StructureDefinition/deductible-applies';
 const EXT_COST_APPLIES_TO_NETWORK = CARIN + 'StructureDefinition/cost-applies-to-network';
 const EXT_BENEFIT_LIMITATION = CARIN + 'StructureDefinition/benefit-limitation';
+const EXT_EXCLUDED_SERVICES = CARIN + 'StructureDefinition/excluded-services';
 const CS_SBC_PLAN_TYPE = CARIN + 'CodeSystem/sbc-plan-type';
 const CS_COST_TIER = CARIN + 'CodeSystem/cost-tier';
 const CS_LIMIT_TYPE = CARIN + 'CodeSystem/limit-type';
@@ -97,6 +102,11 @@ const CANONICAL_LABELS = Object.fromEntries(CANONICAL_BENEFITS.benefits.map((b) 
 const TEXT_NOT_COVERED = 'Not covered';
 const TEXT_AMOUNT_NOT_STATED = 'Covered; amount not stated in the BPS document';
 const TEXT_PLACEHOLDER = 'Not stated in the BPS document';
+const TEXT_EXCLUDED_DERIVED = "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section.";
+
+// The first plan-level source reference the Marketplace public-file importer writes
+// (docs/specs/marketplace-puf-importer.md section 4.4).
+const PUF_SOURCE = /^CMS Health Insurance Exchange Public Use Files, plan year \d{4}: .*\bBenefits and Cost Sharing PUF \(/;
 
 // ---- small helpers ----------------------------------------------------------
 const has = (v) => v !== undefined && v !== null;
@@ -514,20 +524,54 @@ function unmappedExt(b) {
   ]);
 }
 
-function narrative(bps, p, placed, unmapped) {
+// The benefits the plan covers on no tier: every network_cost_shares row says covered
+// false. A benefit with no tier rows is not one. Spec section 10.1.
+function notCoveredOnAnyTier(bps) {
+  return bps.benefits.filter((b) => (b.network_cost_shares || []).length > 0
+    && b.network_cost_shares.every((row) => row.covered === false));
+}
+
+// CARIN excluded-services [ballot], derived and never typed: one service per benefit
+// not covered on any tier, in input order, serviceType text = the vocabulary label.
+// Only for documents from the Marketplace public files, because the description
+// names that file. Null when no benefit qualifies (the extension needs a service).
+function excludedServicesExt(bps) {
+  const first = ((bps.source_references || [])[0] || {}).excerpt || '';
+  if (!PUF_SOURCE.test(first)) {
+    throw new Error('excluded-services is derived from the coverage flags of the CMS Benefits and Cost Sharing PUF, ' +
+      'and this document does not come from it (its first source reference does not name that file)');
+  }
+  return complexExt(EXT_EXCLUDED_SERVICES, notCoveredOnAnyTier(bps).map((b) => {
+    const label = CANONICAL_LABELS[b.canonical_key];
+    if (!label) {
+      throw new Error(`benefit "${b.benefit_id}" is not covered on any tier but canonical_key "${b.canonical_key}" ` +
+        'has no label in vocabularies/canonical-benefits.json; the converter does not guess the excluded service text');
+    }
+    return complexExt('service', [
+      sub('serviceType', 'CodeableConcept', { text: label }),
+      sub('description', 'String', TEXT_EXCLUDED_DERIVED),
+    ]);
+  }));
+}
+
+function narrative(bps, p, placed, unmapped, excluded) {
   const when = [p.start, p.end].filter(Boolean).join(' to ');
   const parts = [
     `<p><b>${escapeXml(bps.plan_name)}</b></p>`,
     `<p>Carrier: ${escapeXml(bps.carrier)}. Plan type: ${escapeXml(bps.plan_type || 'not stated')}. Period: ${escapeXml(when)}.</p>`,
     `<p>${placed} benefits are placed in CARIN SBC benefit categories. ` +
       `${unmapped} benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p>`,
+    ...(has(excluded) ? [`<p>${excluded} benefits are not covered on any tier and are listed in the excluded-services extension, ` +
+      'derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p>'] : []),
     `<p>Converted from Benefit Plan Standard document ${escapeXml(bps.plan_id)} (schema version ${escapeXml(bps.schema_version)}).</p>`,
   ];
   return { status: 'generated', div: `<div xmlns="http://www.w3.org/1999/xhtml">${parts.join('')}</div>` };
 }
 
 // ---- entry point -----------------------------------------------------------------
-function toInsurancePlanBundle(bps) {
+// options.excludedServices: also write the excluded-services extension (spec 10.1).
+// Off by default, so the 10 examples and the 5 PBP Bundles do not carry it.
+function toInsurancePlanBundle(bps, options = {}) {
   if (!bps || typeof bps !== 'object') throw new Error('input is not a BPS document');
   if (!SUPPORTED_VERSIONS.includes(bps.schema_version)) {
     throw new Error(`schema_version "${bps.schema_version}" is not supported (expected ${SUPPORTED_VERSIONS.join(' or ')})`);
@@ -549,6 +593,7 @@ function toInsurancePlanBundle(bps) {
   }
   const placed = bps.benefits.length - unmapped.length;
   if (placed === 0) throw new Error('no benefit maps to an SBC benefit category; the profile cannot represent this plan');
+  const excluded = options.excludedServices ? excludedServicesExt(bps) : null;
 
   const p = period(bps);
   const coverage = [];
@@ -572,11 +617,13 @@ function toInsurancePlanBundle(bps) {
     resourceType: 'InsurancePlan',
     id,
     meta: { profile: [SBC_PROFILE] },
-    text: narrative(bps, p, placed, unmapped.length),
+    text: narrative(bps, p, placed, unmapped.length,
+      options.excludedServices ? (excluded ? excluded.extension.length : 0) : null),
     extension: [
       planMetadataExt(bps),
       ...(bps.source_references || []).map(sourceReferenceExt),
       ...unmapped.map(unmappedExt),
+      excluded,
     ].filter(Boolean),
     identifier: identifiers(bps),
     status: 'active',
@@ -648,14 +695,16 @@ function main(argv) {
   let out = null;
   let check = true;
   let writeGolden = false;
+  let excludedServices = false;
   const files = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '-o' || a === '--out') out = argv[++i];
     else if (a === '--no-validate') check = false;
     else if (a === '--write-golden') writeGolden = true;
+    else if (a === '--excluded-services') excludedServices = true;
     else if (a === '-h' || a === '--help') {
-      console.log('usage: node scripts/to-insuranceplan.js [--no-validate] <bps.json> [-o out.json]\n' +
+      console.log('usage: node scripts/to-insuranceplan.js [--no-validate] [--excluded-services] <bps.json> [-o out.json]\n' +
         '       node scripts/to-insuranceplan.js --write-golden');
       return 0;
     } else files.push(a);
@@ -667,10 +716,14 @@ function main(argv) {
       const errors = validateInput(bps);
       if (errors.length) throw new Error(`${file} is not a valid BPS document:\n  ${errors.join('\n  ')}`);
     }
-    return toInsurancePlanBundle(bps);
+    return toInsurancePlanBundle(bps, { excludedServices });
   };
 
   try {
+    if (writeGolden && excludedServices) {
+      console.error('error: --excluded-services does not apply to --write-golden; the golden Bundles in examples/fhir/ do not carry the extension');
+      return 1;
+    }
     if (writeGolden) {
       fs.mkdirSync(GOLDEN_DIR, { recursive: true });
       for (const f of [...exampleFiles(), ...pbpExampleFiles()]) {

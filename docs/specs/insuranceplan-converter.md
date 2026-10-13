@@ -65,7 +65,7 @@ Bundle (type: collection)
 | Serialization | `JSON.stringify(x, null, 2)` plus `\n`, UTF-8, LF line endings. |
 | Narrative | `text.status = generated`, built only from converted values (plan name, carrier, period, benefit counts). This avoids the `dom-6` best-practice warning. |
 
-The converter is a pure function, `toInsurancePlanBundle(bps) -> Bundle`. It makes no network calls, reads no clock, generates no random values and keeps no state. The same input always gives byte-identical output.
+The converter is a pure function, `toInsurancePlanBundle(bps, options) -> Bundle`. It makes no network calls, reads no clock, generates no random values and keeps no state. The same input and options always give byte-identical output. The one option, `excludedServices` (CLI `--excluded-services`), is off by default (10.1).
 
 ## 5. Profile constraints the design is built around
 
@@ -91,7 +91,7 @@ A BPS benefit becomes one `cost[]` entry per cost-share step, grouped by tier in
 | BPS situation | `cost[]` entry |
 |---|---|
 | `covered: true` with one or more `cost_shares` | One entry per step, with `value` set to the amount (USD) or the rate (%). |
-| `covered: false` | One entry: `type.text` `Not covered`, and a `value` Quantity whose only content is `data-absent-reason` `not-applicable`. It does **not** use `value: 0`, which a reader could take to mean "free". The IG's own example uses `0`; this spec does not. |
+| `covered: false` | One entry: `type.text` `Not covered`, and a `value` Quantity whose only content is `data-absent-reason` `not-applicable`. It does **not** use `value: 0`, which a reader could take to mean "free". The IG's own example uses `0`; this spec does not. With `--excluded-services`, a benefit `covered: false` on every tier is also listed in `excluded-services` (10.1); its cost entries are unchanged. |
 | `covered: true`, `cost_shares` empty (for example GatorCare in-network preventive care, Kaiser surgeon fees, MA allowances) | One entry: `type.text` `Covered; amount not stated in the BPS document`, `value` data-absent-reason `unknown`, with the row `notes` in the BPS cost-share extension. |
 | Amount range or rate range (`amount_min`/`amount_max`, `rate_min`/`rate_max`; MA only) | `value` data-absent-reason `unsupported`, because a Quantity cannot hold a range. The bounds go in the BPS cost-share extension. |
 | **Fewer than 2 entries after the rows above** (a benefit with a single network column, or an MA benefit priced only at one site of service) | Entries from a second in-network tier (6.2) count like any other. A benefit with `IN`, `IN2` and `OUT` rows has at least 3 entries and never gets a placeholder; a benefit with `IN` and `IN2` rows only has 2 in-network entries and gets none either. Otherwise, append one placeholder for the network the benefit does not mention: `out-of-network` if no out-of-network row exists, otherwise `in-network`. The placeholder has `type.text` `Not stated in the BPS document` and `value` data-absent-reason `unknown`. It never says "not covered", because the BPS document does not say that for the benefit. |
@@ -318,8 +318,17 @@ All are `draft`, `experimental`, and in `hl7.fhir.us.insurance-card#2.0.0-ballot
 | CostAppliesToNetwork (FHIR-57525) | `.../StructureDefinition/cost-applies-to-network` | `specificCost.benefit.cost` |
 | BenefitLimitation (FHIR-57527) | `.../StructureDefinition/benefit-limitation` | `coverage.benefit` |
 | Cost Tier value set (FHIR-57525) | `.../ValueSet/cost-tier` | `cost.qualifiers` binding |
+| ExcludedServices | `.../StructureDefinition/excluded-services` | `InsurancePlan`, only with `--excluded-services`, on the Marketplace public-file documents (below) |
 
-`sbc-metadata` and `excluded-services` are not emitted: BPS does not carry the SBC regulatory flags or the "Excluded Services" list. Both are optional (0..1).
+`sbc-metadata` is not emitted: BPS does not carry the SBC regulatory flags. It is optional (0..1).
+
+**`excluded-services`, derived from coverage flags (2026-10-13).** In the pinned package the extension's context is `InsurancePlan`, and the profile slices it as `InsurancePlan.extension:excludedServices`, 0..1, mustSupport. It has 1 repeated sub-extension, `service` (0..*), each holding `serviceType` (1..1, CodeableConcept, no binding) and `description` (0..1, string). Its definition says it documents "services that are not covered by the health insurance plan, as required in SBC 'Excluded Services & Other Covered Services' section". The converter writes it only when asked (`toInsurancePlanBundle(bps, { excludedServices: true })`, CLI `--excluded-services`), and only for a document whose first plan-level source reference names the CMS Benefits and Cost Sharing PUF (the Marketplace importer's source excerpt, importer spec 4.4); for any other document the option is an error.
+
+- **Derived, never typed.** 1 `service` per benefit whose every `network_cost_shares` row says `covered: false`, in input order. A benefit with no tier rows, or not covered in some tiers only (for example out of network), is not listed. When no benefit qualifies, the extension is not written.
+- **Content.** `serviceType` is text only: the benefit's `label` from `vocabularies/canonical-benefits.json` (a benefit with no label is an error; the converter does not guess the text). `description` is fixed: "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section." The binding-free CodeableConcept allows text, so no code is invented.
+- **In addition, not instead.** The `Not covered` cost entries of 5.1 stay as they are. The narrative gains 1 sentence with the count.
+- **Why the SBC-sourced examples do not get it.** Every SBC prints its own "Excluded Services & Other Covered Services" section, which the extension is defined to carry and which BPS does not hold. A list derived from the cost rows of the 8 SBC examples would sit in the element meant for that printed section without being it, and a reader could take it for the plan's own list. The Marketplace public files print no such section; the plan's `IsCovered` flag per benefit is the issuer's own statement, so the derived list is the only list there is, and the description says where it comes from. The 2 Medicare Advantage examples and the 5 PBP files are not from the Benefits and Cost Sharing PUF either, so the description would be false for them; they do not get it. 14 of those 15 documents have at least 1 benefit not covered on any tier (only Humana H1036-025 has none), and their Bundles are byte-identical with or without this change.
+- **Where it is used.** The 5 Bundles in `examples/fhir-puf/` (8 or 9 services each; record in `examples/fhir-puf/README.md`). The validator matches it to the profile slice and raises no message for it.
 
 ### 10.2 BPS-defined conformance resources
 
@@ -369,9 +378,10 @@ Canonical base: `https://benefitplanstandard.org/fhir/`. All are `status: draft`
   - pins the SHA-256 of each of the 10 golden files (LF line endings) and asserts the files and the converter output still hash to those values;
   - checks second in-network tiers (6.2): `IN2` and name-based recognition map to `in-network` with the right qualifier, `value-choice` is coded only for a "Value Choice" name, other unknown network tiers still fail, no placeholder is added, and `examples/florida-blue-blueoptions-gold-1505.puf.json` converts;
   - converts the 5 PBP golden files (`examples/*.pbp.json`) and compares each with its Bundle in `examples/fhir/` byte for byte, twice, against a pinned SHA-256; the directory must hold exactly the 10 and the 5;
-  - checks the point-of-service tier (6.3) on the Aetna H1609-028 golden file: `POS` entries are `out-of-network` with the `Point-of-service option` qualifier (10 entries), the specialist's $70 copay keeps `DeductibleApplies` true, a benefit priced in network and at the POS option has no placeholder, and a network tier named "Point-of-Service" under another `tier_id` still fails.
+  - checks the point-of-service tier (6.3) on the Aetna H1609-028 golden file: `POS` entries are `out-of-network` with the `Point-of-service option` qualifier (10 entries), the specialist's $70 copay keeps `DeductibleApplies` true, a benefit priced in network and at the POS option has no placeholder, and a network tier named "Point-of-Service" under another `tier_id` still fails;
+  - checks `excluded-services` (10.1): a benefit not covered on any tier gets an entry with the vocabulary label and the fixed description, a benefit not covered out of network only gets none; without the option no Bundle carries it; on each of the 5 Marketplace golden files it lists exactly the benefits not covered on any tier, in input order, the 3 adult dental classes among them; the option is refused for the 10 examples and the 5 PBP files, and for a key with no label.
 
-  65 tests on 2026-10-06 (62 before the POS tier).
+  68 tests on 2026-10-13 (65 on 2026-10-06, 62 before the POS tier).
 - Goldens are refreshed only on purpose, with `node scripts/to-insuranceplan.js --write-golden`, which writes the 10 and the 5 PBP Bundles.
 
 The golden files double as fixtures for ports to other languages.

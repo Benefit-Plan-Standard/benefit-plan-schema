@@ -1,7 +1,7 @@
 # Validation record
 
 **Date:** 2026-09-24; United, Ambetter and Kaiser re-validated 2026-09-25 after data fixes; the 8 SBC files re-validated 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs; Aetna PPO 1500, Aetna PPO 5000, GatorCare and United re-validated 2026-10-05 after the deductible flags on silent cells were set (no count changed)
-**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run) again on 2026-10-09 after 4 of their benefits gained canonical keys (third run), and on 2026-10-11 after the importer gained 10 service categories (fourth run), all at the end of this file: 0 errors; 15 warnings in the second and third runs, 16 in the fourth.
+**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run) again on 2026-10-09 after 4 of their benefits gained canonical keys (third run), and on 2026-10-11 after the importer gained 10 service categories (fourth run), all at the end of this file: 0 errors; 15 warnings in the second and third runs, 16 in the fourth. On 2026-10-13 all 15 Bundles here were validated again, unchanged, with the 5 Marketplace Bundles of `examples/fhir-puf/` after the adult dental keys and the `excluded-services` extension (fifth run): the same counts for the 15, 0 errors for the 5.
 
 ## Setup
 
@@ -172,3 +172,50 @@ The counts match the second run file by file: a `canonicalKey` sub-extension ins
 | `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 115 |
 
 **Warnings explained (16).** The 15 of the third run, plus 1: the skilled nursing facility benefit on Aetna has a point-of-service cost (50% per stay), so it carries the text-only `Point-of-service option` qualifier (11 on Aetna, was 10). All 588 information messages are the extension slicing message, as above; there are 16 more than in the third run on 4 files and 15 more on Humana, from the extensions of the new benefits.
+
+## Fifth run: 2026-10-13, all 15 Bundles unchanged, and the 5 Marketplace Bundles
+
+**What changed.** Vocabulary 1.2.0 gained `dental_routine_adult`, `dental_basic_adult` and `dental_major_adult` (117 entries), and `fhir/marketplace-puf-crosswalk.json` keys the 3 adult dental rows (84 of 273 names mapped). The 5 Marketplace documents have 52 benefits each (was 49). The converter gained the option `--excluded-services`, which writes the CARIN `excluded-services` extension derived from the benefits not covered on any tier, only for documents from the CMS Benefits and Cost Sharing PUF (converter spec 10.1). The 5 Bundles in `examples/fhir-puf/` are rewritten with it. The 15 Bundles in this folder are written without it and are byte-identical to the fourth run's (SHA-256 of all 15 compared before and after; the pinned hashes in `scripts/to-insuranceplan.test.js` are unchanged).
+
+**Result:** all 20 files pass with **0 errors**. Same validator (`validator_cli.jar` 7.0.0, Git# 37795f3f571f), Java and packages as the second run. Command, from the repository root:
+
+```
+java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
+  -ig hl7.fhir.us.insurance-card#2.0.0-ballot \
+  -ig fhir/definitions \
+  examples/fhir-puf/*.json examples/fhir/*.json
+```
+
+The 15 Bundles in this folder:
+
+| File | Errors | Warnings | Information |
+|---|---|---|---|
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 | 120 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 12 | 119 |
+| `aetna-ppo-1500-80-50.json` | 0 | 3 | 113 |
+| `aetna-ppo-5000-80-50.json` | 0 | 3 | 112 |
+| `ambetter-ca-silver-94-hmo.json` | 0 | 5 | 113 |
+| `cigna-oap-bowdoin.json` | 0 | 3 | 110 |
+| `flblue-blueoptions-505.json` | 0 | 1 | 122 |
+| `gatorcare-prime-epo.json` | 0 | 1 | 103 |
+| `humana-gold-plus-h1036-025-hmo.json` | 0 | 42 | 180 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 | 114 |
+| `kaiser-ca-gold-80-hmo.json` | 0 | 5 | 116 |
+| `scan-classic-hmo-los-angeles.json` | 0 | 4 | 148 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 115 |
+| `uhc-choice-plus-hsa-gold-1700.json` | 0 | 8 | 116 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 | 120 |
+
+Each count matches the Results table above (the 10) and the fourth run (the 5 PBP Bundles).
+
+The 5 Marketplace Bundles in `examples/fhir-puf/`, validated the same day before the change (as committed) and after:
+
+| File | Errors before / after | Warnings before / after | Information before / after |
+|---|---|---|---|
+| `avmed-avmed-entrust-gold-125.json` | 0 / 0 | 31 / 31 | 141 / 144 |
+| `blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.json` | 0 / 0 | 4 / 4 | 140 / 143 |
+| `florida-blue-blueoptions-gold-1505.json` | 0 / 0 | 30 / 30 | 145 / 148 |
+| `unitedhealthcare-uhc-bronze-essential.json` | 0 / 0 | 12 / 12 | 117 / 120 |
+| `unitedhealthcare-uhc-gold-standard.json` | 0 / 0 | 14 / 14 | 118 / 121 |
+
+The 3 more information messages per file are the extension slicing message on the 3 new `bps-unmapped-benefit` extensions (the adult dental keys have no SBC benefit category code). The `excluded-services` extension matches the profile's `excludedServices` slice and raises no message. The warnings are explained in `examples/fhir-puf/README.md`.

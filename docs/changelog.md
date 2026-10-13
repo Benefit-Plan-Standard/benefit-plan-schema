@@ -3,6 +3,23 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] – DRAFT (2026-10-13), Marketplace adult dental, derived excluded services, provider directory proposal
+
+No schema change. The vocabulary version stays 1.2.0.
+
+### Added
+
+- `vocabularies/canonical-benefits.json`: 117 entries (was 114). 3 keys in `dental`: `dental_routine_adult`, `dental_basic_adult` and `dental_major_adult`, the adult dental classes of the CMS Marketplace Benefits and Cost Sharing PUF. Each is a class as the issuer defines it, not a single service; in the PY2026 file's text the routine rows name exams, cleanings and x-rays, the basic rows fillings and simple extractions, the major rows crowns, root canals and dentures. The Medicare Advantage rows stay on `dental_cleaning` and `dental_filling`. `fhir/definitions/CodeSystem-canonical-benefits.json` rebuilt (117 concepts).
+- `scripts/to-insuranceplan.js`: option `excludedServices` (CLI `--excluded-services`) writes the CARIN `excluded-services` extension (ballot, draft) on `InsurancePlan`, derived and never typed: 1 `service` per benefit `covered` false on every tier, `serviceType.text` the vocabulary label, `description` "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section." Only for documents from the Benefits and Cost Sharing PUF; refused for any other document and with `--write-golden`. The `Not covered` cost entries are unchanged. 3 tests in `scripts/to-insuranceplan.test.js` (68, was 65). Converter spec section 10.1 says why the SBC-sourced examples do not get it.
+- `docs/provider-directory-schema-proposal.md`: schema 1.2.0 has no plan-level or network-level URL field, so no provider directory link is written. The proposal is `network_tiers[].provider_network` (`name`, `network_id`, `provider_directory_url`, `source`), 0..1 per network tier; if accepted, Marketplace plans would fill it from the Network PUF's `NetworkURL`. Not in any schema version; the Network PUF stays out of the importer's scope.
+
+### Changed
+
+- `fhir/marketplace-puf-crosswalk.json`: Routine Dental Services (Adult) `dental_routine_adult`, Basic Dental Care - Adult `dental_basic_adult`, Major Dental Care - Adult `dental_major_adult`. 84 of 273 names mapped (was 81); 48 dental rows stay unmapped (was 51), among them the child rows.
+- The 5 Marketplace examples have 52 benefits each (was 49). All 5 have the 3 adult dental rows, Not Covered, written with `covered` false on every tier. Unmapped names listed in `source_references`: 21, 23, 23, 16 and 16 for AvMed, Louisiana, Florida Blue, UHC Bronze and UHC Gold (was 24, 26, 26, 19 and 19).
+- The 5 Bundles in `examples/fhir-puf/` are rewritten with `--excluded-services`: 27 benefits placed and 25 listed in `bps-unmapped-benefit` each (was 22; the adult dental keys have no SBC benefit category code), and `excluded-services` with 9, 8, 9, 9 and 9 services (AvMed, Louisiana, Florida Blue, UHC Bronze, UHC Gold). 0 errors and the same 31, 4, 30, 12 and 14 warnings; 3 more information messages each (fifth run in `examples/fhir/VALIDATION.md`).
+- The 15 Bundles in `examples/fhir/` (the 10 published and the 5 Medicare Advantage Bundles) are byte-identical and validate with the same counts as before.
+
 ## [1.2.0] – DRAFT (2026-10-11), Medicare Advantage supplemental benefits and use case 2 settings
 
 No schema change. The vocabulary version stays 1.2.0.
