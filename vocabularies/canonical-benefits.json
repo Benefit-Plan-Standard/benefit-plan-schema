@@ -12,7 +12,7 @@
     },
     "dental": {
       "description": "Dental services (commonly pediatric on medical plans; full dental typically on a dental module).",
-      "count": 3
+      "count": 6
     },
     "diagnostic": {
       "description": "Diagnostic tests, laboratory, and imaging (standard and advanced).",
@@ -191,6 +191,18 @@
       ]
     },
     {
+      "canonical_key": "dental_basic_adult",
+      "label": "Basic dental care (adult)",
+      "description": "Basic dental care for adults, as a class of services, not a single service. The CMS Marketplace Benefits and Cost Sharing PUF row \"Basic Dental Care - Adult\"; the issuer defines the class, and in that file it typically contains fillings and simple extractions. The Medicare Advantage restorative services row stays on dental_filling.",
+      "category": "dental",
+      "aliases": [
+        "basic dental care - adult",
+        "basic dental care (adult)",
+        "adult basic dental care"
+      ],
+      "sbc_label_patterns": []
+    },
+    {
       "canonical_key": "dental_cleaning",
       "label": "Dental cleaning",
       "description": "Dental cleaning (prophylaxis). In Medicare Advantage, the cleaning row of the supplemental preventive dental benefit.",
@@ -214,6 +226,30 @@
         "fillings",
         "restorative services",
         "restorative dental services"
+      ],
+      "sbc_label_patterns": []
+    },
+    {
+      "canonical_key": "dental_major_adult",
+      "label": "Major dental care (adult)",
+      "description": "Major dental care for adults, as a class of services, not a single service. The CMS Marketplace Benefits and Cost Sharing PUF row \"Major Dental Care - Adult\"; the issuer defines the class, and in that file it typically contains crowns, root canals and dentures. The Medicare Advantage dental rows stay on dental_cleaning and dental_filling.",
+      "category": "dental",
+      "aliases": [
+        "major dental care - adult",
+        "major dental care (adult)",
+        "adult major dental care"
+      ],
+      "sbc_label_patterns": []
+    },
+    {
+      "canonical_key": "dental_routine_adult",
+      "label": "Routine dental services (adult)",
+      "description": "Routine dental services for adults, as a class of services, not a single service. The CMS Marketplace Benefits and Cost Sharing PUF row \"Routine Dental Services (Adult)\"; the issuer defines the class, and in that file it typically contains exams, cleanings and x-rays. The Medicare Advantage cleaning row stays on dental_cleaning.",
+      "category": "dental",
+      "aliases": [
+        "routine dental services (adult)",
+        "routine dental services - adult",
+        "adult routine dental services"
       ],
       "sbc_label_patterns": []
     },
