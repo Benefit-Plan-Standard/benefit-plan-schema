@@ -58,7 +58,7 @@ Every example carries `source_references[]`.
 
 - The 8 SBC examples carry page references at the plan level (18 to 26 per plan), each with a page number and the source text. Individual benefits do not point to a specific reference.
 - The 2 Medicare Advantage examples also carry references on every benefit (72 of 72 for Humana, 71 of 71 for SCAN).
-- The 3 public-file examples carry 4 plan-level entries each, as text only, because the public files have no pages. The first names the 2 files and their download URLs, the plan year, the download date (2026-10-05), the HIOS plan ID and the SBC URL from the Plan Attributes PUF. The other 3 hold, verbatim, the plan attributes with no BPS field (metal level, cost-sharing reduction variation, network and formulary IDs and others), every accumulator cell, and the benefit rows with no canonical key. Individual benefits carry no references.
+- The 5 public-file examples carry 4 plan-level entries each, as text only, because the public files have no pages. The first names the 2 files and their download URLs, the plan year, the download date (2026-10-05), the HIOS plan ID and the SBC URL from the Plan Attributes PUF. The other 3 hold, verbatim, the plan attributes with no BPS field (metal level, cost-sharing reduction variation, network and formulary IDs and others), every accumulator cell, and the benefit rows with no canonical key. Individual benefits carry no references.
 - The 5 Medicare Advantage public-file examples carry 8 to 13 plan-level entries each, as text only, because the PBP files have no pages: the file names, release, URL and download date, the plan type, the service area, the Section A values and deductible and out-of-pocket cells with no BPS field (verbatim), and the benefit count. Every benefit (37 of 37 in each) also carries its own references.
 
 ## Things to know
@@ -89,13 +89,13 @@ The 8 SBC examples carry row text that is not a cost share or a structured limit
 | `penalty` | A penalty for missing precertification |
 | `authorization` | A precertification or preauthorization requirement or threshold |
 
-The 3 public-file examples use 2 other types, 1 per free-text column of the Benefits and Cost Sharing PUF: `exclusion` (the `Exclusions` column) and `explanation` (the `Explanation` column), both verbatim. The 2 Medicare Advantage examples use their own condition types (for example `authorization`, `network`, `eligibility`).
+The 5 public-file examples use 2 other types, 1 per free-text column of the Benefits and Cost Sharing PUF: `exclusion` (the `Exclusions` column) and `explanation` (the `Explanation` column), both verbatim. The 2 Medicare Advantage examples use their own condition types (for example `authorization`, `network`, `eligibility`).
 
 ## Folders
 
 - [`sources/`](sources/): the original published PDFs, unmodified, 1 per document-derived example (GatorCare has a second, its pharmacy SBC), so any value can be checked against its source. See [`sources/README.md`](sources/README.md). The public-file examples have no PDF here; the public files are downloaded into `data/puf/<year>/` and not committed.
 - [`fhir/`](fhir/): the 10 document-derived examples converted to FHIR R4 Bundles, each holding an `InsurancePlan` in the CARIN Digital Insurance Card SBC InsurancePlan profile (STU 2 ballot) and its `Organization`, with the validation record. The 5 Medicare Advantage public-file examples are converted here too. They are golden files for the converter's tests. The 10 document-derived Bundles and the 5 Medicare Advantage public-file Bundles are published on the site at https://benefitplanstandard.org/fhir/index.json. See [`fhir/README.md`](fhir/README.md).
-- [`fhir-puf/`](fhir-puf/): the 3 public-file examples converted to FHIR by the same converter, with their own validation record. They show the chain from the public files to FHIR. They are not golden files, they are not published on the site, and they are not in `fhir/index.json`. See [`fhir-puf/README.md`](fhir-puf/README.md).
+- [`fhir-puf/`](fhir-puf/): the 5 public-file examples converted to FHIR by the same converter, with their own validation record. They show the chain from the public files to FHIR. They are not golden files, they are not published on the site, and they are not in `fhir/index.json`. See [`fhir-puf/README.md`](fhir-puf/README.md).
 
 ## Validate an example
 
