@@ -33,7 +33,7 @@ This spec defines a converter from a Benefit Plan Standard (BPS) document to a F
 - The CLI checks the input against the schema its `schema_version` names (`schema/v1.1.0` or `schema/v1.2.0`), using the same local Ajv setup as `scripts/validate.js`. A document that fails the schema is rejected. Nothing is converted.
 - Absent v1.2.0 fields take their v1.1.0 meaning. For example, a tier with no `tier_class` is a `network` tier.
 - The 10 `examples/*_example.json` files are the original test corpus. The 8 SBC examples declare v1.1.0 and the 2 Medicare Advantage examples (`humana_example.json`, `scan_example.json`) declare v1.2.0.
-- The PBP importer's 5 golden files (`examples/*.pbp.json`, v1.2.0) are converted too, since 2026-10-06; their Bundles sit in `examples/fhir/` beside the 10 (section 12) and are not published (section 13).
+- The PBP importer's 5 golden files (`examples/*.pbp.json`, v1.2.0) are converted too, since 2026-10-06; their Bundles sit in `examples/fhir/` beside the 10 (section 12) and are published with them since 2026-10-15 (section 13).
 
 ## 4. Outputs
 
@@ -388,7 +388,7 @@ The golden files double as fixtures for ports to other languages.
 
 ## 13. Publishing layout
 
-All 10 outputs are converted, golden-tested and published. The 5 PBP Bundles in `examples/fhir/` (section 12) are golden-tested but not published: `scripts/publish-fhir.js` reads only `examples/*_example.json`.
+All 10 outputs are converted, golden-tested and published. Since 2026-10-15 the 5 PBP Bundles in `examples/fhir/` (section 12) are published too: `scripts/publish-fhir.js` reads `examples/*_example.json` and then `examples/*.pbp.json`, so `index.json` lists 15 plans. The Marketplace Bundles in `examples/fhir-puf/` are not published.
 
 ```
 benefit-plan-schema/
@@ -398,13 +398,13 @@ benefit-plan-schema/
   scripts/publish-fhir.js              copies outputs and definitions into the docs site; writes index.json
   fhir/carin-sbc-crosswalk.json        section 8.2 as data
   fhir/definitions/*.json              the 8 bps-* extension StructureDefinitions and the canonical-benefits CodeSystem
-  examples/fhir/<id>.json              15 golden Bundles (the 10 published, and the 5 PBP Bundles)
+  examples/fhir/<id>.json              15 golden Bundles, all published (the 10 and the 5 PBP Bundles)
   examples/fhir/README.md
   examples/fhir/VALIDATION.md          validator run record and warnings explained
 
 benefit-plan-docs/
-  static/fhir/InsurancePlan/<id>.json  the 10 Bundles, copied unchanged from examples/fhir/
-  static/fhir/index.json               list of all 10
+  static/fhir/InsurancePlan/<id>.json  the 15 Bundles, copied unchanged from examples/fhir/
+  static/fhir/index.json               list of all 15
   static/fhir/StructureDefinition/<name>.json   the 8 bps-* extensions
   static/fhir/CodeSystem/canonical-benefits.json
   static/fhir/StructureDefinition/<name>.html   redirect pages: each canonical URL sends a browser to its .json file
@@ -412,13 +412,19 @@ benefit-plan-docs/
   docs/specification/fhir-insuranceplan.md   docs page, added to the Specification sidebar
 ```
 
-`static/fhir/index.json` is a plain JSON list, not a FHIR resource. Each entry has `id`, `plan_name`, `carrier`, `plan_type`, `plan_year`, `bps_schema_version`, `bps_example`, `path` (for example `InsurancePlan/aetna-ppo-1500-80-50.json`), `url`, `benefits_placed` and `benefits_unmapped`, plus `label` for the two Medicare Advantage files. Top-level fields are `description`, `profile`, `package` (`hl7.fhir.us.insurance-card#2.0.0-ballot`), `profile_status` (`draft, experimental; ballot-stage`), `fhir_version`, `bps_repository` and `converter_spec`.
+`static/fhir/index.json` is a plain JSON list, not a FHIR resource. Each entry has `id`, `plan_name`, `carrier`, `plan_type`, `plan_year`, `bps_schema_version`, `bps_example`, `path` (for example `InsurancePlan/aetna-ppo-1500-80-50.json`), `url`, `benefits_placed` and `benefits_unmapped`, plus `label` for the 7 Medicare Advantage files. Top-level fields are `description`, `profile`, `package` (`hl7.fhir.us.insurance-card#2.0.0-ballot`), `profile_status` (`draft, experimental; ballot-stage`), `fhir_version`, `bps_repository` and `converter_spec`.
 
 For `humana` and `scan`, both the index `label` and the docs page read exactly:
 
 > Medicare Advantage, read from the CMS Summary of Benefits, validates against the v1.2.0 draft only.
 
 The same text heads `examples/fhir/README.md` for those two files.
+
+For the 5 PBP Bundles the index `label` reads:
+
+> Medicare Advantage, imported from the CMS PBP benefits files for contract year 2027, validates against the v1.2.0 draft only.
+
+The docs page gives it once, above the table of the 5.
 
 **Docs page content.** The page covers:
 

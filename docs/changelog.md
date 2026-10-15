@@ -3,6 +3,12 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] – DRAFT (2026-10-15), the 5 Medicare Advantage PBP Bundles published
+
+### Changed
+
+- `scripts/publish-fhir.js` publishes the 5 PBP Bundles of `examples/fhir/` after the 10 read from plan documents, so `index.json` lists 15 plans. Each of the 5 entries has `bps_example` set to its `.pbp.json` file and the label "Medicare Advantage, imported from the CMS PBP benefits files for contract year 2027, validates against the v1.2.0 draft only."; the 2 Summary of Benefits entries keep their label. The 10 published Bundles are byte-identical, the output is the same from run to run, and `examples/fhir-puf/` stays unpublished.
+
 ## [1.2.0] – DRAFT (2026-10-13), Marketplace adult dental, derived excluded services, provider directory proposal
 
 No schema change. The vocabulary version stays 1.2.0.

@@ -23,7 +23,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 - FHIR InsurancePlan converter (CARIN SBC profile): `scripts/to-insuranceplan.js`, spec `docs/specs/insuranceplan-converter.md`  
 - Importer from the CMS Marketplace public use files: `scripts/from-marketplace-puf.js`, spec `docs/specs/marketplace-puf-importer.md`, 5 examples in `examples/*.puf.json` and their Bundles in `examples/fhir-puf/`  
 - Importer from the CMS Medicare Advantage Plan Benefit Package files: `scripts/from-pbp.js`, spec `docs/specs/pbp-importer.md`, 5 examples in `examples/*.pbp.json` and their Bundles in `examples/fhir/`  
-- The 10 document-derived examples as FHIR InsurancePlan: `examples/fhir/` (which also holds the 5 PBP Bundles, not published), the 10 published at https://benefitplanstandard.org/fhir/index.json  
+- The 10 document-derived examples and the 5 PBP examples as FHIR InsurancePlan: `examples/fhir/`, the 15 published at https://benefitplanstandard.org/fhir/index.json  
 - CARIN Digital Insurance Card reconciliation: `docs/carin-dic-reconciliation.md`  
 - Modules: `modules/README.md`  
 - Governance: `docs/governance.md`  
@@ -269,9 +269,9 @@ node scripts/to-insuranceplan.js examples/aetna_example.json > aetna.insurancepl
 node --test scripts/to-insuranceplan.test.js     # checks output against the files in examples/fhir/
 ```
 
-The 10 examples are already converted in [`examples/fhir/`](examples/fhir/) and validate against the CARIN package with 0 errors ([`VALIDATION.md`](examples/fhir/VALIDATION.md)). They are also published as static files:
+The 10 examples and the 5 PBP examples are already converted in [`examples/fhir/`](examples/fhir/) and validate against the CARIN package with 0 errors ([`VALIDATION.md`](examples/fhir/VALIDATION.md)). They are also published as static files:
 
-- Index of all 10: https://benefitplanstandard.org/fhir/index.json
+- Index of all 15: https://benefitplanstandard.org/fhir/index.json
 - One plan, for example: https://benefitplanstandard.org/fhir/InsurancePlan/aetna-ppo-1500-80-50.json
 - Docs page: https://benefitplanstandard.org/docs/specification/fhir-insuranceplan
 

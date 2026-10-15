@@ -12,6 +12,9 @@
  *   CodeSystem/<name>.json           from fhir/definitions/
  *   index.json                       plain JSON list of the InsurancePlan files (not a FHIR resource)
  *
+ * The InsurancePlan files are the 10 examples/*_example.json Bundles, then the 5
+ * examples/*.pbp.json Bundles. The Marketplace Bundles in examples/fhir-puf/ are not published.
+ *
  * The files are static downloads, not a FHIR API. Output is deterministic.
  */
 
@@ -19,7 +22,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { toInsurancePlanBundle, exampleFiles, EXAMPLES_DIR, GOLDEN_DIR } = require('./to-insuranceplan.js');
+const { toInsurancePlanBundle, exampleFiles, pbpExampleFiles, EXAMPLES_DIR, GOLDEN_DIR } = require('./to-insuranceplan.js');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const DEFS_DIR = path.join(REPO_ROOT, 'fhir', 'definitions');
@@ -27,6 +30,7 @@ const SITE = 'https://benefitplanstandard.org/fhir/';
 const BPS_EXT = 'https://benefitplanstandard.org/fhir/StructureDefinition/';
 
 const MA_LABEL = 'Medicare Advantage, read from the CMS Summary of Benefits, validates against the v1.2.0 draft only.';
+const PBP_LABEL = 'Medicare Advantage, imported from the CMS PBP benefits files for contract year 2027, validates against the v1.2.0 draft only.';
 
 function readJson(p) {
   return JSON.parse(fs.readFileSync(p, 'utf8'));
@@ -57,7 +61,8 @@ function indexEntry(file) {
     benefits_placed: placed,
     benefits_unmapped: unmapped,
   };
-  if (bps.market === 'medicare_advantage') entry.label = MA_LABEL;
+  if (file.endsWith('.pbp.json')) entry.label = PBP_LABEL;
+  else if (bps.market === 'medicare_advantage') entry.label = MA_LABEL;
   return entry;
 }
 
@@ -67,7 +72,7 @@ function main(argv) {
     return 1;
   }
   const target = path.resolve(argv[0]);
-  const files = exampleFiles();
+  const files = [...exampleFiles(), ...pbpExampleFiles()];
   const entries = files.map(indexEntry);
 
   for (const e of entries) {

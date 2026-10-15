@@ -44,7 +44,7 @@ A Summary of Benefits is not an SBC. These two files conform structurally to the
 
 ## Medicare Advantage files from the CMS PBP public files
 
-Added 2026-10-06. Each is the converter's output for 1 of the PBP importer's 5 golden files (`examples/*.pbp.json`, BPS 1.2.0, written by `scripts/from-pbp.js` from the CMS CY 2027 PBP Benefits files; spec [`../../docs/specs/pbp-importer.md`](../../docs/specs/pbp-importer.md) section 13). They are golden-tested like the 10 above but are not published to the docs site. The `POS` tier of the HMO-POS plan maps to out-of-network with the text-only qualifier `Point-of-service option` (converter spec 6.3). Their rows are in the Files table above. The 5 plans, as the Bundles name them:
+Added 2026-10-06. Each is the converter's output for 1 of the PBP importer's 5 golden files (`examples/*.pbp.json`, BPS 1.2.0, written by `scripts/from-pbp.js` from the CMS CY 2027 PBP Benefits files; spec [`../../docs/specs/pbp-importer.md`](../../docs/specs/pbp-importer.md) section 13). They are golden-tested like the 10 above and, since 2026-10-15, published to the docs site with them. Their label in the site's `index.json`: Medicare Advantage, imported from the CMS PBP benefits files for contract year 2027, validates against the v1.2.0 draft only. The `POS` tier of the HMO-POS plan maps to out-of-network with the text-only qualifier `Point-of-service option` (converter spec 6.3). Their rows are in the Files table above. The 5 plans, as the Bundles name them:
 
 | Plan | Contract-plan-segment |
 |---|---|
