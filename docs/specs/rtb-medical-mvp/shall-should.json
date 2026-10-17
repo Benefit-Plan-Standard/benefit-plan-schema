@@ -1,0 +1,945 @@
+{
+  "description": "SHALL and SHOULD assignments for the medical MVP technical specification of the CMS Health Tech Ecosystem Real-Time Benefits workgroup, mapped to Benefit Plan Standard documents written by the 2 public-file importers. One entry per item. scripts/build-rtb-dictionary.js reads this file with the 2 importer crosswalks and the canonical benefit vocabulary and writes data-dictionary.md in this folder.",
+  "attribution": "The assignments follow the workgroup's medical MVP scope (Monica Chopra's pledge proposal, October 2026). Service and benefit names are the scope's suggested names; every other text in this file is ours.",
+  "labels": {
+    "SHALL": "Required for the MVP. A pledgee makes the item available to the member on request, wherever it applies to the member's plan.",
+    "SHOULD": "Optional for the MVP. It may become SHALL at GA.",
+    "KEY": "The identifier an app uses to find the plan's document. Not an item shown to the member."
+  },
+  "programs": {
+    "medicare_advantage": {
+      "name": "Medicare Advantage",
+      "files": "CMS Plan Benefit Package (PBP) Benefits",
+      "importer": "scripts/from-pbp.js",
+      "importer_spec": "docs/specs/pbp-importer.md",
+      "crosswalk": "fhir/pbp-crosswalk.json",
+      "schema": "schema/v1.2.0/benefit-plan.schema.json",
+      "golden_suffix": ".pbp.json",
+      "reading": [
+        "Each service category has its own columns in its own file, 1 row per plan. A Medicare-covered category is covered on every plan; when both its copay and coinsurance answers are No, the importer writes a $0 copay step and quotes both answers.",
+        "Minimum and maximum columns become a range (amount_min and amount_max, rate_min and rate_max) when they differ.",
+        "Every tier row quotes, in its notes, the cells it was read from."
+      ],
+      "aspects": {
+        "cost": {
+          "note": "The included-or-optional column sets coverage_basis (2 mandatory, 3 optional; 4, both, is written null with a note). Authorization and referral answers go to conditions[]."
+        },
+        "limits": {
+          "note": "A quantity limit reads the unlimited-or-limited answer (1 unlimited, 2 limited), the number and the period. A dollar maximum reads the maximum plan benefit columns; a maximum shared with another category carries a shared_limit_id."
+        }
+      }
+    },
+    "marketplace": {
+      "name": "Marketplace",
+      "files": "CMS Health Insurance Exchange public use files (PUFs)",
+      "importer": "scripts/from-marketplace-puf.js",
+      "importer_spec": "docs/specs/marketplace-puf-importer.md",
+      "crosswalk": "fhir/marketplace-puf-crosswalk.json",
+      "schema": "schema/v1.1.0/benefit-plan.schema.json",
+      "golden_suffix": ".puf.json",
+      "benefit_file": "benefits-and-cost-sharing-puf.csv",
+      "reading": [
+        "Every benefit is a row of benefits-and-cost-sharing-puf.csv with the same columns, found by its exact BenefitName and the plan's PlanId.",
+        "Costs are text, such as \"$30.00\" or \"20.00% Coinsurance after deductible\". The importer reads each string into a copay or coinsurance step and quotes both strings in the tier's notes.",
+        "IsCovered applies to the whole benefit, so every tier row of a benefit carries the same covered value."
+      ],
+      "columns": {
+        "in_network": ["CopayInnTier1", "CoinsInnTier1"],
+        "covered": ["IsCovered"],
+        "cost": ["CopayInnTier1", "CoinsInnTier1", "CopayInnTier2", "CoinsInnTier2", "CopayOutofNet", "CoinsOutofNet", "Exclusions", "Explanation", "IsExclFromInnMOOP", "IsExclFromOonMOOP"],
+        "limits": ["QuantLimitOnSvc", "LimitQty", "LimitUnit"]
+      },
+      "aspects": {
+        "covered": {
+          "note": "IsCovered \"Covered\" is covered true on every tier; \"Not Covered\" or blank is covered false."
+        },
+        "cost": {
+          "note": "Exclusions and Explanation go to conditions[] as types exclusion and explanation. IsExclFromInnMOOP and IsExclFromOonMOOP set applies_to_moop.",
+          "not_in_file": "The Benefits and Cost Sharing PUF has no column for whether a benefit is included or an optional add-on, and none for authorization or referral, so these rows carry neither."
+        },
+        "limits": {
+          "note": "A dollar limit is a LimitUnit that starts with Dollars, with the amount in LimitQty. QuantLimitOnSvc is not carried; limits[] implies it."
+        }
+      }
+    }
+  },
+  "groups": [
+    {
+      "id": "identification",
+      "title": "Plan key, plan year and date of the data",
+      "intro": "How an app finds the plan's document, and the 2 facts the scope asks for on every answer: the plan year and the date of the CMS data."
+    },
+    {
+      "id": "plan",
+      "title": "Plan-level fields",
+      "intro": "Fields that apply to the whole plan. Each is asked for wherever it applies to the member's plan; special needs plan fields, for example, apply only to special needs plans."
+    },
+    {
+      "id": "network",
+      "title": "Network items (use case 2)",
+      "intro": "Whether the cost changes with where the member goes: in or out of network, the out-of-network deductible and maximum, the provider directory, and the second in-network tier where a Marketplace plan has one."
+    },
+    {
+      "id": "services",
+      "title": "Services with a cost",
+      "intro": "Each row is the member's in-network cost for 1 service. The out-of-network cost of the same service is the network item \"Out-of-network cost for each service\"."
+    },
+    {
+      "id": "extras",
+      "title": "The extra benefits",
+      "intro": "Benefits a plan may or may not offer. Whether the plan covers the benefit is SHALL; its cost and conditions and its limits are SHOULD. Limits are SHOULD because use case 3 has no SHALL in the MVP: a known gap, to revisit for GA.",
+      "aspects": [
+        { "id": "covered", "title": "covered or not", "label": "SHALL", "meaning": "Whether the plan covers this benefit." },
+        { "id": "cost", "title": "cost and details", "label": "SHOULD", "meaning": "What the member pays for this benefit, and the conditions the plan files with it." },
+        { "id": "limits", "title": "limits", "label": "SHOULD", "meaning": "How many, how often or how much of this benefit the plan covers." }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "G1",
+      "programs": ["medicare_advantage"],
+      "kind": "no_canonical_key",
+      "title": "Medicare Advantage physical therapy and speech therapy (category 7i) has no canonical key.",
+      "instead": "The importer writes the benefit by name: benefit_id PHYSICAL_AND_SPEECH_THERAPY, with service_name and raw_label and no canonical_key. The vocabulary has keys for physical therapy, for speech therapy and for physical with occupational therapy, but none for this pair."
+    },
+    {
+      "id": "G2",
+      "programs": ["medicare_advantage"],
+      "kind": "not_read",
+      "title": "Medicare Advantage preventive services (category 14a) are not read.",
+      "instead": "The importer writes no preventive_care benefit for a Medicare Advantage plan. The plan's answer is in pbp_b14a_mc_prevent_attest in pbp_b14_preventive.txt."
+    },
+    {
+      "id": "G3",
+      "programs": ["medicare_advantage"],
+      "kind": "not_read",
+      "title": "Medicare Advantage monthly premium and Part B premium reduction are not read.",
+      "instead": "The schema has the premium and part_b_premium_reduction fields, but the importer reads neither pbp_d_mplusc_premium nor pbp_d_mco_pay_reduct_yn and pbp_d_mco_pay_reduct_amt in pbp_Section_D.txt, so a document has neither field."
+    },
+    {
+      "id": "G4",
+      "programs": ["medicare_advantage"],
+      "kind": "not_read",
+      "title": "Medicare Advantage member services phone is not read.",
+      "instead": "The importer does not read pbp_a_curmbr_phone in pbp_Section_A.txt, and the schema has no field for a phone number. The plan website, pbp_a_org_website, is quoted verbatim in source_references."
+    },
+    {
+      "id": "G5",
+      "programs": ["medicare_advantage", "marketplace"],
+      "kind": "no_field",
+      "title": "The provider directory link has no field.",
+      "instead": "Schema 1.2.0 has no field for it. The Medicare Advantage importer quotes pbp_a_phys_web_addr and pbp_a_org_website verbatim in source_references. The Marketplace importer does not read the Network PUF, so NetworkURL is not carried; the plan's NetworkId from the Plan Attributes PUF is quoted.",
+      "proposed": "network_tiers[].provider_network, filled from the Network PUF, in docs/provider-directory-schema-proposal.md. It is a proposal, not part of any schema version."
+    },
+    {
+      "id": "G6",
+      "programs": ["marketplace"],
+      "kind": "not_carried",
+      "title": "Marketplace ImportDate is not carried.",
+      "instead": "Both files the importer reads have an ImportDate column. The importer writes the date the files were downloaded, from data/puf/<year>/download.json, in the first source_references excerpt."
+    },
+    {
+      "id": "G7",
+      "programs": ["marketplace"],
+      "kind": "no_identifier_field",
+      "title": "Marketplace documents have no plan_identifiers.",
+      "instead": "The Marketplace importer writes schema 1.1.0, which has no plan_identifiers. The HIOS plan id with its 2-digit variant (for example 68398FL0030058-01) appears only as text inside the first source_references excerpt."
+    },
+    {
+      "id": "G8",
+      "programs": ["marketplace"],
+      "kind": "not_read",
+      "title": "Marketplace out-of-area coverage descriptions are not read.",
+      "instead": "The importer quotes the Yes or No answers, OutOfServiceAreaCoverage and OutOfCountryCoverage, in source_references. It does not read OutOfServiceAreaCoverageDescription or OutOfCountryCoverageDescription in the Plan Attributes PUF, so the plan's own description of that coverage is not in the document, and no field is written for it."
+    }
+  ],
+  "items": [
+    {
+      "id": "plan_key",
+      "group": "identification",
+      "name": "Plan key",
+      "meaning": "The identifier an app uses to pick out the plan's document.",
+      "medicare_advantage": {
+        "label": "KEY",
+        "path": "plan_identifiers[system=cms_contract_plan_segment].value",
+        "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_hnumber", "pbp_a_plan_identifier", "segment_id"] }],
+        "note": "Written as contract, plan and segment with the segment padded to 3 digits, for example H1609-028-000. The file's own bid_id column writes the same key as H1609_028_0 and is quoted in source_references."
+      },
+      "marketplace": {
+        "label": "KEY",
+        "path": "source_references[0].excerpt",
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["PlanId"] }],
+        "gap": "G7",
+        "note": "The 14-character HIOS plan id and the 2-digit variant, for example 68398FL0030058-01. Each cost-sharing reduction variant is its own plan with its own costs."
+      }
+    },
+    {
+      "id": "plan_year",
+      "group": "identification",
+      "name": "Plan year",
+      "meaning": "The year the plan's benefits apply to.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": "plan_year",
+        "source": [{ "file": "PlanArea.txt or PlanRegionArea.txt", "read": ["contract_year"] }],
+        "note": "Section A has no year column. The importer reads contract_year from the plan's service area rows and requires it to equal the release year."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "path": "plan_year",
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["BusinessYear"] }]
+      }
+    },
+    {
+      "id": "data_date",
+      "group": "identification",
+      "name": "Date of the CMS data",
+      "meaning": "Which release of the CMS data an answer comes from, and when it was downloaded.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": "source_references[0].excerpt",
+        "source": [{ "file": "data/pbp/<year>/download.json", "read": ["release_label", "downloaded"] }],
+        "note": "The excerpt names the release, for example \"PBP Benefits-2027\", and the download date. The zip's Last-Modified date stays in download.json and is not in the document."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "path": "source_references[0].excerpt",
+        "source": [
+          { "file": "data/puf/<year>/download.json", "read": ["downloaded"] },
+          { "file": "plan-attributes-puf.csv and benefits-and-cost-sharing-puf.csv", "unread": ["ImportDate"] }
+        ],
+        "gap": "G6"
+      }
+    },
+    {
+      "id": "coverage_dates",
+      "group": "identification",
+      "name": "Coverage dates",
+      "meaning": "The first and last dates of the plan's coverage.",
+      "medicare_advantage": {
+        "label": null,
+        "not_in_file": "No PBP file has a date column. The importer writes plan_year only."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "path": ["effective_date", "expiry_date"],
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["PlanEffectiveDate", "PlanExpirationDate"] }],
+        "note": "Written as ISO dates. expiry_date is left out when PlanExpirationDate is blank."
+      }
+    },
+    {
+      "id": "plan_name",
+      "group": "plan",
+      "name": "Plan name",
+      "meaning": "The plan's marketing name.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": "plan_name",
+        "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_plan_name"] }]
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "path": "plan_name",
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["PlanMarketingName", "PlanVariantMarketingName"] }],
+        "note": "plan_name is PlanMarketingName. PlanVariantMarketingName, the name of the cost-sharing reduction variant, is quoted in source_references."
+      }
+    },
+    {
+      "id": "insurer_name",
+      "group": "plan",
+      "name": "Insurer name",
+      "meaning": "The name of the insurer that offers the plan.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": "carrier",
+        "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_org_marketing_name", "pbp_a_org_name"] }],
+        "note": "The document's carrier is the marketing name. The legal name, pbp_a_org_name, is quoted in source_references."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "path": "carrier",
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["IssuerMarketPlaceMarketingName"] }]
+      }
+    },
+    {
+      "id": "plan_type",
+      "group": "plan",
+      "name": "Plan type",
+      "meaning": "The kind of plan, such as HMO or PPO.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": "plan_type",
+        "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_plan_type"] }],
+        "note": "Codes 01, 02, 04 and 31 are written HMO, HMO_POS, PPO and PPO, and the code and its label are quoted in source_references. The importer refuses other plan types."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "path": "plan_type",
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["PlanType"] }],
+        "note": "Written as the file gives it, except that Indemnity becomes INDEMNITY."
+      }
+    },
+    {
+      "id": "special_needs_plan",
+      "group": "plan",
+      "name": "Special needs plan and type",
+      "meaning": "Whether the plan is a special needs plan, and of which type.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_special_need_flag", "pbp_a_special_need_plan_type"] }]
+      },
+      "marketplace": { "label": null }
+    },
+    {
+      "id": "metal_level",
+      "group": "plan",
+      "name": "Metal level",
+      "meaning": "The plan's metal level, such as Bronze, Silver or Gold.",
+      "medicare_advantage": { "label": null },
+      "marketplace": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["MetalLevel"] }]
+      }
+    },
+    {
+      "id": "csr_variant",
+      "group": "plan",
+      "name": "Cost-sharing reduction variant",
+      "meaning": "Which cost-sharing reduction variant of the plan this is; each variant has its own costs.",
+      "medicare_advantage": { "label": null },
+      "marketplace": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["CSRVariationType"] }]
+      }
+    },
+    {
+      "id": "monthly_premium",
+      "group": "plan",
+      "name": "Monthly plan premium",
+      "meaning": "What the member pays the plan each month.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": "premium",
+        "source": [{ "file": "pbp_Section_D.txt", "unread": ["pbp_d_mplusc_premium"] }],
+        "gap": "G3"
+      },
+      "marketplace": {
+        "label": null,
+        "not_in_file": "Neither file the importer reads has a premium column; premiums vary by age and area and are in the Rate PUF, which the importer does not read. The importer writes no premium."
+      }
+    },
+    {
+      "id": "part_b_premium_reduction",
+      "group": "plan",
+      "name": "Part B premium reduction",
+      "meaning": "How much the plan lowers the member's Medicare Part B premium.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": "part_b_premium_reduction",
+        "source": [{ "file": "pbp_Section_D.txt", "unread": ["pbp_d_mco_pay_reduct_yn", "pbp_d_mco_pay_reduct_amt"] }],
+        "gap": "G3"
+      },
+      "marketplace": { "label": null }
+    },
+    {
+      "id": "deductible",
+      "group": "plan",
+      "name": "Deductible",
+      "meaning": "What the member pays in network before the plan starts to share costs.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": "accumulators.individual_deductible",
+        "source": [{ "file": "pbp_Section_D.txt", "read": ["pbp_d_inn_deduct_yn", "pbp_d_inn_deduct_partb_yn", "pbp_d_inn_deduct_amt", "pbp_d_ann_deduct_yn", "pbp_d_ann_deduct_amt_type", "pbp_d_ann_deduct_amt", "pbp_d_ann_deduct_bens"] }],
+        "note": "HMO and HMO-POS plans use the in-network columns and PPOs the annual ones; a PPO's network_tier is IN, null or OUT by the deductible's scope (importer spec section 4.3). A Medicare-defined deductible has no amount in the file, so no slot is written and the answer is quoted in source_references. Section D has no family amounts."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "path": ["accumulators.individual_deductible", "accumulators.family_deductible"],
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["MedicalDrugDeductiblesIntegrated", "TEHBDedInnTier1Individual", "TEHBDedInnTier1FamilyPerPerson", "TEHBDedInnTier1FamilyPerGroup", "MEHBDedInnTier1Individual", "MEHBDedInnTier1FamilyPerPerson", "MEHBDedInnTier1FamilyPerGroup"] }],
+        "note": "TEHB columns (medical and drug together) when MedicalDrugDeductiblesIntegrated is Yes, otherwise MEHB (medical); applies_to says which. The family slot takes the per-group amount, and embedded says whether a per-person amount applies inside it."
+      }
+    },
+    {
+      "id": "drug_deductible",
+      "group": "plan",
+      "name": "Drug deductible, when separate",
+      "meaning": "The prescription drug deductible of a plan that keeps it apart from the medical deductible.",
+      "medicare_advantage": { "label": null },
+      "marketplace": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["DEHBDedInnTier1Individual", "DEHBDedInnTier1FamilyPerPerson", "DEHBDedInnTier1FamilyPerGroup"] }],
+        "note": "Part of the deductible item when MedicalDrugDeductiblesIntegrated is No. Schema 1.1.0 has no pharmacy accumulator."
+      }
+    },
+    {
+      "id": "oop_max",
+      "group": "plan",
+      "name": "Out-of-pocket maximum",
+      "meaning": "The most the member pays in network for covered services before the plan pays in full.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": "accumulators.individual_oop_max",
+        "source": [{ "file": "pbp_Section_D.txt", "read": ["pbp_d_out_pocket_amt_yn", "pbp_d_out_pocket_amt", "pbp_d_out_pocket_amt_type"] }],
+        "note": "The maximum's type in pbp_d_out_pocket_amt_type (lower, intermediate or mandatory) is quoted in source_references. Section D has no family amounts."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "path": ["accumulators.individual_oop_max", "accumulators.family_oop_max"],
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["MedicalDrugMaximumOutofPocketIntegrated", "TEHBInnTier1IndividualMOOP", "TEHBInnTier1FamilyPerPersonMOOP", "TEHBInnTier1FamilyPerGroupMOOP"] }],
+        "note": "MEHB columns in place of TEHB when MedicalDrugMaximumOutofPocketIntegrated is No, as for the deductible."
+      }
+    },
+    {
+      "id": "member_services",
+      "group": "plan",
+      "name": "Member services phone and website",
+      "meaning": "How the member reaches the plan.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_org_website"], "unread": ["pbp_a_curmbr_phone"] }],
+        "gap": "G4"
+      },
+      "marketplace": { "label": null }
+    },
+    {
+      "id": "hsa_eligible",
+      "group": "plan",
+      "name": "Health savings account eligible",
+      "meaning": "Whether the plan can be paired with a health savings account.",
+      "medicare_advantage": { "label": null },
+      "marketplace": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["IsHSAEligible"] }]
+      }
+    },
+    {
+      "id": "specialist_referral",
+      "group": "plan",
+      "name": "Referral needed to see a specialist",
+      "meaning": "Whether the member needs a referral to see a specialist, and for which specialists.",
+      "medicare_advantage": {
+        "label": null,
+        "note": "The PBP files hold referral answers per service category instead (for example pbp_b7d_refer_yn), which the importer writes as conditions on the benefit."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["IsReferralRequiredForSpecialist", "SpecialistRequiringReferral"] }]
+      }
+    },
+    {
+      "id": "plan_exclusions",
+      "group": "plan",
+      "name": "Plan-wide exclusions",
+      "meaning": "What the plan excludes, in the insurer's own words.",
+      "medicare_advantage": { "label": null },
+      "marketplace": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["PlanLevelExclusions"] }]
+      }
+    },
+    {
+      "id": "plan_links",
+      "group": "plan",
+      "name": "Links to the SBC, brochure and drug list",
+      "meaning": "Web addresses of the plan's Summary of Benefits and Coverage, brochure and drug list.",
+      "medicare_advantage": { "label": null },
+      "marketplace": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["URLForSummaryofBenefitsCoverage", "PlanBrochure", "FormularyURL"] }]
+      }
+    },
+    {
+      "id": "employer_group",
+      "group": "plan",
+      "name": "Employer group plan flag",
+      "meaning": "Whether the plan is offered only through employers or unions.",
+      "medicare_advantage": {
+        "label": "SHOULD",
+        "quoted": true,
+        "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_eghp_yn"] }]
+      },
+      "marketplace": { "label": null }
+    },
+    {
+      "id": "oon_coverage",
+      "group": "network",
+      "name": "Out-of-network coverage",
+      "meaning": "Whether the plan pays for care outside its network.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": ["network_tiers[tier_id=OUT]", "network_tiers[tier_id=POS]"],
+        "source": [{ "file": "pbp_Section_C.txt", "read": ["pbp_c_oon_yn", "pbp_c_pos_yn", "pbp_c_oon_mc_bendesc_cats"] }],
+        "note": "An OUT tier is written when pbp_c_oon_yn is 1 (PPOs) and a POS tier when pbp_c_pos_yn is 1 (HMO-POS plans); HMOs have neither. A benefit has an OUT or POS row only when a group in pbp_Section_C_OON.txt or pbp_Section_C_POS.txt lists its category."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "path": "network_tiers[tier_id=OUT]",
+        "source": [{ "file": "benefits-and-cost-sharing-puf.csv", "read": ["CopayOutofNet", "CoinsOutofNet"] }],
+        "note": "Every document has an OUT tier. Whether a service is covered out of network follows the benefit's IsCovered."
+      }
+    },
+    {
+      "id": "oon_cost",
+      "group": "network",
+      "name": "Out-of-network cost for each service",
+      "meaning": "What the member pays for a service outside the network.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": "benefits[].network_cost_shares[tier_id=OUT].cost_shares[]",
+        "source": [{ "file": "pbp_Section_C_OON.txt", "read": ["pbp_c_oon_out_mc_bendesc_cats", "pbp_c_oon_out_nmc_bendesc_cats", "pbp_c_oon_outpt_copay_yn", "pbp_c_oon_outpt_copay_min_amt", "pbp_c_oon_outpt_copay_max_amt", "pbp_c_oon_outpt_coins_yn", "pbp_c_oon_outpt_coins_min_pct", "pbp_c_oon_outpt_coins_max_pct", "pbp_c_oon_outpt_ded_yn", "pbp_c_oon_outpt_ded_amt"] }],
+        "note": "1 row per group of services; a benefit takes the cost of the group whose list names its category. Inpatient and skilled nursing stays out of network come from pbp_Section_C.txt instead."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "path": "benefits[].network_cost_shares[tier_id=OUT].cost_shares[]",
+        "source": [{ "file": "benefits-and-cost-sharing-puf.csv", "read": ["CopayOutofNet", "CoinsOutofNet"] }]
+      }
+    },
+    {
+      "id": "pos_cost",
+      "group": "network",
+      "name": "Point-of-service cost",
+      "meaning": "What a member of an HMO with a point-of-service option pays outside the network.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": "benefits[].network_cost_shares[tier_id=POS].cost_shares[]",
+        "source": [{ "file": "pbp_Section_C_POS.txt", "read": ["pbp_c_pos_outpt_mc_bencats", "pbp_c_pos_outpt_nmc_bencats", "pbp_c_pos_outpt_copay_yn", "pbp_c_pos_outpt_copay_min_amt", "pbp_c_pos_outpt_copay_max_amt", "pbp_c_pos_outpt_coins_yn", "pbp_c_pos_outpt_coins_min_pct", "pbp_c_pos_outpt_coins_max_pct", "pbp_c_pos_outpt_deduct_yn", "pbp_c_pos_outpt_deduct_amt"] }],
+        "note": "The same layout as the out-of-network groups, under other column names. Applies to HMO-POS plans only."
+      },
+      "marketplace": { "label": null }
+    },
+    {
+      "id": "oon_deductible",
+      "group": "network",
+      "name": "Out-of-network deductible",
+      "meaning": "What the member pays outside the network before the plan shares costs there.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": "accumulators.oon_individual_deductible",
+        "source": [{ "file": "pbp_Section_D.txt", "read": ["pbp_d_oon_deduct_yn", "pbp_d_oon_deduct_amt"] }],
+        "note": "On HMO-POS plans the slot's network_tier is POS. On a PPO whose annual deductible names no in-network scope, the annual deductible is written here with network_tier OUT (importer spec section 4.3)."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "path": ["accumulators.oon_individual_deductible", "accumulators.oon_family_deductible"],
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["TEHBDedOutOfNetIndividual", "TEHBDedOutOfNetFamilyPerPerson", "TEHBDedOutOfNetFamilyPerGroup"] }],
+        "note": "MEHB columns in place of TEHB when the deductibles are not integrated, as in network."
+      }
+    },
+    {
+      "id": "oon_oop_max",
+      "group": "network",
+      "name": "Out-of-network out-of-pocket maximum",
+      "meaning": "The most the member pays outside the network before the plan pays in full.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "path": "accumulators.oon_individual_oop_max",
+        "source": [{ "file": "pbp_Section_D.txt", "read": ["pbp_d_oon_max_enr_oopc_yn", "pbp_d_oon_max_enr_oopc_amt"] }],
+        "note": "network_tier is OUT on PPOs and POS on HMO-POS plans."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "path": ["accumulators.oon_individual_oop_max", "accumulators.oon_family_oop_max"],
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["TEHBOutOfNetIndividualMOOP", "TEHBOutOfNetFamilyPerPersonMOOP", "TEHBOutOfNetFamilyPerGroupMOOP"] }]
+      }
+    },
+    {
+      "id": "combined_amounts",
+      "group": "network",
+      "name": "Combined in- and out-of-network deductible and maximum",
+      "meaning": "A deductible or maximum that counts in-network and out-of-network spending together.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "pbp_Section_D.txt", "read": ["pbp_d_comb_deduct_yn", "pbp_d_comb_deduct_amt", "pbp_d_comb_max_enr_amt_yn", "pbp_d_comb_max_enr_amt"] }],
+        "note": "The schema has no combined slot. The PBP importer spec (section 9.1) proposes accumulators.combined_deductible and accumulators.combined_oop_max."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["TEHBDedCombInnOonIndividual", "TEHBDedCombInnOonFamilyPerPerson", "TEHBDedCombInnOonFamilyPerGroup", "TEHBCombInnOonIndividualMOOP", "TEHBCombInnOonFamilyPerPersonMOOP", "TEHBCombInnOonFamilyPerGroupMOOP"] }]
+      }
+    },
+    {
+      "id": "provider_directory",
+      "group": "network",
+      "name": "Provider directory link",
+      "meaning": "Where the member looks up the providers in the plan's network.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_phys_web_addr", "pbp_a_org_website"] }],
+        "gap": "G5",
+        "note": "Both are quoted; the plan website stands in when the directory address is blank."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "source": [
+          { "file": "network-puf.csv", "unread": ["NetworkURL"] },
+          { "file": "plan-attributes-puf.csv", "read": ["NetworkId"] }
+        ],
+        "gap": "G5"
+      }
+    },
+    {
+      "id": "second_tier_cost",
+      "group": "network",
+      "name": "Cost in the second in-network tier",
+      "meaning": "What the member pays at the plan's second tier of in-network providers, for plans that have one.",
+      "medicare_advantage": {
+        "label": null,
+        "not_in_file": "The PBP files have no second in-network tier. They carry facility cost tiers for inpatient and skilled nursing stays only, which the importer writes as cost_designation tiers such as IN_1A_TIER_1 and IN_2_TIER_1."
+      },
+      "marketplace": {
+        "label": "SHALL",
+        "path": ["network_tiers[tier_id=IN2]", "benefits[].network_cost_shares[tier_id=IN2].cost_shares[]"],
+        "source": [
+          { "file": "plan-attributes-puf.csv", "read": ["MultipleInNetworkTiers"] },
+          { "file": "benefits-and-cost-sharing-puf.csv", "read": ["CopayInnTier2", "CoinsInnTier2"] }
+        ],
+        "note": "IN2 is written only when at least 1 of the plan's benefit rows has a tier 2 value. MultipleInNetworkTiers is quoted in source_references and does not decide it."
+      }
+    },
+    {
+      "id": "second_tier_amounts",
+      "group": "network",
+      "name": "Second-tier deductible and maximum",
+      "meaning": "The deductible and out-of-pocket maximum that apply in the second in-network tier.",
+      "medicare_advantage": { "label": null },
+      "marketplace": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["TEHBDedInnTier2Individual", "TEHBDedInnTier2FamilyPerPerson", "TEHBDedInnTier2FamilyPerGroup", "TEHBInnTier2IndividualMOOP", "TEHBInnTier2FamilyPerPersonMOOP", "TEHBInnTier2FamilyPerGroupMOOP"] }],
+        "note": "The schema has deductible and maximum slots for in network and out of network only."
+      }
+    },
+    {
+      "id": "outside_area_coverage",
+      "group": "network",
+      "name": "Coverage outside the service area or the country",
+      "meaning": "Whether the plan covers care away from its service area or abroad.",
+      "medicare_advantage": { "label": null },
+      "marketplace": {
+        "label": "SHALL",
+        "quoted": true,
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["OutOfServiceAreaCoverage", "OutOfCountryCoverage"], "unread": ["OutOfServiceAreaCoverageDescription", "OutOfCountryCoverageDescription"] }],
+        "gap": "G8"
+      }
+    },
+    {
+      "id": "primary_care",
+      "group": "services",
+      "key": "primary_care",
+      "meaning": "The member's in-network cost for a primary care office visit.",
+      "medicare_advantage": { "label": "SHALL", "name": "Primary care visit", "pbp_benefit_id": "PRIMARY_CARE" },
+      "marketplace": { "label": "SHALL", "name": "Primary care visit", "benefit_name": "Primary Care Visit to Treat an Injury or Illness" }
+    },
+    {
+      "id": "specialist",
+      "group": "services",
+      "key": "specialist",
+      "meaning": "The member's in-network cost for a specialist office visit.",
+      "medicare_advantage": { "label": "SHALL", "name": "Specialist visit", "pbp_benefit_id": "SPECIALIST" },
+      "marketplace": { "label": "SHALL", "name": "Specialist visit", "benefit_name": "Specialist Visit" }
+    },
+    {
+      "id": "urgent_care",
+      "group": "services",
+      "key": "urgent_care",
+      "meaning": "The member's in-network cost for urgent care.",
+      "medicare_advantage": { "label": "SHALL", "name": "Urgent care", "pbp_benefit_id": "URGENT_CARE" },
+      "marketplace": { "label": "SHALL", "name": "Urgent care", "benefit_name": "Urgent Care Centers or Facilities" }
+    },
+    {
+      "id": "emergency_room",
+      "group": "services",
+      "key": "emergency_room",
+      "meaning": "The member's in-network cost for an emergency room visit.",
+      "medicare_advantage": { "label": "SHALL", "name": "Emergency room", "pbp_benefit_id": "EMERGENCY" },
+      "marketplace": { "label": "SHALL", "name": "Emergency room", "benefit_name": "Emergency Room Services" }
+    },
+    {
+      "id": "inpatient_hospital",
+      "group": "services",
+      "key": "inpatient_hospital",
+      "meaning": "The member's in-network cost for an inpatient hospital stay.",
+      "medicare_advantage": { "label": "SHALL", "name": "Inpatient hospital stay", "pbp_benefit_id": "INPATIENT_HOSPITAL" },
+      "marketplace": { "label": "SHALL", "name": "Inpatient hospital stay", "benefit_name": "Inpatient Hospital Services (e.g., Hospital Stay)" }
+    },
+    {
+      "id": "outpatient_hospital",
+      "group": "services",
+      "key": "outpatient_surgery",
+      "meaning": "The member's in-network cost for outpatient hospital services.",
+      "note": "The PBP crosswalk writes category 9a1 under the broad key outpatient_surgery; observation (9a2) and surgery centers (9b) have their own keys.",
+      "medicare_advantage": { "label": "SHALL", "name": "Outpatient hospital services", "pbp_benefit_id": "OUTPATIENT_HOSPITAL" },
+      "marketplace": { "label": null }
+    },
+    {
+      "id": "outpatient_surgery_facility",
+      "group": "services",
+      "key": "outpatient_surgery_facility",
+      "meaning": "The member's in-network cost for the facility where outpatient surgery is done.",
+      "medicare_advantage": { "label": "SHALL", "name": "Outpatient surgery center", "pbp_benefit_id": "AMBULATORY_SURGICAL_CENTER" },
+      "marketplace": { "label": "SHALL", "name": "Outpatient surgery center or facility", "benefit_name": "Outpatient Facility Fee (e.g., Ambulatory Surgery Center)" }
+    },
+    {
+      "id": "outpatient_surgery_professional",
+      "group": "services",
+      "key": "outpatient_surgery_professional",
+      "meaning": "The member's in-network cost for the surgeon's and other doctors' fees for outpatient surgery.",
+      "medicare_advantage": { "label": null },
+      "marketplace": { "label": "SHALL", "name": "Outpatient surgery, doctor's fee", "benefit_name": "Outpatient Surgery Physician/Surgical Services" }
+    },
+    {
+      "id": "diagnostic_lab",
+      "group": "services",
+      "key": "diagnostic_lab",
+      "meaning": "The member's in-network cost for lab tests.",
+      "medicare_advantage": { "label": "SHALL", "name": "Lab tests", "pbp_benefit_id": "LAB_SERVICES" },
+      "marketplace": { "label": "SHALL", "name": "Lab tests", "benefit_name": "Laboratory Outpatient and Professional Services" }
+    },
+    {
+      "id": "imaging_advanced",
+      "group": "services",
+      "key": "imaging_advanced",
+      "meaning": "The member's in-network cost for advanced imaging such as MRI, CT or PET.",
+      "medicare_advantage": { "label": "SHALL", "name": "Diagnostic radiology (for example MRI or CT)", "pbp_benefit_id": "DIAGNOSTIC_RADIOLOGY" },
+      "marketplace": { "label": "SHALL", "name": "Imaging (CT, PET, MRI)", "benefit_name": "Imaging (CT/PET Scans, MRIs)" }
+    },
+    {
+      "id": "physical_and_speech_therapy",
+      "group": "services",
+      "key": null,
+      "meaning": "The member's in-network cost for physical therapy and speech-language therapy, which the PBP prices together.",
+      "medicare_advantage": { "label": "SHALL", "name": "Physical therapy and speech therapy", "pbp_benefit_id": "PHYSICAL_AND_SPEECH_THERAPY", "gap": "G1" },
+      "marketplace": { "label": null }
+    },
+    {
+      "id": "physical_and_occupational_therapy",
+      "group": "services",
+      "key": "physical_and_occupational_therapy",
+      "meaning": "The member's in-network cost for physical therapy and occupational therapy, which the Marketplace file prices together.",
+      "medicare_advantage": { "label": null },
+      "marketplace": { "label": "SHALL", "name": "Physical therapy and occupational therapy", "benefit_name": "Rehabilitative Occupational and Rehabilitative Physical Therapy" }
+    },
+    {
+      "id": "mental_health_office_visit",
+      "group": "services",
+      "key": "mental_health_office_visit",
+      "meaning": "The member's in-network cost for an individual session with a mental health professional.",
+      "medicare_advantage": { "label": "SHALL", "name": "Mental health visit (individual session)", "pbp_benefit_id": "MENTAL_HEALTH_INDIVIDUAL" },
+      "marketplace": { "label": null }
+    },
+    {
+      "id": "mental_health_outpatient",
+      "group": "services",
+      "key": "mental_health_outpatient",
+      "meaning": "The member's in-network cost for outpatient mental and behavioral health services.",
+      "medicare_advantage": { "label": null },
+      "marketplace": { "label": "SHALL", "name": "Mental health visit (outpatient)", "benefit_name": "Mental/Behavioral Health Outpatient Services" }
+    },
+    {
+      "id": "ambulance",
+      "group": "services",
+      "key": "ambulance",
+      "meaning": "The member's in-network cost for an ambulance.",
+      "medicare_advantage": { "label": "SHALL", "name": "Ambulance (ground)", "pbp_benefit_id": "AMBULANCE_GROUND" },
+      "marketplace": { "label": "SHALL", "name": "Ambulance", "benefit_name": "Emergency Transportation/Ambulance" }
+    },
+    {
+      "id": "observation_care",
+      "group": "services",
+      "key": "observation_care",
+      "meaning": "The member's in-network cost for observation services in a hospital.",
+      "medicare_advantage": { "label": "SHALL", "name": "Hospital observation", "pbp_benefit_id": "OBSERVATION" },
+      "marketplace": { "label": null }
+    },
+    {
+      "id": "other_practitioner_office_visit",
+      "group": "services",
+      "key": "other_practitioner_office_visit",
+      "meaning": "The member's in-network cost for an office visit with a nurse practitioner or physician assistant.",
+      "medicare_advantage": { "label": null },
+      "marketplace": { "label": "SHALL", "name": "Nurse or physician assistant visit", "benefit_name": "Other Practitioner Office Visit (Nurse, Physician Assistant)" }
+    },
+    {
+      "id": "skilled_nursing_facility",
+      "group": "services",
+      "key": "skilled_nursing_facility",
+      "meaning": "The member's in-network cost for a skilled nursing facility stay.",
+      "medicare_advantage": { "label": "SHALL", "name": "Skilled nursing facility", "pbp_benefit_id": "SKILLED_NURSING_FACILITY" },
+      "marketplace": { "label": "SHALL", "name": "Skilled nursing facility", "benefit_name": "Skilled Nursing Facility" }
+    },
+    {
+      "id": "home_health_care",
+      "group": "services",
+      "key": "home_health_care",
+      "meaning": "The member's in-network cost for home health care.",
+      "medicare_advantage": { "label": "SHALL", "name": "Home health", "pbp_benefit_id": "HOME_HEALTH" },
+      "marketplace": { "label": "SHALL", "name": "Home health", "benefit_name": "Home Health Care Services" }
+    },
+    {
+      "id": "preventive_care",
+      "group": "services",
+      "key": "preventive_care",
+      "meaning": "Whether preventive services cost the member $0 in network.",
+      "medicare_advantage": {
+        "label": "SHALL",
+        "name": "Preventive services",
+        "gap": "G2",
+        "source": [{ "file": "pbp_b14_preventive.txt", "unread": ["pbp_b14a_mc_prevent_attest"] }]
+      },
+      "marketplace": { "label": "SHALL", "name": "Preventive services", "benefit_name": "Preventive Care/Screening/Immunization" }
+    },
+    {
+      "id": "telehealth_visit",
+      "group": "services",
+      "key": "telehealth_visit",
+      "meaning": "The member's in-network cost for a visit by phone or video.",
+      "medicare_advantage": {
+        "label": "SHOULD",
+        "name": "Telehealth",
+        "source": [{ "file": "pbp_b7_health_prof.txt", "unread": ["pbp_b7j_copay_yn", "pbp_b7j_copay_mc_amt_min", "pbp_b7j_copay_mc_amt_max", "pbp_b7j_coins_yn", "pbp_b7j_coins_pct_mc_min", "pbp_b7j_coins_pct_mc_max"] }],
+        "note": "Category 7j, additional telehealth benefits, is outside the PBP crosswalk and not written today."
+      },
+      "marketplace": { "label": null }
+    },
+    {
+      "id": "hearing_aids",
+      "group": "extras",
+      "key": "hearing_aids",
+      "medicare_advantage": { "on_list": true, "name": "Hearing aids", "pbp_benefit_id": "HEARING_AIDS", "scope_covered_test": "pbp_b18b_bendesc_yn is 1" },
+      "marketplace": { "on_list": true, "name": "Hearing aids", "benefit_name": "Hearing Aids" }
+    },
+    {
+      "id": "dental_cleaning",
+      "group": "extras",
+      "key": "dental_cleaning",
+      "medicare_advantage": { "on_list": true, "name": "Dental cleanings", "pbp_benefit_id": "DENTAL_CLEANING" },
+      "marketplace": { "on_list": false }
+    },
+    {
+      "id": "dental_filling",
+      "group": "extras",
+      "key": "dental_filling",
+      "medicare_advantage": { "on_list": true, "name": "Fillings and other restorative dental", "pbp_benefit_id": "DENTAL_FILLINGS" },
+      "marketplace": { "on_list": false }
+    },
+    {
+      "id": "eyeglasses",
+      "group": "extras",
+      "key": "eyeglasses",
+      "medicare_advantage": { "on_list": true, "name": "Eyeglasses", "pbp_benefit_id": "EYEGLASSES", "scope_covered_test": "pbp_b17b_bendesc_amo_egs is filled" },
+      "marketplace": { "on_list": false }
+    },
+    {
+      "id": "routine_eye_exam",
+      "group": "extras",
+      "key": "routine_eye_exam",
+      "medicare_advantage": { "on_list": true, "name": "Routine eye exam", "pbp_benefit_id": "EYE_EXAM_ROUTINE", "scope_covered_test": "pbp_b17a_bendesc_amo_rex is filled" },
+      "marketplace": { "on_list": true, "name": "Routine eye exam (adult)", "benefit_name": "Routine Eye Exam (Adult)" }
+    },
+    {
+      "id": "otc_allowance",
+      "group": "extras",
+      "key": "otc_allowance",
+      "medicare_advantage": { "on_list": true, "name": "Over-the-counter allowance", "pbp_benefit_id": "OTC_ITEMS" },
+      "marketplace": { "on_list": false, "not_in_file": "No BenefitName in the plan year 2026 file is for this benefit; the crosswalk lists all of the file's names." }
+    },
+    {
+      "id": "fitness_benefit",
+      "group": "extras",
+      "key": "fitness_benefit",
+      "medicare_advantage": { "on_list": true, "name": "Fitness or gym benefit", "pbp_benefit_id": "FITNESS" },
+      "marketplace": { "on_list": false }
+    },
+    {
+      "id": "transportation",
+      "group": "extras",
+      "key": "transportation",
+      "medicare_advantage": { "on_list": true, "name": "Rides to medical appointments", "pbp_benefit_id": "TRANSPORTATION" },
+      "marketplace": { "on_list": false, "not_in_file": "No BenefitName in the plan year 2026 file is for this benefit; the crosswalk lists all of the file's names." }
+    },
+    {
+      "id": "meals",
+      "group": "extras",
+      "key": "meals",
+      "medicare_advantage": { "on_list": true, "name": "Meals", "pbp_benefit_id": "MEALS" },
+      "marketplace": { "on_list": false, "not_in_file": "No BenefitName in the plan year 2026 file is for this benefit; the crosswalk lists all of the file's names." }
+    },
+    {
+      "id": "hearing_exam",
+      "group": "extras",
+      "key": "hearing_exam",
+      "medicare_advantage": { "on_list": true, "name": "Routine hearing exam", "pbp_benefit_id": "HEARING_EXAM_ROUTINE", "scope_covered_test": "pbp_b18a_bendesc_amo_rht is filled" },
+      "marketplace": { "on_list": false }
+    },
+    {
+      "id": "dental_routine_adult",
+      "group": "extras",
+      "key": "dental_routine_adult",
+      "medicare_advantage": { "on_list": false },
+      "marketplace": { "on_list": true, "name": "Routine dental care (adult)", "benefit_name": "Routine Dental Services (Adult)" }
+    },
+    {
+      "id": "dental_basic_adult",
+      "group": "extras",
+      "key": "dental_basic_adult",
+      "medicare_advantage": { "on_list": false },
+      "marketplace": { "on_list": true, "name": "Basic dental care (adult)", "benefit_name": "Basic Dental Care - Adult" }
+    },
+    {
+      "id": "dental_major_adult",
+      "group": "extras",
+      "key": "dental_major_adult",
+      "medicare_advantage": { "on_list": false },
+      "marketplace": { "on_list": true, "name": "Major dental care (adult)", "benefit_name": "Major Dental Care - Adult" }
+    },
+    {
+      "id": "chiropractic_care",
+      "group": "extras",
+      "key": "chiropractic_care",
+      "medicare_advantage": { "on_list": false },
+      "marketplace": { "on_list": true, "name": "Chiropractic care", "benefit_name": "Chiropractic Care" }
+    },
+    {
+      "id": "acupuncture",
+      "group": "extras",
+      "key": "acupuncture",
+      "medicare_advantage": { "on_list": false },
+      "marketplace": { "on_list": true, "name": "Acupuncture", "benefit_name": "Acupuncture" }
+    },
+    {
+      "id": "routine_foot_care",
+      "group": "extras",
+      "key": "routine_foot_care",
+      "medicare_advantage": { "on_list": false },
+      "marketplace": { "on_list": true, "name": "Routine foot care", "benefit_name": "Routine Foot Care" }
+    },
+    {
+      "id": "infertility_treatment",
+      "group": "extras",
+      "key": "infertility_treatment",
+      "medicare_advantage": { "on_list": false },
+      "marketplace": { "on_list": true, "name": "Infertility treatment", "benefit_name": "Infertility Treatment" }
+    },
+    {
+      "id": "bariatric_surgery",
+      "group": "extras",
+      "key": "bariatric_surgery",
+      "medicare_advantage": { "on_list": false },
+      "marketplace": { "on_list": true, "name": "Weight loss surgery", "benefit_name": "Bariatric Surgery" }
+    }
+  ]
+}
