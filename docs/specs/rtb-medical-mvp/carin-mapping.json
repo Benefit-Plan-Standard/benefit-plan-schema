@@ -1,0 +1,741 @@
+{
+  "description": "Crosswalk from the medical MVP data dictionary to the SBC InsurancePlan profile of the CARIN Digital Insurance Card implementation guide. One entry per item of shall-should.json, in the same order, with the element, the verdict and the note for each program the item applies to. scripts/build-rtb-crosswalk.js reads this file with shall-should.json, fhir/carin-sbc-crosswalk.json and the converter specification and writes carin-crosswalk.md in this folder.",
+  "attribution": "The assignments follow the workgroup's medical MVP scope (Monica Chopra's pledge proposal, October 2026).",
+  "profile": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/sbc-insurance-plan",
+  "package": "hl7.fhir.us.insurance-card#2.0.0-ballot",
+  "converter": "scripts/to-insuranceplan.js",
+  "converter_spec": "docs/specs/insuranceplan-converter.md",
+  "verdicts": {
+    "aligned": "The value lands in a profile element with the same meaning and no loss; converter specification section 6 maps it directly.",
+    "different": "The value reaches the Bundle, but in a Benefit Plan Standard extension, as text only, or with a loss that converter specification section 7 names. The note says which.",
+    "not_covered": "The Bundle does not carry the item. The note says why."
+  },
+  "reasons": {
+    "no_element": "the profile has no element for the item and the converter emits nothing",
+    "gap": "the item is a known gap (G1 to G8), so there is nothing to map yet"
+  },
+  "gap_note": "A gap is work on the importers, listed in the README with the other known gaps, and the note says what travels today.",
+  "gap_sentence": "Closing gap {gap} is work on the importer.",
+  "ballot": {
+    "status": "in the STU2 ballot, September 2026; ballot-stage element",
+    "tickets": {
+      "FHIR-57525": { "title": "multi-tier cost sharing", "sentence": "The qualifier is bound to the Cost Tier value set (FHIR-57525, multi-tier cost sharing)" },
+      "FHIR-57526": { "title": "deductible applicability", "sentence": "Whether a step counts toward the deductible travels in the DeductibleApplies extension on each `cost` entry (FHIR-57526, deductible applicability)" },
+      "FHIR-57527": { "title": "structured benefit limitation", "sentence": "The profile's element for limits is the BenefitLimitation extension on `coverage.benefit` (FHIR-57527, structured benefit limitation)" }
+    }
+  },
+  "extensions": {
+    "bps-source-reference": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference",
+    "bps-plan-metadata": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-plan-metadata",
+    "bps-unmapped-benefit": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit",
+    "excluded-services": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/excluded-services"
+  },
+  "quoted": {
+    "extension": ["bps-source-reference"],
+    "verdict": "different",
+    "note": "Quoted verbatim in `source_references`, which the converter writes as text in `bps-source-reference`.",
+    "read_from": [{ "section": "9", "cites": "Plan-level `source_references[]`" }]
+  },
+  "benefit_rules": {
+    "services": {
+      "placed": {
+        "element": ["plan.specificCost.benefit.cost"],
+        "verdict": "aligned",
+        "note": "The benefit is placed in `coverage.benefit` and `plan.specificCost.benefit`. Each step is a `cost` entry with `applicability` in-network, `type` coded copay or copaypct and `value` the amount or rate; basis, sequence and out-of-pocket applicability travel in `bps-cost-share`.",
+        "notes": {
+          "medicare_advantage": "When the PBP gives a range, `cost.value` carries data-absent-reason unsupported and the bounds travel in `bps-cost-share`."
+        },
+        "ballot": ["FHIR-57526"],
+        "read_from": [
+          { "section": "6.5", "cites": "`canonical_key` via crosswalk" },
+          { "section": "6.7", "cites": "`copay-type#copaypct`" },
+          { "section": "8.2", "cites": "`{key}`" }
+        ],
+        "read_from_by_program": {
+          "medicare_advantage": [{ "section": "5.1", "cites": "data-absent-reason `unsupported`" }]
+        }
+      },
+      "unplaced": {
+        "element": [],
+        "extension": ["bps-unmapped-benefit"],
+        "verdict": "different",
+        "note": "`{key}` is not in `fhir/carin-sbc-crosswalk.json`, so the benefit is not placed. Identity only; cost shares, limits and conditions are not in the FHIR output.",
+        "read_from": [
+          { "section": "7", "cites": "Benefits outside the 29 SBC codes" },
+          { "section": "8.3", "cites": "`bps-unmapped-benefit`" }
+        ]
+      }
+    },
+    "extras": {
+      "covered": {
+        "unplaced": {
+          "element": [],
+          "extension": ["bps-unmapped-benefit"],
+          "extension_by_program": { "marketplace": ["excluded-services"] },
+          "verdict": "different",
+          "note": "`{key}` is not in `fhir/carin-sbc-crosswalk.json`, so the benefit is not placed. Identity only; cost shares, limits and conditions are not in the FHIR output.",
+          "row_sentence": {
+            "marketplace": "Marketplace benefits not covered on any tier also appear in the CARIN excluded-services extension",
+            "medicare_advantage": "for Medicare Advantage, whether the benefit is covered is not carried"
+          },
+          "read_from": [
+            { "section": "7", "cites": "Benefits outside the 29 SBC codes" },
+            { "section": "8.3", "cites": "`bps-unmapped-benefit`" }
+          ],
+          "read_from_by_program": {
+            "marketplace": [{ "section": "10.1", "cites": "every `network_cost_shares` row says `covered: false`" }]
+          }
+        }
+      },
+      "cost": {
+        "unplaced": {
+          "element": [],
+          "extension": ["bps-unmapped-benefit"],
+          "verdict": "different",
+          "note": "`{key}` is not in `fhir/carin-sbc-crosswalk.json`, so the benefit is not placed. Identity only; cost shares, limits and conditions are not in the FHIR output.",
+          "read_from": [
+            { "section": "7", "cites": "Benefits outside the 29 SBC codes" },
+            { "section": "8.3", "cites": "`bps-unmapped-benefit`" }
+          ]
+        }
+      },
+      "limits": {
+        "unplaced": {
+          "element": [],
+          "extension": ["bps-unmapped-benefit"],
+          "verdict": "different",
+          "note": "`{key}` is not in `fhir/carin-sbc-crosswalk.json`, so the benefit is not placed. Identity only; cost shares, limits and conditions are not in the FHIR output.",
+          "ballot": ["FHIR-57527"],
+          "after_ballot": "BenefitLimitation is never emitted here, because none of the extra benefits is placed.",
+          "read_from": [
+            { "section": "6.5", "cites": "`BenefitLimitation` **[ballot]**, one per limit" },
+            { "section": "7", "cites": "Benefits outside the 29 SBC codes" },
+            { "section": "8.3", "cites": "`bps-unmapped-benefit`" }
+          ]
+        }
+      }
+    }
+  },
+  "items": [
+    {
+      "id": "plan_key",
+      "medicare_advantage": {
+        "element": ["identifier"],
+        "verdict": "aligned",
+        "note": "The key is an `identifier` with system `https://benefitplanstandard.org/fhir/identifier/cms_contract_plan_segment`, for example H1609-028-000. The document's `plan_id` is the first `identifier`.",
+        "read_from": [{ "section": "6.1", "cites": "`plan_identifiers[]` (v1.2.0)" }]
+      },
+      "marketplace": {
+        "element": [],
+        "extension": ["bps-source-reference"],
+        "verdict": "not_covered",
+        "reason": "gap",
+        "note": "Today the HIOS plan id and variant, for example 68398FL0030058-01, travel only as text in the first `bps-source-reference` excerpt, and the only `identifier` is the document's `plan_id`. Once the document carries `plan_identifiers`, converter specification section 6.1 writes the HIOS id as an `identifier`.",
+        "read_from": [
+          { "section": "6.1", "cites": "`hios_id` uses" },
+          { "section": "9", "cites": "Plan-level `source_references[]`" }
+        ]
+      }
+    },
+    {
+      "id": "plan_year",
+      "medicare_advantage": {
+        "element": ["period"],
+        "verdict": "aligned",
+        "note": "With `plan_year` alone, `period` has year precision, for example start and end 2027, and claims no day the document does not give. The year also travels in `bps-plan-metadata`.",
+        "read_from": [
+          { "section": "5", "cites": "With `plan_year` alone" },
+          { "section": "6.1", "cites": "`coverage_period`, `effective_date`, `expiry_date`, `plan_year`" }
+        ]
+      },
+      "marketplace": {
+        "element": [],
+        "extension": ["bps-plan-metadata"],
+        "verdict": "different",
+        "note": "`period` holds the coverage dates instead (see Coverage dates), so the plan year travels only in `bps-plan-metadata`.",
+        "read_from": [
+          { "section": "6.1", "cites": "`plan_year`, `market`, `schema_version`, `service_area` (v1.2.0)" },
+          { "section": "7", "cites": "`market`, `plan_year`, `schema_version`, `service_area`" }
+        ]
+      }
+    },
+    {
+      "id": "data_date",
+      "medicare_advantage": {
+        "element": [],
+        "extension": ["bps-source-reference"],
+        "verdict": "different",
+        "note": "The release label, for example PBP Benefits-2027, and the download date are text in the first `bps-source-reference` excerpt. The converter writes no timestamps.",
+        "read_from": [
+          { "section": "4.2", "cites": "| Timestamps | None." },
+          { "section": "9", "cites": "Plan-level `source_references[]`" }
+        ]
+      },
+      "marketplace": {
+        "element": [],
+        "extension": ["bps-source-reference"],
+        "verdict": "not_covered",
+        "reason": "gap",
+        "note": "Today the download date travels as text in the first `bps-source-reference` excerpt; the files' `ImportDate` is not in the document.",
+        "read_from": [{ "section": "9", "cites": "Plan-level `source_references[]`" }]
+      }
+    },
+    {
+      "id": "coverage_dates",
+      "marketplace": {
+        "element": ["period"],
+        "verdict": "aligned",
+        "note": "`effective_date` and `expiry_date` fill `period.start` and `period.end`. `period.end` is left out when the document has no `expiry_date`, as in the UHC Bronze Essential Bundle.",
+        "read_from": [
+          { "section": "5", "cites": "`effective_date` / `expiry_date`" },
+          { "bundle": "examples/fhir-puf/unitedhealthcare-uhc-bronze-essential.json", "path": "entry[0].resource.period", "equals": { "start": "2026-01-01" } }
+        ]
+      }
+    },
+    {
+      "id": "plan_name",
+      "medicare_advantage": {
+        "element": ["name"],
+        "verdict": "aligned",
+        "note": "Verbatim.",
+        "read_from": [{ "section": "6.1", "cites": "| `plan_name` | `name` | Verbatim. |" }]
+      },
+      "marketplace": {
+        "element": ["name"],
+        "verdict": "aligned",
+        "note": "Verbatim.",
+        "read_from": [{ "section": "6.1", "cites": "| `plan_name` | `name` | Verbatim. |" }]
+      }
+    },
+    {
+      "id": "insurer_name",
+      "note": "`carrier` is the `name` of the Organization that `ownedBy` references.",
+      "medicare_advantage": {
+        "element": ["ownedBy"],
+        "verdict": "aligned",
+        "note": "The legal name, quoted in `source_references`, travels as text in `bps-source-reference`.",
+        "read_from": [
+          { "section": "4.1", "cites": "One per distinct carrier, holding `name` only" },
+          { "section": "6.1", "cites": "| `carrier` | `ownedBy` to `Organization.name` |" }
+        ]
+      },
+      "marketplace": {
+        "element": ["ownedBy"],
+        "verdict": "aligned",
+        "read_from": [
+          { "section": "4.1", "cites": "One per distinct carrier, holding `name` only" },
+          { "section": "6.1", "cites": "| `carrier` | `ownedBy` to `Organization.name` |" }
+        ]
+      }
+    },
+    {
+      "id": "plan_type",
+      "medicare_advantage": {
+        "element": ["plan.type"],
+        "verdict": "different",
+        "note": "HMO and PPO are coded from `sbc-plan-type`, which has no code for HMO_POS, so an HMO-POS plan is written as text only, `{\"text\": \"HMO_POS\"}`. The contract year 2027 files have 1,273 HMO-POS plans. Converter specification section 6.1 does not name HMO_POS; this verdict is read from the published Aetna Medicare Select Extra Bundle.",
+        "read_from": [
+          { "section": "6.1", "cites": "HMO, PPO, POS and EPO map directly" },
+          { "section": "6.3", "cites": "1,273 in the CY 2027 files" },
+          { "doc": "docs/fhir-alignment.md", "section": "2", "cites": "`sbc-plan-type` (`HMO`, `PPO`, `POS`, `EPO`, `HDHP`, `INDEMNITY`)" },
+          { "bundle": "examples/fhir/aetna-medicare-select-extra-hmo-pos-h1609-028-000.json", "path": "entry[0].resource.plan[0].type", "equals": { "text": "HMO_POS" } }
+        ]
+      },
+      "marketplace": {
+        "element": ["plan.type"],
+        "verdict": "aligned",
+        "note": "HMO, PPO, EPO and POS are coded from `sbc-plan-type`. INDEMNITY is coded too; converter specification section 6.1 does not name it, and `docs/fhir-alignment.md` section 2 lists it among the codes.",
+        "read_from": [
+          { "section": "6.1", "cites": "HMO, PPO, POS and EPO map directly" },
+          { "doc": "docs/fhir-alignment.md", "section": "2", "cites": "`sbc-plan-type` (`HMO`, `PPO`, `POS`, `EPO`, `HDHP`, `INDEMNITY`)" }
+        ]
+      }
+    },
+    {
+      "id": "special_needs_plan",
+      "medicare_advantage": { "verdict": "different" }
+    },
+    {
+      "id": "metal_level",
+      "marketplace": { "verdict": "different" }
+    },
+    {
+      "id": "csr_variant",
+      "marketplace": { "verdict": "different" }
+    },
+    {
+      "id": "monthly_premium",
+      "medicare_advantage": {
+        "element": [],
+        "verdict": "not_covered",
+        "reason": "gap",
+        "note": "Today the document has no `premium`, so the Bundle has none. Once the importer reads it, converter specification section 6.1 writes it to `plan.generalCost` with type text Premium.",
+        "read_from": [{ "section": "6.1", "cites": "| `premium` (v1.2.0) | `plan[0].generalCost[]`, `type.text` `Premium`" }]
+      }
+    },
+    {
+      "id": "part_b_premium_reduction",
+      "medicare_advantage": {
+        "element": [],
+        "verdict": "not_covered",
+        "reason": "gap",
+        "note": "Today the document has no `part_b_premium_reduction`, so the Bundle has none. Once the importer reads it, converter specification section 6.1 writes it to `plan.generalCost` with type text Part B premium reduction.",
+        "read_from": [{ "section": "6.1", "cites": "| `part_b_premium_reduction` (v1.2.0) | `plan[0].generalCost[]`, `type.text` `Part B premium reduction`" }]
+      }
+    },
+    {
+      "id": "deductible",
+      "note": "Each slot is a `generalCost` entry with `type` coded deductible and `cost` the amount. `generalCost` has no network element, so the network travels in `type.text`, `comment` and `bps-accumulator`.",
+      "medicare_advantage": {
+        "element": ["plan.generalCost"],
+        "verdict": "aligned",
+        "note": "When the plan uses the Medicare-defined deductible, no slot is written and the answer travels as text in `bps-source-reference`.",
+        "read_from": [
+          { "section": "6.4", "cites": "| `*_deductible` slots | `type` = `copay-type#deductible`" },
+          { "section": "7", "cites": "`embedded`, accumulator `period` and `network_tier`" }
+        ]
+      },
+      "marketplace": {
+        "element": ["plan.generalCost"],
+        "verdict": "aligned",
+        "note": "The family amount's `embedded` flag travels in `comment` and `bps-accumulator`.",
+        "read_from": [
+          { "section": "6.4", "cites": "| `*_deductible` slots | `type` = `copay-type#deductible`" },
+          { "section": "7", "cites": "`embedded`, accumulator `period` and `network_tier`" }
+        ]
+      }
+    },
+    {
+      "id": "drug_deductible",
+      "marketplace": {
+        "verdict": "different",
+        "note": "Schema 1.1.0 has no pharmacy deductible. From a schema 1.2.0 document, converter specification section 6.4 writes `pharmacy.deductible` to `plan.generalCost`.",
+        "read_from": [{ "section": "6.4", "cites": "`pharmacy.deductible`, `pharmacy.out_of_pocket_max` (v1.2.0)" }]
+      }
+    },
+    {
+      "id": "oop_max",
+      "note": "Each slot is a `generalCost` entry with `type` coded maxoutofpocket and `cost` the amount. `generalCost` has no network element, so the network travels in `type.text`, `comment` and `bps-accumulator`.",
+      "medicare_advantage": {
+        "element": ["plan.generalCost"],
+        "verdict": "aligned",
+        "note": "The maximum's type (lower, intermediate or mandatory) travels as text in `bps-source-reference`.",
+        "read_from": [
+          { "section": "6.4", "cites": "| `*_oop_max` slots | `type` = `copay-type#maxoutofpocket`" },
+          { "section": "7", "cites": "`embedded`, accumulator `period` and `network_tier`" }
+        ]
+      },
+      "marketplace": {
+        "element": ["plan.generalCost"],
+        "verdict": "aligned",
+        "note": "The family amount's `embedded` flag travels in `comment` and `bps-accumulator`.",
+        "read_from": [
+          { "section": "6.4", "cites": "| `*_oop_max` slots | `type` = `copay-type#maxoutofpocket`" },
+          { "section": "7", "cites": "`embedded`, accumulator `period` and `network_tier`" }
+        ]
+      }
+    },
+    {
+      "id": "member_services",
+      "medicare_advantage": {
+        "element": [],
+        "extension": ["bps-source-reference"],
+        "verdict": "not_covered",
+        "reason": "gap",
+        "note": "Today the phone is not in the document, and the plan website travels as text in `bps-source-reference`. The profile requires `contact`, which the converter writes with data-absent-reason unknown and no telecom.",
+        "read_from": [
+          { "section": "5", "cites": "It invents no telecom." },
+          { "section": "9", "cites": "Plan-level `source_references[]`" }
+        ]
+      }
+    },
+    {
+      "id": "hsa_eligible",
+      "marketplace": { "verdict": "different" }
+    },
+    {
+      "id": "specialist_referral",
+      "marketplace": { "verdict": "different" }
+    },
+    {
+      "id": "plan_exclusions",
+      "marketplace": {
+        "verdict": "different",
+        "note": "The CARIN excluded-services extension is not filled from this text; converter specification section 10.1 derives it from the plan's coverage flags.",
+        "read_from": [{ "section": "10.1", "cites": "Derived, never typed." }]
+      }
+    },
+    {
+      "id": "plan_links",
+      "marketplace": { "verdict": "different" }
+    },
+    {
+      "id": "employer_group",
+      "medicare_advantage": { "verdict": "different" }
+    },
+    {
+      "id": "oon_coverage",
+      "note": "Each out-of-network cost entry has `applicability` out-of-network. A placed benefit with no out-of-network row gets a placeholder out-of-network entry whose value is data-absent-reason unknown; it never says not covered.",
+      "medicare_advantage": {
+        "element": ["plan.specificCost.benefit.cost.applicability"],
+        "verdict": "aligned",
+        "note": "PPO plans have the OUT tier and HMO-POS plans the POS tier, and both are written out-of-network; the POS entries also carry a text-only qualifier (see Point-of-service cost). HMO plans have neither, so every placed benefit gets the placeholder.",
+        "read_from": [
+          { "section": "5.1", "cites": "append one placeholder" },
+          { "section": "6.2", "cites": "`applicability` = `applicability#out-of-network`" },
+          { "section": "6.3", "cites": "`tier_id` `POS` | `applicability` = `applicability#out-of-network`" }
+        ]
+      },
+      "marketplace": {
+        "element": ["plan.specificCost.benefit.cost.applicability"],
+        "verdict": "aligned",
+        "note": "Every document has an OUT tier.",
+        "read_from": [
+          { "section": "5.1", "cites": "append one placeholder" },
+          { "section": "6.2", "cites": "`applicability` = `applicability#out-of-network`" }
+        ]
+      }
+    },
+    {
+      "id": "oon_cost",
+      "note": "Each step is a `cost` entry with `applicability` out-of-network, `type` coded copay or copaypct and `value` the amount or rate. Only placed benefits have `cost` entries.",
+      "medicare_advantage": {
+        "element": ["plan.specificCost.benefit.cost"],
+        "verdict": "aligned",
+        "note": "When the PBP gives a range, `cost.value` carries data-absent-reason unsupported and the bounds travel in `bps-cost-share`.",
+        "ballot": ["FHIR-57526"],
+        "read_from": [
+          { "section": "5.1", "cites": "data-absent-reason `unsupported`" },
+          { "section": "6.2", "cites": "`applicability` = `applicability#out-of-network`" },
+          { "section": "6.7", "cites": "`copay-type#copaypct`" }
+        ]
+      },
+      "marketplace": {
+        "element": ["plan.specificCost.benefit.cost"],
+        "verdict": "aligned",
+        "ballot": ["FHIR-57526"],
+        "read_from": [
+          { "section": "6.2", "cites": "`applicability` = `applicability#out-of-network`" },
+          { "section": "6.7", "cites": "`copay-type#copaypct`" }
+        ]
+      }
+    },
+    {
+      "id": "pos_cost",
+      "medicare_advantage": {
+        "element": ["plan.specificCost.benefit.cost", "plan.specificCost.benefit.cost.qualifiers"],
+        "verdict": "different",
+        "note": "Each step is a `cost` entry with `applicability` out-of-network and the text-only qualifier Point-of-service option. The Cost Tier value set has no point-of-service code, so the point-of-service tier is told apart from out of network only by text; its `tierId` POS travels in `bps-cost-share`.",
+        "ballot": ["FHIR-57525", "FHIR-57526"],
+        "read_from": [
+          { "section": "6.3", "cites": "the Cost Tier value set has no point-of-service code" },
+          { "section": "7", "cites": "| Point-of-service tier (`POS`) |" }
+        ]
+      }
+    },
+    {
+      "id": "oon_deductible",
+      "note": "A `generalCost` entry with `type` coded deductible. `generalCost` has no network element, so out of network is only in `type.text`, `comment` and `bps-accumulator`.",
+      "medicare_advantage": {
+        "element": ["plan.generalCost"],
+        "verdict": "different",
+        "note": "On HMO-POS plans the slot's network is POS, and `type.text` reads Individual deductible, POS.",
+        "read_from": [
+          { "section": "6.3", "cites": "`type.text` reads `Individual deductible, POS`" },
+          { "section": "6.4", "cites": "| `network_tier`, `period` | `comment`" },
+          { "section": "7", "cites": "`embedded`, accumulator `period` and `network_tier`" }
+        ]
+      },
+      "marketplace": {
+        "element": ["plan.generalCost"],
+        "verdict": "different",
+        "read_from": [
+          { "section": "6.4", "cites": "| `network_tier`, `period` | `comment`" },
+          { "section": "7", "cites": "`embedded`, accumulator `period` and `network_tier`" }
+        ]
+      }
+    },
+    {
+      "id": "oon_oop_max",
+      "note": "A `generalCost` entry with `type` coded maxoutofpocket. `generalCost` has no network element, so out of network is only in `type.text`, `comment` and `bps-accumulator`.",
+      "medicare_advantage": {
+        "element": ["plan.generalCost"],
+        "verdict": "different",
+        "note": "On HMO-POS plans the slot's network is POS.",
+        "read_from": [
+          { "section": "6.3", "cites": "`oon_individual_oop_max` on HMO-POS plans" },
+          { "section": "6.4", "cites": "| `network_tier`, `period` | `comment`" },
+          { "section": "7", "cites": "`embedded`, accumulator `period` and `network_tier`" }
+        ]
+      },
+      "marketplace": {
+        "element": ["plan.generalCost"],
+        "verdict": "different",
+        "read_from": [
+          { "section": "6.4", "cites": "| `network_tier`, `period` | `comment`" },
+          { "section": "7", "cites": "`embedded`, accumulator `period` and `network_tier`" }
+        ]
+      }
+    },
+    {
+      "id": "combined_amounts",
+      "medicare_advantage": { "verdict": "different" },
+      "marketplace": { "verdict": "different" }
+    },
+    {
+      "id": "provider_directory",
+      "medicare_advantage": {
+        "element": [],
+        "extension": ["bps-source-reference"],
+        "verdict": "not_covered",
+        "reason": "gap",
+        "note": "Today the directory address and the plan website travel as text in `bps-source-reference`.",
+        "read_from": [{ "section": "9", "cites": "Plan-level `source_references[]`" }]
+      },
+      "marketplace": {
+        "element": [],
+        "verdict": "not_covered",
+        "reason": "gap",
+        "note": "Today the link is not in the document; the plan's `NetworkId` travels as text in `bps-source-reference`.",
+        "read_from": [{ "section": "9", "cites": "Plan-level `source_references[]`" }]
+      }
+    },
+    {
+      "id": "second_tier_cost",
+      "marketplace": {
+        "element": ["plan.specificCost.benefit.cost", "plan.specificCost.benefit.cost.qualifiers"],
+        "verdict": "different",
+        "note": "Tier 2 entries are in-network, like tier 1, and carry a qualifier: value-choice when the tier name says Value Choice, otherwise text only with the tier name. The Cost Tier value set has no code for tier 2, so the tier order is not coded; tier 1 entries carry no qualifier, and the `tierId` IN2 travels in `bps-cost-share`.",
+        "ballot": ["FHIR-57525", "FHIR-57526"],
+        "read_from": [
+          { "section": "6.2", "cites": "a second in-network tier: `tier_id` `IN2`" },
+          { "section": "7", "cites": "| Second in-network tier (`IN2`) |" }
+        ]
+      }
+    },
+    {
+      "id": "second_tier_amounts",
+      "marketplace": { "verdict": "different" }
+    },
+    {
+      "id": "outside_area_coverage",
+      "marketplace": {
+        "element": [],
+        "extension": ["bps-source-reference"],
+        "verdict": "not_covered",
+        "reason": "gap",
+        "note": "Today the Yes or No answers travel as text in `bps-source-reference`; the plan's descriptions of that coverage are not in the document.",
+        "read_from": [{ "section": "9", "cites": "Plan-level `source_references[]`" }]
+      }
+    },
+    {
+      "id": "primary_care",
+      "medicare_advantage": { "verdict": "aligned" },
+      "marketplace": { "verdict": "aligned" }
+    },
+    {
+      "id": "specialist",
+      "medicare_advantage": { "verdict": "aligned" },
+      "marketplace": { "verdict": "aligned" }
+    },
+    {
+      "id": "urgent_care",
+      "medicare_advantage": { "verdict": "aligned" },
+      "marketplace": { "verdict": "aligned" }
+    },
+    {
+      "id": "emergency_room",
+      "medicare_advantage": { "verdict": "aligned" },
+      "marketplace": { "verdict": "aligned" }
+    },
+    {
+      "id": "inpatient_hospital",
+      "medicare_advantage": {
+        "verdict": "aligned",
+        "note": "Day intervals (`unit_range`) travel in `bps-cost-share`. On a plan whose cost varies by facility tier, each tier is an in-network entry with a text-only qualifier naming the tier.",
+        "read_from": [
+          { "section": "6.2", "cites": "`cost_designation` or `modality` with `parent_tier_id`" },
+          { "section": "6.7", "cites": "`unit_range`" }
+        ]
+      },
+      "marketplace": { "verdict": "aligned" }
+    },
+    {
+      "id": "outpatient_hospital",
+      "medicare_advantage": { "verdict": "aligned" }
+    },
+    {
+      "id": "outpatient_surgery_facility",
+      "medicare_advantage": { "verdict": "aligned" },
+      "marketplace": { "verdict": "aligned" }
+    },
+    {
+      "id": "outpatient_surgery_professional",
+      "marketplace": { "verdict": "different" }
+    },
+    {
+      "id": "diagnostic_lab",
+      "medicare_advantage": { "verdict": "aligned" },
+      "marketplace": { "verdict": "aligned" }
+    },
+    {
+      "id": "imaging_advanced",
+      "medicare_advantage": { "verdict": "aligned" },
+      "marketplace": { "verdict": "aligned" }
+    },
+    {
+      "id": "physical_and_speech_therapy",
+      "medicare_advantage": {
+        "element": [],
+        "extension": ["bps-unmapped-benefit"],
+        "verdict": "not_covered",
+        "reason": "gap",
+        "note": "Today the benefit has no canonical key, so it is not placed; its identity, `benefitId` PHYSICAL_AND_SPEECH_THERAPY, travels in `bps-unmapped-benefit`. Identity only; cost shares, limits and conditions are not in the FHIR output.",
+        "read_from": [{ "section": "8.3", "cites": "A benefit with no `canonical_key`" }]
+      }
+    },
+    {
+      "id": "physical_and_occupational_therapy",
+      "marketplace": { "verdict": "different" }
+    },
+    {
+      "id": "mental_health_office_visit",
+      "medicare_advantage": { "verdict": "different" }
+    },
+    {
+      "id": "mental_health_outpatient",
+      "marketplace": { "verdict": "aligned" }
+    },
+    {
+      "id": "ambulance",
+      "medicare_advantage": {
+        "verdict": "aligned",
+        "note": "`AMBULANCE_AIR` (category 10a2) has the same key and is placed as its own benefit under the same category.",
+        "read_from": [{ "section": "6.5", "cites": "become separate `benefit[]` entries under the same category" }]
+      },
+      "marketplace": { "verdict": "aligned" }
+    },
+    {
+      "id": "observation_care",
+      "medicare_advantage": { "verdict": "different" }
+    },
+    {
+      "id": "other_practitioner_office_visit",
+      "marketplace": { "verdict": "different" }
+    },
+    {
+      "id": "skilled_nursing_facility",
+      "medicare_advantage": {
+        "verdict": "aligned",
+        "note": "Day intervals (`unit_range`) travel in `bps-cost-share`. On a plan whose cost varies by facility tier, each tier is an in-network entry with a text-only qualifier naming the tier.",
+        "read_from": [
+          { "section": "6.2", "cites": "`cost_designation` or `modality` with `parent_tier_id`" },
+          { "section": "6.7", "cites": "`unit_range`" }
+        ]
+      },
+      "marketplace": { "verdict": "aligned" }
+    },
+    {
+      "id": "home_health_care",
+      "note": "`sbc-benefit-category` has no general home health code; `pregnancy-home-health` covers pregnancy home health only.",
+      "read_from": [{ "section": "8.2", "cites": "`home_health_care` is **not** mapped to it" }],
+      "medicare_advantage": { "verdict": "different" },
+      "marketplace": { "verdict": "different" }
+    },
+    {
+      "id": "preventive_care",
+      "medicare_advantage": {
+        "element": [],
+        "verdict": "not_covered",
+        "reason": "gap",
+        "note": "Today the document has no `preventive_care` benefit, so the Bundle has none. The key is in `fhir/carin-sbc-crosswalk.json`, so once the importer reads category 14a, the cost lands in `plan.specificCost.benefit.cost` under category `preventive-care`.",
+        "read_from": [{ "section": "8.2", "cites": "| `preventive_care` | `preventive-care` |" }]
+      },
+      "marketplace": { "verdict": "aligned" }
+    },
+    {
+      "id": "telehealth_visit",
+      "medicare_advantage": {
+        "element": [],
+        "verdict": "not_covered",
+        "reason": "no_element",
+        "note": "Category 7j is outside the PBP crosswalk and not written today. `sbc-benefit-category` has no telehealth code and `telehealth_visit` is not in `fhir/carin-sbc-crosswalk.json`, so a telehealth benefit would be identity only in `bps-unmapped-benefit`.",
+        "read_from": [{ "section": "8.3", "cites": "or with a key not in 8.2, **is not placed in `coverage` or `specificCost`**" }]
+      }
+    },
+    {
+      "id": "hearing_aids",
+      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different" },
+      "marketplace": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "dental_cleaning",
+      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "dental_filling",
+      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "eyeglasses",
+      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "routine_eye_exam",
+      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different" },
+      "marketplace": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "otc_allowance",
+      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "fitness_benefit",
+      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "transportation",
+      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "meals",
+      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "hearing_exam",
+      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "dental_routine_adult",
+      "marketplace": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "dental_basic_adult",
+      "marketplace": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "dental_major_adult",
+      "marketplace": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "chiropractic_care",
+      "marketplace": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "acupuncture",
+      "marketplace": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "routine_foot_care",
+      "marketplace": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "infertility_treatment",
+      "marketplace": { "covered": "different", "cost": "different", "limits": "different" }
+    },
+    {
+      "id": "bariatric_surgery",
+      "marketplace": { "covered": "different", "cost": "different", "limits": "different" }
+    }
+  ]
+}

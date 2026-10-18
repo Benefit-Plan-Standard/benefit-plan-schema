@@ -2,14 +2,17 @@
 
 This folder holds the technical specification for the medical MVP of the CMS Health Tech Ecosystem Real-Time Benefits workgroup. It is written for the Benefit Plan Standard, an open JSON format for health plan benefits published under the MIT license, and for the 2 Benefit Plan Standard importers that read CMS public files. The SHALL and SHOULD assignments follow the workgroup's medical MVP scope (Monica Chopra's pledge proposal, October 2026).
 
-The folder has 3 files, and the generator sits with the repository's other scripts:
+The folder has 5 files, and the 2 generators sit with the repository's other scripts:
 
 | File | What it is |
 |---|---|
-| `README.md` | This document: purpose, scope, how a plan is identified, the file contract, how to read the dictionary, the known gaps, the conformance outline and the status. |
+| `README.md` | This document: purpose, scope, how a plan is identified, the file contract, how to read the dictionary, the known gaps, the conformance outline, the status and the follow-ups for the converter spec. |
 | [`data-dictionary.md`](data-dictionary.md) | Every item in scope, where it is in a Benefit Plan Standard document, and where each importer reads it in the CMS files. Generated; do not edit it. |
-| [`shall-should.json`](shall-should.json) | The SHALL and SHOULD assignments, 1 entry per item, with the field paths, the CMS columns and the known gaps. The dictionary is generated from it. |
-| [`scripts/build-rtb-dictionary.js`](../../../scripts/build-rtb-dictionary.js) | The generator. It reads `shall-should.json`, the 2 importer crosswalks and the canonical benefit vocabulary, and writes `data-dictionary.md`. |
+| [`shall-should.json`](shall-should.json) | The SHALL and SHOULD assignments, 1 entry per item, with the field paths, the CMS columns and the known gaps. The dictionary and the crosswalk are generated from it. |
+| [`carin-crosswalk.md`](carin-crosswalk.md) | Every row of the dictionary mapped to the SBC InsurancePlan profile: where the value lands in the Bundle, and 1 of 3 verdicts. Generated; do not edit it. |
+| [`carin-mapping.json`](carin-mapping.json) | For each item and program, the profile element, the verdict, the note and the converter spec sections the verdict is read from. The crosswalk is generated from it. |
+| [`scripts/build-rtb-dictionary.js`](../../../scripts/build-rtb-dictionary.js) | The dictionary generator. It reads `shall-should.json`, the 2 importer crosswalks and the canonical benefit vocabulary, and writes `data-dictionary.md`. |
+| [`scripts/build-rtb-crosswalk.js`](../../../scripts/build-rtb-crosswalk.js) | The crosswalk generator. It reads `shall-should.json`, `carin-mapping.json` and `fhir/carin-sbc-crosswalk.json`, takes the item names and field paths from the dictionary generator, and writes `carin-crosswalk.md`. |
 
 ## Purpose
 
@@ -85,11 +88,11 @@ This is a file contract, not an API. It describes documents an app retrieves, no
 For each plan, 2 files:
 
 1. The Benefit Plan Standard JSON document for the plan. The importer checks it against the schema before writing it: schema 1.2.0 for Medicare Advantage, 1.1.0 for Marketplace. An import that fails writes nothing.
-2. The SBC InsurancePlan Bundle (SBC stands for Summary of Benefits and Coverage) that [`scripts/to-insuranceplan.js`](../../../scripts/to-insuranceplan.js) produces from that document: a FHIR R4 collection Bundle holding 1 InsurancePlan and the Organization it references, in the SBC InsurancePlan profile of the CARIN Digital Insurance Card IG (`hl7.fhir.us.insurance-card#2.0.0-ballot`, a ballot draft). For a Marketplace document, `--excluded-services` also writes the CARIN Digital Insurance Card IG's excluded-services extension, derived from the plan's coverage flags. The converter spec is [`insuranceplan-converter.md`](../insuranceplan-converter.md).
+2. The SBC InsurancePlan Bundle (SBC stands for Summary of Benefits and Coverage) that [`scripts/to-insuranceplan.js`](../../../scripts/to-insuranceplan.js) produces from that document: a FHIR R4 collection Bundle holding 1 InsurancePlan and the Organization it references, in the SBC InsurancePlan profile of the CARIN Digital Insurance Card implementation guide (`hl7.fhir.us.insurance-card#2.0.0-ballot`, a ballot draft). For a Marketplace document, `--excluded-services` also writes the excluded-services extension of the CARIN Digital Insurance Card implementation guide, derived from the plan's coverage flags. The converter spec is [`insuranceplan-converter.md`](../insuranceplan-converter.md).
 
 The documents quote the CMS cells they were read from. Each tier row of a benefit quotes its cells in `notes`, and a value with no field is quoted in `source_references`.
 
-The crosswalk to the SBC InsurancePlan profile in the CARIN Digital Insurance Card IG is a Part B item in the workgroup's GA draft (the profile is at ballot), not a GA ask; the crosswalk document that follows in this folder exists so a pledgee can produce that Bundle when the profile publishes.
+The crosswalk to the SBC InsurancePlan profile in the CARIN Digital Insurance Card implementation guide is a Part B item in the workgroup's GA draft (the profile is at ballot), not a GA ask; the crosswalk, [`carin-crosswalk.md`](carin-crosswalk.md), exists so a pledgee can produce that Bundle when the profile publishes, and nothing in the MVP's SHALL list depends on it.
 
 ### How to get them
 
@@ -196,8 +199,28 @@ A rule for moving SHOULD items to SHALL at GA will be proposed in a later versio
 
 ## Status and version
 
-Version 0.1, a draft for the workgroup, written October 17, 2026.
+Version 0.1, a draft for the workgroup, written October 17, 2026, updated October 18, 2026.
 
 It covers the PBP files for contract year 2027 and the Marketplace PUFs for plan year 2026. Medicare Advantage documents are written in schema 1.2.0 and Marketplace documents in schema 1.1.0. The canonical benefit vocabulary is version 1.2.0, with 117 keys. The PBP crosswalk has 40 rows, 33 with a canonical key, and the Marketplace crosswalk maps 84 of the 273 benefit names in the plan year 2026 file.
 
-Later versions add the field-by-field crosswalk to the SBC InsurancePlan profile, a worked example, the minimum contract and the conformance numbers.
+The crosswalk to the SBC InsurancePlan profile, [`carin-crosswalk.md`](carin-crosswalk.md), has 106 rows, 1 for each row of the dictionary. Each row has a verdict for each program it applies to, so the counts are per program:
+
+| | Medicare Advantage | Marketplace |
+|---|---|---|
+| Rows that apply | 67 | 71 |
+| Aligned | 19 | 20 |
+| Different | 41 | 47 |
+| Not covered | 7 | 4 |
+| Not covered, no element | 1 | 0 |
+| Not covered, gap | 6 | 4 |
+
+Every extra benefit in the MVP reaches the Bundle as identity only, plus, on Marketplace Bundles, an entry in the CARIN excluded-services extension when the plan does not cover it on any tier; that is the strongest reason the MVP format is the Benefit Plan Standard document, with the FHIR Bundle as the Part B output. The profile is at ballot, and nothing in the MVP's SHALL list depends on the crosswalk. To regenerate it, run `node scripts/build-rtb-crosswalk.js`; `--check` exits 1 if the file on disk differs, and the generator stops, and names the item, when a verdict is not the one the converter spec and `fhir/carin-sbc-crosswalk.json` give.
+
+Later versions add a worked example, the minimum contract and the conformance numbers.
+
+## Follow-ups for the converter spec
+
+The crosswalk found 2 plan types that the converter spec, [`insuranceplan-converter.md`](../insuranceplan-converter.md) section 6.1, does not name. For both, the crosswalk reads its verdict from another file, and the generator checks that file.
+
+- **HMO_POS.** The converter writes an HMO-POS plan's `plan.type` as text only, `{"text": "HMO_POS"}`, because `sbc-plan-type` has no code for it. Section 6.1 names HMO, PPO, POS, EPO and OAP. The contract year 2027 files have 1,273 HMO-POS plans (converter spec section 6.3). The verdict, different, is read from the published Aetna Medicare Select Extra Bundle, [`examples/fhir/aetna-medicare-select-extra-hmo-pos-h1609-028-000.json`](../../../examples/fhir/aetna-medicare-select-extra-hmo-pos-h1609-028-000.json).
+- **INDEMNITY.** The converter codes a Marketplace indemnity plan from `sbc-plan-type`, and [`fhir-alignment.md`](../../fhir-alignment.md) section 2 lists the code, but section 6.1 does not name it, and no example Bundle has an indemnity plan. The verdict, aligned, is read from the alignment guide.
