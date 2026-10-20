@@ -15,7 +15,9 @@
  *   - a crosswalk row's canonical key is not the item's key, or the key is not in the vocabulary;
  *   - a field path is not in the program's schema (v1.2.0 Medicare Advantage, v1.1.0 Marketplace);
  *   - a column named as read is in neither the importer script nor its golden documents;
- *   - a column named as not read appears in the importer script (the gap it records would be stale).
+ *   - a column named as not read appears in the importer script (the gap it records would be stale);
+ *   - the README does not open, under its title, with the author line and the preface this generator writes for it;
+ *   - a mention to be linked to the repository is no longer in the document.
  * Spec: docs/specs/rtb-medical-mvp/README.md
  */
 
@@ -28,7 +30,21 @@ const REPO_ROOT = path.resolve(__dirname, '..');
 const SPEC_DIR = 'docs/specs/rtb-medical-mvp';
 const SHALL_SHOULD = `${SPEC_DIR}/shall-should.json`;
 const DICTIONARY = `${SPEC_DIR}/data-dictionary.md`;
+const README = `${SPEC_DIR}/README.md`;
 const VOCABULARY = 'vocabularies/canonical-benefits.json';
+const REPO = 'https://github.com/Benefit-Plan-Standard/benefit-plan-schema';
+const IN_REPO = 'in the Benefit Plan Standard repository';
+const REPOS = 'the Benefit Plan Standard repository\'s';
+const SPEC_VERSION = '0.2';
+const SPEC_DATE = 'October 20, 2026';
+const AUTHOR = 'Diego Orofino, the Benefit Plan Standard, dorofino@benefitplanstandard.org. A draft for the workgroup, not a workgroup decision.';
+// The 3 documents of the specification: the name the preface gives each, and the term the others use for it
+// when that differs.
+const SPEC_DOCS = [
+  { file: README, name: 'technical specification', term: 'README' },
+  { file: DICTIONARY, name: 'data dictionary' },
+  { file: `${SPEC_DIR}/carin-crosswalk.md`, name: 'crosswalk to the SBC InsurancePlan profile' },
+];
 const PROGRAMS = ['medicare_advantage', 'marketplace'];
 const BENEFIT_GROUPS = ['services', 'extras'];
 const LABELS = ['SHALL', 'SHOULD', 'KEY'];
@@ -64,6 +80,43 @@ function codeify(text) {
 }
 
 const fileText = (file) => file.replace(/[\w<>/.-]+\.(?:txt|csv|json)\b/g, (m) => code(m));
+
+// The GitHub address of a repository file under main, or of a folder when the path ends in /.
+const githubUrl = (rel) => (rel.endsWith('/') ? `${REPO}/tree/main/${rel.slice(0, -1)}` : `${REPO}/blob/main/${rel}`);
+const repoLink = (rel, text = code(rel)) => `[${text}](${githubUrl(rel)})`;
+
+// Each document of the specification is also read on its own, away from the repository, and opens with the author
+// line and this paragraph under its title.
+function preface(file) {
+  const self = SPEC_DOCS.find((d) => d.file === file);
+  const [a, b] = SPEC_DOCS.filter((d) => d !== self).map((d) => `the [${d.name}](${githubUrl(d.file)})`);
+  return 'The [Benefit Plan Standard](https://benefitplanstandard.org) is an open JSON format for health plan benefits, published under the MIT license. ' +
+    `Its schema, the importers that read CMS public files, the converter to FHIR and the example plans live in [one repository](${REPO}). ` +
+    `This document is the ${self.name}, version ${SPEC_VERSION}, dated ${SPEC_DATE}, 1 of 3 documents that make up the medical MVP ` +
+    'technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup. ' +
+    `The other 2 are ${a} and ${b}. All 3 are in the [repository folder](${githubUrl(`${SPEC_DIR}/`)}), ` +
+    `and the files they name are in the [repository](${REPO}).`;
+}
+
+const opening = (file) => `${AUTHOR}\n\n${preface(file)}`;
+
+// Puts the author line and the preface under the title of a generated document, links every mention of the other
+// 2 documents by name to it on GitHub, and replaces the first appearance of each [text, replacement] in mentions,
+// which is how a repository file named in text from the JSON sources is introduced where the document first names it.
+function standalone(text, file, mentions, errors) {
+  const at = text.indexOf('\n\n');
+  let body = text.slice(at);
+  for (const d of SPEC_DOCS.filter((x) => x.file !== file)) {
+    const term = d.term || d.name;
+    body = body.replace(new RegExp(`\\b${escapeRe(term)}\\b`, 'g'), `[${term}](${githubUrl(d.file)})`);
+  }
+  for (const [from, to] of mentions) {
+    const i = body.indexOf(from);
+    if (i < 0) errors.push(`${file}: "${from}" is not in the document, so the repository file it names is not introduced there`);
+    else body = body.slice(0, i) + to + body.slice(i + from.length);
+  }
+  return `${text.slice(0, at)}\n\n${opening(file)}${body}`;
+}
 
 // True when a field path, with its [filters] read as [], is in the schema.
 function inSchema(schema, fieldPath) {
@@ -455,8 +508,15 @@ function build() {
     }
   }
 
+  if (readText(README).split('\n\n').slice(1, 3).join('\n\n') !== opening(README)) {
+    errors.push(`${README} does not open, under its title, with the author line and the preface this generator writes for it`);
+  }
+  const text = standalone(render(ss, prog, vocabulary, rows, notInFile), DICTIONARY, [
+    ['(importer spec section 4.3)', `(${repoLink(ma.cfg.importer_spec, 'importer spec')} section 4.3, ${IN_REPO})`],
+    ['in `docs/provider-directory-schema-proposal.md`', `in ${REPOS} ${repoLink('docs/provider-directory-schema-proposal.md')}`],
+  ], errors);
   if (errors.length) return { errors };
-  return { text: render(ss, prog, vocabulary, rows, notInFile), rows, notInFile, gaps: ss.gaps };
+  return { text, rows, notInFile, gaps: ss.gaps };
 }
 
 function render(ss, prog, vocabulary, rows, notInFile) {
@@ -467,14 +527,14 @@ function render(ss, prog, vocabulary, rows, notInFile) {
   const gapIds = ss.gaps.map((g) => g.id);
   const L = [];
   L.push('# Medical MVP data dictionary', '');
-  L.push(`This file lists each item in the medical MVP scope and where it is in a Benefit Plan Standard document written by the 2 public-file importers. ` +
-    `The Medicare Advantage importer (${code(ma.cfg.importer)}) reads the ${ma.cfg.files} files for contract year ${ma.crosswalk.contract_year}. ` +
-    `The Marketplace importer (${code(mp.cfg.importer)}) reads the ${mp.cfg.files} for plan year ${mp.crosswalk.plan_year}. ` +
+  L.push(`This file lists each item in the medical MVP scope and where it is in a Benefit Plan Standard document written by the 2 public-file importers ${IN_REPO}. ` +
+    `The Medicare Advantage importer (${repoLink(ma.cfg.importer)}) reads the ${ma.cfg.files} files for contract year ${ma.crosswalk.contract_year}. ` +
+    `The Marketplace importer (${repoLink(mp.cfg.importer)}) reads the ${mp.cfg.files} for plan year ${mp.crosswalk.plan_year}. ` +
     `${ss.attribution}`, '');
-  L.push(`This file is generated by ${code('scripts/build-rtb-dictionary.js')} from ${code('shall-should.json')} in this folder, ` +
-    `${code(ma.cfg.crosswalk)} (${ma.crosswalk.benefits.length} rows, ${pbpKeyed} with a canonical key), ` +
-    `${code(mp.cfg.crosswalk)} (${mp.crosswalk.map.length} benefit names, ${pufMapped} mapped) and ` +
-    `${code(VOCABULARY)} (version ${vocabulary.version}, ${vocabulary.benefits.length} keys). ` +
+  L.push(`This file is generated by ${repoLink('scripts/build-rtb-dictionary.js')} from ${repoLink(SHALL_SHOULD, code('shall-should.json'))} in this folder, ` +
+    `${repoLink(ma.cfg.crosswalk)} (${ma.crosswalk.benefits.length} rows, ${pbpKeyed} with a canonical key), ` +
+    `${repoLink(mp.cfg.crosswalk)} (${mp.crosswalk.map.length} benefit names, ${pufMapped} mapped) and ` +
+    `${repoLink(VOCABULARY)} (version ${vocabulary.version}, ${vocabulary.benefits.length} keys), all ${IN_REPO}. ` +
     'To change it, change those files and run the generator again.', '');
 
   L.push('## How to read it', '');
@@ -571,4 +631,4 @@ function main(argv) {
 
 if (require.main === module) process.exit(main(process.argv.slice(2)));
 
-module.exports = { build };
+module.exports = { build, standalone, repoLink, IN_REPO, REPOS };
