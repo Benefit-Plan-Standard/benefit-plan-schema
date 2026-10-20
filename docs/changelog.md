@@ -3,6 +3,17 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] – DRAFT (2026-10-20), medical MVP specification 0.2 and the first Marketplace check
+
+### Added
+
+- `scripts/rtb-completeness.js`: the completeness count of the medical MVP. It reads `docs/specs/rtb-medical-mvp/shall-should.json` and 1 or more documents written by the public-file importers, and prints for each plan how many of the SHALL items that apply to it the document populates; `--misses` lists each miss and why. An item with a known gap (G1 to G8) counts as a miss. On the 10 examples: the 5 Medicare Advantage plans 84.6 to 86.0 percent, every miss a known gap; the 5 Marketplace plans 91.7 to 93.6 percent. The same output on every run.
+- `docs/specs/puf-sbc-checks/68398FL0030058-01.json`: the first Marketplace accuracy check, UHC Bronze Essential against the Summary of Benefits and Coverage that its Plan Attributes PUF row links (document `FL0055 EXFL26IF0275669_000`, retrieved 2026-10-20, SHA-256 recorded). 49 checks run by `scripts/pbp-sob-check.js`, unchanged: 38 match, 11 readings, 0 contradictions. The 11 readings are 1 kind: the SBC prints "Not Covered" out of network where the file gives the benefit `IsCovered` "Covered" and `CoinsOutofNet` "100.00%" (Marketplace importer spec sections 5.4 and 7.4).
+
+### Changed
+
+- `docs/specs/rtb-medical-mvp/README.md`: version 0.2, dated October 20, 2026. "The file contract" is now "Retrieval and the file contract", with a subsection "Source, date and refresh (GA draft checks 2 and 6)": what every document and answer carries, what each importer stamps today (Medicare Advantage the download date and the release label; Marketplace the download date and the file addresses, with `ImportDate` not carried, gap G6), the link to the plan's official documents, and the refresh rules with a proposed cadence of 7 days after a CMS release. New sections "What a pledgee publishes" (the minimum contract) and "Worked example" (a primary care visit for `H1609-028-000` and `68398FL0030058-01`). Conformance has a proposed number for each measure, each labelled a proposal for the workgroup to set: completeness 90 percent per plan, with the 10 example figures; accuracy 0 contradictions, as GA draft check 1b, with the method and the results for 3 plans (186 values, 0 contradictions, 37 documented readings, the 7 Medicare Advantage reading kinds named); plan match 100 percent of a published test set; and a rule for moving SHOULD items to SHALL at GA. "Follow-ups" now has 6 items for the importers and the published files beside the 2 for the converter spec. No change to the schema, the vocabulary, the crosswalks, the importers, the converter or the examples.
+
 ## [1.2.0] – DRAFT (2026-10-18), medical MVP crosswalk to the SBC InsurancePlan profile
 
 ### Added
