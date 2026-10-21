@@ -499,7 +499,7 @@ function build() {
         }
         cells[p] = [labelText(a.label), src, e.gap ? `Gap ${e.gap}.` : ''].filter(Boolean).join(' ');
         if (a.id === 'covered' && e.scope_covered_test) {
-          noteParts.push(progNote(p, `the scope counts the benefit as covered when ${codeify(e.scope_covered_test)}, a different test from the importer's`));
+          noteParts.push(progNote(p, `the scope counts the benefit as covered when ${codeify(e.scope_covered_test)}, a different test from the ${prog[p].name} importer's`));
         }
         noteParts.push(progNote(p, codeify(cfgAspect.note)));
         if (cfgAspect.not_in_file) noteParts.push(nifNote(it, `The extra benefits, ${a.title}`, p, codeify(cfgAspect.not_in_file)));
@@ -543,14 +543,14 @@ function render(ss, prog, vocabulary, rows, notInFile) {
 
   L.push('## How to read it', '');
   for (const l of ['SHALL', 'SHOULD', 'KEY']) L.push(`- ${l === 'KEY' ? '**Key**' : `**${l}**`}. ${ss.labels[l]}`);
-  L.push('- Each program column gives the label, then the CMS file and the columns the importer reads for the item.');
+  L.push('- Each program column gives the label, then the CMS file and the columns the Medicare Advantage importer or the Marketplace importer reads for the item.');
   L.push(`- A field path says where the value is in the document. ${code('benefits[canonical_key=primary_care]')} is the item of ${code('benefits')} ` +
     `whose ${code('canonical_key')} is ${code('primary_care')}, and ${code('[tier_id=IN]')} works the same way; ${code('[]')} means every item and ${code('[0]')} the first. ` +
     `Medicare Advantage documents follow schema ${ma.schemaVersion} and Marketplace documents schema ${mp.schemaVersion}.`);
-  L.push(`- "Quoted verbatim in ${code('source_references')}" means the CMS file has the value but the schema has no field for it, so the importer copies the column name and the value into a ${code('source_references')} excerpt.`);
+  L.push(`- "Quoted verbatim in ${code('source_references')}" means the CMS file has the value but the Benefit Plan Standard schema has no field for it, so the 2 importers copy the column name and the value into a ${code('source_references')} excerpt.`);
   L.push('- "Not on the Medicare Advantage list" or "Not on the Marketplace list" means the scope does not ask for the item in that program. Where a crosswalk still maps the key, the cell names the rows.');
-  L.push('- "Not in the CMS file" in a note means the files the importer reads cannot carry the item for that program; the note says what the importer writes instead.');
-  L.push('- "(not read)" marks a column that is in the CMS file but that the importer does not read today.');
+  L.push('- "Not in the CMS file" in a note means the files the Medicare Advantage importer or the Marketplace importer reads cannot carry the item for that program; the note says what that importer writes instead.');
+  L.push('- "(not read)" marks a column that is in the CMS file but that the Medicare Advantage importer or the Marketplace importer does not read today.');
   L.push(`- Gaps ${gapIds[0]} to ${gapIds[gapIds.length - 1]} are listed at the end. Each row a gap touches repeats it in its note.`, '');
   for (const p of PROGRAMS) {
     L.push(`How the ${prog[p].name} importer reads the files:`, '');

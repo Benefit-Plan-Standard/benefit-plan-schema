@@ -16,7 +16,7 @@
       "schema": "schema/v1.2.0/benefit-plan.schema.json",
       "golden_suffix": ".pbp.json",
       "reading": [
-        "Each service category has its own columns in its own file, 1 row per plan. A Medicare-covered category is covered on every plan; when both its copay and coinsurance answers are No, the importer writes a $0 copay step and quotes both answers.",
+        "Each service category has its own columns in its own file, 1 row per plan. A Medicare-covered category is covered on every plan; when both its copay and coinsurance answers are No, the Medicare Advantage importer writes a $0 copay step and quotes both answers.",
         "Minimum and maximum columns become a range (amount_min and amount_max, rate_min and rate_max) when they differ.",
         "Every tier row quotes, in its notes, the cells it was read from."
       ],
@@ -40,7 +40,7 @@
       "benefit_file": "benefits-and-cost-sharing-puf.csv",
       "reading": [
         "Every benefit is a row of benefits-and-cost-sharing-puf.csv with the same columns, found by its exact BenefitName and the plan's PlanId.",
-        "Costs are text, such as \"$30.00\" or \"20.00% Coinsurance after deductible\". The importer reads each string into a copay or coinsurance step and quotes both strings in the tier's notes.",
+        "Costs are text, such as \"$30.00\" or \"20.00% Coinsurance after deductible\". The Marketplace importer reads each string into a copay or coinsurance step and quotes both strings in the tier's notes.",
         "IsCovered applies to the whole benefit, so every tier row of a benefit carries the same covered value."
       ],
       "columns": {
@@ -101,28 +101,28 @@
       "programs": ["medicare_advantage"],
       "kind": "no_canonical_key",
       "title": "Medicare Advantage physical therapy and speech therapy (category 7i) has no canonical key.",
-      "instead": "The importer writes the benefit by name: benefit_id PHYSICAL_AND_SPEECH_THERAPY, with service_name and raw_label and no canonical_key. The vocabulary has keys for physical therapy, for speech therapy and for physical with occupational therapy, but none for this pair."
+      "instead": "The Medicare Advantage importer writes the benefit by name: benefit_id PHYSICAL_AND_SPEECH_THERAPY, with service_name and raw_label and no canonical_key. The Benefit Plan Standard canonical benefit vocabulary has keys for physical therapy, for speech therapy and for physical with occupational therapy, but none for this pair."
     },
     {
       "id": "G2",
       "programs": ["medicare_advantage"],
       "kind": "not_read",
       "title": "Medicare Advantage preventive services (category 14a) are not read.",
-      "instead": "The importer writes no preventive_care benefit for a Medicare Advantage plan. The plan's answer is in pbp_b14a_mc_prevent_attest in pbp_b14_preventive.txt."
+      "instead": "The Medicare Advantage importer writes no preventive_care benefit for a Medicare Advantage plan. The plan's answer is in pbp_b14a_mc_prevent_attest in pbp_b14_preventive.txt."
     },
     {
       "id": "G3",
       "programs": ["medicare_advantage"],
       "kind": "not_read",
       "title": "Medicare Advantage monthly premium and Part B premium reduction are not read.",
-      "instead": "The schema has the premium and part_b_premium_reduction fields, but the importer reads neither pbp_d_mplusc_premium nor pbp_d_mco_pay_reduct_yn and pbp_d_mco_pay_reduct_amt in pbp_Section_D.txt, so a document has neither field."
+      "instead": "The Benefit Plan Standard schema 1.2.0 has the premium and part_b_premium_reduction fields, but the Medicare Advantage importer reads neither pbp_d_mplusc_premium nor pbp_d_mco_pay_reduct_yn and pbp_d_mco_pay_reduct_amt in pbp_Section_D.txt, so a document has neither field."
     },
     {
       "id": "G4",
       "programs": ["medicare_advantage"],
       "kind": "not_read",
       "title": "Medicare Advantage member services phone is not read.",
-      "instead": "The importer does not read pbp_a_curmbr_phone in pbp_Section_A.txt, and the schema has no field for a phone number. The plan website, pbp_a_org_website, is quoted verbatim in source_references."
+      "instead": "The Medicare Advantage importer does not read pbp_a_curmbr_phone in pbp_Section_A.txt, and the Benefit Plan Standard schema 1.2.0 has no field for a phone number. The plan website, pbp_a_org_website, is quoted verbatim in source_references."
     },
     {
       "id": "G5",
@@ -137,7 +137,7 @@
       "programs": ["marketplace"],
       "kind": "not_carried",
       "title": "Marketplace ImportDate is not carried.",
-      "instead": "Both files the importer reads have an ImportDate column. The importer writes the date the files were downloaded, from data/puf/<year>/download.json, in the first source_references excerpt."
+      "instead": "Both files the Marketplace importer reads have an ImportDate column. The Marketplace importer writes the date the files were downloaded, from data/puf/<year>/download.json, in the first source_references excerpt."
     },
     {
       "id": "G7",
@@ -151,7 +151,7 @@
       "programs": ["marketplace"],
       "kind": "not_read",
       "title": "Marketplace out-of-area coverage descriptions are not read.",
-      "instead": "The importer quotes the Yes or No answers, OutOfServiceAreaCoverage and OutOfCountryCoverage, in source_references. It does not read OutOfServiceAreaCoverageDescription or OutOfCountryCoverageDescription in the Plan Attributes PUF, so the plan's own description of that coverage is not in the document, and no field is written for it."
+      "instead": "The Marketplace importer quotes the Yes or No answers, OutOfServiceAreaCoverage and OutOfCountryCoverage, in source_references. It does not read OutOfServiceAreaCoverageDescription or OutOfCountryCoverageDescription in the Plan Attributes PUF, so the plan's own description of that coverage is not in the document, and no field is written for it."
     }
   ],
   "items": [
@@ -183,7 +183,7 @@
         "label": "SHALL",
         "path": "plan_year",
         "source": [{ "file": "PlanArea.txt or PlanRegionArea.txt", "read": ["contract_year"] }],
-        "note": "Section A has no year column. The importer reads contract_year from the plan's service area rows and requires it to equal the release year."
+        "note": "Section A has no year column. The Medicare Advantage importer reads contract_year from the plan's service area rows and requires it to equal the release year."
       },
       "marketplace": {
         "label": "SHALL",
@@ -219,7 +219,7 @@
       "meaning": "The first and last dates of the plan's coverage.",
       "medicare_advantage": {
         "label": null,
-        "not_in_file": "No PBP file has a date column. The importer writes plan_year only."
+        "not_in_file": "No PBP file has a date column. The Medicare Advantage importer writes plan_year only."
       },
       "marketplace": {
         "label": "SHALL",
@@ -271,7 +271,7 @@
         "label": "SHALL",
         "path": "plan_type",
         "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_plan_type"] }],
-        "note": "Codes 01, 02, 04 and 31 are written HMO, HMO_POS, PPO and PPO, and the code and its label are quoted in source_references. The importer refuses other plan types."
+        "note": "Codes 01, 02, 04 and 31 are written HMO, HMO_POS, PPO and PPO, and the code and its label are quoted in source_references. The Medicare Advantage importer refuses other plan types."
       },
       "marketplace": {
         "label": "SHALL",
@@ -329,7 +329,7 @@
       },
       "marketplace": {
         "label": null,
-        "not_in_file": "Neither file the importer reads has a premium column; premiums vary by age and area and are in the Rate PUF, which the importer does not read. The importer writes no premium."
+        "not_in_file": "Neither file the Marketplace importer reads has a premium column; premiums vary by age and area and are in the Rate PUF, which the Marketplace importer does not read. The Marketplace importer writes no premium."
       }
     },
     {
@@ -426,7 +426,7 @@
       "meaning": "Whether the member needs a referral to see a specialist, and for which specialists.",
       "medicare_advantage": {
         "label": null,
-        "note": "The PBP files hold referral answers per service category instead (for example pbp_b7d_refer_yn), which the importer writes as conditions on the benefit."
+        "note": "The PBP files hold referral answers per service category instead (for example pbp_b7d_refer_yn), which the Medicare Advantage importer writes as conditions on the benefit."
       },
       "marketplace": {
         "label": "SHALL",
@@ -562,7 +562,7 @@
         "label": "SHALL",
         "quoted": true,
         "source": [{ "file": "pbp_Section_D.txt", "read": ["pbp_d_comb_deduct_yn", "pbp_d_comb_deduct_amt", "pbp_d_comb_max_enr_amt_yn", "pbp_d_comb_max_enr_amt"] }],
-        "note": "The schema has no combined slot. The PBP importer spec (section 9.1) proposes accumulators.combined_deductible and accumulators.combined_oop_max."
+        "note": "The Benefit Plan Standard schema 1.2.0 has no combined slot. The PBP importer spec (section 9.1) proposes accumulators.combined_deductible and accumulators.combined_oop_max."
       },
       "marketplace": {
         "label": "SHALL",
@@ -598,7 +598,7 @@
       "meaning": "What the member pays at the plan's second tier of in-network providers, for plans that have one.",
       "medicare_advantage": {
         "label": null,
-        "not_in_file": "The PBP files have no second in-network tier. They carry facility cost tiers for inpatient and skilled nursing stays only, which the importer writes as cost_designation tiers such as IN_1A_TIER_1 and IN_2_TIER_1."
+        "not_in_file": "The PBP files have no second in-network tier. They carry facility cost tiers for inpatient and skilled nursing stays only, which the Medicare Advantage importer writes as cost_designation tiers such as IN_1A_TIER_1 and IN_2_TIER_1."
       },
       "marketplace": {
         "label": "SHALL",
@@ -620,7 +620,7 @@
         "label": "SHALL",
         "quoted": true,
         "source": [{ "file": "plan-attributes-puf.csv", "read": ["TEHBDedInnTier2Individual", "TEHBDedInnTier2FamilyPerPerson", "TEHBDedInnTier2FamilyPerGroup", "TEHBInnTier2IndividualMOOP", "TEHBInnTier2FamilyPerPersonMOOP", "TEHBInnTier2FamilyPerGroupMOOP"] }],
-        "note": "The schema has deductible and maximum slots for in network and out of network only."
+        "note": "The Benefit Plan Standard schema 1.1.0 has deductible and maximum slots for in network and out of network only."
       }
     },
     {

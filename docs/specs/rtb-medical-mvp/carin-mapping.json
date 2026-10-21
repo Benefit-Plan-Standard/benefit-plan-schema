@@ -1,5 +1,5 @@
 {
-  "description": "Crosswalk from the medical MVP data dictionary to the SBC InsurancePlan profile of the CARIN Digital Insurance Card implementation guide. One entry per item of shall-should.json, in the same order, with the element, the verdict and the note for each program the item applies to. scripts/build-rtb-crosswalk.js reads this file with shall-should.json, fhir/carin-sbc-crosswalk.json and the converter specification and writes carin-crosswalk.md in this folder.",
+  "description": "Crosswalk from the medical MVP data dictionary to the SBC InsurancePlan profile of the CARIN Digital Insurance Card implementation guide. One entry per item of shall-should.json, in the same order, with the element, the verdict and the note for each program the item applies to. scripts/build-rtb-crosswalk.js reads this file with shall-should.json, fhir/carin-sbc-crosswalk.json and the Benefit Plan Standard converter specification and writes carin-crosswalk.md in this folder.",
   "attribution": "The assignments follow the workgroup's medical MVP scope (Monica Chopra's pledge proposal, October 2026).",
   "profile": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/sbc-insurance-plan",
   "package": "hl7.fhir.us.insurance-card#2.0.0-ballot",
@@ -11,17 +11,28 @@
     "not_covered": "The Bundle does not carry the item. The note says why."
   },
   "reasons": {
-    "no_element": "the profile has no element for the item and the converter emits nothing",
+    "no_element": "the SBC InsurancePlan profile has no element for the item and the Benefit Plan Standard converter emits nothing",
     "gap": "the item is a known gap (G1 to G8), so there is nothing to map yet"
   },
-  "gap_note": "A gap is work on the importers, listed in the README with the other known gaps, and the note says what travels today.",
-  "gap_sentence": "Closing gap {gap} is work on the importer.",
+  "gap_note": "A gap is work on the 2 importers, listed in the README with the other known gaps, and the note says what travels today.",
+  "gap_sentence": "Closing gap {gap} is work on {importers}.",
   "ballot": {
     "status": "in the STU2 ballot, September 2026; ballot-stage element",
     "tickets": {
       "FHIR-57525": { "title": "multi-tier cost sharing", "sentence": "The qualifier is bound to the Cost Tier value set (FHIR-57525, multi-tier cost sharing)" },
       "FHIR-57526": { "title": "deductible applicability", "sentence": "Whether a step counts toward the deductible travels in the DeductibleApplies extension on each `cost` entry (FHIR-57526, deductible applicability)" },
-      "FHIR-57527": { "title": "structured benefit limitation", "sentence": "The profile's element for limits is the BenefitLimitation extension on `coverage.benefit` (FHIR-57527, structured benefit limitation)" }
+      "FHIR-57527": { "title": "structured benefit limitation", "sentence": "The SBC InsurancePlan profile's element for limits is the BenefitLimitation extension on `coverage.benefit` (FHIR-57527, structured benefit limitation)" }
+    }
+  },
+  "change_requests": {
+    "filed": "October 12, 2026",
+    "status": "pending",
+    "sentence": "Change request {id}, filed {filed}, {status}.",
+    "tickets": {
+      "FHIR-59603": "a general home health code in `sbc-benefit-category`",
+      "FHIR-59604": "a binding for `cost.type` with a not-covered code, and what the second `cost` entry is for",
+      "FHIR-59605": "an HMO-POS code in `sbc-plan-type` and a hospital tier code in `cost-tier`",
+      "FHIR-59606": "hearing aids and a hearing exam in `sbc-benefit-category`"
     }
   },
   "extensions": {
@@ -33,7 +44,7 @@
   "quoted": {
     "extension": ["bps-source-reference"],
     "verdict": "different",
-    "note": "Quoted verbatim in `source_references`, which the converter writes as text in `bps-source-reference`.",
+    "note": "Quoted verbatim in `source_references`, which the Benefit Plan Standard converter writes as text in `bps-source-reference`.",
     "read_from": [{ "section": "9", "cites": "Plan-level `source_references[]`" }]
   },
   "benefit_rules": {
@@ -165,7 +176,7 @@
         "element": [],
         "extension": ["bps-source-reference"],
         "verdict": "different",
-        "note": "The release label, for example PBP Benefits-2027, and the download date are text in the first `bps-source-reference` excerpt. The converter writes no timestamps.",
+        "note": "The release label, for example PBP Benefits-2027, and the download date are text in the first `bps-source-reference` excerpt. The Benefit Plan Standard converter writes no timestamps.",
         "read_from": [
           { "section": "4.2", "cites": "| Timestamps | None." },
           { "section": "9", "cites": "Plan-level `source_references[]`" }
@@ -233,6 +244,7 @@
       "medicare_advantage": {
         "element": ["plan.type"],
         "verdict": "different",
+        "change_request": "FHIR-59605",
         "note": "HMO and PPO are coded from `sbc-plan-type`, which has no code for HMO_POS, so an HMO-POS plan is written as text only, `{\"text\": \"HMO_POS\"}`. The contract year 2027 files have 1,273 HMO-POS plans. Converter specification section 6.1 does not name HMO_POS; this verdict is read from the published Aetna Medicare Select Extra Bundle.",
         "read_from": [
           { "section": "6.1", "cites": "HMO, PPO, POS and EPO map directly" },
@@ -269,7 +281,7 @@
         "element": [],
         "verdict": "not_covered",
         "reason": "gap",
-        "note": "Today the document has no `premium`, so the Bundle has none. Once the importer reads it, converter specification section 6.1 writes it to `plan.generalCost` with type text Premium.",
+        "note": "Today the document has no `premium`, so the Bundle has none. Once the Medicare Advantage importer reads it, converter specification section 6.1 writes it to `plan.generalCost` with type text Premium.",
         "read_from": [{ "section": "6.1", "cites": "| `premium` (v1.2.0) | `plan[0].generalCost[]`, `type.text` `Premium`" }]
       }
     },
@@ -279,7 +291,7 @@
         "element": [],
         "verdict": "not_covered",
         "reason": "gap",
-        "note": "Today the document has no `part_b_premium_reduction`, so the Bundle has none. Once the importer reads it, converter specification section 6.1 writes it to `plan.generalCost` with type text Part B premium reduction.",
+        "note": "Today the document has no `part_b_premium_reduction`, so the Bundle has none. Once the Medicare Advantage importer reads it, converter specification section 6.1 writes it to `plan.generalCost` with type text Part B premium reduction.",
         "read_from": [{ "section": "6.1", "cites": "| `part_b_premium_reduction` (v1.2.0) | `plan[0].generalCost[]`, `type.text` `Part B premium reduction`" }]
       }
     },
@@ -342,7 +354,7 @@
         "extension": ["bps-source-reference"],
         "verdict": "not_covered",
         "reason": "gap",
-        "note": "Today the phone is not in the document, and the plan website travels as text in `bps-source-reference`. The profile requires `contact`, which the converter writes with data-absent-reason unknown and no telecom.",
+        "note": "Today the phone is not in the document, and the plan website travels as text in `bps-source-reference`. The SBC InsurancePlan profile requires `contact`, which the Benefit Plan Standard converter writes with data-absent-reason unknown and no telecom.",
         "read_from": [
           { "section": "5", "cites": "It invents no telecom." },
           { "section": "9", "cites": "Plan-level `source_references[]`" }
@@ -639,8 +651,8 @@
       "id": "home_health_care",
       "note": "`sbc-benefit-category` has no general home health code; `pregnancy-home-health` covers pregnancy home health only.",
       "read_from": [{ "section": "8.2", "cites": "`home_health_care` is **not** mapped to it" }],
-      "medicare_advantage": { "verdict": "different" },
-      "marketplace": { "verdict": "different" }
+      "medicare_advantage": { "verdict": "different", "change_request": "FHIR-59603" },
+      "marketplace": { "verdict": "different", "change_request": "FHIR-59603" }
     },
     {
       "id": "preventive_care",
@@ -648,7 +660,7 @@
         "element": [],
         "verdict": "not_covered",
         "reason": "gap",
-        "note": "Today the document has no `preventive_care` benefit, so the Bundle has none. The key is in `fhir/carin-sbc-crosswalk.json`, so once the importer reads category 14a, the cost lands in `plan.specificCost.benefit.cost` under category `preventive-care`.",
+        "note": "Today the document has no `preventive_care` benefit, so the Bundle has none. The key is in `fhir/carin-sbc-crosswalk.json`, so once the Medicare Advantage importer reads category 14a, the cost lands in `plan.specificCost.benefit.cost` under category `preventive-care`.",
         "read_from": [{ "section": "8.2", "cites": "| `preventive_care` | `preventive-care` |" }]
       },
       "marketplace": { "verdict": "aligned" }
@@ -665,8 +677,8 @@
     },
     {
       "id": "hearing_aids",
-      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different" },
-      "marketplace": { "covered": "different", "cost": "different", "limits": "different" }
+      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different", "change_request": "FHIR-59606" },
+      "marketplace": { "covered": "different", "cost": "different", "limits": "different", "change_request": "FHIR-59606" }
     },
     {
       "id": "dental_cleaning",
@@ -703,7 +715,7 @@
     },
     {
       "id": "hearing_exam",
-      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different" }
+      "medicare_advantage": { "covered": "different", "cost": "different", "limits": "different", "change_request": "FHIR-59606" }
     },
     {
       "id": "dental_routine_adult",

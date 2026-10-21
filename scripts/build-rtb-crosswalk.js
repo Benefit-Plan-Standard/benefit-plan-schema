@@ -21,6 +21,8 @@
  *   - a quoted item is not "different" in bps-source-reference;
  *   - FHIR-57526 is named on an entry whose cost does not reach plan.specificCost.benefit.cost, or is missing from
  *     one whose cost does; FHIR-57525 likewise for cost.qualifiers; FHIR-57527 anywhere but the limit rows;
+ *   - a change request is not one carin-mapping.json defines, or is named on an entry that is not "different"
+ *     (it is named only where merging it would move the verdict to aligned);
  *   - a file a verdict is read from is not named in the document, so it cannot be introduced where first named.
  * Spec: docs/specs/rtb-medical-mvp/README.md
  */
@@ -44,8 +46,8 @@ const VERDICTS = ['aligned', 'different', 'not_covered'];
 const SPECIFIC_COST = 'plan.specificCost.benefit.cost';
 const QUALIFIERS = `${SPECIFIC_COST}.qualifiers`;
 
-const ENTRY_PROPS = new Set(['element', 'extension', 'verdict', 'reason', 'note', 'ballot', 'read_from']);
-const EXTRA_ENTRY_PROPS = new Set(['covered', 'cost', 'limits']);
+const ENTRY_PROPS = new Set(['element', 'extension', 'verdict', 'reason', 'note', 'ballot', 'read_from', 'change_request']);
+const EXTRA_ENTRY_PROPS = new Set(['covered', 'cost', 'limits', 'change_request']);
 const ITEM_PROPS = new Set(['id', 'note', 'read_from', ...PROGRAMS]);
 
 const readText = (rel) => fs.readFileSync(path.join(REPO_ROOT, rel), 'utf8');
@@ -92,6 +94,18 @@ function valueAt(doc, p) {
 
 const sectionKey = (s) => s.split('.').map((n) => n.padStart(3, '0')).join('.');
 
+// Links the converter's script where each section first names the converter itself, not its specification,
+// unless the section has linked the script already.
+function linkConverter(text, converter) {
+  const link = repoLink(converter);
+  return text.split(/(?=^## )/m).map((s) => {
+    const hit = /\b[Tt]he Benefit Plan Standard converter\b(?! spec)/.exec(s);
+    if (!hit || s.slice(0, hit.index).includes(link)) return s;
+    const at = hit.index + hit[0].length;
+    return `${s.slice(0, at)} (${link})${s.slice(at)}`;
+  }).join('');
+}
+
 function build() {
   const dict = buildDictionary();
   if (dict.errors) return { errors: dict.errors.map((e) => `data dictionary: ${e}`) };
@@ -110,6 +124,8 @@ function build() {
   };
   const bundles = new Map();
   const tickets = m.ballot.tickets;
+  const requests = m.change_requests;
+  const importers = (ps) => (ps.length === 2 ? 'the 2 importers' : `the ${names[ps[0]]} importer`);
 
   // Extension names: Benefit Plan Standard ones must be defined in fhir/definitions, the others named in
   // converter specification section 10.1.
@@ -203,6 +219,9 @@ function build() {
       errors.push(e.gap ? `${where}: shall-should.json records gap ${e.gap}, so the verdict is not_covered with reason gap`
         : `${where}: reason gap, but shall-should.json records no gap`);
     }
+    const cr = raw.change_request;
+    if (cr && !requests.tickets[cr]) errors.push(`${where}: change request ${cr} is not in ${MAPPING}`);
+    if (cr && entry.verdict !== 'different') errors.push(`${where}: change request ${cr} is named on an entry whose verdict is ${entry.verdict}, but only where it would move different to aligned`);
 
     if (BENEFIT_GROUPS.includes(it.group)) {
       const d = derived(it, p);
@@ -257,12 +276,13 @@ function build() {
       readFrom,
       rowSentence: (r.row_sentence || {})[p] || null,
       parts: [
-        e.gap ? sentence(fill(m.gap_sentence, { gap: e.gap })) : '',
+        e.gap ? sentence(fill(m.gap_sentence, { gap: e.gap, importers: importers(gaps.get(e.gap).programs) })) : '',
         sentence(fill(r.note, vars)),
         sentence(fill((r.notes || {})[p], vars)),
         sentence(fill(entry.note, vars)),
         ballotText,
         sentence(r.after_ballot),
+        cr ? fill(requests.sentence, { id: cr, filed: requests.filed, status: requests.status }) : '',
       ],
     };
   };
@@ -351,7 +371,7 @@ function build() {
       }
     }
   }
-  const text = standalone(render(ss, m, sbc, rows, names), CROSSWALK, [...cited].map(([f, to]) => [code(f), to]), errors);
+  const text = standalone(linkConverter(render(ss, m, sbc, rows, names), m.converter), CROSSWALK, [...cited].map(([f, to]) => [code(f), to]), errors);
   if (errors.length) return { errors };
   return { text, rows };
 }
@@ -373,15 +393,15 @@ function render(ss, m, sbc, rows, names) {
     `implementation guide, package ${code(m.package)}. SBC stands for Summary of Benefits and Coverage. For each item it says where the value ` +
     `lands in the Bundle that ${REPOS} ${repoLink(m.converter)} writes from a Benefit Plan Standard document, and gives 1 of 3 verdicts. ${m.attribution}`, '');
   L.push('The crosswalk to the SBC InsurancePlan profile is a Part B item in the workgroup\'s GA draft, the document "RTB Medical. ' +
-    'What payers would be asked to supply for GA" (Monica Chopra, October 2026, a draft for discussion, not a workgroup decision), not a GA ask. The profile is at ballot. ' +
-    'This crosswalk exists so a pledgee can produce the Bundle when the profile publishes, and nothing in the MVP\'s SHALL list depends on it.', '');
-  L.push('The whole profile is ballot-stage. The profile, its extensions and the code systems it binds are draft and experimental in that package ' +
+    'What payers would be asked to supply for GA" (Monica Chopra, October 2026, a draft for discussion, not a workgroup decision), not a GA ask. The SBC InsurancePlan profile is at ballot. ' +
+    'This crosswalk exists so a pledgee can produce the Bundle when the SBC InsurancePlan profile publishes, and nothing in the MVP\'s SHALL list depends on it.', '');
+  L.push('The whole profile is ballot-stage. The SBC InsurancePlan profile, its extensions and the code systems it binds are draft and experimental in that package ' +
     `(${repoLink(m.converter_spec, 'converter specification')} section 2, ${IN_REPO}). ` +
-    '3 changes to the profile were proposed from Benefit Plan Standard implementation experience and merged in June 2026: ' +
+    '3 changes to the SBC InsurancePlan profile were proposed from Benefit Plan Standard implementation experience and merged in June 2026: ' +
     `${Object.entries(m.ballot.tickets).map(([t, x]) => `${x.title} (${t})`).join(', ').replace(/, ([^,]*)$/, ' and $1')}. ` +
     'They are in the STU2 ballot of September 2026, not in a published release, and each row they apply to names them.', '');
   L.push(`The crosswalk is generated from the Benefit Plan Standard repository by ${repoLink('scripts/build-rtb-crosswalk.js')} from ${repoLink(SHALL_SHOULD, code('shall-should.json'))} and ` +
-    `${repoLink(MAPPING, code('carin-mapping.json'))} in the same repository folder and ${repoLink(SBC_CROSSWALK)} (${mapped} canonical keys mapped to the profile's ` +
+    `${repoLink(MAPPING, code('carin-mapping.json'))} in the same repository folder and ${repoLink(SBC_CROSSWALK)} (${mapped} canonical keys mapped to the SBC InsurancePlan profile's ` +
     `benefit categories), all ${IN_REPO}. The item names and field paths are the data ` +
     `dictionary's, so the 2 files list the same rows in the same order. To change it, change those files and run the generator again.`, '');
 
@@ -396,7 +416,7 @@ function render(ss, m, sbc, rows, names) {
   L.push(`- A benefit is placed in ${code('coverage.benefit')} and ${code('plan.specificCost.benefit')} only when its canonical key is in ${code(SBC_CROSSWALK)}, ` +
     `and only placed benefits have ${code('cost')} entries. Any other benefit is listed by identity in ${code('bps-unmapped-benefit')} (converter specification section 8.3).`);
   L.push(`- Marketplace Bundles are written with ${code('--excluded-services')}, as in the README's commands.`);
-  L.push(`- "Read from" names the sections of the converter specification, ${code(m.converter_spec)}, that state the mapping, and any other file the verdict is read from.`, '');
+  L.push(`- "Read from" names the sections of the Benefit Plan Standard converter specification, ${code(m.converter_spec)}, that state the mapping, and any other file the verdict is read from.`, '');
 
   L.push('## Summary', '');
   L.push(`The crosswalk has ${rows.length} rows, 1 for each row of the data dictionary. ${both.length} rows apply to both programs, ` +
