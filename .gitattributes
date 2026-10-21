@@ -18,3 +18,4 @@
 # PBP fixtures are byte-for-byte cuts of CMS files (Windows-1252, CRLF); the
 # importer requires CRLF, so git must not convert them.
 test/fixtures/pbp/**/*.txt -text
+test/fixtures/pbp-segment/**/*.txt -text
