@@ -35,7 +35,7 @@
       "importer": "scripts/from-marketplace-puf.js",
       "importer_spec": "docs/specs/marketplace-puf-importer.md",
       "crosswalk": "fhir/marketplace-puf-crosswalk.json",
-      "schema": "schema/v1.1.0/benefit-plan.schema.json",
+      "schema": "schema/v1.2.0/benefit-plan.schema.json",
       "golden_suffix": ".puf.json",
       "benefit_file": "benefits-and-cost-sharing-puf.csv",
       "reading": [
@@ -101,28 +101,36 @@
       "programs": ["medicare_advantage"],
       "kind": "no_canonical_key",
       "title": "Medicare Advantage physical therapy and speech therapy (category 7i) has no canonical key.",
-      "instead": "The Medicare Advantage importer writes the benefit by name: benefit_id PHYSICAL_AND_SPEECH_THERAPY, with service_name and raw_label and no canonical_key. The Benefit Plan Standard canonical benefit vocabulary has keys for physical therapy, for speech therapy and for physical with occupational therapy, but none for this pair."
+      "instead": "The Medicare Advantage importer writes the benefit by name: benefit_id PHYSICAL_AND_SPEECH_THERAPY, with service_name and raw_label and no canonical_key. The Benefit Plan Standard canonical benefit vocabulary has keys for physical therapy, for speech therapy and for physical with occupational therapy, but none for this pair.",
+      "closed": "2026-10-20",
+      "closed_by": "The canonical benefit vocabulary has the key physical_and_speech_therapy (version 1.3.0), and the Medicare Advantage importer writes category 7i with it."
     },
     {
       "id": "G2",
       "programs": ["medicare_advantage"],
       "kind": "not_read",
       "title": "Medicare Advantage preventive services (category 14a) are not read.",
-      "instead": "The Medicare Advantage importer writes no preventive_care benefit for a Medicare Advantage plan. The plan's answer is in pbp_b14a_mc_prevent_attest in pbp_b14_preventive.txt."
+      "instead": "The Medicare Advantage importer writes no preventive_care benefit for a Medicare Advantage plan. The plan's answer is in pbp_b14a_mc_prevent_attest in pbp_b14_preventive.txt.",
+      "closed": "2026-10-20",
+      "closed_by": "The Medicare Advantage importer reads category 14a into a preventive_care benefit: a $0 copay in network on the plan's attestation, pbp_b14a_mc_prevent_attest, and the out-of-network and point-of-service cost from the Section C groups that list 14a."
     },
     {
       "id": "G3",
       "programs": ["medicare_advantage"],
       "kind": "not_read",
       "title": "Medicare Advantage monthly premium and Part B premium reduction are not read.",
-      "instead": "The Benefit Plan Standard schema 1.2.0 has the premium and part_b_premium_reduction fields, but the Medicare Advantage importer reads neither pbp_d_mplusc_premium nor pbp_d_mco_pay_reduct_yn and pbp_d_mco_pay_reduct_amt in pbp_Section_D.txt, so a document has neither field."
+      "instead": "The Benefit Plan Standard schema 1.2.0 has the premium and part_b_premium_reduction fields, but the Medicare Advantage importer reads neither pbp_d_mplusc_premium nor pbp_d_mco_pay_reduct_yn and pbp_d_mco_pay_reduct_amt in pbp_Section_D.txt, so a document has neither field.",
+      "closed": "2026-10-20",
+      "closed_by": "The Medicare Advantage importer writes premium from pbp_d_mplusc_premium and part_b_premium_reduction from pbp_d_mco_pay_reduct_yn and pbp_d_mco_pay_reduct_amt; a blank premium writes none, and a reduction answered No writes none and is quoted."
     },
     {
       "id": "G4",
       "programs": ["medicare_advantage"],
       "kind": "not_read",
       "title": "Medicare Advantage member services phone is not read.",
-      "instead": "The Medicare Advantage importer does not read pbp_a_curmbr_phone in pbp_Section_A.txt, and the Benefit Plan Standard schema 1.2.0 has no field for a phone number. The plan website, pbp_a_org_website, is quoted verbatim in source_references."
+      "instead": "The Medicare Advantage importer does not read pbp_a_curmbr_phone in pbp_Section_A.txt, and the Benefit Plan Standard schema 1.2.0 has no field for a phone number. The plan website, pbp_a_org_website, is quoted verbatim in source_references.",
+      "closed": "2026-10-20",
+      "closed_by": "The schema 1.2.0 draft has contacts. The Medicare Advantage importer writes contacts.member_services_phone from pbp_a_curmbr_phone, and contacts.website from pbp_a_org_website when the address is a URI with its scheme; an address without one is quoted."
     },
     {
       "id": "G5",
@@ -130,28 +138,35 @@
       "kind": "no_field",
       "title": "The provider directory link has no field.",
       "instead": "Schema 1.2.0 has no field for it. The Medicare Advantage importer quotes pbp_a_phys_web_addr and pbp_a_org_website verbatim in source_references. The Marketplace importer does not read the Network PUF, so NetworkURL is not carried; the plan's NetworkId from the Plan Attributes PUF is quoted.",
-      "proposed": "network_tiers[].provider_network, filled from the Network PUF, in docs/provider-directory-schema-proposal.md. It is a proposal, not part of any schema version."
+      "closed": "2026-10-20",
+      "closed_by": "The schema 1.2.0 draft has network_tiers[].provider_directory_url. The Medicare Advantage importer writes it on the in-network tier from pbp_a_phys_web_addr when the address is a URI with its scheme, and the Marketplace importer from NetworkURL in the Network PUF, the row whose BusinessYear, StateCode, IssuerId, NetworkId and MarketCoverage are the plan's."
     },
     {
       "id": "G6",
       "programs": ["marketplace"],
       "kind": "not_carried",
       "title": "Marketplace ImportDate is not carried.",
-      "instead": "Both files the Marketplace importer reads have an ImportDate column. The Marketplace importer writes the date the files were downloaded, from data/puf/<year>/download.json, in the first source_references excerpt."
+      "instead": "Both files the Marketplace importer reads have an ImportDate column. The Marketplace importer writes the date the files were downloaded, from data/puf/<year>/download.json, in the first source_references excerpt.",
+      "closed": "2026-10-20",
+      "closed_by": "The Marketplace importer quotes each file's ImportDate in the first source_references excerpt, beside the download dates."
     },
     {
       "id": "G7",
       "programs": ["marketplace"],
       "kind": "no_identifier_field",
       "title": "Marketplace documents have no plan_identifiers.",
-      "instead": "The Marketplace importer writes schema 1.1.0, which has no plan_identifiers. The HIOS plan id with its 2-digit variant (for example 68398FL0030058-01) appears only as text inside the first source_references excerpt."
+      "instead": "The Marketplace importer writes schema 1.1.0, which has no plan_identifiers. The HIOS plan id with its 2-digit variant (for example 68398FL0030058-01) appears only as text inside the first source_references excerpt.",
+      "closed": "2026-10-20",
+      "closed_by": "The Marketplace importer writes schema 1.2.0, with plan_identifiers hios_plan_id (for example 68398FL0030058-01) and hios_id (68398FL0030058)."
     },
     {
       "id": "G8",
       "programs": ["marketplace"],
       "kind": "not_read",
       "title": "Marketplace out-of-area coverage descriptions are not read.",
-      "instead": "The Marketplace importer quotes the Yes or No answers, OutOfServiceAreaCoverage and OutOfCountryCoverage, in source_references. It does not read OutOfServiceAreaCoverageDescription or OutOfCountryCoverageDescription in the Plan Attributes PUF, so the plan's own description of that coverage is not in the document, and no field is written for it."
+      "instead": "The Marketplace importer quotes the Yes or No answers, OutOfServiceAreaCoverage and OutOfCountryCoverage, in source_references. It does not read OutOfServiceAreaCoverageDescription or OutOfCountryCoverageDescription in the Plan Attributes PUF, so the plan's own description of that coverage is not in the document, and no field is written for it.",
+      "closed": "2026-10-20",
+      "closed_by": "The Marketplace importer quotes OutOfServiceAreaCoverageDescription and OutOfCountryCoverageDescription in source_references when they are filled."
     }
   ],
   "items": [
@@ -168,10 +183,9 @@
       },
       "marketplace": {
         "label": "KEY",
-        "path": "source_references[0].excerpt",
-        "source": [{ "file": "plan-attributes-puf.csv", "read": ["PlanId"] }],
-        "gap": "G7",
-        "note": "The 14-character HIOS plan id and the 2-digit variant, for example 68398FL0030058-01. Each cost-sharing reduction variant is its own plan with its own costs."
+        "path": "plan_identifiers[system=hios_plan_id].value",
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["PlanId", "StandardComponentId"] }],
+        "note": "The 14-character HIOS plan id and the 2-digit variant, for example 68398FL0030058-01. Each cost-sharing reduction variant is its own plan with its own costs. The 14-character id alone, StandardComponentId, is also written, with system hios_id."
       }
     },
     {
@@ -206,10 +220,10 @@
         "label": "SHALL",
         "path": "source_references[0].excerpt",
         "source": [
-          { "file": "data/puf/<year>/download.json", "read": ["downloaded"] },
-          { "file": "plan-attributes-puf.csv and benefits-and-cost-sharing-puf.csv", "unread": ["ImportDate"] }
+          { "file": "data/puf/<year>/download.json", "read": ["downloaded", "downloaded_files"] },
+          { "file": "plan-attributes-puf.csv, benefits-and-cost-sharing-puf.csv and network-puf.csv", "read": ["ImportDate"] }
         ],
-        "gap": "G6"
+        "note": "The excerpt names the 3 files with their download addresses and download dates, the Network PUF's own date when download.json gives it one in downloaded_files, and each file's ImportDate as the file writes it, for example \"10/15/2025\" in the Plan Attributes PUF and \"2025-10-15\" in the other 2."
       }
     },
     {
@@ -324,8 +338,8 @@
       "medicare_advantage": {
         "label": "SHALL",
         "path": "premium",
-        "source": [{ "file": "pbp_Section_D.txt", "unread": ["pbp_d_mplusc_premium"] }],
-        "gap": "G3"
+        "source": [{ "file": "pbp_Section_D.txt", "read": ["pbp_d_mplusc_premium", "pbp_d_mplusc_bonly_premium"] }],
+        "note": "premium.amount, in USD, is pbp_d_mplusc_premium, \"Plan Premium Amount (A/B)\". No CMS file or dictionary text states the period, so premium.period is not written. A blank premium writes none (1,362 of the 6,872 plans in contract year 2027). pbp_d_mplusc_bonly_premium, \"Plan Premium Amount (B Only)\", is quoted when filled (45 plans)."
       },
       "marketplace": {
         "label": null,
@@ -340,8 +354,8 @@
       "medicare_advantage": {
         "label": "SHALL",
         "path": "part_b_premium_reduction",
-        "source": [{ "file": "pbp_Section_D.txt", "unread": ["pbp_d_mco_pay_reduct_yn", "pbp_d_mco_pay_reduct_amt"] }],
-        "gap": "G3"
+        "source": [{ "file": "pbp_Section_D.txt", "read": ["pbp_d_mco_pay_reduct_yn", "pbp_d_mco_pay_reduct_amt"] }],
+        "note": "pbp_d_mco_pay_reduct_yn 1 writes part_b_premium_reduction.amount from pbp_d_mco_pay_reduct_amt (1,412 plans); 2, No, writes nothing, and the answer is quoted in source_references. No period is stated."
       },
       "marketplace": { "label": null }
     },
@@ -372,8 +386,9 @@
       "marketplace": {
         "label": "SHALL",
         "quoted": true,
+        "unwritten": "pharmacy.deductible",
         "source": [{ "file": "plan-attributes-puf.csv", "read": ["DEHBDedInnTier1Individual", "DEHBDedInnTier1FamilyPerPerson", "DEHBDedInnTier1FamilyPerGroup"] }],
-        "note": "Part of the deductible item when MedicalDrugDeductiblesIntegrated is No. Schema 1.1.0 has no pharmacy accumulator."
+        "note": "Part of the deductible item when MedicalDrugDeductiblesIntegrated is No. Schema 1.1.0 had no pharmacy accumulator; since 2026-10-20 the Marketplace importer writes schema 1.2.0, whose pharmacy.deductible could hold the amount (README, Follow-ups)."
       }
     },
     {
@@ -401,11 +416,14 @@
       "meaning": "How the member reaches the plan.",
       "medicare_advantage": {
         "label": "SHALL",
-        "quoted": true,
-        "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_org_website"], "unread": ["pbp_a_curmbr_phone"] }],
-        "gap": "G4"
+        "path": ["contacts.member_services_phone", "contacts.website"],
+        "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_curmbr_phone", "pbp_a_org_website"], "unread": ["pbp_a_prombr_phone"] }],
+        "note": "pbp_a_curmbr_phone is the customer service number for current members, filled on all 6,872 plans; the number for people who want to join is not read. contacts.website is written only when pbp_a_org_website is a URI with its scheme (457 plans); otherwise the address is quoted in source_references, because the schema field is a URI and the Medicare Advantage importer adds no scheme."
       },
-      "marketplace": { "label": null }
+      "marketplace": {
+        "label": null,
+        "note": "None of the Plan Attributes PUF's 4 addresses (the SBC, the brochure, the drug list and the payment page) is a plan website, so the Marketplace importer writes no contacts; the 4 are quoted in source_references."
+      }
     },
     {
       "id": "hsa_eligible",
@@ -577,18 +595,18 @@
       "meaning": "Where the member looks up the providers in the plan's network.",
       "medicare_advantage": {
         "label": "SHALL",
-        "quoted": true,
-        "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_phys_web_addr", "pbp_a_org_website"] }],
-        "gap": "G5",
-        "note": "Both are quoted; the plan website stands in when the directory address is blank."
+        "path": "network_tiers[tier_id=IN].provider_directory_url",
+        "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_phys_web_addr"] }],
+        "note": "Section A gives 1 address per plan, written on the in-network tier when it is a URI with its scheme (1,585 of the 6,872 plans in contract year 2027); otherwise the address is quoted in source_references, and the Medicare Advantage importer adds no scheme. pbp_a_phys_web_addr is blank on 127 plans."
       },
       "marketplace": {
         "label": "SHALL",
+        "path": "network_tiers[tier_id=IN].provider_directory_url",
         "source": [
-          { "file": "network-puf.csv", "unread": ["NetworkURL"] },
+          { "file": "network-puf.csv", "read": ["NetworkURL", "NetworkName"] },
           { "file": "plan-attributes-puf.csv", "read": ["NetworkId"] }
         ],
-        "gap": "G5"
+        "note": "The plan's row of the Network PUF is the one whose BusinessYear, StateCode, IssuerId, NetworkId and MarketCoverage are the plan's; NetworkId alone is used by more than 1 issuer. Every medical plan variant of plan year 2026 has its row, with an address that is a URI (20,670)."
       }
     },
     {
@@ -620,7 +638,7 @@
         "label": "SHALL",
         "quoted": true,
         "source": [{ "file": "plan-attributes-puf.csv", "read": ["TEHBDedInnTier2Individual", "TEHBDedInnTier2FamilyPerPerson", "TEHBDedInnTier2FamilyPerGroup", "TEHBInnTier2IndividualMOOP", "TEHBInnTier2FamilyPerPersonMOOP", "TEHBInnTier2FamilyPerGroupMOOP"] }],
-        "note": "The Benefit Plan Standard schema 1.1.0 has deductible and maximum slots for in network and out of network only."
+        "note": "The Benefit Plan Standard schema 1.2.0 has deductible and maximum slots for in network and out of network only."
       }
     },
     {
@@ -632,8 +650,8 @@
       "marketplace": {
         "label": "SHALL",
         "quoted": true,
-        "source": [{ "file": "plan-attributes-puf.csv", "read": ["OutOfServiceAreaCoverage", "OutOfCountryCoverage"], "unread": ["OutOfServiceAreaCoverageDescription", "OutOfCountryCoverageDescription"] }],
-        "gap": "G8"
+        "source": [{ "file": "plan-attributes-puf.csv", "read": ["OutOfServiceAreaCoverage", "OutOfServiceAreaCoverageDescription", "OutOfCountryCoverage", "OutOfCountryCoverageDescription"] }],
+        "note": "Each description is quoted when it is filled. On the 2 UHC examples, whose OutOfCountryCoverage is No, OutOfCountryCoverageDescription is blank."
       }
     },
     {
@@ -720,9 +738,9 @@
     {
       "id": "physical_and_speech_therapy",
       "group": "services",
-      "key": null,
+      "key": "physical_and_speech_therapy",
       "meaning": "The member's in-network cost for physical therapy and speech-language therapy, which the PBP prices together.",
-      "medicare_advantage": { "label": "SHALL", "name": "Physical therapy and speech therapy", "pbp_benefit_id": "PHYSICAL_AND_SPEECH_THERAPY", "gap": "G1" },
+      "medicare_advantage": { "label": "SHALL", "name": "Physical therapy and speech therapy", "pbp_benefit_id": "PHYSICAL_AND_SPEECH_THERAPY" },
       "marketplace": { "label": null }
     },
     {
@@ -797,8 +815,8 @@
       "medicare_advantage": {
         "label": "SHALL",
         "name": "Preventive services",
-        "gap": "G2",
-        "source": [{ "file": "pbp_b14_preventive.txt", "unread": ["pbp_b14a_mc_prevent_attest"] }]
+        "pbp_benefit_id": "PREVENTIVE_SERVICES",
+        "note": "Category 14a has no copay or coinsurance column. The plan attests in pbp_b14a_mc_prevent_attest that the Original Medicare zero dollar preventive services cost nothing in network, which the Medicare Advantage importer writes as a $0 copay that does not apply to the deductible. Out of network and at the point of service, the cost comes from the Section C groups that list 14a."
       },
       "marketplace": { "label": "SHALL", "name": "Preventive services", "benefit_name": "Preventive Care/Screening/Immunization" }
     },

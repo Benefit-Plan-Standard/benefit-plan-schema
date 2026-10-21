@@ -12,9 +12,9 @@
   },
   "reasons": {
     "no_element": "the SBC InsurancePlan profile has no element for the item and the Benefit Plan Standard converter emits nothing",
-    "gap": "the item is a known gap (G1 to G8), so there is nothing to map yet"
+    "gap": "the item is an open gap, so there is nothing to map yet"
   },
-  "gap_note": "A gap is work on the 2 importers, listed in the README with the other known gaps, and the note says what travels today.",
+  "gap_note": "A gap is work on the 2 importers, listed in the README, and the note says what travels today. No gap is open: the 8 known in earlier versions, G1 to G8, were closed on October 20, 2026.",
   "gap_sentence": "Closing gap {gap} is work on {importers}.",
   "ballot": {
     "status": "in the STU2 ballot, September 2026; ballot-stage element",
@@ -137,14 +137,13 @@
         "read_from": [{ "section": "6.1", "cites": "`plan_identifiers[]` (v1.2.0)" }]
       },
       "marketplace": {
-        "element": [],
-        "extension": ["bps-source-reference"],
-        "verdict": "not_covered",
-        "reason": "gap",
-        "note": "Today the HIOS plan id and variant, for example 68398FL0030058-01, travel only as text in the first `bps-source-reference` excerpt, and the only `identifier` is the document's `plan_id`. Once the document carries `plan_identifiers`, converter specification section 6.1 writes the HIOS id as an `identifier`.",
+        "element": ["identifier"],
+        "verdict": "aligned",
+        "note": "The key is an `identifier` with system `https://benefitplanstandard.org/fhir/identifier/hios_plan_id`, for example 68398FL0030058-01, and the 14-character id is an `identifier` with the HIOS system `https://www.cms.gov/CCIIO/Resources/Data-Resources/hios`, for example 68398FL0030058. The document's `plan_id` is the first `identifier`. Gap G7 was closed on October 20, 2026.",
         "read_from": [
+          { "section": "6.1", "cites": "`plan_identifiers[]` (v1.2.0)" },
           { "section": "6.1", "cites": "`hios_id` uses" },
-          { "section": "9", "cites": "Plan-level `source_references[]`" }
+          { "bundle": "examples/fhir-puf/unitedhealthcare-uhc-bronze-essential.json", "path": "entry[0].resource.identifier[1]", "equals": { "system": "https://benefitplanstandard.org/fhir/identifier/hios_plan_id", "value": "68398FL0030058-01" } }
         ]
       }
     },
@@ -185,10 +184,12 @@
       "marketplace": {
         "element": [],
         "extension": ["bps-source-reference"],
-        "verdict": "not_covered",
-        "reason": "gap",
-        "note": "Today the download date travels as text in the first `bps-source-reference` excerpt; the files' `ImportDate` is not in the document.",
-        "read_from": [{ "section": "9", "cites": "Plan-level `source_references[]`" }]
+        "verdict": "different",
+        "note": "The 3 file names with their download dates, and each file's `ImportDate` as the file writes it, are text in the first `bps-source-reference` excerpt. The Benefit Plan Standard converter writes no timestamps. Gap G6 was closed on October 20, 2026.",
+        "read_from": [
+          { "section": "4.2", "cites": "| Timestamps | None." },
+          { "section": "9", "cites": "Plan-level `source_references[]`" }
+        ]
       }
     },
     {
@@ -278,21 +279,25 @@
     {
       "id": "monthly_premium",
       "medicare_advantage": {
-        "element": [],
-        "verdict": "not_covered",
-        "reason": "gap",
-        "note": "Today the document has no `premium`, so the Bundle has none. Once the Medicare Advantage importer reads it, converter specification section 6.1 writes it to `plan.generalCost` with type text Premium.",
-        "read_from": [{ "section": "6.1", "cites": "| `premium` (v1.2.0) | `plan[0].generalCost[]`, `type.text` `Premium`" }]
+        "element": ["plan.generalCost"],
+        "verdict": "different",
+        "note": "The premium is a `generalCost` entry whose `type` is text only, Premium, with `cost` the amount. The file states no period, so the entry has no `comment`. Gap G3 was closed on October 20, 2026.",
+        "read_from": [
+          { "section": "6.1", "cites": "| `premium` (v1.2.0) | `plan[0].generalCost[]`, `type.text` `Premium`" },
+          { "bundle": "examples/fhir/upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json", "path": "entry[0].resource.plan[0].generalCost[1]", "equals": { "type": { "text": "Premium" }, "cost": { "value": 5, "currency": "USD" } } }
+        ]
       }
     },
     {
       "id": "part_b_premium_reduction",
       "medicare_advantage": {
-        "element": [],
-        "verdict": "not_covered",
-        "reason": "gap",
-        "note": "Today the document has no `part_b_premium_reduction`, so the Bundle has none. Once the Medicare Advantage importer reads it, converter specification section 6.1 writes it to `plan.generalCost` with type text Part B premium reduction.",
-        "read_from": [{ "section": "6.1", "cites": "| `part_b_premium_reduction` (v1.2.0) | `plan[0].generalCost[]`, `type.text` `Part B premium reduction`" }]
+        "element": ["plan.generalCost"],
+        "verdict": "different",
+        "note": "The reduction is a `generalCost` entry whose `type` is text only, Part B premium reduction, with `cost` the amount. A plan that answers No has no entry, and its answer is text in `bps-source-reference`. Gap G3 was closed on October 20, 2026.",
+        "read_from": [
+          { "section": "6.1", "cites": "| `part_b_premium_reduction` (v1.2.0) | `plan[0].generalCost[]`, `type.text` `Part B premium reduction`" },
+          { "bundle": "examples/fhir/upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json", "path": "entry[0].resource.plan[0].generalCost[2]", "equals": { "type": { "text": "Part B premium reduction" }, "cost": { "value": 1, "currency": "USD" } } }
+        ]
       }
     },
     {
@@ -321,7 +326,7 @@
       "id": "drug_deductible",
       "marketplace": {
         "verdict": "different",
-        "note": "Schema 1.1.0 has no pharmacy deductible. From a schema 1.2.0 document, converter specification section 6.4 writes `pharmacy.deductible` to `plan.generalCost`.",
+        "note": "Since October 20, 2026 the Marketplace importer writes schema 1.2.0, which has `pharmacy.deductible`, but it does not write that field yet and quotes the cells. Once it does, converter specification section 6.4 writes `pharmacy.deductible` to `plan.generalCost`.",
         "read_from": [{ "section": "6.4", "cites": "`pharmacy.deductible`, `pharmacy.out_of_pocket_max` (v1.2.0)" }]
       }
     },
@@ -352,12 +357,12 @@
       "medicare_advantage": {
         "element": [],
         "extension": ["bps-source-reference"],
-        "verdict": "not_covered",
-        "reason": "gap",
-        "note": "Today the phone is not in the document, and the plan website travels as text in `bps-source-reference`. The SBC InsurancePlan profile requires `contact`, which the Benefit Plan Standard converter writes with data-absent-reason unknown and no telecom.",
+        "verdict": "different",
+        "note": "The document has `contacts`, but the Benefit Plan Standard converter does not map it yet: the SBC InsurancePlan profile requires `contact`, which the converter writes with data-absent-reason unknown and no telecom. The phone and the website travel as text in `bps-source-reference`, in the excerpt that quotes the Section A cells. Gap G4 was closed on October 20, 2026; the mapping is a follow-up for the Benefit Plan Standard converter spec.",
         "read_from": [
           { "section": "5", "cites": "It invents no telecom." },
-          { "section": "9", "cites": "Plan-level `source_references[]`" }
+          { "section": "9", "cites": "Plan-level `source_references[]`" },
+          { "bundle": "examples/fhir/upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json", "path": "entry[0].resource.contact[0].extension[0].valueCode", "equals": "unknown" }
         ]
       }
     },
@@ -499,17 +504,22 @@
       "medicare_advantage": {
         "element": [],
         "extension": ["bps-source-reference"],
-        "verdict": "not_covered",
-        "reason": "gap",
-        "note": "Today the directory address and the plan website travel as text in `bps-source-reference`.",
-        "read_from": [{ "section": "9", "cites": "Plan-level `source_references[]`" }]
+        "verdict": "different",
+        "note": "The document has `network_tiers[].provider_directory_url` on the in-network tier when the address is a URI, but the Benefit Plan Standard converter writes no provider-network Organization, so the field is not mapped yet. The address travels as text in `bps-source-reference`, in the excerpt that quotes the Section A cells. Gap G5 was closed on October 20, 2026; the mapping is a follow-up for the Benefit Plan Standard converter spec.",
+        "read_from": [
+          { "section": "4.1", "cites": "**No provider-network Organizations.**" },
+          { "section": "9", "cites": "Plan-level `source_references[]`" }
+        ]
       },
       "marketplace": {
         "element": [],
-        "verdict": "not_covered",
-        "reason": "gap",
-        "note": "Today the link is not in the document; the plan's `NetworkId` travels as text in `bps-source-reference`.",
-        "read_from": [{ "section": "9", "cites": "Plan-level `source_references[]`" }]
+        "extension": ["bps-source-reference"],
+        "verdict": "different",
+        "note": "The document has `network_tiers[].provider_directory_url` on the in-network tier, from the Network PUF, but the Benefit Plan Standard converter writes no provider-network Organization, so the field is not mapped yet. The address and the network's name travel as text in `bps-source-reference`. Gap G5 was closed on October 20, 2026; the mapping is a follow-up for the Benefit Plan Standard converter spec.",
+        "read_from": [
+          { "section": "4.1", "cites": "**No provider-network Organizations.**" },
+          { "section": "9", "cites": "Plan-level `source_references[]`" }
+        ]
       }
     },
     {
@@ -532,12 +542,8 @@
     {
       "id": "outside_area_coverage",
       "marketplace": {
-        "element": [],
-        "extension": ["bps-source-reference"],
-        "verdict": "not_covered",
-        "reason": "gap",
-        "note": "Today the Yes or No answers travel as text in `bps-source-reference`; the plan's descriptions of that coverage are not in the document.",
-        "read_from": [{ "section": "9", "cites": "Plan-level `source_references[]`" }]
+        "verdict": "different",
+        "note": "The plan's descriptions of that coverage are quoted beside the Yes or No answers when they are filled. Gap G8 was closed on October 20, 2026."
       }
     },
     {
@@ -598,12 +604,8 @@
     {
       "id": "physical_and_speech_therapy",
       "medicare_advantage": {
-        "element": [],
-        "extension": ["bps-unmapped-benefit"],
-        "verdict": "not_covered",
-        "reason": "gap",
-        "note": "Today the benefit has no canonical key, so it is not placed; its identity, `benefitId` PHYSICAL_AND_SPEECH_THERAPY, travels in `bps-unmapped-benefit`. Identity only; cost shares, limits and conditions are not in the FHIR output.",
-        "read_from": [{ "section": "8.3", "cites": "A benefit with no `canonical_key`" }]
+        "verdict": "different",
+        "note": "Gap G1 was closed on October 20, 2026: the benefit has the key, which reaches `bps-unmapped-benefit` as `canonicalKey`. `fhir/carin-sbc-crosswalk.json` maps `physical_therapy` and `speech_therapy` but has no row for the pair, as it has none for `physical_and_occupational_therapy`."
       }
     },
     {
@@ -657,10 +659,8 @@
     {
       "id": "preventive_care",
       "medicare_advantage": {
-        "element": [],
-        "verdict": "not_covered",
-        "reason": "gap",
-        "note": "Today the document has no `preventive_care` benefit, so the Bundle has none. The key is in `fhir/carin-sbc-crosswalk.json`, so once the Medicare Advantage importer reads category 14a, the cost lands in `plan.specificCost.benefit.cost` under category `preventive-care`.",
+        "verdict": "aligned",
+        "note": "Gap G2 was closed on October 20, 2026: the benefit `PREVENTIVE_SERVICES`, category 14a, is placed under `preventive-care`.",
         "read_from": [{ "section": "8.2", "cites": "| `preventive_care` | `preventive-care` |" }]
       },
       "marketplace": { "verdict": "aligned" }

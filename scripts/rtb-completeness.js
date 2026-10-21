@@ -24,7 +24,7 @@
  *   - An extra benefit: its benefit has in-network tier rows, each with covered true or false.
  *   - Any other item: 1 of its field paths holds a value, or 1 of the columns it reads is quoted with
  *     its value in the document (a column is quoted as name "value"). The quoted cell is the answer when
- *     the plan files none, such as a deductible of "Not Applicable". The 3 columns in SELECTORS only say
+ *     the plan files none, such as a deductible of "Not Applicable". The 4 columns in SELECTORS only say
  *     which other columns hold the answer and do not count. POPULATED below sets the test for
  *     the items whose answer is neither.
  * Exit codes: 0 = counted (a low count is not an error), 2 = bad input.
@@ -106,8 +106,9 @@ function resolvePath(doc, fieldPath) {
   return values.filter(isPopulated);
 }
 
-// Columns that say which other columns hold the answer; quoting one is not an answer.
-const SELECTORS = new Set(['MedicalDrugDeductiblesIntegrated', 'MedicalDrugMaximumOutofPocketIntegrated', 'MultipleInNetworkTiers']);
+// Columns that say which other columns hold the answer; quoting one is not an answer. NetworkId only
+// picks the plan's row of the Network PUF, whose NetworkURL is the provider directory link.
+const SELECTORS = new Set(['MedicalDrugDeductiblesIntegrated', 'MedicalDrugMaximumOutofPocketIntegrated', 'MultipleInNetworkTiers', 'NetworkId']);
 
 function readColumns(entry) {
   return arr(entry.source).flatMap((s) => arr(s.read)).filter((c) => !SELECTORS.has(c));
@@ -167,11 +168,13 @@ function programOf(doc) {
   return hit ? hit.program : null;
 }
 
+// The plan key in plan_identifiers. A Marketplace document written before 2026-10-20 (schema 1.1.0) has
+// no plan_identifiers and gives the key as text in its first excerpt.
 function planKey(doc, program) {
-  if (program === 'medicare_advantage') {
-    const id = (doc.plan_identifiers || []).find((p) => p.system === 'cms_contract_plan_segment');
-    return id ? id.value : null;
-  }
+  const system = program === 'medicare_advantage' ? 'cms_contract_plan_segment' : 'hios_plan_id';
+  const id = (doc.plan_identifiers || []).find((p) => p.system === system);
+  if (id) return id.value;
+  if (program === 'medicare_advantage') return null;
   const m = /HIOS plan ID (\S+?)[ .(]/.exec(((doc.source_references || [])[0] || {}).excerpt || '');
   return m ? m[1] : null;
 }
