@@ -125,13 +125,15 @@ const GOLDEN_SHA256 = {
 
 // SHA-256 of the 5 Bundles converted from the PBP importer's golden files
 // (examples/*.pbp.json), pinned 2026-10-06 when the converter learned the POS tier and
-// re-pinned 2026-10-09 when 18b1, 18a1, 17a1 and 7f_2 gained canonical keys.
+// re-pinned 2026-10-09 when 18b1, 18a1, 17a1 and 7f_2 gained canonical keys, and
+// 2026-10-20 when the importer began reading 14a, the premium and the Section A
+// contacts, and 7i gained a canonical key (medical MVP gaps G1 to G5).
 const PBP_BUNDLE_SHA256 = {
-  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': '695fc1a3601720f5237a0a070fa6d8d1d3224a9327cbcc51eb9574609b0fbb30',
-  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': '673ec53d8f672bf8825d8003d3f3926c3c6e7ff3a0c2efff04dba730d2076ec4',
-  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '775df82cb4d46a24c8778c21671cac40c493994870757b556e2a566a50a22480',
-  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': '3f336b5586c29e206220937d0108e3ae8c3557e2a9303e1df4d264c318aa1bc3',
-  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': 'b5888c7b9c52925c2ede51d1f311cfecc467b522fe7b517ccfd3553a4d8de9e5',
+  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': '4fb3e1adb75bd241ec177e7544d19ef7bc87b0c21dda72d25c5d4a2800e80ecc',
+  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': 'd2e95cfc34f9db28386047e3f3182957a5a1c024c937686a893f80e0f8ac5df1',
+  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '25a851b4d94a4cc1dfa9086f48d913412fa0f2bda6cc9c053d19f292d65c3255',
+  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': '15b8144f05b33081f59aaef357589ae4c065db5cc48384d810cd5924a06504c5',
+  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': 'f8ba4c93f582530d8369e6fd9b9f0049a90219c3a8a3f0dd182d30e41ea61648',
 };
 
 test('the 10 golden files are byte-identical to the pinned versions, and the converter reproduces them', () => {
@@ -282,14 +284,14 @@ test('the POS tier (Aetna H1609-028 golden) maps to out-of-network with the "Poi
   assert.deepStrictEqual(specialist[1].value, { value: 70, unit: 'USD', system: 'urn:iso:std:iso:4217', code: 'USD' });
   assert.ok(specialist[1].extension.some((e) => e.url.endsWith('/deductible-applies') && e.valueBoolean === true));
   const pos = benefits.flatMap((b) => b.cost).filter((c) => c.qualifiers && c.qualifiers[0].text === 'Point-of-service option');
-  assert.strictEqual(pos.length, 11);
+  assert.strictEqual(pos.length, 12, '11 POS cost entries, and since 2026-10-20 the 14a preventive services one');
   assert.ok(pos.every((c) => c.applicability.coding[0].code === 'out-of-network' && !c.qualifiers[0].coding));
   // A benefit priced in network and at the POS option has no placeholder; primary care (IN only) has 1.
   assert.ok(specialist.every((c) => c.type.text !== 'Not stated in the BPS document'));
   const primary = benefits.find((b) => b.type.coding[1].code === 'primary_care').cost;
   assert.deepStrictEqual(primary.map((c) => c.type.text || c.type.coding[0].code), ['copay', 'Not stated in the BPS document']);
-  // The deductible written to the POS tier reaches generalCost with its tier as text.
-  assert.deepStrictEqual(plan.plan[0].generalCost.map((g) => g.type.text), ['Individual out-of-pocket maximum, IN', 'Individual deductible, POS']);
+  // The deductible written to the POS tier reaches generalCost with its tier as text; the premium (since 2026-10-20) follows.
+  assert.deepStrictEqual(plan.plan[0].generalCost.map((g) => g.type.text), ['Individual out-of-pocket maximum, IN', 'Individual deductible, POS', 'Premium']);
 });
 
 test('only tier_id POS is the point-of-service tier: a network tier named "Point-of-Service" under another id still fails', () => {

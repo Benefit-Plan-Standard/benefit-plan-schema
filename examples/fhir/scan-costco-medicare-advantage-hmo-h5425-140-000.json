@@ -15,7 +15,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>SCAN Costco Medicare Advantage (HMO)</b></p><p>Carrier: SCAN Health Plan. Plan type: HMO. Period: 2027 to 2027.</p><p>15 benefits are placed in CARIN SBC benefit categories. 22 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document SCAN_COSTCO_MEDICARE_ADVANTAGE_HMO_H5425_140_000 (schema version 1.2.0).</p></div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>SCAN Costco Medicare Advantage (HMO)</b></p><p>Carrier: SCAN Health Plan. Plan type: HMO. Period: 2027 to 2027.</p><p>16 benefits are placed in CARIN SBC benefit categories. 22 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document SCAN_COSTCO_MEDICARE_ADVANTAGE_HMO_H5425_140_000 (schema version 1.2.0).</p></div>"
         },
         "extension": [
           {
@@ -65,7 +65,16 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Section A values with no Benefit Plan Standard field, verbatim: bid_id \"H5425_140_0\"; version \"10\"; orgtype \"01\"; pbp_a_org_name \"SCAN HEALTH PLAN\"; pbp_a_org_type \"01\"; pbp_a_ben_cov \"1\"; pbp_a_plan_geog_name \"San Francisco County\"; pbp_a_eghp_yn \"2\"; pbp_a_special_need_flag \"2\"; pbp_a_contract_partd_flag \"1\"; pbp_a_continue_yn \"2\"; pbp_a_org_website \"www.scanhealthplan.com\"; pbp_a_phys_web_addr \"www.scanhealthplan.com\"; pbp_a_formulary_web_addr \"www.scanhealthplan.com\"; pbp_a_pharmacy_website \"www.scanhealthplan.com\"."
+                "valueString": "Section A values with no Benefit Plan Standard field, verbatim: bid_id \"H5425_140_0\"; version \"10\"; orgtype \"01\"; pbp_a_org_name \"SCAN HEALTH PLAN\"; pbp_a_org_type \"01\"; pbp_a_ben_cov \"1\"; pbp_a_plan_geog_name \"San Francisco County\"; pbp_a_eghp_yn \"2\"; pbp_a_special_need_flag \"2\"; pbp_a_contract_partd_flag \"1\"; pbp_a_continue_yn \"2\"; pbp_a_formulary_web_addr \"www.scanhealthplan.com\"; pbp_a_pharmacy_website \"www.scanhealthplan.com\"."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Contacts and the provider directory from Section A: pbp_a_curmbr_phone \"(800)559-3500\" (Customer Service Contact Phone Number for Current Medicare Beneficiaries), written as contacts.member_services_phone; pbp_a_org_website \"www.scanhealthplan.com\", not written as contacts.website: it has no scheme, so it is not a URI, and the importer does not add one; pbp_a_phys_web_addr \"www.scanhealthplan.com\", not written as network_tiers[tier_id=IN].provider_directory_url: it has no scheme, so it is not a URI, and the importer does not add one. Section A gives 1 provider directory address per plan, so it belongs to the in-network tier only."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -75,6 +84,15 @@
               {
                 "url": "excerpt",
                 "valueString": "Service area from PlanArea.txt, 1 county in CA. county_code is the SSA state and county code, not FIPS, so service_area.counties[].fips is null. Each county as county_code, county, stcd, and the partial_flag and eghp_flag values on its rows: 05480 San Francisco CA partial_flag \"\" eghp_flag \"0\"."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Premium from Section D: pbp_d_mplusc_premium \"2.00\" (Plan Premium Amount (A/B)), written as premium.amount in USD; the file states no period, so premium.period is not written; pbp_d_mco_pay_reduct_yn \"2\" (the plan does not use its MA rebates to reduce the Part B premium), so part_b_premium_reduction is not written."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -110,7 +128,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Benefits: the 40 service categories in fhir/pbp-crosswalk.json (the workgroup MVP), 37 written. Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8)."
+                "valueString": "Benefits: the 41 service categories in fhir/pbp-crosswalk.json (the workgroup MVP), 38 written. Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8)."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -162,6 +180,10 @@
               {
                 "url": "benefitId",
                 "valueString": "PHYSICAL_AND_SPEECH_THERAPY"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "physical_and_speech_therapy"
               },
               {
                 "url": "serviceName",
@@ -1991,6 +2013,99 @@
                 "requirement": "Authorization required (pbp_b2_auth_yn \"1\").; Referral required (pbp_b2_refer_yn \"1\")."
               }
             ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "preventive-care",
+                  "display": "Preventive Care/Screening/Immunization"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "PREVENTIVE_SERVICES"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "PREVENTIVE_CARE"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "14a: Medicare-covered Zero Dollar Preventive Services"
+                      },
+                      {
+                        "url": "coverageBasis",
+                        "valueString": "medicare_covered"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "authorization"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Authorization required (pbp_b14a_auth_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "type",
+                        "valueString": "referral"
+                      },
+                      {
+                        "url": "description",
+                        "valueString": "Referral required (pbp_b14a_refer_yn \"1\")."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-condition"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "excerpt",
+                        "valueString": "PBP service category 14a: Medicare-covered Zero Dollar Preventive Services (pbp_b14_preventive.txt), mapped by fhir/pbp-crosswalk.json."
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "preventive-care",
+                      "display": "Preventive Care/Screening/Immunization"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "preventive_care",
+                      "display": "Preventive care"
+                    }
+                  ],
+                  "text": "Medicare-covered zero dollar preventive services"
+                },
+                "requirement": "Authorization required (pbp_b14a_auth_yn \"1\").; Referral required (pbp_b14a_refer_yn \"1\")."
+              }
+            ]
           }
         ],
         "plan": [
@@ -2040,6 +2155,15 @@
                   "currency": "USD"
                 },
                 "comment": "IN"
+              },
+              {
+                "type": {
+                  "text": "Premium"
+                },
+                "cost": {
+                  "value": 2,
+                  "currency": "USD"
+                }
               }
             ],
             "specificCost": [
@@ -3724,6 +3848,113 @@
                           "unit": "USD",
                           "system": "urn:iso:std:iso:4217",
                           "code": "USD"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "preventive-care",
+                      "display": "Preventive Care/Screening/Immunization"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "preventive-care",
+                          "display": "Preventive Care/Screening/Immunization"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "preventive_care",
+                          "display": "Preventive care"
+                        }
+                      ],
+                      "text": "Medicare-covered zero dollar preventive services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "pbp_b14_preventive.txt cells: pbp_b14a_mc_prevent_attest \"1\", whose dictionary text is \"I attest that there is no coinsurance, copayment, or deductible for all Original Medicare preventive services that are offered at zero dollar cost sharing.\" Written as a $0 copay that does not apply to the deductible (docs/specs/pbp-importer.md section 5.4)."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 0,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
                         }
                       }
                     ]

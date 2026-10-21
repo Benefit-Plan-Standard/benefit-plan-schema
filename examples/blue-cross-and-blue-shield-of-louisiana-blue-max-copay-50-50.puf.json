@@ -1,5 +1,15 @@
 {
   "plan_id": "BLUE_CROSS_AND_BLUE_SHIELD_OF_LOUISIANA_BLUE_MAX_COPAY_50_50",
+  "plan_identifiers": [
+    {
+      "system": "hios_plan_id",
+      "value": "97176LA0340010-01"
+    },
+    {
+      "system": "hios_id",
+      "value": "97176LA0340010"
+    }
+  ],
   "plan_name": "Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits",
   "carrier": "Blue Cross and Blue Shield of Louisiana",
   "plan_type": "PPO",
@@ -11,7 +21,8 @@
     {
       "tier_id": "IN",
       "name": "In-Network",
-      "description": "Benefits and Cost Sharing PUF columns CopayInnTier1 and CoinsInnTier1"
+      "description": "Benefits and Cost Sharing PUF columns CopayInnTier1 and CoinsInnTier1",
+      "provider_directory_url": "https://lablue.com/ppo-medical-vision-dental"
     },
     {
       "tier_id": "OUT",
@@ -2262,10 +2273,13 @@
   ],
   "source_references": [
     {
-      "excerpt": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05. HIOS plan ID 97176LA0340010-01 (the Benefit Plan Standard v1.1.0 schema has no identifier field, so the ID is recorded here). SBC URL from the Plan Attributes PUF: https://www.lablue.com/web/applications/sbcportal/sbcs/2026/97176LA0340010-01.pdf."
+      "excerpt": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05, and Network PUF (network-puf.csv, from https://download.cms.gov/marketplace-puf/2026/network-puf.zip), downloaded 2026-10-20. ImportDate as each file gives it: Plan Attributes PUF ImportDate \"10/15/2025\"; Benefits and Cost Sharing PUF ImportDate \"2025-10-15\"; Network PUF ImportDate \"2025-10-15\". HIOS plan ID: PlanId \"97176LA0340010-01\", StandardComponentId \"97176LA0340010\", written in plan_identifiers. SBC URL from the Plan Attributes PUF: https://www.lablue.com/web/applications/sbcportal/sbcs/2026/97176LA0340010-01.pdf."
     },
     {
-      "excerpt": "Plan Attributes PUF values with no Benefit Plan Standard v1.1.0 field, verbatim: StandardComponentId \"97176LA0340010\"; CSRVariationType \"Standard Silver On Exchange Plan\"; PlanVariantMarketingName \"Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits\"; MetalLevel \"Silver\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"No\"; FirstTierUtilization \"100%\"; NetworkId \"LAN001\"; ServiceAreaId \"LAS001\"; FormularyId \"LAF010\"; NationalNetwork \"Yes\"; IsReferralRequiredForSpecialist \"No\"; OutOfCountryCoverage \"Yes\"; OutOfServiceAreaCoverage \"Yes\"; SpecialtyDrugMaximumCoinsurance \"$250\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.709458831\"; FormularyURL \"https://lablue.com/pharmacy-3tier-formulary2026\"; PlanBrochure \"http://www.lablue.com/individual-solutions-brochure2026\"."
+      "excerpt": "Plan Attributes PUF values with no Benefit Plan Standard v1.2.0 field, verbatim: CSRVariationType \"Standard Silver On Exchange Plan\"; PlanVariantMarketingName \"Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits\"; MetalLevel \"Silver\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"No\"; FirstTierUtilization \"100%\"; NetworkId \"LAN001\"; ServiceAreaId \"LAS001\"; FormularyId \"LAF010\"; NationalNetwork \"Yes\"; IsReferralRequiredForSpecialist \"No\"; OutOfCountryCoverage \"Yes\"; OutOfCountryCoverageDescription \"Emergency and non-emergency coverage subject to Blue Card Worldwide rules.\"; OutOfServiceAreaCoverage \"Yes\"; OutOfServiceAreaCoverageDescription \"Coverage available for covered benefits\"; SpecialtyDrugMaximumCoinsurance \"$250\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.709458831\"; FormularyURL \"https://lablue.com/pharmacy-3tier-formulary2026\"; PlanBrochure \"http://www.lablue.com/individual-solutions-brochure2026\"."
+    },
+    {
+      "excerpt": "Provider directory from the Network PUF, the row whose BusinessYear, StateCode, IssuerId, NetworkId and MarketCoverage are the plan's: NetworkName \"PPO Vision Dental\", NetworkURL \"https://lablue.com/ppo-medical-vision-dental\", written as network_tiers[tier_id=IN].provider_directory_url."
     },
     {
       "excerpt": "Accumulators from the Plan Attributes PUF. Deductibles: MedicalDrugDeductiblesIntegrated \"No\"; the medical (MEHB) columns are used. Out-of-pocket maximums: MedicalDrugMaximumOutofPocketIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Every non-blank accumulator cell, verbatim: TEHBInnTier1IndividualMOOP \"$9,900\"; TEHBInnTier1FamilyPerPersonMOOP \"$9900 per person\"; TEHBInnTier1FamilyPerGroupMOOP \"$19800 per group\"; TEHBOutOfNetIndividualMOOP \"$29,700\"; TEHBOutOfNetFamilyPerPersonMOOP \"$29700 per person\"; TEHBOutOfNetFamilyPerGroupMOOP \"$59400 per group\"; TEHBCombInnOonIndividualMOOP \"$39,600\"; TEHBCombInnOonFamilyPerPersonMOOP \"$39600 per person\"; TEHBCombInnOonFamilyPerGroupMOOP \"$79200 per group\"; MEHBDedInnTier1Individual \"$3,300\"; MEHBDedInnTier1FamilyPerPerson \"$3300 per person\"; MEHBDedInnTier1FamilyPerGroup \"$9900 per group\"; MEHBDedInnTier1Coinsurance \"50.00%\"; MEHBDedOutOfNetIndividual \"$9,900\"; MEHBDedOutOfNetFamilyPerPerson \"$9900 per person\"; MEHBDedOutOfNetFamilyPerGroup \"$29700 per group\"; MEHBDedCombInnOonIndividual \"$13,200\"; MEHBDedCombInnOonFamilyPerPerson \"$13200 per person\"; MEHBDedCombInnOonFamilyPerGroup \"$39600 per group\"; DEHBDedInnTier1Individual \"$500\"; DEHBDedInnTier1FamilyPerPerson \"$500 per person\"; DEHBDedInnTier1FamilyPerGroup \"per group not applicable\"; DEHBDedInnTier1Coinsurance \"20.00%\"; DEHBDedOutOfNetIndividual \"$500\"; DEHBDedOutOfNetFamilyPerPerson \"$500 per person\"; DEHBDedOutOfNetFamilyPerGroup \"per group not applicable\"; DEHBDedCombInnOonIndividual \"$500\"; DEHBDedCombInnOonFamilyPerPerson \"$500 per person\"; DEHBDedCombInnOonFamilyPerGroup \"per group not applicable\"."
@@ -2274,5 +2288,5 @@
       "excerpt": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (23): Abortion for Which Public Funding is Prohibited (Not Covered); Accidental Dental (Covered); Attention Deficit Disorder (Covered); Basic Dental Care - Child (Covered); Clinical Trials (Covered); Congenital Anomaly, including Cleft Lip/Palate (Covered); Cosmetic Surgery (Not Covered); Dental Anesthesia (Covered); Diabetes Care Management (Covered); Infusion Therapy (Covered); Inherited Metabolic Disorder - PKU (Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Major Dental Care - Child (Covered); Non-Emergency Care When Traveling Outside the U.S. (Covered); Orthodontia - Adult (Not Covered); Orthodontia - Child (Covered); Prenatal and Postnatal Care (Covered); Prescription Drugs Other (Covered); Private-Duty Nursing (Covered); Reconstructive Surgery (Covered); Transplant (Covered); Treatment for Temporomandibular Joint Disorders (Not Covered); Weight Loss Programs (Not Covered)."
     }
   ],
-  "schema_version": "1.1.0"
+  "schema_version": "1.2.0"
 }

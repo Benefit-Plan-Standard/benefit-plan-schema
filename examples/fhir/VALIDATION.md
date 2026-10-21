@@ -219,3 +219,43 @@ The 5 Marketplace Bundles in `examples/fhir-puf/`, validated the same day before
 | `unitedhealthcare-uhc-gold-standard.json` | 0 / 0 | 14 / 14 | 118 / 121 |
 
 The 3 more information messages per file are the extension slicing message on the 3 new `bps-unmapped-benefit` extensions (the adult dental keys have no SBC benefit category code). The `excluded-services` extension matches the profile's `excludedServices` slice and raises no message. The warnings are explained in `examples/fhir-puf/README.md`.
+
+## Sixth run: 2026-10-20, the 10 public-file Bundles after the medical MVP gaps closed
+
+**What changed.** The medical MVP gaps G1 to G8 were closed (`docs/specs/rtb-medical-mvp/README.md`). The schema 1.2.0 draft gained 2 optional fields, `contacts` and `network_tiers[].provider_directory_url`, and the vocabulary is version 1.3.0 (118 entries, `physical_and_speech_therapy` added). The 5 PBP documents gained the premium, the Part B premium reduction where the plan has one, the member services phone, the website and the provider directory link where Section A gives a full address, the 14a preventive services benefit (`preventive_care`, the 41st crosswalk row) and the key on 7i. Each PBP Bundle places 16 benefits (was 15; preventive care under `preventive-care`) and lists 22 in `bps-unmapped-benefit` extensions, 7i now with its `canonicalKey`; the premium and the reduction are `plan.generalCost` entries with `type` as text. The 5 Marketplace documents moved from schema 1.1.0 to 1.2.0, with `plan_identifiers`, the provider directory link from the Network PUF, each file's `ImportDate` and the out-of-area descriptions; their Bundles gain 2 identifiers and 1 source reference. The 10 Bundles read from plan documents are byte-identical (they are not in this run).
+
+**Result:** all 10 files pass with **0 errors**. Same validator (`validator_cli.jar` 7.0.0, Git# 37795f3f571f), Java and packages as the second run. Command, from the repository root:
+
+```
+java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
+  -ig hl7.fhir.us.insurance-card#2.0.0-ballot \
+  -ig fhir/definitions \
+  examples/fhir-puf/*.json \
+  examples/fhir/aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json \
+  examples/fhir/aetna-medicare-select-extra-hmo-pos-h1609-028-000.json \
+  examples/fhir/humana-gold-plus-h1036-068-hmo-h1036-068-000.json \
+  examples/fhir/scan-costco-medicare-advantage-hmo-h5425-140-000.json \
+  examples/fhir/upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json
+```
+
+The 5 PBP Bundles in this folder, against the fourth run:
+
+| File | Errors | Warnings, fourth run / sixth | Information, fourth run / sixth |
+|---|---|---|---|
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 / 0 | 120 / 126 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 / 0 | 114 / 119 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 12 / 13 | 119 / 125 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 / 4 | 120 / 126 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 / 0 | 115 / 122 |
+
+The 5 Marketplace Bundles in `examples/fhir-puf/`, against the fifth run:
+
+| File | Errors | Warnings, fifth run / sixth | Information, fifth run / sixth |
+|---|---|---|---|
+| `avmed-avmed-entrust-gold-125.json` | 0 | 31 / 31 | 144 / 145 |
+| `blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.json` | 0 | 4 / 4 | 143 / 144 |
+| `florida-blue-blueoptions-gold-1505.json` | 0 | 30 / 30 | 148 / 149 |
+| `unitedhealthcare-uhc-bronze-essential.json` | 0 | 12 / 12 | 120 / 121 |
+| `unitedhealthcare-uhc-gold-standard.json` | 0 | 14 / 14 | 121 / 122 |
+
+**Warnings explained.** The 1 new warning is on Aetna: the 14a preventive services benefit has a point-of-service cost, so it carries the text-only `Point-of-service option` qualifier (12 on Aetna, was 11). The other warnings are those of the fourth and fifth runs. **Information.** All 1,299 messages are the extension slicing message, as above; the new ones are on the `bps-*` extensions of the new source references (2 per PBP Bundle, 1 per Marketplace Bundle) and of the 14a benefit.

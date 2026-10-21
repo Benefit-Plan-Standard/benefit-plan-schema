@@ -2,7 +2,7 @@
   "resourceType": "CodeSystem",
   "id": "canonical-benefits",
   "url": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "name": "BPSCanonicalBenefits",
   "title": "BPS Canonical Benefits",
   "status": "draft",
@@ -11,7 +11,7 @@
   "description": "The Benefit Plan Standard canonical benefit identifiers (vocabularies/canonical-benefits.json), as a FHIR CodeSystem. Non-normative and extensible in BPS; generated from the vocabulary file.",
   "caseSensitive": true,
   "content": "complete",
-  "count": 117,
+  "count": 118,
   "concept": [
     {
       "code": "aba_therapy",
@@ -432,6 +432,11 @@
       "code": "physical_and_occupational_therapy",
       "display": "Physical and occupational therapy",
       "definition": "Rehabilitative physical therapy and occupational therapy as one combined benefit, for sources that state them in one row (the Marketplace Benefits and Cost Sharing PUF row \"Rehabilitative Occupational and Rehabilitative Physical Therapy\"). Where the source states them separately, use physical_therapy and occupational_therapy."
+    },
+    {
+      "code": "physical_and_speech_therapy",
+      "display": "Physical and speech therapy",
+      "definition": "Physical therapy and speech-language pathology services as one combined benefit, for sources that price them together (the CMS Plan Benefit Package category 7i, \"Physical Therapy and Speech-Language Pathology Services\"). Where the source states them separately, use physical_therapy and speech_therapy."
     },
     {
       "code": "physical_therapy",

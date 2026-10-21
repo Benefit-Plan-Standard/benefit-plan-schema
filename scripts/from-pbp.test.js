@@ -253,6 +253,111 @@ test('a Medicare-covered category with no answer is not written, with a warning 
   assert.ok(r.doc.source_references.some((s) => s.excerpt.includes('not written') && s.excerpt.includes('1a: Inpatient Hospital-Acute')));
 });
 
+// ---- medical MVP gaps closed on 2026-10-20 (docs/specs/rtb-medical-mvp/README.md) ----------------------
+async function alteredPart(plan, part, changes) {
+  const { rows, source } = await loadPlan({ dataDir: FIXTURE_DIR, year: 2027, plan });
+  rows[part] = { ...rows[part], ...changes };
+  return buildDocument(rows, source);
+}
+const excerptStarting = (doc, start) => (doc.source_references.find((s) => s.excerpt.startsWith(start)) || {}).excerpt;
+
+test('gap G1: category 7i is keyed physical_and_speech_therapy, a rehabilitation key of vocabulary 1.3.0', async () => {
+  const vocab = readJson(path.join(REPO, 'vocabularies', 'canonical-benefits.json'));
+  assert.strictEqual(vocab.version, '1.3.0');
+  assert.strictEqual(vocab.vocabulary_id, 'https://benefitplanstandard.org/vocabularies/v1.3.0/canonical-benefits.json');
+  assert.strictEqual(vocab.benefits.find((b) => b.canonical_key === 'physical_and_speech_therapy').category, 'rehabilitation');
+  assert.strictEqual(CROSSWALK.benefits.find((b) => b.pbp_code === '7i').canonical_key, 'physical_and_speech_therapy');
+  for (const x of await built()) {
+    assert.strictEqual(benefit(x.result.doc, 'PHYSICAL_AND_SPEECH_THERAPY').canonical_key, 'physical_and_speech_therapy', x.g.plan);
+  }
+});
+
+test('gap G2: 14a preventive services, $0 in network on the attestation, out of network from the Section C groups', async () => {
+  for (const x of await built()) {
+    const b = benefit(x.result.doc, 'PREVENTIVE_SERVICES');
+    assert.ok(b, `${x.g.plan} has no PREVENTIVE_SERVICES benefit`);
+    assert.deepStrictEqual([b.canonical_key, b.coverage_basis, b.category], ['preventive_care', 'medicare_covered', 'PREVENTIVE_CARE']);
+    const inn = b.network_cost_shares[0];
+    assert.strictEqual(inn.tier_id, 'IN');
+    assert.deepStrictEqual(inn.cost_shares.map((s) => [s.type, s.amount, s.applies_to_deductible]), [['copay', 0, false]]);
+    assert.match(inn.notes, /pbp_b14a_mc_prevent_attest "1"/);
+  }
+  const ppo = benefit(await docFor('H2406-013-000'), 'PREVENTIVE_SERVICES').network_cost_shares[1];
+  assert.deepStrictEqual([ppo.tier_id, ppo.cost_shares[0].type, ppo.cost_shares[0].rate_min, ppo.cost_shares[0].rate_max], ['OUT', 'coinsurance', 0, 0.4]);
+  assert.strictEqual(benefit(await docFor('H1609-028-000'), 'PREVENTIVE_SERVICES').network_cost_shares[1].tier_id, 'POS');
+  assert.deepStrictEqual(benefit(await docFor('H5425-140-000'), 'PREVENTIVE_SERVICES').conditions.map((c) => c.type), ['authorization', 'referral']);
+});
+
+test('gap G2: a blank attestation writes no benefit, with a warning; any other value is an error', async () => {
+  const blank = await altered('H2406-013-000', 'pbp_b14_preventive.txt', { pbp_b14a_mc_prevent_attest: '' });
+  assert.deepStrictEqual(blank.warnings.map((w) => w.kind), ['medicare-covered-cost-share-blank']);
+  assert.strictEqual(benefit(blank.doc, 'PREVENTIVE_SERVICES'), undefined);
+  const other = await altered('H2406-013-000', 'pbp_b14_preventive.txt', { pbp_b14a_mc_prevent_attest: '2' });
+  assert.strictEqual(other.doc, null);
+  assert.ok(other.errors.some((e) => e.includes('pbp_b14a_mc_prevent_attest "2" is not 1')));
+});
+
+test('gap G2: a deductible on all in-network Medicare-covered services does not reach 14a; a category list that names 14a is an error', async () => {
+  const filed = { pbp_d_inn_deduct_yn: '1', pbp_d_inn_deduct_partb_yn: '2', pbp_d_inn_deduct_amt: '250.00', pbp_d_inn_deduct_bens: '01' };
+  const all = await alteredPart('H1036-068-000', 'd', { ...filed, pbp_d_inn_deduct_m_yn: '1' });
+  assert.deepStrictEqual(all.errors, []);
+  const inn = benefit(all.doc, 'PREVENTIVE_SERVICES').network_cost_shares[0];
+  assert.strictEqual(inn.cost_shares[0].applies_to_deductible, false);
+  assert.match(inn.notes, /all in-network Medicare-covered services \(pbp_d_inn_deduct_m_yn "1"\)/);
+  assert.strictEqual(benefit(all.doc, 'PRIMARY_CARE').network_cost_shares[0].cost_shares[0].applies_to_deductible, true, 'other categories still apply');
+  const listed = await alteredPart('H1036-068-000', 'd', { ...filed, pbp_d_inn_deduct_m_yn: '2', pbp_d_inn_deduct_m_cats: '7a;14a;' });
+  assert.strictEqual(listed.doc, null);
+  assert.ok(listed.errors.some((e) => e.includes('pbp_d_inn_deduct_m_cats "7a;14a;" names 14a')), listed.errors.join('; '));
+});
+
+test('gap G3: Section D premium and Part B premium reduction, with no period; absent stays absent', async () => {
+  const want = { 'H2406-013-000': [0, null], 'H1036-068-000': [0, 5.4], 'H1609-028-000': [0, null], 'H5533-019-000': [5, 1], 'H5425-140-000': [2, null] };
+  for (const x of await built()) {
+    const doc = x.result.doc;
+    const [premium, reduction] = want[x.g.plan];
+    assert.deepStrictEqual(doc.premium, { amount: premium, currency: 'USD' }, x.g.plan);
+    assert.deepStrictEqual(doc.part_b_premium_reduction, reduction === null ? undefined : { amount: reduction }, x.g.plan);
+    const ex = excerptStarting(doc, 'Premium from Section D:');
+    assert.ok(ex.includes(`pbp_d_mplusc_premium "${x.rows.d.pbp_d_mplusc_premium}"`), x.g.plan);
+    assert.ok(ex.includes(`pbp_d_mco_pay_reduct_yn "${reduction === null ? 2 : 1}"`), x.g.plan);
+  }
+  const blank = await alteredPart('H5533-019-000', 'd', { pbp_d_mplusc_premium: '' });
+  assert.strictEqual(blank.doc.premium, undefined);
+  assert.ok(!blank.doc.source_references.some((s) => s.excerpt.includes('pbp_d_mplusc_premium "')), 'a blank premium is not quoted as an answer');
+  const noAmount = await alteredPart('H5533-019-000', 'd', { pbp_d_mco_pay_reduct_amt: '' });
+  assert.ok(noAmount.errors.some((e) => e.includes('pbp_d_mco_pay_reduct_yn "1" but pbp_d_mco_pay_reduct_amt ""')));
+  const bOnly = await alteredPart('H5533-019-000', 'd', { pbp_d_mplusc_bonly_premium: '3.00' });
+  assert.ok(excerptStarting(bOnly.doc, 'Premium from Section D:').includes('pbp_d_mplusc_bonly_premium "3.00"'));
+  assert.deepStrictEqual(bOnly.doc.premium, { amount: 5, currency: 'USD' });
+});
+
+test('gaps G4 and G5: Section A phone, website and provider directory; an address with no scheme is quoted, not written', async () => {
+  const want = {
+    'H2406-013-000': ['(866)627-7806', null, null],
+    'H1036-068-000': ['(800)457-4708', null, 'https://www.humana.com/find-care?cm_mmc=provider_Medicare_gov-_-Medicare_gov_link-_-Vanity-_-Link'],
+    'H1609-028-000': ['(833)570-6670', null, null],
+    'H5533-019-000': ['(877)539-3080', 'https://www.upmchealthplan.com/medicare/', 'https://findcare.upmchealthplan.com/browse?caretype=Medical'],
+    'H5425-140-000': ['(800)559-3500', null, null],
+  };
+  for (const x of await built()) {
+    const doc = x.result.doc;
+    const [phone, website, directory] = want[x.g.plan];
+    assert.deepStrictEqual(doc.contacts, website ? { member_services_phone: phone, website } : { member_services_phone: phone }, x.g.plan);
+    assert.deepStrictEqual(doc.network_tiers.filter((t) => t.provider_directory_url).map((t) => [t.tier_id, t.provider_directory_url]),
+      directory ? [['IN', directory]] : [], x.g.plan);
+    const ex = excerptStarting(doc, 'Contacts and the provider directory from Section A:');
+    for (const col of ['pbp_a_curmbr_phone', 'pbp_a_org_website', 'pbp_a_phys_web_addr']) {
+      assert.ok(ex.includes(`${col} "${x.rows.a[col]}"`), `${x.g.plan}: ${col} is quoted`);
+    }
+    if (!website) assert.match(ex, /pbp_a_org_website "[^"]*", not written as contacts\.website: it has no scheme/);
+    assert.ok(!excerptStarting(doc, 'Section A values with no').includes('pbp_a_org_website'), 'the website has a field now');
+  }
+  const none = await alteredPart('H1036-068-000', 'a', { pbp_a_curmbr_phone: '', pbp_a_org_website: '', pbp_a_phys_web_addr: '' });
+  assert.deepStrictEqual(none.errors, []);
+  assert.strictEqual(none.doc.contacts, undefined);
+  assert.ok(!none.doc.network_tiers.some((t) => 'provider_directory_url' in t));
+});
+
 // ---- Summary of Benefits check -----------------------------------------------------------------------
 test('sob-check: pointer and matching rules', () => {
   const doc = { a: [{ x: 1, y: 2 }], 'b/c': { '~d': 3 } };
@@ -270,7 +375,7 @@ test('sob-check: H2406-013-000 golden file against its Summary of Benefits, 0 di
   const doc = readJson(path.join(EXAMPLES_DIR, (await built()).find((x) => x.g.plan === 'H2406-013-000').file));
   const expectations = readJson(path.join(SOB_CHECKS, 'H2406-013-000.json'));
   const { counts, results } = runChecks(doc, expectations);
-  assert.deepStrictEqual(counts, { MATCH: 68, READING: 10, DIFFERENCE: 0 });
+  assert.deepStrictEqual(counts, { MATCH: 71, READING: 12, DIFFERENCE: 0 });
   for (const r of results) if (r.status === 'READING') assert.ok(r.check.note, `${r.check.item}: a READING row needs a note`);
   doc.benefits[1].network_cost_shares[1].cost_shares[0].amount = 90;
   const changed = runChecks(doc, expectations);

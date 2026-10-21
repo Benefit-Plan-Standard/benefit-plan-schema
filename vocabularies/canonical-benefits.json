@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "vocabulary_id": "https://benefitplanstandard.org/vocabularies/v1.2.0/canonical-benefits.json",
+  "vocabulary_id": "https://benefitplanstandard.org/vocabularies/v1.3.0/canonical-benefits.json",
   "title": "BPS Recommended Canonical Benefit Vocabulary",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Non-normative recommended vocabulary of canonical benefit types for use in BPS `canonical_key` and `category` fields. Derived from production extraction across multiple U.S. carrier SBC and EOC documents. Adopters MAY extend with additional terms but SHOULD prefer these where applicable for cross-platform interoperability.",
   "license": "MIT",
   "categories": {
@@ -48,7 +48,7 @@
     },
     "rehabilitation": {
       "description": "Physical, occupational, speech, cardiac, and pulmonary rehabilitation; habilitative services.",
-      "count": 11
+      "count": 12
     },
     "specialty_care": {
       "description": "Specialty treatments (chemotherapy, radiation, dialysis, DME, prosthetics, infertility, bariatric, nutrition).",
@@ -1210,6 +1210,17 @@
       "aliases": [
         "physical and occupational therapy",
         "rehabilitative occupational and rehabilitative physical therapy"
+      ],
+      "sbc_label_patterns": []
+    },
+    {
+      "canonical_key": "physical_and_speech_therapy",
+      "label": "Physical and speech therapy",
+      "description": "Physical therapy and speech-language pathology services as one combined benefit, for sources that price them together (the CMS Plan Benefit Package category 7i, \"Physical Therapy and Speech-Language Pathology Services\"). Where the source states them separately, use physical_therapy and speech_therapy.",
+      "category": "rehabilitation",
+      "aliases": [
+        "physical and speech therapy",
+        "physical therapy and speech-language pathology services"
       ],
       "sbc_label_patterns": []
     },

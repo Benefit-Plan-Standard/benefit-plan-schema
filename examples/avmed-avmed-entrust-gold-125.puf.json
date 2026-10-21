@@ -1,5 +1,15 @@
 {
   "plan_id": "AVMED_AVMED_ENTRUST_GOLD_125",
+  "plan_identifiers": [
+    {
+      "system": "hios_plan_id",
+      "value": "19898FL0340001-01"
+    },
+    {
+      "system": "hios_id",
+      "value": "19898FL0340001"
+    }
+  ],
   "plan_name": "AvMed Entrust Gold 125 (2026)",
   "carrier": "AvMed",
   "plan_type": "HMO",
@@ -11,7 +21,8 @@
     {
       "tier_id": "IN",
       "name": "In-Network Tier 1",
-      "description": "Benefits and Cost Sharing PUF columns CopayInnTier1 and CoinsInnTier1"
+      "description": "Benefits and Cost Sharing PUF columns CopayInnTier1 and CoinsInnTier1",
+      "provider_directory_url": "https://avmed.healthsparq.com/healthsparq/public/#/one/insurerCode=AVMED_I&brandCode=AVMED"
     },
     {
       "tier_id": "IN2",
@@ -2472,10 +2483,13 @@
   ],
   "source_references": [
     {
-      "excerpt": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05. HIOS plan ID 19898FL0340001-01 (the Benefit Plan Standard v1.1.0 schema has no identifier field, so the ID is recorded here). SBC URL from the Plan Attributes PUF: https://apps.avmed.com/Public/OHBRFileManager/DownloadFile.aspx?filePath=%2Fpresales%2FAvMed%2F2026%2FSBC%2FIFP%2FAVINHG16510101260625.pdf."
+      "excerpt": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05, and Network PUF (network-puf.csv, from https://download.cms.gov/marketplace-puf/2026/network-puf.zip), downloaded 2026-10-20. ImportDate as each file gives it: Plan Attributes PUF ImportDate \"5/26/2026\"; Benefits and Cost Sharing PUF ImportDate \"2026-05-26\"; Network PUF ImportDate \"2026-05-26\". HIOS plan ID: PlanId \"19898FL0340001-01\", StandardComponentId \"19898FL0340001\", written in plan_identifiers. SBC URL from the Plan Attributes PUF: https://apps.avmed.com/Public/OHBRFileManager/DownloadFile.aspx?filePath=%2Fpresales%2FAvMed%2F2026%2FSBC%2FIFP%2FAVINHG16510101260625.pdf."
     },
     {
-      "excerpt": "Plan Attributes PUF values with no Benefit Plan Standard v1.1.0 field, verbatim: StandardComponentId \"19898FL0340001\"; CSRVariationType \"Standard Gold On Exchange Plan\"; PlanVariantMarketingName \"AvMed Entrust Gold 125 (2026)\"; MetalLevel \"Gold\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"Yes\"; FirstTierUtilization \"40%\"; SecondTierUtilization \"60%\"; NetworkId \"FLN001\"; ServiceAreaId \"FLS001\"; FormularyId \"FLF001\"; NationalNetwork \"No\"; IsReferralRequiredForSpecialist \"Yes\"; SpecialistRequiringReferral \"All except OB/Gyn, Chiropractor, and Podiatrist for diabetic foot care.\"; OutOfCountryCoverage \"Yes\"; OutOfServiceAreaCoverage \"Yes\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; IssuerActuarialValue \"79.04%\"; FormularyURL \"https://shc-p-001.sitecorecontenthub.cloud/api/public/content/2026-Individual-and-Family-Plan-Formulary-Non-Standard-pdf\"; PlanBrochure \"https://shc-p-001.sitecorecontenthub.cloud/api/public/content/2026-Avmed-Buyers-Guide-pdf\"."
+      "excerpt": "Plan Attributes PUF values with no Benefit Plan Standard v1.2.0 field, verbatim: CSRVariationType \"Standard Gold On Exchange Plan\"; PlanVariantMarketingName \"AvMed Entrust Gold 125 (2026)\"; MetalLevel \"Gold\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"Yes\"; FirstTierUtilization \"40%\"; SecondTierUtilization \"60%\"; NetworkId \"FLN001\"; ServiceAreaId \"FLS001\"; FormularyId \"FLF001\"; NationalNetwork \"No\"; IsReferralRequiredForSpecialist \"Yes\"; SpecialistRequiringReferral \"All except OB/Gyn, Chiropractor, and Podiatrist for diabetic foot care.\"; OutOfCountryCoverage \"Yes\"; OutOfCountryCoverageDescription \"Emergency Only\"; OutOfServiceAreaCoverage \"Yes\"; OutOfServiceAreaCoverageDescription \"Emergency Only\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; IssuerActuarialValue \"79.04%\"; FormularyURL \"https://shc-p-001.sitecorecontenthub.cloud/api/public/content/2026-Individual-and-Family-Plan-Formulary-Non-Standard-pdf\"; PlanBrochure \"https://shc-p-001.sitecorecontenthub.cloud/api/public/content/2026-Avmed-Buyers-Guide-pdf\"."
+    },
+    {
+      "excerpt": "Provider directory from the Network PUF, the row whose BusinessYear, StateCode, IssuerId, NetworkId and MarketCoverage are the plan's: NetworkName \"AvMed HIX Network\", NetworkURL \"https://avmed.healthsparq.com/healthsparq/public/#/one/insurerCode=AVMED_I&brandCode=AVMED\", written as network_tiers[tier_id=IN].provider_directory_url."
     },
     {
       "excerpt": "Accumulators from the Plan Attributes PUF. Deductibles: MedicalDrugDeductiblesIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Out-of-pocket maximums: MedicalDrugMaximumOutofPocketIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Every non-blank accumulator cell, verbatim: TEHBInnTier1IndividualMOOP \"$5,850\"; TEHBInnTier1FamilyPerPersonMOOP \"$5850 per person\"; TEHBInnTier1FamilyPerGroupMOOP \"$11700 per group\"; TEHBInnTier2IndividualMOOP \"$5,850\"; TEHBInnTier2FamilyPerPersonMOOP \"$5850 per person\"; TEHBInnTier2FamilyPerGroupMOOP \"$11700 per group\"; TEHBOutOfNetIndividualMOOP \"Not Applicable\"; TEHBOutOfNetFamilyPerPersonMOOP \"per person not applicable\"; TEHBOutOfNetFamilyPerGroupMOOP \"per group not applicable\"; TEHBCombInnOonIndividualMOOP \"Not Applicable\"; TEHBCombInnOonFamilyPerPersonMOOP \"per person not applicable\"; TEHBCombInnOonFamilyPerGroupMOOP \"per group not applicable\"; TEHBDedInnTier1Individual \"$2,000\"; TEHBDedInnTier1FamilyPerPerson \"$2000 per person\"; TEHBDedInnTier1FamilyPerGroup \"$4000 per group\"; TEHBDedInnTier1Coinsurance \"50.00%\"; TEHBDedInnTier2Individual \"$2,000\"; TEHBDedInnTier2FamilyPerPerson \"$2000 per person\"; TEHBDedInnTier2FamilyPerGroup \"$4000 per group\"; TEHBDedInnTier2Coinsurance \"50.00%\"; TEHBDedOutOfNetIndividual \"Not Applicable\"; TEHBDedOutOfNetFamilyPerPerson \"per person not applicable\"; TEHBDedOutOfNetFamilyPerGroup \"per group not applicable\"; TEHBDedCombInnOonIndividual \"Not Applicable\"; TEHBDedCombInnOonFamilyPerPerson \"per person not applicable\"; TEHBDedCombInnOonFamilyPerGroup \"per group not applicable\"."
@@ -2484,5 +2498,5 @@
       "excerpt": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (21): Abortion for Which Public Funding is Prohibited (Not Covered); Accidental Dental (Covered); Basic Dental Care - Child (Covered); Bone Marrow Transplant (Covered); Congenital Anomaly, including Cleft Lip/Palate (Covered); Cosmetic Surgery (Not Covered); Dental Anesthesia (Covered); Diabetes Care Management (Covered); Infusion Therapy (Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Major Dental Care - Child (Covered); Nutrition/Formulas (Covered); Orthodontia - Adult (Not Covered); Orthodontia - Child (Covered); Osteoporosis (Covered); Prenatal and Postnatal Care (Covered); Private-Duty Nursing (Not Covered); Reconstructive Surgery (Covered); Transplant (Covered); Treatment for Temporomandibular Joint Disorders (Covered); Weight Loss Programs (Not Covered)."
     }
   ],
-  "schema_version": "1.1.0"
+  "schema_version": "1.2.0"
 }

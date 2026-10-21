@@ -454,6 +454,54 @@
       "path": "/benefits/36/network_cost_shares",
       "expected_reading": [{ "tier_id": "IN", "covered": true }],
       "note": "No pbp_Section_C_POS group lists 14c4, and pbp_c_pos_nmc_bendesc_subcats leaves it out; no POS row is written (spec 5.4). Question O1 (section 7)."
+    },
+    {
+      "item": "Monthly plan premium",
+      "page": 2,
+      "printed": "Monthly plan premium $0",
+      "expected": { "amount": 0, "currency": "USD" },
+      "path": "/premium",
+      "note": "pbp_d_mplusc_premium \"0.00\" (added 2026-10-20, gap G3). The print says monthly; the file states no period, so premium.period is not written (spec 4.1)."
+    },
+    {
+      "item": "Preventive care, in network",
+      "page": 3,
+      "printed": "$0 copay",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/37/network_cost_shares/0/cost_shares",
+      "note": "pbp_b14a_mc_prevent_attest \"1\", the plan's attestation of no cost sharing for the zero dollar preventive services (added 2026-10-20, gap G2; spec 5.4)."
+    },
+    {
+      "item": "Preventive care, out of network (POS option)",
+      "page": 3,
+      "printed": "$0 copay",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/37/network_cost_shares/1/cost_shares",
+      "note": "pbp_Section_C_POS.txt group 2 (label \"$0.00 copay\") lists 14a in pbp_c_pos_outpt_mc_bencats: pbp_c_pos_outpt_copay_min_amt \"0.00\", pbp_c_pos_outpt_copay_max_amt \"0.00\"."
+    },
+    {
+      "item": "Member services phone",
+      "page": 1,
+      "printed": "If you are an Aetna plan member, call: 18335706670 (TTY: 711)",
+      "expected": "(833)570-6670",
+      "path": "/contacts/member_services_phone",
+      "note": "pbp_a_curmbr_phone \"(833)570-6670\" (added 2026-10-20, gap G4). Phone numbers are compared by their digits, without the leading 1. The number printed for people who are not yet members, 18445096254, is the file's pbp_a_prombr_phone \"(844)509-6254\", which has no field."
+    },
+    {
+      "item": "Plan website",
+      "page": 1,
+      "printed": "AetnaMedicare.com",
+      "expected": "AetnaMedicare.com",
+      "path": "/contacts/website",
+      "note": "A contradiction on a link, not a cost share. The file gives a different address, pbp_a_org_website \"www.aetna.com/medicare\"; it also has no scheme, so the importer writes no contacts.website and quotes the cell in source_references (added 2026-10-20, gap G4; spec 4.1). Addresses are compared with the scheme, a leading \"www.\" and the case of the host ignored. On 2026-10-20 both addresses resolved, opened with https:// in front because neither has a scheme: the printed AetnaMedicare.com answered HTTP 200 after 2 redirects and the filed www.aetna.com/medicare after 1, both at www.aetna.com/medicare.html."
+    },
+    {
+      "item": "Provider directory",
+      "page": 2,
+      "printed": "To find provider directories, network pharmacies, and other plan information, visit AetnaMedicare.com/H1609-028.",
+      "expected": "AetnaMedicare.com/H1609-028",
+      "path": "/network_tiers/0/provider_directory_url",
+      "note": "A contradiction on a link, not a cost share. The file gives a different address, pbp_a_phys_web_addr \"www.aetnamedicare.com/findprovider\"; it also has no scheme, so the importer writes no provider_directory_url and quotes the cell in source_references (added 2026-10-20, gap G5; spec 4.1). Addresses are compared with the scheme, a leading \"www.\" and the case of the host ignored. On 2026-10-20 both addresses resolved, opened with https:// in front because neither has a scheme: the printed AetnaMedicare.com/H1609-028 answered HTTP 200 after 2 redirects at www.aetna.com/medicare/plan.H1609.028.html, the plan's page, and the filed www.aetnamedicare.com/findprovider after 1 redirect at www.aetna.com/medicare/find-provider.html, the provider search."
     }
   ]
 }

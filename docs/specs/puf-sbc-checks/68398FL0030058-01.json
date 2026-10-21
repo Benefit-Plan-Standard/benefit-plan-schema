@@ -387,6 +387,14 @@
       "printed": "35 visits/year, combined with PT/OT/ST/Massage therapy",
       "expected": [{ "type": "visits", "value": 35, "period": "per_year" }],
       "path": "/benefits/5/limits"
+    },
+    {
+      "item": "Provider directory",
+      "page": 1,
+      "printed": "See uhc.com/xfldocfindg2026 or call 1-888-200-0405 for a list of network providers.",
+      "expected": "https://www.uhc.com/xfldocfindg2026",
+      "path": "/network_tiers/0/provider_directory_url",
+      "note": "NetworkURL \"https://www.uhc.com/xfldocfindg2026\" of the plan's network, FLN011, in the Network PUF (added 2026-10-20, gap G5; Marketplace importer spec section 4.5). Addresses are compared with the scheme, a leading \"www.\" and the case of the host ignored, so the printed address is written here in the document's form."
     }
   ]
 }

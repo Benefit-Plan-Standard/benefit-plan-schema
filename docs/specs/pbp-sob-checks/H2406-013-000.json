@@ -595,6 +595,48 @@
       "printed": "If you use an out-of-network provider, you pay 90% of the total cost",
       "expected": [{ "type": "coinsurance", "rate": 0.9 }],
       "path": "/benefits/36/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Monthly plan premium",
+      "page": 2,
+      "printed": "Monthly plan premium $0",
+      "expected": { "amount": 0, "currency": "USD" },
+      "path": "/premium",
+      "note": "pbp_d_mplusc_premium \"0.00\" (added 2026-10-20, gap G3). The print says monthly; the file states no period, so premium.period is not written (spec 4.1)."
+    },
+    {
+      "item": "Medicare-covered preventive services, in network",
+      "page": 3,
+      "printed": "Preventive services, Medicare-covered: $0 copay",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/37/network_cost_shares/0/cost_shares",
+      "note": "pbp_b14a_mc_prevent_attest \"1\", the plan's attestation of no cost sharing for the zero dollar preventive services (added 2026-10-20, gap G2; spec 5.4)."
+    },
+    {
+      "item": "Medicare-covered preventive services, out of network",
+      "page": 3,
+      "printed": "$0 copay - 40% coinsurance (depending on the service)",
+      "expected": [{ "type": "coinsurance", "rate_min": 0, "rate_max": 0.4 }],
+      "path": "/benefits/37/network_cost_shares/1/cost_shares",
+      "note": "pbp_Section_C_OON.txt group 140 lists 14a: pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_min_pct \"0\", pbp_c_oon_outpt_coins_max_pct \"40\". The printed $0 copay at the low end is the file's 0 percent coinsurance."
+    },
+    {
+      "item": "Plan website",
+      "page": 1,
+      "printed": "Visit AARPMedicarePlans.com",
+      "expected": "AARPMedicarePlans.com",
+      "path": "/contacts/website",
+      "expected_reading": { "$absent": true },
+      "note": "The file's address is the printed one, pbp_a_org_website \"AARPMedicarePlans.com\", but it has no scheme, so it is not a URI: the importer writes no contacts.website and quotes the cell in source_references (added 2026-10-20, gap G4; spec 4.1). Addresses are compared with the scheme, a leading \"www.\" and the case of the host ignored."
+    },
+    {
+      "item": "Provider directory",
+      "page": 13,
+      "printed": "You can go to AARPMedicarePlans.com to search for a network provider or pharmacy using the online directories.",
+      "expected": "AARPMedicarePlans.com",
+      "path": "/network_tiers/0/provider_directory_url",
+      "expected_reading": { "$absent": true },
+      "note": "The file's address is the printed one, pbp_a_phys_web_addr \"AARPMedicarePlans.com\", but it has no scheme, so it is not a URI: the importer writes no provider_directory_url and quotes the cell in source_references (added 2026-10-20, gap G5; spec 4.1). The Summary of Benefits prints no member services number, only a number for people who want to join (page 1, \"Call toll-free 1-844-723-6473\"), which is in neither of the file's 2 phone columns (pbp_a_curmbr_phone \"(866)627-7806\", pbp_a_prombr_phone \"(800)555-5757\"), so the phone is not checked."
     }
   ]
 }

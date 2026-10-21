@@ -2,7 +2,7 @@
   "description": "CMS Plan Benefit Package (PBP) service categories to Benefit Plan Standard benefits, for scripts/from-pbp.js. One row per BPS benefit the importer writes: the PBP category code (as used in the Section C out-of-network and point-of-service groups and the Section D category lists), the B file and columns it reads, and a canonical_key from vocabularies/canonical-benefits.json or null. A category maps only when the PBP category clearly is the canonical service; there is no nearest fit (the CARIN crosswalk rule). canonical_key null means the benefit is still written, carried by service_name and pbp_code, and listed in docs/specs/pbp-importer.md section 9.1. See docs/specs/pbp-importer.md section 5.",
   "source": "PBP_Benefits_2027_dictionary.xlsx and the CY 2027 PBP Benefits files (https://www.cms.gov/files/zip/pbp-benefits-2027.zip): column names verbatim, lowercased as the importer reads them.",
   "contract_year": 2027,
-  "scope": "The workgroup MVP: primary care, specialist, inpatient hospital, outpatient hospital (outpatient hospital services, observation, ambulatory surgical center), emergency, urgently needed services, ambulance, diagnostic tests, lab and imaging, physical and speech therapy, occupational therapy, services with visit limits (routine chiropractic, routine foot care, acupuncture, routine hearing and eye exams, with their Medicare-covered rows), and hearing aids; since 2026-10-11 also mental health individual sessions, home health, skilled nursing facility, dental cleaning and restorative services (fillings), eyeglasses, over-the-counter items, meals, transportation and fitness.",
+  "scope": "The workgroup MVP: primary care, specialist, inpatient hospital, outpatient hospital (outpatient hospital services, observation, ambulatory surgical center), emergency, urgently needed services, ambulance, diagnostic tests, lab and imaging, physical and speech therapy, occupational therapy, services with visit limits (routine chiropractic, routine foot care, acupuncture, routine hearing and eye exams, with their Medicare-covered rows), and hearing aids; since 2026-10-11 also mental health individual sessions, home health, skilled nursing facility, dental cleaning and restorative services (fillings), eyeglasses, over-the-counter items, meals, transportation and fitness; since 2026-10-20 also preventive services (14a).",
   "field_guide": {
     "pbp_code": "The service category code as the file writes it in category lists (pbp_c_oon_mc_bendesc_cats, pbp_c_oon_nmc_bendesc_cats, pbp_c_pos_*_subcats, pbp_d_*_cats).",
     "medicare_covered": "true: a Medicare-covered category (coverage_basis medicare_covered, always covered). false: a supplemental category, offered when offered.yn is 1 and offered.ehc has a 1 at offered.position.",
@@ -17,7 +17,8 @@
     "code": "On offered, copay, coins or a limit option: the \"which benefits\" column (ehc) is a list of codes such as \"14c1;14c4;\" (14c), and the row or step applies when the list names this code.",
     "variant": "col: a code column whose value picks pbp_code and columns from values (10b: pbp_b10b_bendesc_trn 1 plan-approved location 10b1, 2 any location 10b2).",
     "inpatient": "For handler inpatient_acute: the column names where the category differs from 1a (2, Skilled Nursing Facility: stay_amount false, deductible_amount null, additional_days, section_c \"snf\").",
-    "limits (more)": "dollars options: the maximum is in 1 of several sets of columns, the first whose yn is 1 or whose ehc names the service; carryover: col and codes giving the limit carryover; quantity label and with: the limit text starts with label and quotes the with columns with their code labels; via.label, via.source and shared_when.covers name the shared maximum in raw_text."
+    "limits (more)": "dollars options: the maximum is in 1 of several sets of columns, the first whose yn is 1 or whose ehc names the service; carryover: col and codes giving the limit carryover; quantity label and with: the limit text starts with label and quotes the with columns with their code labels; via.label, via.source and shared_when.covers name the shared maximum in raw_text.",
+    "attest": "For handler attestation (14a): the category has no copay or coinsurance column, only an attestation column (col). When it holds value, the in-network row is a $0 copay that does not apply to the deductible, with the dictionary's text for the value (label) in its notes; a blank attestation is a Medicare-covered category with no answer, and any other value is an error."
   },
   "periodicity": {
     "1": "per_3_years",
@@ -38,9 +39,9 @@
     "7": "Every month"
   },
   "counts": {
-    "benefits": 40,
-    "with_canonical_key": 33,
-    "without_canonical_key": 7
+    "benefits": 41,
+    "with_canonical_key": 35,
+    "without_canonical_key": 6
   },
   "benefits": [
     {
@@ -655,7 +656,7 @@
       "pbp_label": "7i: Physical Therapy and Speech-Language Pathology Services",
       "medicare_covered": true,
       "file": "pbp_b7_health_prof.txt",
-      "canonical_key": null,
+      "canonical_key": "physical_and_speech_therapy",
       "category": "REHABILITATION",
       "benefit_type": "medical",
       "copay": {
@@ -680,7 +681,7 @@
         "pbp_b7i_maxenr_per",
         "pbp_b7i_maxenr_per_d"
       ],
-      "note": "Combines physical_therapy and speech_therapy, so no canonical key. physical_and_occupational_therapy is a different combination (the Marketplace row \"Rehabilitative Occupational and Rehabilitative Physical Therapy\"). Carried by name."
+      "note": "Physical therapy and speech-language pathology priced together: physical_and_speech_therapy (vocabulary 1.3.0, 2026-10-20), not physical_therapy or speech_therapy. physical_and_occupational_therapy is a different combination (the Marketplace row \"Rehabilitative Occupational and Rehabilitative Physical Therapy\")."
     },
     {
       "benefit_id": "OCCUPATIONAL_THERAPY",
@@ -2185,6 +2186,27 @@
         "pbp_b14c_maxenr_per_mhc_d"
       ],
       "note": "Fitness is code 14c4 (\"14c4: Fitness Benefit*\"; its columns end in mhc) of the 14c list columns, which are lists of codes such as \"14c1;14c4;\", not position strings: offered when pbp_b14c_bendesc_ehc lists 14c4, and the copay, coinsurance and maximum apply when pbp_b14c_copay_ehc, pbp_b14c_coins_ehc and pbp_b14c_maxplan_ehc list it. The deductible, authorization and referral columns cover all of 14c. The type of fitness benefit (pbp_b14c_bendesc_typ_mhc: activity tracker, physical fitness, memory fitness, fitness equipment or kit) is quoted."
+    },
+    {
+      "benefit_id": "PREVENTIVE_SERVICES",
+      "service_name": "Medicare-covered zero dollar preventive services",
+      "pbp_code": "14a",
+      "pbp_label": "14a: Medicare-covered Zero Dollar Preventive Services",
+      "medicare_covered": true,
+      "file": "pbp_b14_preventive.txt",
+      "canonical_key": "preventive_care",
+      "category": "PREVENTIVE_CARE",
+      "benefit_type": "medical",
+      "handler": "attestation",
+      "attest": {
+        "col": "pbp_b14a_mc_prevent_attest",
+        "value": "1",
+        "label": "I attest that there is no coinsurance, copayment, or deductible for all Original Medicare preventive services that are offered at zero dollar cost sharing."
+      },
+      "auth": "pbp_b14a_auth_yn",
+      "refer": "pbp_b14a_refer_yn",
+      "quote": [],
+      "note": "14a has no copay or coinsurance column: the plan attests that the Original Medicare zero dollar preventive services cost nothing in network (pbp_b14a_mc_prevent_attest, \"Medicare-covered Zero Dollar Preventive Services Attestation\", 1 the only code, label from the dictionary). Out of network and point of service, 14a is priced in the Section C groups that list it. Added 2026-10-20 (medical MVP gap G2); last in the list, so the benefit indexes of the earlier rows do not move."
     }
   ]
 }

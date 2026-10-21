@@ -15,14 +15,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>UHC Gold Standard</b></p><p>Carrier: UnitedHealthcare. Plan type: HMO. Period: 2026-01-01.</p><p>27 benefits are placed in CARIN SBC benefit categories. 25 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>9 benefits are not covered on any tier and are listed in the excluded-services extension, derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p><p>Converted from Benefit Plan Standard document UNITEDHEALTHCARE_UHC_GOLD_STANDARD (schema version 1.1.0).</p></div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>UHC Gold Standard</b></p><p>Carrier: UnitedHealthcare. Plan type: HMO. Period: 2026-01-01.</p><p>27 benefits are placed in CARIN SBC benefit categories. 25 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>9 benefits are not covered on any tier and are listed in the excluded-services extension, derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p><p>Converted from Benefit Plan Standard document UNITEDHEALTHCARE_UHC_GOLD_STANDARD (schema version 1.2.0).</p></div>"
         },
         "extension": [
           {
             "extension": [
               {
                 "url": "schemaVersion",
-                "valueString": "1.1.0"
+                "valueString": "1.2.0"
               },
               {
                 "url": "planYear",
@@ -39,7 +39,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05. HIOS plan ID 40220TX0080024-01 (the Benefit Plan Standard v1.1.0 schema has no identifier field, so the ID is recorded here). SBC URL from the Plan Attributes PUF: https://www.uhc.com/ifp/sbc.40220TX0080024-01.en.2026.pdf."
+                "valueString": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05, and Network PUF (network-puf.csv, from https://download.cms.gov/marketplace-puf/2026/network-puf.zip), downloaded 2026-10-20. ImportDate as each file gives it: Plan Attributes PUF ImportDate \"11/25/2025\"; Benefits and Cost Sharing PUF ImportDate \"2025-11-25\"; Network PUF ImportDate \"2025-11-25\". HIOS plan ID: PlanId \"40220TX0080024-01\", StandardComponentId \"40220TX0080024\", written in plan_identifiers. SBC URL from the Plan Attributes PUF: https://www.uhc.com/ifp/sbc.40220TX0080024-01.en.2026.pdf."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -48,7 +48,16 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Plan Attributes PUF values with no Benefit Plan Standard v1.1.0 field, verbatim: StandardComponentId \"40220TX0080024\"; CSRVariationType \"Standard Gold On Exchange Plan\"; PlanVariantMarketingName \"UHC Gold Standard\"; MetalLevel \"Gold\"; DesignType \"Design 1\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"No\"; FirstTierUtilization \"100%\"; NetworkId \"TXN011\"; ServiceAreaId \"TXS011\"; FormularyId \"TXF035\"; NationalNetwork \"No\"; IsReferralRequiredForSpecialist \"Yes\"; SpecialistRequiringReferral \"All, except OBGYN and as state mandated.\"; PlanLevelExclusions \"Some exclusions may apply. See the applicable Certificate of Coverage for details.\"; OutOfCountryCoverage \"No\"; OutOfServiceAreaCoverage \"Yes\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.7804000000000001\"; FormularyURL \"https://www.uhc.com/xtxdruglist2026\"; PlanBrochure \"https://www.uhc.com/txplanbrochure2026\"."
+                "valueString": "Plan Attributes PUF values with no Benefit Plan Standard v1.2.0 field, verbatim: CSRVariationType \"Standard Gold On Exchange Plan\"; PlanVariantMarketingName \"UHC Gold Standard\"; MetalLevel \"Gold\"; DesignType \"Design 1\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"No\"; FirstTierUtilization \"100%\"; NetworkId \"TXN011\"; ServiceAreaId \"TXS011\"; FormularyId \"TXF035\"; NationalNetwork \"No\"; IsReferralRequiredForSpecialist \"Yes\"; SpecialistRequiringReferral \"All, except OBGYN and as state mandated.\"; PlanLevelExclusions \"Some exclusions may apply. See the applicable Certificate of Coverage for details.\"; OutOfCountryCoverage \"No\"; OutOfServiceAreaCoverage \"Yes\"; OutOfServiceAreaCoverageDescription \"Plan covers eligible expenses provided by a Network Physician or other provider or facility within the Network Area. The plan also covers emergency health care services received outside the service area.\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.7804000000000001\"; FormularyURL \"https://www.uhc.com/xtxdruglist2026\"; PlanBrochure \"https://www.uhc.com/txplanbrochure2026\"."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Provider directory from the Network PUF, the row whose BusinessYear, StateCode, IssuerId, NetworkId and MarketCoverage are the plan's: NetworkName \"Individual Exchange Benefit Plan Network\", NetworkURL \"https://www.uhc.com/xtxdocfindg2026\", written as network_tiers[tier_id=IN].provider_directory_url."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -741,6 +750,14 @@
           {
             "system": "https://benefitplanstandard.org/plan-id",
             "value": "UNITEDHEALTHCARE_UHC_GOLD_STANDARD"
+          },
+          {
+            "system": "https://benefitplanstandard.org/fhir/identifier/hios_plan_id",
+            "value": "40220TX0080024-01"
+          },
+          {
+            "system": "https://www.cms.gov/CCIIO/Resources/Data-Resources/hios",
+            "value": "40220TX0080024"
           }
         ],
         "status": "active",

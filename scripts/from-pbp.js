@@ -7,8 +7,9 @@
  * one plan. It writes BPS JSON only. Spec: docs/specs/pbp-importer.md; file
  * layout: docs/specs/pbp-record-layout-notes.md.
  *
- * It writes the plan level (identity, plan type, service area, plan year,
- * deductibles, out-of-pocket maximums, network tiers) and the benefits named in
+ * It writes the plan level (identity, plan type, service area, plan year, premium
+ * and Part B premium reduction, member services phone and website, deductibles,
+ * out-of-pocket maximums, network tiers with the provider directory link) and the benefits named in
  * fhir/pbp-crosswalk.json (the workgroup MVP), with cost shares per network
  * tier, ranges, day intervals, limits and coverage.
  *
@@ -1095,6 +1096,36 @@ function inpatientInNetwork(b, row, ctx, errors) {
   return { rows, limits };
 }
 
+// 14a (spec section 5.4): no copay or coinsurance column, only the plan's
+// attestation that the Original Medicare zero dollar preventive services cost
+// nothing in network, with no deductible. The out-of-network and point-of-service
+// rows come from the Section C groups like any other category's. An in-network
+// deductible filed for all Medicare-covered services does not reach 14a, because
+// the attestation is the answer for these services (117 plans in CY 2027); one
+// whose category list names 14a contradicts it and is an error (0 plans).
+const INN_DEDUCTIBLE_ALL = ['pbp_d_ann_deduct_inn_mc_yn', 'pbp_d_inn_deduct_m_yn', 'pbp_d_comb_deduct_inn_m_yn'];
+const INN_DEDUCTIBLE_LISTS = ['pbp_d_ann_deduct_inn_mc_cats', 'pbp_d_inn_deduct_m_cats', 'pbp_d_comb_deduct_inn_m_cats'];
+
+function attestationRow(b, row, d, ctx, errors) {
+  const v = q(row, b.attest.col);
+  if (v !== b.attest.value) { errors.push(`${cell(row, b.attest.col)} is not ${b.attest.value}, the dictionary's only code`); return null; }
+  const notes = [`${b.file} cells: ${cell(row, b.attest.col)}, whose dictionary text is "${b.attest.label}" ` +
+    'Written as a $0 copay that does not apply to the deductible (docs/specs/pbp-importer.md section 5.4).'];
+  const ded = ctx.ded.scopes.IN;
+  if (ded && ded(b.pbp_code, b.medicare_covered) === true) {
+    const listed = INN_DEDUCTIBLE_LISTS.filter((col) => cats(q(d, col)).includes(b.pbp_code));
+    if (listed.length) {
+      errors.push(`${cell(row, b.attest.col)} attests no deductible, but ${listed.map((col) => cell(d, col)).join(', ')} names ${b.pbp_code}`);
+      return null;
+    }
+    const all = INN_DEDUCTIBLE_ALL.filter((col) => q(d, col) === '1');
+    notes.push(`The plan's in-network deductible applies to all in-network Medicare-covered services (${all.map((col) => cell(d, col)).join(', ')}); ` +
+      'the attestation is the answer for these services, so applies_to_deductible is false.');
+  }
+  const noDeductible = { ...ctx, ded: { ...ctx.ded, scopes: { ...ctx.ded.scopes, IN: () => false } } };
+  return tierRow('IN', 'IN', b, { steps: [{ type: 'copay', amount: 0, applies_to_deductible: false }], notes: notes.join(' ') }, noDeductible);
+}
+
 function buildBenefit(b, rows, ctx, errors, warn) {
   const row = rows.b[b.file];
   if (!row) { errors.push(`no ${b.file} row for ${b.benefit_id}`); return null; }
@@ -1165,7 +1196,8 @@ function buildBenefit(b, rows, ctx, errors, warn) {
   // A Medicare-covered category with no copay and no coinsurance answer (the
   // Part A categories of a Part B-only plan, pbp_a_ben_cov "2") is not written:
   // the file does not say the plan covers it (spec 5.4).
-  const answerCols = b.handler === 'inpatient_acute' ? [`${b.prefix}_copay_yn`, `${b.prefix}_coins_yn`] : [b.copay, b.coins].filter(Boolean).map((s) => s.yn);
+  const answerCols = b.handler === 'inpatient_acute' ? [`${b.prefix}_copay_yn`, `${b.prefix}_coins_yn`]
+    : b.handler === 'attestation' ? [b.attest.col] : [b.copay, b.coins].filter(Boolean).map((s) => s.yn);
   if (b.medicare_covered && answerCols.every((col) => q(row, col) === '')) {
     warn('medicare-covered-cost-share-blank', `${b.benefit_id} (${cell(rows.a, 'pbp_a_ben_cov')})`);
     ctx.skipped.push(`${b.pbp_label} (${answerCols.map((col) => cell(row, col)).join(', ')})`);
@@ -1177,6 +1209,10 @@ function buildBenefit(b, rows, ctx, errors, warn) {
     const r = inpatientInNetwork(b, row, ctx, errors);
     ncs.push(...r.rows);
     limits = r.limits;
+  } else if (b.handler === 'attestation') {
+    const r = attestationRow(b, row, rows.d, ctx, errors);
+    if (!r) return null;
+    ncs.push(r);
   } else {
     const r = inNetworkCostShares(b, row, errors);
     ncs.push(tierRow('IN', 'IN', b, { steps: r.steps, notes: `${b.file} cells: ${r.cells.join(', ')}.` }, ctx));
@@ -1274,7 +1310,85 @@ const SECTION_A_UNCARRIED = ['bid_id', 'version', 'orgtype', 'pbp_a_org_name', '
   'pbp_a_network_flag', 'pbp_a_plan_geog_name', 'pbp_a_segment_name', 'pbp_a_eghp_yn', 'pbp_a_special_need_flag',
   'pbp_a_special_need_plan_type', 'pbp_a_snp_institutional_type', 'pbp_a_snp_cond', 'pbp_a_snp_pct',
   'pbp_a_dsnp_zerodollar', 'pbp_a_snp_state_cvg_yn', 'pbp_a_contract_partd_flag', 'pbp_a_hospice_care_yn',
-  'pbp_a_continue_yn', 'pbp_a_org_website', 'pbp_a_phys_web_addr', 'pbp_a_formulary_web_addr', 'pbp_a_pharmacy_website'];
+  'pbp_a_continue_yn', 'pbp_a_formulary_web_addr', 'pbp_a_pharmacy_website'];
+
+// ---- premium (spec section 4.1; medical MVP gap G3) ------------------------------------------
+// Section D's plan premium, "Plan Premium Amount (A/B)", and the Part B premium
+// reduction. No file or dictionary text states a period, so none is written. A
+// blank premium writes no premium; a reduction answered "2" (No) writes none.
+function buildPremium(d, errors) {
+  const out = {};
+  const parts = [];
+  const premium = amount(d, 'pbp_d_mplusc_premium', errors);
+  if (premium !== null) {
+    out.premium = { amount: premium, currency: 'USD' };
+    parts.push(`${cell(d, 'pbp_d_mplusc_premium')} (Plan Premium Amount (A/B)), written as premium.amount in USD; ` +
+      'the file states no period, so premium.period is not written');
+  } else if (q(d, 'pbp_d_mplusc_premium') === '') parts.push('pbp_d_mplusc_premium is blank, so premium is not written');
+  if (q(d, 'pbp_d_mplusc_bonly_premium') !== '') {
+    parts.push(`${cell(d, 'pbp_d_mplusc_bonly_premium')} (Plan Premium Amount (B Only)), which has no Benefit Plan Standard field`);
+  }
+  const reduce = yn(d, 'pbp_d_mco_pay_reduct_yn', errors);
+  if (reduce === '1') {
+    const amt = amount(d, 'pbp_d_mco_pay_reduct_amt', errors);
+    if (amt !== null) {
+      out.part_b_premium_reduction = { amount: amt };
+      parts.push(`${cell(d, 'pbp_d_mco_pay_reduct_yn')}, ${cell(d, 'pbp_d_mco_pay_reduct_amt')} (Part B Premium reduction amount), ` +
+        'written as part_b_premium_reduction.amount; the file states no period');
+    } else if (q(d, 'pbp_d_mco_pay_reduct_amt') === '') errors.push(`pbp_d_mco_pay_reduct_yn "1" but ${cell(d, 'pbp_d_mco_pay_reduct_amt')}`);
+  } else if (reduce === '2') {
+    if (q(d, 'pbp_d_mco_pay_reduct_amt') !== '') errors.push(`${cell(d, 'pbp_d_mco_pay_reduct_amt')} has a value but pbp_d_mco_pay_reduct_yn is "2"`);
+    parts.push(`${cell(d, 'pbp_d_mco_pay_reduct_yn')} (the plan does not use its MA rebates to reduce the Part B premium), ` +
+      'so part_b_premium_reduction is not written');
+  } else if (reduce === '') parts.push('pbp_d_mco_pay_reduct_yn is blank, so part_b_premium_reduction is not written');
+  return { ...out, excerpt: `Premium from Section D: ${parts.join('; ')}.` };
+}
+
+// ---- contacts and the provider directory (spec section 4.1; medical MVP gaps G4 and G5) ------
+// contacts.website and network_tiers[].provider_directory_url are URIs in the
+// v1.2.0 draft, so a Section A address is written only when it is a web address
+// with its scheme. One without a scheme (www.aetna.com/medicare) is quoted and
+// not written; the importer never adds a scheme it would have to guess.
+const WEB_ADDRESS = /^https?:\/\/[A-Za-z0-9.-]+(?::\d+)?(?:[/?#][A-Za-z0-9\-._~!$&'()*+,;=:@/?#%]*)?$/;
+
+function isWebAddress(s) {
+  return WEB_ADDRESS.test(s) && !/%(?![0-9A-Fa-f]{2})/.test(s) && (s.match(/#/g) || []).length <= 1;
+}
+
+function whyNotWebAddress(s) {
+  return /^[A-Za-z][A-Za-z0-9+.-]*:/.test(s) ? 'it is not an http or https address the schema accepts as a URI' :
+    'it has no scheme, so it is not a URI, and the importer does not add one';
+}
+
+// Returns { contacts, directory, excerpt }: contacts null when Section A gives
+// neither a phone nor a web address, directory the IN tier's link or null.
+function buildContacts(a) {
+  const contacts = {};
+  const parts = [];
+  const phone = q(a, 'pbp_a_curmbr_phone').trim();
+  if (phone) {
+    contacts.member_services_phone = phone;
+    parts.push(`${cell(a, 'pbp_a_curmbr_phone')} (Customer Service Contact Phone Number for Current Medicare Beneficiaries), ` +
+      'written as contacts.member_services_phone');
+  } else parts.push('pbp_a_curmbr_phone is blank, so contacts.member_services_phone is not written');
+  if (q(a, 'pbp_a_curmbr_phone_ext') !== '') parts.push(`${cell(a, 'pbp_a_curmbr_phone_ext')}, which has no Benefit Plan Standard field`);
+  const web = (col, target) => {
+    const v = q(a, col).trim();
+    if (v === '') { parts.push(`${col} is blank, so ${target} is not written`); return null; }
+    if (isWebAddress(v)) { parts.push(`${cell(a, col)}, written as ${target}`); return v; }
+    parts.push(`${cell(a, col)}, not written as ${target}: ${whyNotWebAddress(v)}`);
+    return null;
+  };
+  const website = web('pbp_a_org_website', 'contacts.website');
+  if (website) contacts.website = website;
+  const directory = web('pbp_a_phys_web_addr', 'network_tiers[tier_id=IN].provider_directory_url');
+  return {
+    contacts: Object.keys(contacts).length ? contacts : null,
+    directory,
+    excerpt: `Contacts and the provider directory from Section A: ${parts.join('; ')}. ` +
+      'Section A gives 1 provider directory address per plan, so it belongs to the in-network tier only.',
+  };
+}
 
 function planIdFor(a, keyText) {
   const suffix = '_' + keyText.replace(/-/g, '_');
@@ -1336,7 +1450,10 @@ function buildDocument(rows, source) {
     skipped: [],
   };
   const benefits = buildBenefits(rows, ctx, errors, warn);
+  const premium = buildPremium(d, errors);
+  const contacts = buildContacts(a);
   if (errors.length) return { doc: null, errors, warnings };
+  if (contacts.directory) network_tiers.find((t) => t.tier_id === 'IN').provider_directory_url = contacts.directory;
 
   const doc = {};
   doc.plan_id = planIdFor(a, keyText);
@@ -1351,6 +1468,9 @@ function buildDocument(rows, source) {
   doc.plan_year = area.planYear;
   doc.market = 'medicare_advantage';
   if (area.service_area) doc.service_area = area.service_area;
+  if (premium.premium) doc.premium = premium.premium;
+  if (premium.part_b_premium_reduction) doc.part_b_premium_reduction = premium.part_b_premium_reduction;
+  if (contacts.contacts) doc.contacts = contacts.contacts;
   doc.network_tiers = network_tiers;
   doc.accumulators = accumulators;
   doc.benefits = benefits;
@@ -1363,7 +1483,9 @@ function buildDocument(rows, source) {
     `Plan type: pbp_a_plan_type "${planType}" (${PLAN_TYPE_LABELS[planType]}), written as plan_type "${MVP_PLAN_TYPES[planType]}".`,
     'Section A values with no Benefit Plan Standard field, verbatim: ' +
       SECTION_A_UNCARRIED.filter((col) => (a[col] || '') !== '').map((col) => cell(a, col)).join('; ') + '.',
+    contacts.excerpt,
     area.excerpt,
+    premium.excerpt,
     ...accNotes,
     'Every non-blank Section D deductible and out-of-pocket cell, verbatim, in file order: ' + accumulatorCells(d).join('; ') + '.',
     `Benefits: the ${CROSSWALK.benefits.length} service categories in fhir/pbp-crosswalk.json (the workgroup MVP), ${benefits.length} written. ` +

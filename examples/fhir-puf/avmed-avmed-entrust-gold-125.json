@@ -15,14 +15,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>AvMed Entrust Gold 125 (2026)</b></p><p>Carrier: AvMed. Plan type: HMO. Period: 2026-01-01 to 2026-12-31.</p><p>27 benefits are placed in CARIN SBC benefit categories. 25 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>9 benefits are not covered on any tier and are listed in the excluded-services extension, derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p><p>Converted from Benefit Plan Standard document AVMED_AVMED_ENTRUST_GOLD_125 (schema version 1.1.0).</p></div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>AvMed Entrust Gold 125 (2026)</b></p><p>Carrier: AvMed. Plan type: HMO. Period: 2026-01-01 to 2026-12-31.</p><p>27 benefits are placed in CARIN SBC benefit categories. 25 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>9 benefits are not covered on any tier and are listed in the excluded-services extension, derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p><p>Converted from Benefit Plan Standard document AVMED_AVMED_ENTRUST_GOLD_125 (schema version 1.2.0).</p></div>"
         },
         "extension": [
           {
             "extension": [
               {
                 "url": "schemaVersion",
-                "valueString": "1.1.0"
+                "valueString": "1.2.0"
               },
               {
                 "url": "planYear",
@@ -39,7 +39,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05. HIOS plan ID 19898FL0340001-01 (the Benefit Plan Standard v1.1.0 schema has no identifier field, so the ID is recorded here). SBC URL from the Plan Attributes PUF: https://apps.avmed.com/Public/OHBRFileManager/DownloadFile.aspx?filePath=%2Fpresales%2FAvMed%2F2026%2FSBC%2FIFP%2FAVINHG16510101260625.pdf."
+                "valueString": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05, and Network PUF (network-puf.csv, from https://download.cms.gov/marketplace-puf/2026/network-puf.zip), downloaded 2026-10-20. ImportDate as each file gives it: Plan Attributes PUF ImportDate \"5/26/2026\"; Benefits and Cost Sharing PUF ImportDate \"2026-05-26\"; Network PUF ImportDate \"2026-05-26\". HIOS plan ID: PlanId \"19898FL0340001-01\", StandardComponentId \"19898FL0340001\", written in plan_identifiers. SBC URL from the Plan Attributes PUF: https://apps.avmed.com/Public/OHBRFileManager/DownloadFile.aspx?filePath=%2Fpresales%2FAvMed%2F2026%2FSBC%2FIFP%2FAVINHG16510101260625.pdf."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -48,7 +48,16 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Plan Attributes PUF values with no Benefit Plan Standard v1.1.0 field, verbatim: StandardComponentId \"19898FL0340001\"; CSRVariationType \"Standard Gold On Exchange Plan\"; PlanVariantMarketingName \"AvMed Entrust Gold 125 (2026)\"; MetalLevel \"Gold\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"Yes\"; FirstTierUtilization \"40%\"; SecondTierUtilization \"60%\"; NetworkId \"FLN001\"; ServiceAreaId \"FLS001\"; FormularyId \"FLF001\"; NationalNetwork \"No\"; IsReferralRequiredForSpecialist \"Yes\"; SpecialistRequiringReferral \"All except OB/Gyn, Chiropractor, and Podiatrist for diabetic foot care.\"; OutOfCountryCoverage \"Yes\"; OutOfServiceAreaCoverage \"Yes\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; IssuerActuarialValue \"79.04%\"; FormularyURL \"https://shc-p-001.sitecorecontenthub.cloud/api/public/content/2026-Individual-and-Family-Plan-Formulary-Non-Standard-pdf\"; PlanBrochure \"https://shc-p-001.sitecorecontenthub.cloud/api/public/content/2026-Avmed-Buyers-Guide-pdf\"."
+                "valueString": "Plan Attributes PUF values with no Benefit Plan Standard v1.2.0 field, verbatim: CSRVariationType \"Standard Gold On Exchange Plan\"; PlanVariantMarketingName \"AvMed Entrust Gold 125 (2026)\"; MetalLevel \"Gold\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"Yes\"; FirstTierUtilization \"40%\"; SecondTierUtilization \"60%\"; NetworkId \"FLN001\"; ServiceAreaId \"FLS001\"; FormularyId \"FLF001\"; NationalNetwork \"No\"; IsReferralRequiredForSpecialist \"Yes\"; SpecialistRequiringReferral \"All except OB/Gyn, Chiropractor, and Podiatrist for diabetic foot care.\"; OutOfCountryCoverage \"Yes\"; OutOfCountryCoverageDescription \"Emergency Only\"; OutOfServiceAreaCoverage \"Yes\"; OutOfServiceAreaCoverageDescription \"Emergency Only\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; IssuerActuarialValue \"79.04%\"; FormularyURL \"https://shc-p-001.sitecorecontenthub.cloud/api/public/content/2026-Individual-and-Family-Plan-Formulary-Non-Standard-pdf\"; PlanBrochure \"https://shc-p-001.sitecorecontenthub.cloud/api/public/content/2026-Avmed-Buyers-Guide-pdf\"."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Provider directory from the Network PUF, the row whose BusinessYear, StateCode, IssuerId, NetworkId and MarketCoverage are the plan's: NetworkName \"AvMed HIX Network\", NetworkURL \"https://avmed.healthsparq.com/healthsparq/public/#/one/insurerCode=AVMED_I&brandCode=AVMED\", written as network_tiers[tier_id=IN].provider_directory_url."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -741,6 +750,14 @@
           {
             "system": "https://benefitplanstandard.org/plan-id",
             "value": "AVMED_AVMED_ENTRUST_GOLD_125"
+          },
+          {
+            "system": "https://benefitplanstandard.org/fhir/identifier/hios_plan_id",
+            "value": "19898FL0340001-01"
+          },
+          {
+            "system": "https://www.cms.gov/CCIIO/Resources/Data-Resources/hios",
+            "value": "19898FL0340001"
           }
         ],
         "status": "active",

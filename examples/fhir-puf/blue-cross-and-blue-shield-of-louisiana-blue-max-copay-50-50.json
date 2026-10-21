@@ -15,14 +15,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits</b></p><p>Carrier: Blue Cross and Blue Shield of Louisiana. Plan type: PPO. Period: 2026-01-01 to 2026-12-31.</p><p>27 benefits are placed in CARIN SBC benefit categories. 25 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>8 benefits are not covered on any tier and are listed in the excluded-services extension, derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p><p>Converted from Benefit Plan Standard document BLUE_CROSS_AND_BLUE_SHIELD_OF_LOUISIANA_BLUE_MAX_COPAY_50_50 (schema version 1.1.0).</p></div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits</b></p><p>Carrier: Blue Cross and Blue Shield of Louisiana. Plan type: PPO. Period: 2026-01-01 to 2026-12-31.</p><p>27 benefits are placed in CARIN SBC benefit categories. 25 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>8 benefits are not covered on any tier and are listed in the excluded-services extension, derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p><p>Converted from Benefit Plan Standard document BLUE_CROSS_AND_BLUE_SHIELD_OF_LOUISIANA_BLUE_MAX_COPAY_50_50 (schema version 1.2.0).</p></div>"
         },
         "extension": [
           {
             "extension": [
               {
                 "url": "schemaVersion",
-                "valueString": "1.1.0"
+                "valueString": "1.2.0"
               },
               {
                 "url": "planYear",
@@ -39,7 +39,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05. HIOS plan ID 97176LA0340010-01 (the Benefit Plan Standard v1.1.0 schema has no identifier field, so the ID is recorded here). SBC URL from the Plan Attributes PUF: https://www.lablue.com/web/applications/sbcportal/sbcs/2026/97176LA0340010-01.pdf."
+                "valueString": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05, and Network PUF (network-puf.csv, from https://download.cms.gov/marketplace-puf/2026/network-puf.zip), downloaded 2026-10-20. ImportDate as each file gives it: Plan Attributes PUF ImportDate \"10/15/2025\"; Benefits and Cost Sharing PUF ImportDate \"2025-10-15\"; Network PUF ImportDate \"2025-10-15\". HIOS plan ID: PlanId \"97176LA0340010-01\", StandardComponentId \"97176LA0340010\", written in plan_identifiers. SBC URL from the Plan Attributes PUF: https://www.lablue.com/web/applications/sbcportal/sbcs/2026/97176LA0340010-01.pdf."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -48,7 +48,16 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Plan Attributes PUF values with no Benefit Plan Standard v1.1.0 field, verbatim: StandardComponentId \"97176LA0340010\"; CSRVariationType \"Standard Silver On Exchange Plan\"; PlanVariantMarketingName \"Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits\"; MetalLevel \"Silver\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"No\"; FirstTierUtilization \"100%\"; NetworkId \"LAN001\"; ServiceAreaId \"LAS001\"; FormularyId \"LAF010\"; NationalNetwork \"Yes\"; IsReferralRequiredForSpecialist \"No\"; OutOfCountryCoverage \"Yes\"; OutOfServiceAreaCoverage \"Yes\"; SpecialtyDrugMaximumCoinsurance \"$250\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.709458831\"; FormularyURL \"https://lablue.com/pharmacy-3tier-formulary2026\"; PlanBrochure \"http://www.lablue.com/individual-solutions-brochure2026\"."
+                "valueString": "Plan Attributes PUF values with no Benefit Plan Standard v1.2.0 field, verbatim: CSRVariationType \"Standard Silver On Exchange Plan\"; PlanVariantMarketingName \"Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits\"; MetalLevel \"Silver\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"No\"; FirstTierUtilization \"100%\"; NetworkId \"LAN001\"; ServiceAreaId \"LAS001\"; FormularyId \"LAF010\"; NationalNetwork \"Yes\"; IsReferralRequiredForSpecialist \"No\"; OutOfCountryCoverage \"Yes\"; OutOfCountryCoverageDescription \"Emergency and non-emergency coverage subject to Blue Card Worldwide rules.\"; OutOfServiceAreaCoverage \"Yes\"; OutOfServiceAreaCoverageDescription \"Coverage available for covered benefits\"; SpecialtyDrugMaximumCoinsurance \"$250\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.709458831\"; FormularyURL \"https://lablue.com/pharmacy-3tier-formulary2026\"; PlanBrochure \"http://www.lablue.com/individual-solutions-brochure2026\"."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Provider directory from the Network PUF, the row whose BusinessYear, StateCode, IssuerId, NetworkId and MarketCoverage are the plan's: NetworkName \"PPO Vision Dental\", NetworkURL \"https://lablue.com/ppo-medical-vision-dental\", written as network_tiers[tier_id=IN].provider_directory_url."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -726,6 +735,14 @@
           {
             "system": "https://benefitplanstandard.org/plan-id",
             "value": "BLUE_CROSS_AND_BLUE_SHIELD_OF_LOUISIANA_BLUE_MAX_COPAY_50_50"
+          },
+          {
+            "system": "https://benefitplanstandard.org/fhir/identifier/hios_plan_id",
+            "value": "97176LA0340010-01"
+          },
+          {
+            "system": "https://www.cms.gov/CCIIO/Resources/Data-Resources/hios",
+            "value": "97176LA0340010"
           }
         ],
         "status": "active",

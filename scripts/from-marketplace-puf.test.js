@@ -20,7 +20,7 @@ const path = require('path');
 
 const {
   CsvParser, parseCostShare, parseLimit, parseDollars, buildDocument, serialize, fileSlug,
-  loadPlan, validateDocument, pufFiles, GOLDEN, EXAMPLES_DIR, DATA_DIR, CROSSWALK,
+  loadPlan, validateDocument, pufFiles, downloadDates, GOLDEN, EXAMPLES_DIR, DATA_DIR, CROSSWALK,
 } = require('./from-marketplace-puf.js');
 
 const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
@@ -102,23 +102,31 @@ function syntheticPlan() {
     MedicalDrugDeductiblesIntegrated: 'No', MedicalDrugMaximumOutofPocketIntegrated: 'Yes',
     MEHBDedInnTier1Individual: '$1,000 ', MEHBDedInnTier1FamilyPerPerson: '$1000 per person', MEHBDedInnTier1FamilyPerGroup: '$2000 per group',
     TEHBInnTier1IndividualMOOP: '$9,000', TEHBInnTier1FamilyPerGroupMOOP: '$18000 per group', TEHBInnTier1FamilyPerPersonMOOP: 'per person not applicable',
-    URLForSummaryofBenefitsCoverage: 'https://example.org/sbc.pdf',
+    URLForSummaryofBenefitsCoverage: 'https://example.org/sbc.pdf', ImportDate: '10/15/2025', NetworkId: 'TXN001',
+    OutOfCountryCoverage: 'No', OutOfCountryCoverageDescription: '', OutOfServiceAreaCoverage: 'Yes', OutOfServiceAreaCoverageDescription: 'Emergency care only.',
   };
   const header = Object.keys(plan);
-  const base = { PlanId: plan.PlanId, CopayInnTier2: '', CoinsInnTier2: '', IsEHB: 'Yes', QuantLimitOnSvc: '', LimitQty: '', LimitUnit: '', Exclusions: '', Explanation: '', IsExclFromInnMOOP: 'No', IsExclFromOonMOOP: 'No' };
+  const base = { PlanId: plan.PlanId, ImportDate: '2025-10-15', CopayInnTier2: '', CoinsInnTier2: '', IsEHB: 'Yes', QuantLimitOnSvc: '', LimitQty: '', LimitUnit: '', Exclusions: '', Explanation: '', IsExclFromInnMOOP: 'No', IsExclFromOonMOOP: 'No' };
   const rows = [
     { ...base, BenefitName: 'Specialist Visit', IsCovered: 'Covered', CopayInnTier1: '$50.00', CoinsInnTier1: 'Not Applicable', CopayOutofNet: 'Not Applicable', CoinsOutofNet: '40.00% Coinsurance after deductible', Explanation: 'Referral required.' },
     { ...base, BenefitName: 'Cochlear Implants', IsCovered: 'Not Covered', CopayInnTier1: '', CoinsInnTier1: '', CopayOutofNet: '', CoinsOutofNet: '' },
     { ...base, BenefitName: 'Skilled Nursing Facility', IsCovered: 'Covered', CopayInnTier1: '$300.00 Copay per Day with deductible', CoinsInnTier1: 'Not Applicable', CopayOutofNet: '', CoinsOutofNet: '', QuantLimitOnSvc: 'Yes', LimitQty: '25.0', LimitUnit: 'Days per Year' },
     { ...base, BenefitName: 'Acupuncture', IsCovered: '', CopayInnTier1: '', CoinsInnTier1: '', CopayOutofNet: '', CoinsOutofNet: '' },
   ];
-  return { plan, header, rows };
+  const network = [{
+    BusinessYear: '2026', StateCode: 'TX', IssuerId: '99999', SourceName: 'HIOS', ImportDate: '2025-10-16', NetworkName: 'Example Network',
+    NetworkId: 'TXN001', NetworkURL: 'https://example.org/find-a-doctor', MarketCoverage: 'Individual', DentalOnlyPlan: 'No',
+  }];
+  return { plan, header, rows, network };
 }
-const SOURCE = { planFile: 'plan-attributes-puf.csv', benefitsFile: 'benefits-and-cost-sharing-puf.csv', downloaded: '2026-10-05' };
+const SOURCE = {
+  planFile: 'plan-attributes-puf.csv', benefitsFile: 'benefits-and-cost-sharing-puf.csv', networkFile: 'network-puf.csv',
+  downloaded: '2026-10-05', networkDownloaded: '2026-10-20',
+};
 
 test('buildDocument: mapping rules on a synthetic plan', () => {
-  const { plan, header, rows } = syntheticPlan();
-  const { doc, errors } = buildDocument(plan, header, rows, SOURCE);
+  const { plan, header, rows, network } = syntheticPlan();
+  const { doc, errors } = buildDocument(plan, header, rows, SOURCE, network);
   assert.deepStrictEqual(errors, []);
   assert.deepStrictEqual(validateDocument(doc), []);
   assert.strictEqual(doc.plan_id, 'EXAMPLE_HEALTH_SILVER_1');
@@ -142,18 +150,18 @@ test('buildDocument: mapping rules on a synthetic plan', () => {
 });
 
 test('buildDocument: tier 2 appears only when the plan has tier 2 values', () => {
-  const { plan, header, rows } = syntheticPlan();
+  const { plan, header, rows, network } = syntheticPlan();
   rows[0].CopayInnTier2 = '$80.00';
-  const { doc } = buildDocument(plan, header, rows, SOURCE);
+  const { doc } = buildDocument(plan, header, rows, SOURCE, network);
   assert.deepStrictEqual(doc.network_tiers.map((t) => t.tier_id), ['IN', 'IN2', 'OUT']);
   rows[0].CopayInnTier2 = 'Not Applicable';
-  assert.deepStrictEqual(buildDocument(plan, header, rows, SOURCE).doc.network_tiers.map((t) => t.tier_id), ['IN', 'OUT']);
+  assert.deepStrictEqual(buildDocument(plan, header, rows, SOURCE, network).doc.network_tiers.map((t) => t.tier_id), ['IN', 'OUT']);
 });
 
 test('buildDocument: an unreadable string is an error, quoted, and no document is written', () => {
-  const { plan, header, rows } = syntheticPlan();
+  const { plan, header, rows, network } = syntheticPlan();
   rows[0].CopayInnTier1 = '$50 per visit, waived if admitted';
-  const { doc, errors } = buildDocument(plan, header, rows, SOURCE);
+  const { doc, errors } = buildDocument(plan, header, rows, SOURCE, network);
   assert.strictEqual(doc, null);
   assert.strictEqual(errors.length, 1);
   assert.match(errors[0], /Specialist Visit/);
@@ -163,7 +171,92 @@ test('buildDocument: an unreadable string is an error, quoted, and no document i
 test('buildDocument: deterministic', () => {
   const a = syntheticPlan();
   const b = syntheticPlan();
-  assert.strictEqual(serialize(buildDocument(a.plan, a.header, a.rows, SOURCE).doc), serialize(buildDocument(b.plan, b.header, b.rows, SOURCE).doc));
+  assert.strictEqual(serialize(buildDocument(a.plan, a.header, a.rows, SOURCE, a.network).doc),
+    serialize(buildDocument(b.plan, b.header, b.rows, SOURCE, b.network).doc));
+});
+
+// ---- medical MVP gaps closed on 2026-10-20 (docs/specs/rtb-medical-mvp/README.md) -------------
+test('buildDocument: schema 1.2.0 with plan_identifiers (gap G7); no contacts, since the files give no plan website', () => {
+  const { plan, header, rows, network } = syntheticPlan();
+  const { doc } = buildDocument(plan, header, rows, SOURCE, network);
+  assert.strictEqual(doc.schema_version, '1.2.0');
+  assert.deepStrictEqual(doc.plan_identifiers, [{ system: 'hios_plan_id', value: '99999TX0010001-01' }, { system: 'hios_id', value: '99999TX0010001' }]);
+  assert.deepStrictEqual(Object.keys(doc).slice(0, 3), ['plan_id', 'plan_identifiers', 'plan_name']);
+  assert.ok(doc.source_references[0].excerpt.includes('PlanId "99999TX0010001-01", StandardComponentId "99999TX0010001", written in plan_identifiers'));
+  assert.strictEqual(doc.contacts, undefined);
+});
+
+test('buildDocument: the first excerpt carries each file\'s ImportDate beside its download date (gap G6)', () => {
+  const { plan, header, rows, network } = syntheticPlan();
+  const first = buildDocument(plan, header, rows, SOURCE, network).doc.source_references[0].excerpt;
+  assert.ok(first.startsWith('CMS Health Insurance Exchange Public Use Files, plan year 2026: '));
+  assert.ok(first.includes('benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05'), first);
+  assert.ok(first.includes('Network PUF (network-puf.csv, from https://download.cms.gov/marketplace-puf/2026/network-puf.zip), downloaded 2026-10-20'), first);
+  for (const s of ['Plan Attributes PUF ImportDate "10/15/2025"', 'Benefits and Cost Sharing PUF ImportDate "2025-10-15"', 'Network PUF ImportDate "2025-10-16"']) {
+    assert.ok(first.includes(s), s);
+  }
+  const same = buildDocument(plan, header, rows, { ...SOURCE, networkDownloaded: '2026-10-05' }, network).doc.source_references[0].excerpt;
+  assert.ok(same.includes('and Network PUF (network-puf.csv, from https://download.cms.gov/marketplace-puf/2026/network-puf.zip), downloaded 2026-10-05.'), same);
+  rows[1].ImportDate = '2025-11-01';
+  const two = buildDocument(plan, header, rows, SOURCE, network).doc.source_references[0].excerpt;
+  assert.ok(two.includes('Benefits and Cost Sharing PUF ImportDate "2025-10-15" and "2025-11-01"'), 'each distinct value of the plan\'s rows, in file order');
+});
+
+test('buildDocument: the provider directory link from the Network PUF, on the IN tier, joined on 5 columns (gap G5)', () => {
+  const { plan, header, rows, network } = syntheticPlan();
+  const otherIssuer = { ...network[0], IssuerId: '11111', NetworkURL: 'https://other.example.org/' };
+  const otherMarket = { ...network[0], MarketCoverage: 'SHOP (Small Group)', NetworkURL: 'https://shop.example.org/' };
+  const { doc, errors } = buildDocument(plan, header, rows, SOURCE, [otherIssuer, otherMarket, ...network]);
+  assert.deepStrictEqual(errors, []);
+  assert.deepStrictEqual(validateDocument(doc), []);
+  assert.deepStrictEqual(doc.network_tiers.map((t) => t.provider_directory_url), ['https://example.org/find-a-doctor', undefined]);
+  const ex = (d) => (d.source_references.find((s) => s.excerpt.startsWith('Provider directory from the Network PUF')) || {}).excerpt || '';
+  assert.ok(ex(doc).includes('NetworkName "Example Network", NetworkURL "https://example.org/find-a-doctor", written as network_tiers[tier_id=IN].provider_directory_url'), ex(doc));
+  const none = buildDocument(plan, header, rows, SOURCE, [otherIssuer, otherMarket]).doc;
+  assert.ok(!none.network_tiers.some((t) => 'provider_directory_url' in t));
+  assert.match(ex(none), /no Network PUF row/);
+  const blank = buildDocument(plan, header, rows, SOURCE, [{ ...network[0], NetworkURL: '' }]).doc;
+  assert.ok(!blank.network_tiers.some((t) => 'provider_directory_url' in t));
+  assert.ok(ex(blank).includes('NetworkURL is blank') && !ex(blank).includes('NetworkURL "'), 'a blank address is not quoted as an answer');
+  const bare = buildDocument(plan, header, rows, SOURCE, [{ ...network[0], NetworkURL: 'example.org/find' }]).doc;
+  assert.ok(!bare.network_tiers.some((t) => 'provider_directory_url' in t));
+  assert.ok(ex(bare).includes('NetworkURL "example.org/find", not written as network_tiers[tier_id=IN].provider_directory_url: it has no scheme'));
+  const two = buildDocument(plan, header, rows, SOURCE, [network[0], { ...network[0] }]);
+  assert.strictEqual(two.doc, null);
+  assert.ok(two.errors.some((e) => e.includes('2 Network PUF rows')), two.errors.join('; '));
+});
+
+test('buildDocument: the out-of-area and out-of-country descriptions are quoted when filled (gap G8)', () => {
+  const { plan, header, rows, network } = syntheticPlan();
+  const attrs = buildDocument(plan, header, rows, SOURCE, network).doc.source_references
+    .find((s) => s.excerpt.startsWith('Plan Attributes PUF values with no Benefit Plan Standard v1.2.0 field')).excerpt;
+  assert.ok(attrs.includes('OutOfServiceAreaCoverage "Yes"; OutOfServiceAreaCoverageDescription "Emergency care only."'), attrs);
+  assert.ok(attrs.includes('OutOfCountryCoverage "No"') && !attrs.includes('OutOfCountryCoverageDescription'), 'a blank description is left out');
+  assert.ok(!attrs.includes('StandardComponentId'), 'StandardComponentId has a field now');
+});
+
+// ---- reading the files ---------------------------------------------------------------------
+function tmpDir(files) {
+  const dir = fs.mkdtempSync(path.join(require('os').tmpdir(), 'puf-test-'));
+  for (const [name, text] of Object.entries(files)) fs.writeFileSync(path.join(dir, name), text);
+  return dir;
+}
+
+test('pufFiles: the Network PUF is the third file, required', () => {
+  const two = tmpDir({ 'plan-attributes-puf.csv': 'a\n', 'benefits-and-cost-sharing-puf.csv': 'a\n' });
+  assert.throws(() => pufFiles(path.dirname(two), path.basename(two)), /expected one Network CSV/);
+  const three = tmpDir({ 'plan-attributes-puf.csv': 'a\n', 'benefits-and-cost-sharing-puf.csv': 'a\n', 'Network_PUF.csv': 'a\n' });
+  assert.strictEqual(path.basename(pufFiles(path.dirname(three), path.basename(three)).networkFile), 'Network_PUF.csv');
+});
+
+test('downloadDates: the Network PUF has its own date when download.json records one; --downloaded sets all 3', () => {
+  const dir = tmpDir({ 'download.json': JSON.stringify({ downloaded: '2026-10-05', downloaded_files: { 'network-puf.zip': '2026-10-20' } }) });
+  assert.deepStrictEqual(downloadDates(dir), { downloaded: '2026-10-05', networkDownloaded: '2026-10-20' });
+  assert.deepStrictEqual(downloadDates(dir, '2026-11-01'), { downloaded: '2026-11-01', networkDownloaded: '2026-11-01' });
+  const plain = tmpDir({ 'download.json': JSON.stringify({ downloaded: '2026-10-05' }) });
+  assert.deepStrictEqual(downloadDates(plain), { downloaded: '2026-10-05', networkDownloaded: '2026-10-05' });
+  const bad = tmpDir({ 'download.json': JSON.stringify({ downloaded: '2026-10-05', downloaded_files: { 'network-puf.zip': 'October 20' } }) });
+  assert.throws(() => downloadDates(bad), /network-puf\.zip/);
 });
 
 // ---- crosswalk -----------------------------------------------------------------------------
@@ -189,7 +282,7 @@ test('the committed examples are the golden set', () => {
 });
 
 for (const file of goldenFiles()) {
-  test(`${file}: valid against the v1.1.0 schema`, () => {
+  test(`${file}: valid against the v1.2.0 schema`, () => {
     assert.deepStrictEqual(validateDocument(readJson(path.join(EXAMPLES_DIR, file))), []);
   });
 }
@@ -201,13 +294,13 @@ function hasData(year) {
 for (const g of GOLDEN) {
   const skip = hasData(g.year) ? false : `public files for plan year ${g.year} are not in data/puf/${g.year}/`;
   test(`PY${g.year} ${g.plan}: output matches golden file, deterministic, no row lost`, { skip }, async () => {
-    const { plan, planHeader, rows, source } = await loadPlan({ year: g.year, plan: g.plan });
-    const { doc, errors } = buildDocument(plan, planHeader, rows, source);
+    const { plan, planHeader, rows, network, source } = await loadPlan({ year: g.year, plan: g.plan });
+    const { doc, errors } = buildDocument(plan, planHeader, rows, source, network);
     assert.deepStrictEqual(errors, []);
     const golden = path.join(EXAMPLES_DIR, fileSlug(doc) + '.puf.json');
     assert.ok(fs.existsSync(golden), `missing golden file examples/${fileSlug(doc)}.puf.json`);
     assert.strictEqual(serialize(doc), normalize(fs.readFileSync(golden, 'utf8')), `examples/${fileSlug(doc)}.puf.json differs from importer output`);
-    assert.strictEqual(serialize(buildDocument(plan, planHeader, rows, source).doc), serialize(doc));
+    assert.strictEqual(serialize(buildDocument(plan, planHeader, rows, source, network).doc), serialize(doc));
     const listed = (doc.source_references.find((s) => s.excerpt.startsWith('Benefits and Cost Sharing PUF rows')) || { excerpt: '' }).excerpt;
     const unmapped = Number((/\((\d+)\):/.exec(listed) || [0, 0])[1]);
     assert.strictEqual(doc.benefits.length + unmapped, rows.length, 'every benefit row is emitted or listed as unmapped');

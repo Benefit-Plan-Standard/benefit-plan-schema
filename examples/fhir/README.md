@@ -16,8 +16,8 @@ Validation record: [`VALIDATION.md`](VALIDATION.md).
 
 | File | BPS source | BPS schema | Benefits placed | Benefits outside the SBC codes | `Not stated in the BPS document` entries |
 |---|---|---|---|---|---|
-| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | `unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json` | 1.2.0 | 15 | 22 | 2 |
-| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | `aetna-medicare-aetna-medicare-select-extra.pbp.json` | 1.2.0 | 15 | 22 | 4 |
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | `unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json` | 1.2.0 | 16 | 22 | 2 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | `aetna-medicare-aetna-medicare-select-extra.pbp.json` | 1.2.0 | 16 | 22 | 4 |
 | `aetna-ppo-1500-80-50.json` | `aetna_example.json` | 1.1.0 | 26 | 1 | 0 |
 | `aetna-ppo-5000-80-50.json` | `aetna_ppo5000_example.json` | 1.1.0 | 26 | 1 | 0 |
 | `ambetter-ca-silver-94-hmo.json` | `ambetter_example.json` | 1.1.0 | 27 | 3 | 2 |
@@ -25,12 +25,12 @@ Validation record: [`VALIDATION.md`](VALIDATION.md).
 | `flblue-blueoptions-505.json` | `bluecross_example.json` | 1.1.0 | 27 | 4 | 0 |
 | `gatorcare-prime-epo.json` | `gatorcare_example.json` | 1.1.0 | 25 | 4 | 1 |
 | `humana-gold-plus-h1036-025-hmo.json` | `humana_example.json` | 1.2.0 | 26 | 46 | 9 |
-| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | `humana-humana-gold-plus-h1036-068.pbp.json` | 1.2.0 | 15 | 22 | 13 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | `humana-humana-gold-plus-h1036-068.pbp.json` | 1.2.0 | 16 | 22 | 14 |
 | `kaiser-ca-gold-80-hmo.json` | `kaiser_example.json` | 1.1.0 | 28 | 3 | 0 |
 | `scan-classic-hmo-los-angeles.json` | `scan_example.json` | 1.2.0 | 22 | 49 | 20 |
-| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | 1.2.0 | 15 | 22 | 13 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | 1.2.0 | 16 | 22 | 14 |
 | `uhc-choice-plus-hsa-gold-1700.json` | `united_example.json` | 1.1.0 | 26 | 3 | 0 |
-| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | 1.2.0 | 15 | 22 | 2 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | 1.2.0 | 16 | 22 | 2 |
 
 The 5 files whose BPS source is a `.pbp.json` file are the PBP Bundles, described below.
 
@@ -54,17 +54,17 @@ Added 2026-10-06. Each is the converter's output for 1 of the PBP importer's 5 g
 | UPMC for Life PPO Rx Choice (PPO) | H5533-019-000 |
 | SCAN Costco Medicare Advantage (HMO) | H5425-140-000 |
 
-**HL7 validation.** Run on 2026-10-11 with `validator_cli.jar` 7.0.0 (Git# 37795f3f571f, built 2026-10-06T19:02:34Z), OpenJDK 17.0.19, FHIR 4.0.1, packages `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions`. All 5 pass with 0 errors and 16 warnings:
+**HL7 validation.** Run on 2026-10-20, after the medical MVP gaps closed (the premium, the contacts, the provider directory link, 14a preventive services and the 7i key), with `validator_cli.jar` 7.0.0 (Git# 37795f3f571f, built 2026-10-06T19:02:34Z), OpenJDK 17.0.19, FHIR 4.0.1, packages `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions`. All 5 pass with 0 errors and 17 warnings:
 
 | Plan | Errors | Warnings | Information | Warnings are |
 |---|---|---|---|---|
-| H2406-013-000 | 0 | 0 | 120 | |
-| H1036-068-000 | 0 | 0 | 114 | |
-| H1609-028-000 | 0 | 12 | 119 | 11 text-only `cost.qualifiers` (`Point-of-service option`) and the `plan.type` |
-| H5533-019-000 | 0 | 4 | 120 | 4 text-only `cost.qualifiers` (hospital cost tier names) |
-| H5425-140-000 | 0 | 0 | 115 | |
+| H2406-013-000 | 0 | 0 | 126 | |
+| H1036-068-000 | 0 | 0 | 119 | |
+| H1609-028-000 | 0 | 13 | 125 | 12 text-only `cost.qualifiers` (`Point-of-service option`) and the `plan.type` |
+| H5533-019-000 | 0 | 4 | 126 | 4 text-only `cost.qualifiers` (hospital cost tier names) |
+| H5425-140-000 | 0 | 0 | 122 | |
 
-The 15 qualifier warnings are because the Cost Tier value set has only `value-choice`, `standard` and `virtual`. The `plan.type` warning is because the SBC Plan Type value set has no HMO-POS code. The full record is the fourth run in [`VALIDATION.md`](VALIDATION.md).
+The 16 qualifier warnings are because the Cost Tier value set has only `value-choice`, `standard` and `virtual`. The `plan.type` warning is because the SBC Plan Type value set has no HMO-POS code. The full record is the sixth run in [`VALIDATION.md`](VALIDATION.md). The copies published on the site are those of 2026-10-15 until the site is published again.
 
 ## Reading the files
 

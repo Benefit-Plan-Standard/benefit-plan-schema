@@ -1,21 +1,21 @@
 # Spec: CMS Marketplace public use files to BPS importer
 
-**Status:** Draft, 2026-10-05
+**Status:** Draft, 2026-10-05; updated 2026-10-20 (schema 1.2.0, `plan_identifiers`, the Network PUF, `ImportDate` and the out-of-area descriptions: the medical MVP gaps G5 to G8, [`rtb-medical-mvp/README.md`](rtb-medical-mvp/README.md))
 **Reads with:** [`insuranceplan-converter.md`](insuranceplan-converter.md) (the exporter this importer feeds), [`marketplace-puf-parse-report.md`](marketplace-puf-parse-report.md) (every cost-share string in the PY2026 file and how it is read), [`marketplace-puf-vs-sbc-flblue-505.md`](marketplace-puf-vs-sbc-flblue-505.md) (the importer's Florida Blue output against the SBC example)
 **Map:** this importer, the Medicare Advantage importer and the converter in one diagram, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow)
 
-This spec defines the first importer for the Benefit Plan Standard (BPS): the CMS Health Insurance Exchange public use files (PUFs) in, one BPS v1.1.0 document per plan out. It follows the pattern of the FHIR converter: the benefit mapping lives in a data file, the output is deterministic, 5 golden files are committed, and a test checks them.
+This spec defines the first importer for the Benefit Plan Standard (BPS): the CMS Health Insurance Exchange public use files (PUFs) in, one BPS v1.2.0 document per plan out (v1.1.0 until 2026-10-20). It follows the pattern of the FHIR converter: the benefit mapping lives in a data file, the output is deterministic, 5 golden files are committed, and a test checks them.
 
 ---
 
 ## 1. Scope
 
 - One direction: public files to BPS. The importer writes BPS JSON only. It never writes FHIR; FHIR comes from `scripts/to-insuranceplan.js` reading the importer's output unchanged.
-- One plan in, one BPS v1.1.0 document out. A plan is one plan variant (a 17-character HIOS plan ID, section 5.1).
+- One plan in, one BPS v1.2.0 document out. A plan is one plan variant (a 17-character HIOS plan ID, section 5.1).
 - Medical plans only. A stand-alone dental plan (`DentalOnlyPlan` "Yes") is refused.
 - The importer never adds a value the public files do not contain. It invents no period, basis, network, identifier or cost share. A string it cannot read stops the import for that plan, with the string quoted (section 6). Nothing is guessed.
 - Nothing is dropped silently. A value with no BPS field is carried verbatim in `source_references` or in tier `notes`, and benefits with no canonical key are listed by name (section 8).
-- The schema is not changed. Where the public file and the schema disagree, section 7 records the reading chosen; section 9 lists the gaps.
+- The importer does not change the schema. Where the public file and the schema disagree, section 7 records the reading chosen; section 9 lists the gaps. The v1.2.0 draft's `network_tiers[].provider_directory_url`, added on 2026-10-20 for the medical MVP, is filled from the Network PUF (4.5).
 
 ## 2. Sources
 
@@ -26,21 +26,23 @@ CMS publishes the Exchange PUFs for each plan year. They cover the states that u
 | PUF page (all plan years) | https://www.cms.gov/marketplace/resources/data/public-use-files |
 | Plan Attributes PUF, plan year YYYY | `https://download.cms.gov/marketplace-puf/YYYY/plan-attributes-puf.zip` |
 | Benefits and Cost Sharing PUF, plan year YYYY | `https://download.cms.gov/marketplace-puf/YYYY/benefits-and-cost-sharing-puf.zip` |
+| Network PUF, plan year YYYY (read since 2026-10-20) | `https://download.cms.gov/marketplace-puf/YYYY/network-puf.zip` |
+| Network data dictionary, PY2026 | https://www.cms.gov/files/document/network-datadictionary-py26.pdf |
 | Plan Attributes data dictionary, PY2026 | https://www.cms.gov/files/document/planattributes-datadictionary-py26.pdf |
 | Benefits and Cost Sharing data dictionary, PY2026 | https://www.cms.gov/files/document/benefitscostsharing-datadictionary-py26.pdf |
 | General information, PY2026 | https://www.cms.gov/files/document/exchange-pufs-geninfofacts-py26.pdf-0 |
 | FAQs, PY2026 | https://www.cms.gov/files/document/exchange-pufs-faqs-py26.pdf-0 |
 
-Both files are plan-variant level. The Plan Attributes PUF has one row per plan variant (151 columns in PY2023 and PY2026). The Benefits and Cost Sharing PUF has one row per plan variant per benefit (24 columns). The importer reads 2 files only. The other PUFs (rate, service area, network, business rules) are out of scope.
+The first 2 files are plan-variant level. The Plan Attributes PUF has one row per plan variant (151 columns in PY2023 and PY2026). The Benefits and Cost Sharing PUF has one row per plan variant per benefit (24 columns). The Network PUF has 1 row per plan year, state, issuer, network and market (10 columns: 548 rows in PY2026, 712 in PY2023), with the network's name and the address of its provider directory. The importer reads these 3 files. The other PUFs (rate, service area, business rules) are out of scope.
 
 The data dictionaries list the allowed values of the cost-share columns but do not define them. The readings in section 6 follow from those lists (for example, "after deductible" and "with deductible" are listed as separate values from a plain copay). The verbatim string is always kept (section 5.4), so a reader who reads a value differently can re-derive it.
 
 ## 3. Files, inputs and outputs
 
-- **Where the public files go.** `data/puf/<year>/`, unzipped. `data/` is in `.gitignore`; the public files are never committed. The importer finds the 2 CSVs by name pattern (`plan-attributes` and `benefits-and-cost-sharing`, case and separator insensitive), because CMS names them differently across years: PY2026 ships `plan-attributes-puf.csv` and `benefits-and-cost-sharing-puf.csv`, PY2023 ships `Plan_Attributes_PUF.csv` and `Benefits_Cost_Sharing_PUF.csv`.
-- **Download record.** `data/puf/<year>/download.json` holds `downloaded` (YYYY-MM-DD), the source page, the 2 zip URLs and a SHA-256 of each file. The importer reads the date from it; `--downloaded YYYY-MM-DD` overrides it.
-- **Reading.** Both CSVs are streamed with a small RFC 4180 parser in the script (quoted fields with commas, doubled quotes and line breaks; CRLF, LF or CR record ends; a leading byte order mark dropped). A record whose field count differs from the header is an error. No npm dependency is added.
-- **Output.** One BPS v1.1.0 document, checked against `schema/v1.1.0/benefit-plan.schema.json` with the same local Ajv setup as `scripts/validate.js` before it is written. A document that fails the schema is not written.
+- **Where the public files go.** `data/puf/<year>/`, unzipped. `data/` is in `.gitignore`; the public files are never committed. The importer finds the 3 CSVs by name pattern (`plan-attributes`, `benefits-and-cost-sharing` and `network-puf`, case and separator insensitive), because CMS names them differently across years: PY2026 ships `plan-attributes-puf.csv`, `benefits-and-cost-sharing-puf.csv` and `network-puf.csv`, PY2023 ships `Plan_Attributes_PUF.csv`, `Benefits_Cost_Sharing_PUF.csv` and `Network_PUF.csv`. All 3 are required.
+- **Download record.** `data/puf/<year>/download.json` holds `downloaded` (YYYY-MM-DD), the source page, the 3 zip URLs and a SHA-256 of each file. It may also hold `downloaded_files`, a date by zip name for a file downloaded on another day: the examples' records have `"downloaded_files": {"network-puf.zip": "2026-10-20"}` beside `"downloaded": "2026-10-05"`. The importer reads the dates from it; `--downloaded YYYY-MM-DD` sets 1 date for all 3 files.
+- **Reading.** The 3 CSVs are streamed with a small RFC 4180 parser in the script (quoted fields with commas, doubled quotes and line breaks; CRLF, LF or CR record ends; a leading byte order mark dropped). A record whose field count differs from the header is an error. No npm dependency is added.
+- **Output.** One BPS v1.2.0 document, checked against `schema/v1.2.0/benefit-plan.schema.json` with the same local Ajv setup as `scripts/validate.js` before it is written. A document that fails the schema is not written. Before 2026-10-20 the importer wrote v1.1.0.
 - **Golden files.** `examples/<slug>.puf.json`, where `<slug>` is `plan_id` lowercased with `_` changed to `-`. The `.puf.json` suffix keeps them out of the converter's `*_example.json` corpus.
 
 ## 4. Plan-level mapping
@@ -49,21 +51,23 @@ The data dictionaries list the allowed values of the cost-share columns but do n
 
 | BPS | Public file (Plan Attributes PUF) | Rule |
 |---|---|---|
-| `plan_id` | `IssuerMarketPlaceMarketingName`, `PlanMarketingName` | Each name with parenthesized text removed, uppercased, each run of other characters changed to `_`; joined with `_`; cut back to the last `_` until at most 64 characters, so the converter's FHIR id is valid. Example: "Florida Blue (BlueCross BlueShield FL)" and "BlueOptions Gold 1505 ($0 Virtual Visits / ...)" give `FLORIDA_BLUE_BLUEOPTIONS_GOLD_1505`. The slug is not unique across variants of one plan; the HIOS plan ID is the unique key (4.4). |
+| `plan_id` | `IssuerMarketPlaceMarketingName`, `PlanMarketingName` | Each name with parenthesized text removed, uppercased, each run of other characters changed to `_`; joined with `_`; cut back to the last `_` until at most 64 characters, so the converter's FHIR id is valid. Example: "Florida Blue (BlueCross BlueShield FL)" and "BlueOptions Gold 1505 ($0 Virtual Visits / ...)" give `FLORIDA_BLUE_BLUEOPTIONS_GOLD_1505`. The slug is not unique across variants of one plan; the HIOS plan ID is the unique key (`plan_identifiers`). |
+| `plan_identifiers[]` | `PlanId`, `StandardComponentId` | Since 2026-10-20 (gap G7). `hios_plan_id`, the plan key, `PlanId` verbatim (for example `68398FL0030058-01`), then `hios_id`, the 14-character `StandardComponentId` (`68398FL0030058`) when it is filled. No `source`: the file carries the values. |
 | `plan_name` | `PlanMarketingName` | Verbatim (trimmed). `PlanVariantMarketingName` goes to `source_references`. |
 | `carrier` | `IssuerMarketPlaceMarketingName` | Verbatim (trimmed). |
 | `plan_type` | `PlanType` | Verbatim (`HMO`, `PPO`, `EPO`, `POS`), except `Indemnity` becomes `INDEMNITY` to match `vocabularies/plan-types.json`. |
 | `plan_year` | `BusinessYear` | Integer. |
 | `effective_date`, `expiry_date` | `PlanEffectiveDate`, `PlanExpirationDate` | `M/D/YYYY` to ISO. Omitted when blank (PY2026: 5,206 of 22,059 rows have no expiration date). |
 | `market` | `MarketCoverage` | `Individual` to `individual`, `SHOP (Small Group)` to `small_group`. Any other value is an error. See 7.6. |
-| `schema_version` | (none) | `1.1.0`. |
+| `schema_version` | (none) | `1.2.0` (`1.1.0` before 2026-10-20). |
+| `contacts` | (none) | Not written. The Plan Attributes PUF's 4 addresses are the SBC, the brochure, the drug list and the payment page (`URLForSummaryofBenefitsCoverage`, `PlanBrochure`, `FormularyURL`, `URLForEnrollmentPayment`); none is a plan website, and no column gives a phone. |
 | `coverage_period` | (none) | Not written; the public file gives plan dates, not a separate coverage window. |
 
 ### 4.2 Network tiers
 
 | Tier | Columns | Written when |
 |---|---|---|
-| `IN` | `CopayInnTier1`, `CoinsInnTier1` | Always. Named "In-Network", or "In-Network Tier 1" when `IN2` is present. |
+| `IN` | `CopayInnTier1`, `CoinsInnTier1` | Always. Named "In-Network", or "In-Network Tier 1" when `IN2` is present. Since 2026-10-20 it carries `provider_directory_url` from the Network PUF (4.5). |
 | `IN2` | `CopayInnTier2`, `CoinsInnTier2` | Only when at least 1 of the plan's benefit rows has a tier 2 string other than blank or `Not Applicable`. The `MultipleInNetworkTiers` flag alone does not decide it; its value goes to `source_references`. |
 | `OUT` | `CopayOutofNet`, `CoinsOutofNet` | Always. Named "Out-of-Network". |
 
@@ -94,12 +98,25 @@ The Plan Attributes PUF has 3 column families: medical (`MEHB...`), drug (`DEHB.
 
 ### 4.4 Source references
 
-v1.1.0 `source_references[]` items hold `page_number`, `page_range` and `excerpt`. The public files have no pages, so every entry is an `excerpt`, in this order:
+`source_references[]` items hold `page_number`, `page_range` and `excerpt`. The public files have no pages, so every entry is an `excerpt`, in this order:
 
-1. **Source.** The 2 file names, their download URLs, the plan year, the download date, the HIOS plan ID (v1.1.0 has no identifier field; section 9.1) and `URLForSummaryofBenefitsCoverage`.
-2. **Plan attributes with no BPS field**, verbatim, each as `Column "value"`: `StandardComponentId`, `CSRVariationType`, `PlanVariantMarketingName`, `MetalLevel`, `DesignType`, `IsHSAEligible`, `MultipleInNetworkTiers`, `FirstTierUtilization`, `SecondTierUtilization`, `NetworkId`, `ServiceAreaId`, `FormularyId`, `NationalNetwork`, `IsReferralRequiredForSpecialist`, `SpecialistRequiringReferral`, `PlanLevelExclusions`, `OutOfCountryCoverage`, `OutOfServiceAreaCoverage`, `SpecialtyDrugMaximumCoinsurance`, `InpatientCopaymentMaximumDays`, `BeginPrimaryCareCostSharingAfterNumberOfVisits`, `BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays`, `IssuerActuarialValue`, `AVCalculatorOutputNumber`, `FormularyURL`, `PlanBrochure`. Blank cells are skipped.
-3. **Accumulators.** The 2 integration flags, which family was used and why, and every non-blank `MEHB`, `DEHB` and `TEHB` cell verbatim in file order.
-4. **Unmapped benefits.** Every benefit row whose `BenefitName` has no `canonical_key` in the crosswalk, in file order, each with "Covered" or "Not Covered", and "not in the crosswalk" when the name is missing from the crosswalk file altogether. Omitted when there are none.
+1. **Source.** The 3 file names, their download URLs, the plan year and the download dates (the Network PUF's own date when the download record gives it one, section 3), each file's `ImportDate` as the file writes it (gap G6, since 2026-10-20: the Plan Attributes PUF writes `10/15/2025`, the other 2 `2025-10-15`; each distinct value of the plan's Benefits and Cost Sharing rows is quoted), the HIOS plan ID and standard component ID as `PlanId "..."` and `StandardComponentId "..."`, written in `plan_identifiers`, and `URLForSummaryofBenefitsCoverage`.
+2. **Plan attributes with no BPS field**, verbatim, each as `Column "value"`: `CSRVariationType`, `PlanVariantMarketingName`, `MetalLevel`, `DesignType`, `IsHSAEligible`, `MultipleInNetworkTiers`, `FirstTierUtilization`, `SecondTierUtilization`, `NetworkId`, `ServiceAreaId`, `FormularyId`, `NationalNetwork`, `IsReferralRequiredForSpecialist`, `SpecialistRequiringReferral`, `PlanLevelExclusions`, `OutOfCountryCoverage`, `OutOfCountryCoverageDescription`, `OutOfServiceAreaCoverage`, `OutOfServiceAreaCoverageDescription`, `SpecialtyDrugMaximumCoinsurance`, `InpatientCopaymentMaximumDays`, `BeginPrimaryCareCostSharingAfterNumberOfVisits`, `BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays`, `IssuerActuarialValue`, `AVCalculatorOutputNumber`, `FormularyURL`, `PlanBrochure`. Blank cells are skipped. The 2 descriptions are quoted since 2026-10-20 (gap G8); `StandardComponentId` moved to `plan_identifiers` the same day.
+3. **Provider directory** (since 2026-10-20, 4.5): the Network PUF row's `NetworkName` and `NetworkURL`, and what was written, or that the plan's network has no row.
+4. **Accumulators.** The 2 integration flags, which family was used and why, and every non-blank `MEHB`, `DEHB` and `TEHB` cell verbatim in file order.
+5. **Unmapped benefits.** Every benefit row whose `BenefitName` has no `canonical_key` in the crosswalk, in file order, each with "Covered" or "Not Covered", and "not in the crosswalk" when the name is missing from the crosswalk file altogether. Omitted when there are none.
+
+### 4.5 Provider directory link
+
+Since 2026-10-20 (the medical MVP gap G5). The plan's row of the Network PUF is the one whose `BusinessYear`, `StateCode`, `IssuerId`, `NetworkId` and `MarketCoverage` are the plan's. `NetworkId` alone is not unique: 75 network ids of PY2026 belong to more than 1 issuer (`FLN001` is both AvMed's and Florida Blue's). `MarketCoverage` is in the key because the PY2023 file lists 9 networks once per market, Individual and SHOP, with the same address; PY2026 has 1 row per network.
+
+| Network PUF | BPS | Rule |
+|---|---|---|
+| `NetworkURL` | `network_tiers[tier_id=IN].provider_directory_url` | Written when it is an http or https URI with its scheme. A blank address writes nothing and is not quoted as an answer; an address with no scheme is quoted and not written (the field is a URI, and the importer adds no scheme). `IN2` and `OUT` get none: the plan has 1 network. |
+| `NetworkName` | (no field) | Quoted with the address. |
+| `ImportDate` | (no field) | Quoted in the first excerpt (4.4). |
+
+A plan whose network has no row gets no link, and the excerpt says so; more than 1 row is an error. In PY2026 every one of the 20,670 medical plan variants has its row and an address that is a URI. The 5 golden plans' links: AvMed's provider search address as the file gives it (in the example document), Louisiana `https://lablue.com/ppo-medical-vision-dental` (network name "PPO Vision Dental", as filed), UHC Gold `https://www.uhc.com/xtxdocfindg2026`, UHC Bronze `https://www.uhc.com/xfldocfindg2026` (the address its SBC prints, as `uhc.com/xfldocfindg2026`) and Florida Blue, from the PY2023 file, `https://providersearch.floridablue.com/providersearch/pub/marketplace.htm`.
 
 ## 5. Benefit mapping
 
@@ -186,7 +203,7 @@ The parse report lists every unit and its reading.
 
 ### 5.7 Exclusions and explanations
 
-v1.1.0 benefits have `conditions[]` (`type`, `code`, `description`) and no benefit-level notes field. Both free-text columns go to `conditions[]`, verbatim (trimmed): `Exclusions` as `{"type": "exclusion", ...}` and `Explanation` as `{"type": "explanation", ...}`, in that order, without `code`. The converter joins condition descriptions into `coverage.benefit.requirement`, so the text reaches FHIR. An explanation is not a condition in the strict sense (section 9.1).
+BPS benefits have `conditions[]` (`type`, `code`, `description`) and no benefit-level notes field. Both free-text columns go to `conditions[]`, verbatim (trimmed): `Exclusions` as `{"type": "exclusion", ...}` and `Explanation` as `{"type": "explanation", ...}`, in that order, without `code`. The converter joins condition descriptions into `coverage.benefit.requirement`, so the text reaches FHIR. An explanation is not a condition in the strict sense (section 9.1).
 
 ## 6. Cost-share string grammar
 
@@ -229,9 +246,9 @@ Each case takes the reading that loses no information.
 
 | # | Concept | Reading chosen |
 |---|---|---|
-| 7.1 | **Tier 2.** The file has 2 in-network tiers; BPS v1.1.0 has free-form tiers but no tier 2 convention. | A third tier `IN2`, only when the plan has tier 2 values (4.2). Folding tier 2 into `IN` or dropping it would lose values. The converter maps `IN2` to `in-network` with a qualifier (converter spec 6.2). |
-| 7.2 | **Combined medical and drug accumulators.** The file can give integrated values only; v1.1.0 has one set of slots. | The integrated values fill the slots with `applies_to: integrated`, and `source_references` records the flags and every cell (4.3). |
-| 7.3 | **Family per-person amount without a family total** (for example Florida Blue 1505 out of network: `$500 per person`, `per group not applicable`). v1.1.0 family slots need an `amount`. | No family slot; the per-person cell is in `source_references`. |
+| 7.1 | **Tier 2.** The file has 2 in-network tiers; BPS has free-form tiers but no tier 2 convention. | A third tier `IN2`, only when the plan has tier 2 values (4.2). Folding tier 2 into `IN` or dropping it would lose values. The converter maps `IN2` to `in-network` with a qualifier (converter spec 6.2). |
+| 7.2 | **Combined medical and drug accumulators.** The file can give integrated values only; BPS has one set of slots. | The integrated values fill the slots with `applies_to: integrated`, and `source_references` records the flags and every cell (4.3). |
+| 7.3 | **Family per-person amount without a family total** (for example Florida Blue 1505 out of network: `$500 per person`, `per group not applicable`). BPS family slots need an `amount`. | No family slot; the per-person cell is in `source_references`. |
 | 7.4 | **Coverage is benefit-level in the file, tier-level in BPS.** | Every tier row takes the benefit's `IsCovered` value; the strings are quoted in `notes`, so a tier where both columns say `Not Applicable` shows that. |
 | 7.5 | **A benefit with a limit but no cost share** (not covered, or both columns `Not Applicable`). | The limit is written; the tier rows follow 5.4. |
 | 7.6 | **Market.** `vocabularies/markets.json` separates `individual` (described as off-exchange) from `individual_on_exchange`; `MarketCoverage` does not. | `individual` from `MarketCoverage`, as specified. The variant's `CSRVariationType` (for example "Standard On Exchange Plan") is in `source_references`. |
@@ -244,27 +261,30 @@ Each case takes the reading that loses no information.
 | Public-file content | Where it goes | Recoverable from the BPS document? |
 |---|---|---|
 | Benefit rows with no canonical key | Listed by name and coverage in `source_references` | Name and coverage only; their cost shares, limits and text are not carried |
-| HIOS plan ID, standard component ID, CSR variation, metal level, HSA eligibility, network, service area and formulary IDs, referral flags, plan-level exclusions, AV numbers, URLs | `source_references` text (4.4) | Yes, as text |
+| CSR variation, metal level, HSA eligibility, network, service area and formulary IDs, referral flags, plan-level exclusions, out-of-area and out-of-country answers and descriptions, AV numbers, URLs, the network's name | `source_references` text (4.4) | Yes, as text |
 | Tier 2, combined in-and-out, drug-only and coinsurance accumulator cells | `source_references` text (4.3) | Yes, as text |
 | Verbatim cost-share strings | Tier `notes` | Yes |
 | `IsEHB`, `EHBVarReason` | Not carried | No |
 | `QuantLimitOnSvc` | Not carried; it is implied by `limits[]` | Yes, by inference |
-| `ImportDate`, `SourceName` | Not carried | No |
+| `ImportDate` | First `source_references` excerpt, each file's as written (since 2026-10-20) | Yes, as text |
+| `SourceName` | Not carried | No |
 | Limit period plan year against calendar year | Not stated in the file; `per_year` | Nothing to recover |
 
 ## 9. Schema gaps found
 
-### 9.1 In the public files, not in BPS v1.1.0
+### 9.1 In the public files, not in BPS
+
+Written against v1.1.0 on 2026-10-05; the importer writes v1.2.0 since 2026-10-20, and the first and seventh rows say what that changed.
 
 | Public-file field | Gap | Workaround here |
 |---|---|---|
-| `PlanId` (HIOS plan ID), `StandardComponentId` | No plan identifier field in v1.1.0 (the v1.2.0 draft adds `plan_identifiers`) | `source_references` text |
+| `PlanId` (HIOS plan ID), `StandardComponentId` | No plan identifier field in v1.1.0. Closed on 2026-10-20: v1.2.0 has `plan_identifiers` | `plan_identifiers` (`hios_plan_id`, `hios_id`) |
 | `MetalLevel` | No metal level field | `source_references` |
 | `CSRVariationType` | No plan variant field | `source_references` |
 | `IsHSAEligible` | No HSA eligibility field | `source_references` |
 | Tier 2 accumulators (`...InnTier2...`) | Accumulator slots exist for in-network and out-of-network only | `source_references` |
 | Combined in-and-out-of-network accumulators (`CombInnOon`) | No slot | `source_references` |
-| Separate drug deductible and MOOP (`DEHB...`) | No pharmacy accumulator in v1.1.0 (the v1.2.0 draft adds `pharmacy`) | `source_references` |
+| Separate drug deductible and MOOP (`DEHB...`) | No pharmacy accumulator in v1.1.0. v1.2.0 has `pharmacy.deductible` and `pharmacy.out_of_pocket_max`, which the importer does not write yet (medical MVP README, Follow-ups) | `source_references` |
 | Family per-person amount without a family total | Family slots need an `amount`; `embedded` is a boolean with no per-person amount | `source_references` |
 | Default plan coinsurance (`...DedInnTier1Coinsurance`) | No plan-level coinsurance field | `source_references` |
 | `Explanation` | No benefit-level notes field; carried as a condition of type `explanation` | `conditions[]` |
@@ -273,7 +293,7 @@ Each case takes the reading that loses no information.
 | `BeginPrimaryCareCostSharingAfterNumberOfVisits` and the copay-count field | No "first N visits" cost-share rule | `source_references` |
 | `InpatientCopaymentMaximumDays` | No cap on the number of per-day copays | `source_references` (the Explanation text often states it too) |
 
-### 9.2 In BPS v1.1.0, not in the public files
+### 9.2 In BPS, not in the public files
 
 | BPS field | Public files |
 |---|---|
@@ -311,15 +331,15 @@ BPS v1.1.0 has no field for a dollar cap on a cost-share step. Both Aetna SBCs p
 
 | Item | Rule |
 |---|---|
-| Purity | `buildDocument(planRow, planHeader, benefitRows, source)` makes no network call, reads no clock, uses no randomness and keeps no state. The CLI streams the files and passes the rows in. |
-| Download date | An input, from `download.json` or `--downloaded`; never the clock. |
+| Purity | `buildDocument(planRow, planHeader, benefitRows, source, networkRows)` makes no network call, reads no clock, uses no randomness and keeps no state. The CLI streams the files and passes the rows in (the Network PUF rows of the plan's issuer; the join is in `buildDocument`). |
+| Download dates | Inputs, from `download.json` or `--downloaded`; never the clock. |
 | Benefit order | File order of the plan's rows. Unmapped names are listed in file order. |
 | Key order | Fixed: plan fields in the order of 4.1 (`plan_id` first, `schema_version` last); benefit, tier and step fields in the order of 5.3 to 5.5; accumulator slots in schema order. |
 | Numbers | Rates are `Number((R / 100).toFixed(6))`, so `7.00%` gives `0.07`. Amounts are exact. |
 | Text | Verbatim, trimmed at both ends; no other normalization. |
 | Serialization | `JSON.stringify(doc, null, 2)` plus `\n`, UTF-8, LF line endings. |
 
-The same 2 files and download date always give byte-identical output. The test checks it on the 5 golden plans; a separate run over every PY2026 plan variant gave no error.
+The same 3 files and download dates always give byte-identical output. The test checks it on the 5 golden plans; a separate run over every PY2026 plan variant gave no error (2026-10-05, with 2 files), and on 2026-10-20 the Network PUF join gave every PY2026 medical plan variant exactly 1 row.
 
 ## 11. How to run
 
@@ -329,29 +349,30 @@ The same 2 files and download date always give byte-identical output. The test c
 mkdir -p data/puf/2026 && cd data/puf/2026
 curl -O https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip
 curl -O https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip
-unzip plan-attributes-puf.zip && unzip benefits-and-cost-sharing-puf.zip
+curl -O https://download.cms.gov/marketplace-puf/2026/network-puf.zip
+unzip plan-attributes-puf.zip && unzip benefits-and-cost-sharing-puf.zip && unzip network-puf.zip
 ```
 
-Then write `data/puf/2026/download.json` with at least `{"downloaded": "YYYY-MM-DD"}` (the files used for the examples also record the URLs and SHA-256 hashes), or pass `--downloaded` on each run.
+Then write `data/puf/2026/download.json` with at least `{"downloaded": "YYYY-MM-DD"}` (the files used for the examples also record the URLs, the SHA-256 hashes and, in `downloaded_files`, the later date of `network-puf.zip`), or pass `--downloaded` on each run.
 
 **Import and inspect:**
 
 ```
 node scripts/from-marketplace-puf.js --year 2026 --issuer 40220 --state TX           # list an issuer's plans
 node scripts/from-marketplace-puf.js --year 2026 --plan 40220TX0080024-01 --out uhc-gold.json
-node scripts/validate.js --schema schema/v1.1.0/benefit-plan.schema.json uhc-gold.json
+node scripts/validate.js --schema schema/v1.2.0/benefit-plan.schema.json uhc-gold.json
 node scripts/to-insuranceplan.js uhc-gold.json -o uhc-gold.bundle.json             # FHIR
 node scripts/puf-parse-report.js                                                   # docs/specs/marketplace-puf-parse-report.md
 node scripts/from-marketplace-puf.js --write-golden                                # regenerate the 5 examples, on purpose only
 node --test scripts/from-marketplace-puf.test.js
 ```
 
-A plan import streams both files and takes about 7 seconds for PY2026. Exit code 0 means written; 1 means an error, with nothing written.
+A plan import streams the 3 files and takes about 7 seconds for PY2026. Exit code 0 means written; 1 means an error, with nothing written.
 
 ## 12. Re-running for a new plan year
 
-1. Download the year's 2 files into `data/puf/<year>/` and write `download.json` (section 11). The importer finds the CSVs by name pattern, so a renamed file needs no code change as long as the names still contain "plan attributes" and "benefits ... cost sharing".
-2. Read the year's 2 data dictionaries (same URL pattern, `...-py<yy>.pdf`) for changed columns or new allowed values. Columns the importer reads: section 4 and 5. A renamed column shows up as blank values, so compare the header first.
+1. Download the year's 3 files into `data/puf/<year>/` and write `download.json` (section 11). The importer finds the CSVs by name pattern, so a renamed file needs no code change as long as the names still contain "plan attributes", "benefits ... cost sharing" and "network puf".
+2. Read the year's 3 data dictionaries (same URL pattern, `...-py<yy>.pdf`) for changed columns or new allowed values. Columns the importer reads: section 4 and 5. A renamed column shows up as blank values, so compare the header first.
 3. Run `node scripts/puf-parse-report.js --year <year> --out <file>`. Every new cost-share form appears in the unreadable table. Extend the grammar (section 6 and `parseCostShare`) only for forms the dictionary lists, and add a test case for each.
 4. List the year's distinct `BenefitName` values and compare them with the crosswalk. New names are imported as unmapped ("not in the crosswalk"); add each to `fhir/marketplace-puf-crosswalk.json` under the rule in 5.2 and update `counts`.
 5. Import a few plans, validate them, convert them, and run the HL7 validator as in `examples/fhir/VALIDATION.md`.
@@ -365,9 +386,10 @@ Known data issue in PY2023: 33 plan variants of 1 Wyoming issuer (HIOS issuer 11
 - CSV parser: quoted commas, doubled quotes, line breaks in fields, CRLF, LF, CR, byte order mark, any chunk size, unterminated quote.
 - Grammar: every accepted form, and a list of near-miss strings that must be unreadable with the string quoted.
 - Limits and plan-attribute dollar cells.
-- `buildDocument` on a small synthetic plan: the mapping rules, tier 2 detection, an unreadable string stopping the import, determinism.
+- `buildDocument` on a small synthetic plan: the mapping rules, tier 2 detection, an unreadable string stopping the import, determinism. Since 2026-10-20: schema 1.2.0 with `plan_identifiers` and no `contacts`; each file's `ImportDate` and both download dates in the first excerpt; the Network PUF join on 5 columns (another issuer's or another market's row is not joined; no row, a blank address, an address with no scheme, 2 rows); the 2 descriptions quoted when filled.
+- `pufFiles` requires the Network PUF; `downloadDates` reads the Network PUF's own date, and `--downloaded` sets all 3.
 - Crosswalk: unique names, keys and categories in the vocabularies, counts.
-- The 5 golden files validate against v1.1.0.
+- The 5 golden files validate against v1.2.0.
 - With the public files present: each golden plan is re-imported and compared byte for byte (after CRLF normalization), imported twice with identical output, and checked that every benefit row is either a benefit or listed as unmapped. Without the files these 5 tests are skipped and say why.
 
 The golden plans:

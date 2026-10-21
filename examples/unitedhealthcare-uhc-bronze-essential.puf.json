@@ -1,5 +1,15 @@
 {
   "plan_id": "UNITEDHEALTHCARE_UHC_BRONZE_ESSENTIAL",
+  "plan_identifiers": [
+    {
+      "system": "hios_plan_id",
+      "value": "68398FL0030058-01"
+    },
+    {
+      "system": "hios_id",
+      "value": "68398FL0030058"
+    }
+  ],
   "plan_name": "UHC Bronze Essential ($0 Virtual Urgent Care)",
   "carrier": "UnitedHealthcare",
   "plan_type": "HMO",
@@ -10,7 +20,8 @@
     {
       "tier_id": "IN",
       "name": "In-Network",
-      "description": "Benefits and Cost Sharing PUF columns CopayInnTier1 and CoinsInnTier1"
+      "description": "Benefits and Cost Sharing PUF columns CopayInnTier1 and CoinsInnTier1",
+      "provider_directory_url": "https://www.uhc.com/xfldocfindg2026"
     },
     {
       "tier_id": "OUT",
@@ -2116,10 +2127,13 @@
   ],
   "source_references": [
     {
-      "excerpt": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05. HIOS plan ID 68398FL0030058-01 (the Benefit Plan Standard v1.1.0 schema has no identifier field, so the ID is recorded here). SBC URL from the Plan Attributes PUF: https://www.uhc.com/ifp/sbc.68398FL0030058-01.en.2026.pdf."
+      "excerpt": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05, and Network PUF (network-puf.csv, from https://download.cms.gov/marketplace-puf/2026/network-puf.zip), downloaded 2026-10-20. ImportDate as each file gives it: Plan Attributes PUF ImportDate \"10/15/2025\"; Benefits and Cost Sharing PUF ImportDate \"2025-10-15\"; Network PUF ImportDate \"2025-10-15\". HIOS plan ID: PlanId \"68398FL0030058-01\", StandardComponentId \"68398FL0030058\", written in plan_identifiers. SBC URL from the Plan Attributes PUF: https://www.uhc.com/ifp/sbc.68398FL0030058-01.en.2026.pdf."
     },
     {
-      "excerpt": "Plan Attributes PUF values with no Benefit Plan Standard v1.1.0 field, verbatim: StandardComponentId \"68398FL0030058\"; CSRVariationType \"Standard Bronze On Exchange Plan\"; PlanVariantMarketingName \"UHC Bronze Essential ($0 Virtual Urgent Care)\"; MetalLevel \"Bronze\"; DesignType \"Not Applicable\"; IsHSAEligible \"Yes\"; MultipleInNetworkTiers \"No\"; FirstTierUtilization \"100%\"; NetworkId \"FLN011\"; ServiceAreaId \"FLS011\"; FormularyId \"FLF038\"; NationalNetwork \"No\"; IsReferralRequiredForSpecialist \"Yes\"; SpecialistRequiringReferral \"All, except OBGYN and as state mandated.\"; PlanLevelExclusions \"Some exclusions may apply. See the applicable Certificate of Coverage for details.\"; OutOfCountryCoverage \"No\"; OutOfServiceAreaCoverage \"Yes\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.584594755\"; FormularyURL \"https://www.uhc.com/xfldruglist2026\"; PlanBrochure \"https://www.uhc.com/flplanbrochure2026\"."
+      "excerpt": "Plan Attributes PUF values with no Benefit Plan Standard v1.2.0 field, verbatim: CSRVariationType \"Standard Bronze On Exchange Plan\"; PlanVariantMarketingName \"UHC Bronze Essential ($0 Virtual Urgent Care)\"; MetalLevel \"Bronze\"; DesignType \"Not Applicable\"; IsHSAEligible \"Yes\"; MultipleInNetworkTiers \"No\"; FirstTierUtilization \"100%\"; NetworkId \"FLN011\"; ServiceAreaId \"FLS011\"; FormularyId \"FLF038\"; NationalNetwork \"No\"; IsReferralRequiredForSpecialist \"Yes\"; SpecialistRequiringReferral \"All, except OBGYN and as state mandated.\"; PlanLevelExclusions \"Some exclusions may apply. See the applicable Certificate of Coverage for details.\"; OutOfCountryCoverage \"No\"; OutOfServiceAreaCoverage \"Yes\"; OutOfServiceAreaCoverageDescription \"Plan covers eligible expenses provided by a Network Physician or other provider or facility within the Network Area. The Network Area may include select Network providers located in a neighboring state. The plan also covers emergency health care services received outside the service area.\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.584594755\"; FormularyURL \"https://www.uhc.com/xfldruglist2026\"; PlanBrochure \"https://www.uhc.com/flplanbrochure2026\"."
+    },
+    {
+      "excerpt": "Provider directory from the Network PUF, the row whose BusinessYear, StateCode, IssuerId, NetworkId and MarketCoverage are the plan's: NetworkName \"Individual Exchange Benefit Plan Network\", NetworkURL \"https://www.uhc.com/xfldocfindg2026\", written as network_tiers[tier_id=IN].provider_directory_url."
     },
     {
       "excerpt": "Accumulators from the Plan Attributes PUF. Deductibles: MedicalDrugDeductiblesIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Out-of-pocket maximums: MedicalDrugMaximumOutofPocketIntegrated \"Yes\"; the plan states they are integrated, so the combined medical and drug (TEHB) columns are used. Every non-blank accumulator cell, verbatim: TEHBInnTier1IndividualMOOP \"$10,600\"; TEHBInnTier1FamilyPerPersonMOOP \"$10600 per person\"; TEHBInnTier1FamilyPerGroupMOOP \"$21200 per group\"; TEHBOutOfNetIndividualMOOP \"Not Applicable\"; TEHBOutOfNetFamilyPerPersonMOOP \"per person not applicable\"; TEHBOutOfNetFamilyPerGroupMOOP \"per group not applicable\"; TEHBCombInnOonIndividualMOOP \"Not Applicable\"; TEHBCombInnOonFamilyPerPersonMOOP \"per person not applicable\"; TEHBCombInnOonFamilyPerGroupMOOP \"per group not applicable\"; TEHBDedInnTier1Individual \"$10,600\"; TEHBDedInnTier1FamilyPerPerson \"$10600 per person\"; TEHBDedInnTier1FamilyPerGroup \"$21200 per group\"; TEHBDedInnTier1Coinsurance \"0.00%\"; TEHBDedOutOfNetIndividual \"Not Applicable\"; TEHBDedOutOfNetFamilyPerPerson \"per person not applicable\"; TEHBDedOutOfNetFamilyPerGroup \"per group not applicable\"; TEHBDedCombInnOonIndividual \"Not Applicable\"; TEHBDedCombInnOonFamilyPerPerson \"per person not applicable\"; TEHBDedCombInnOonFamilyPerGroup \"per group not applicable\"."
@@ -2128,5 +2142,5 @@
       "excerpt": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (16): Abortion for Which Public Funding is Prohibited (Not Covered); Accidental Dental (Covered); Basic Dental Care - Child (Covered); Cosmetic Surgery (Not Covered); Gender Affirming Care (Covered); Infusion Therapy (Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Major Dental Care - Child (Covered); Orthodontia - Adult (Not Covered); Orthodontia - Child (Covered); Prenatal and Postnatal Care (Covered); Private-Duty Nursing (Not Covered); Reconstructive Surgery (Covered); Transplant (Covered); Treatment for Temporomandibular Joint Disorders (Covered); Weight Loss Programs (Not Covered)."
     }
   ],
-  "schema_version": "1.1.0"
+  "schema_version": "1.2.0"
 }

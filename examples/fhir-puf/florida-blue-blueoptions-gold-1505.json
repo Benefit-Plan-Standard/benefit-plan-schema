@@ -15,14 +15,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>BlueOptions Gold 1505 ($0 Virtual Visits / $20 PCP Visits / $15 Generic Meds / Rewards $$$)</b></p><p>Carrier: Florida Blue (BlueCross BlueShield FL). Plan type: EPO. Period: 2023-01-01 to 2023-12-31.</p><p>27 benefits are placed in CARIN SBC benefit categories. 25 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>9 benefits are not covered on any tier and are listed in the excluded-services extension, derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p><p>Converted from Benefit Plan Standard document FLORIDA_BLUE_BLUEOPTIONS_GOLD_1505 (schema version 1.1.0).</p></div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>BlueOptions Gold 1505 ($0 Virtual Visits / $20 PCP Visits / $15 Generic Meds / Rewards $$$)</b></p><p>Carrier: Florida Blue (BlueCross BlueShield FL). Plan type: EPO. Period: 2023-01-01 to 2023-12-31.</p><p>27 benefits are placed in CARIN SBC benefit categories. 25 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>9 benefits are not covered on any tier and are listed in the excluded-services extension, derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p><p>Converted from Benefit Plan Standard document FLORIDA_BLUE_BLUEOPTIONS_GOLD_1505 (schema version 1.2.0).</p></div>"
         },
         "extension": [
           {
             "extension": [
               {
                 "url": "schemaVersion",
-                "valueString": "1.1.0"
+                "valueString": "1.2.0"
               },
               {
                 "url": "planYear",
@@ -39,7 +39,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "CMS Health Insurance Exchange Public Use Files, plan year 2023: Plan Attributes PUF (Plan_Attributes_PUF.csv, from https://download.cms.gov/marketplace-puf/2023/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (Benefits_Cost_Sharing_PUF.csv, from https://download.cms.gov/marketplace-puf/2023/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05. HIOS plan ID 16842FL0070120-01 (the Benefit Plan Standard v1.1.0 schema has no identifier field, so the ID is recorded here). SBC URL from the Plan Attributes PUF: http://www.bcbsfl.com/DocumentLibrary/SBC/2023/1505.pdf."
+                "valueString": "CMS Health Insurance Exchange Public Use Files, plan year 2023: Plan Attributes PUF (Plan_Attributes_PUF.csv, from https://download.cms.gov/marketplace-puf/2023/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (Benefits_Cost_Sharing_PUF.csv, from https://download.cms.gov/marketplace-puf/2023/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05, and Network PUF (Network_PUF.csv, from https://download.cms.gov/marketplace-puf/2023/network-puf.zip), downloaded 2026-10-20. ImportDate as each file gives it: Plan Attributes PUF ImportDate \"2/28/2023 1:02\"; Benefits and Cost Sharing PUF ImportDate \"2023-02-28 01:02:02\"; Network PUF ImportDate \"2023-02-28 01:02:02\". HIOS plan ID: PlanId \"16842FL0070120-01\", StandardComponentId \"16842FL0070120\", written in plan_identifiers. SBC URL from the Plan Attributes PUF: http://www.bcbsfl.com/DocumentLibrary/SBC/2023/1505.pdf."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -48,7 +48,16 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Plan Attributes PUF values with no Benefit Plan Standard v1.1.0 field, verbatim: StandardComponentId \"16842FL0070120\"; CSRVariationType \"Standard Gold On Exchange Plan\"; PlanVariantMarketingName \"BlueOptions Gold 1505 ($0 Virtual Visits / $20 PCP Visits / $15 Generic Meds / Rewards $$$)\"; MetalLevel \"Gold\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"Yes\"; FirstTierUtilization \"0%\"; SecondTierUtilization \"100%\"; NetworkId \"FLN001\"; ServiceAreaId \"FLS001\"; FormularyId \"FLF008\"; NationalNetwork \"Yes\"; IsReferralRequiredForSpecialist \"No\"; OutOfCountryCoverage \"Yes\"; OutOfServiceAreaCoverage \"Yes\"; InpatientCopaymentMaximumDays \"3\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.819239484\"; FormularyURL \"https://www.myprime.com/content/dam/prime/memberportal/WebDocs/2023/Formularies/HIM/2023_FL_7T_CareChoices.pdf\"; PlanBrochure \"https://www.floridablue.com/plan-brochure/bo\"."
+                "valueString": "Plan Attributes PUF values with no Benefit Plan Standard v1.2.0 field, verbatim: CSRVariationType \"Standard Gold On Exchange Plan\"; PlanVariantMarketingName \"BlueOptions Gold 1505 ($0 Virtual Visits / $20 PCP Visits / $15 Generic Meds / Rewards $$$)\"; MetalLevel \"Gold\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"Yes\"; FirstTierUtilization \"0%\"; SecondTierUtilization \"100%\"; NetworkId \"FLN001\"; ServiceAreaId \"FLS001\"; FormularyId \"FLF008\"; NationalNetwork \"Yes\"; IsReferralRequiredForSpecialist \"No\"; OutOfCountryCoverage \"Yes\"; OutOfCountryCoverageDescription \"Covered services as outlined in the member contract.\"; OutOfServiceAreaCoverage \"Yes\"; OutOfServiceAreaCoverageDescription \"Covered services as outlined in the member contract.\"; InpatientCopaymentMaximumDays \"3\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.819239484\"; FormularyURL \"https://www.myprime.com/content/dam/prime/memberportal/WebDocs/2023/Formularies/HIM/2023_FL_7T_CareChoices.pdf\"; PlanBrochure \"https://www.floridablue.com/plan-brochure/bo\"."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Provider directory from the Network PUF, the row whose BusinessYear, StateCode, IssuerId, NetworkId and MarketCoverage are the plan's: NetworkName \"NetworkBlue\", NetworkURL \"https://providersearch.floridablue.com/providersearch/pub/marketplace.htm\", written as network_tiers[tier_id=IN].provider_directory_url."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -741,6 +750,14 @@
           {
             "system": "https://benefitplanstandard.org/plan-id",
             "value": "FLORIDA_BLUE_BLUEOPTIONS_GOLD_1505"
+          },
+          {
+            "system": "https://benefitplanstandard.org/fhir/identifier/hios_plan_id",
+            "value": "16842FL0070120-01"
+          },
+          {
+            "system": "https://www.cms.gov/CCIIO/Resources/Data-Resources/hios",
+            "value": "16842FL0070120"
           }
         ],
         "status": "active",
