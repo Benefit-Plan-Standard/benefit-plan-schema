@@ -2,7 +2,7 @@
 
 Diego Orofino, the Benefit Plan Standard, dorofino@benefitplanstandard.org. A draft for the workgroup, not a workgroup decision.
 
-The [Benefit Plan Standard](https://benefitplanstandard.org) is an open JSON format for health plan benefits, published under the MIT license. Its schema, the importers that read CMS public files, the converter to FHIR and the example plans live in [one repository](https://github.com/Benefit-Plan-Standard/benefit-plan-schema). This document is the technical specification, version 0.3.3, dated October 21, 2026, 1 of 3 documents that make up the medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup. The other 2 are the [data dictionary](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/data-dictionary.md) and the [crosswalk to the SBC InsurancePlan profile](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/carin-crosswalk.md). All 3 are in the [repository folder](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/tree/main/docs/specs/rtb-medical-mvp), and the files they name are in the [repository](https://github.com/Benefit-Plan-Standard/benefit-plan-schema). This document is published as `README.md` in that folder; a Word copy with the same content is sent with the specification and is not in the repository.
+The [Benefit Plan Standard](https://benefitplanstandard.org) is an open JSON format for health plan benefits, published under the MIT license. Its schema, the importers that read CMS public files, the converter to FHIR and the example plans live in [one repository](https://github.com/Benefit-Plan-Standard/benefit-plan-schema). This document is the technical specification, version 0.3.4, dated October 21, 2026, 1 of 3 documents that make up the medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup. The other 2 are the [data dictionary](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/data-dictionary.md) and the [crosswalk to the SBC InsurancePlan profile](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/carin-crosswalk.md). All 3 are in the [repository folder](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/tree/main/docs/specs/rtb-medical-mvp), and the files they name are in the [repository](https://github.com/Benefit-Plan-Standard/benefit-plan-schema). This document is published as `README.md` in that folder; a Word copy with the same content is sent with the specification and is not in the repository.
 
 The 3 documents use these terms. RTB is the CMS Health Tech Ecosystem Real-Time Benefits workgroup. The MVP, minimum viable product, is the workgroup's first scope, and a pledgee is an organization that committed to the workgroup, in Monica Chopra's pledge proposal, to publish MVP data for its plans. GA, general availability, is the scope after the MVP, which the workgroup's GA draft describes (see What comes back). The other terms are these:
 
@@ -469,7 +469,7 @@ Every example is over the proposed 90 percent. The number is a target, not a cla
 
 On a checked sample of plans, how many values agree with the carrier's own PDF for the plan: the Summary of Benefits for a Medicare Advantage plan, the Summary of Benefits and Coverage for a Marketplace plan. This is check 1b in section 5 of the GA draft, "CMS filing agrees with the plan's own documents".
 
-The proposed threshold is 0 contradictions on the checked sample, with every reading documented, because a contradiction means the member could get a different answer from the plan than from the app. A contradiction is a defect to fix in 1 of the 2 importers or a correction to report, and it is never corrected silently. The GA draft's check 1a, "Faithful conversion", already asks for 100 percent; this is the number for check 1b.
+The proposed threshold is 0 contradictions on the checked sample, with every reading documented, because a contradiction means the member could get a different answer from the plan than from the app. A contradiction has 1 of 2 causes, and the check does not know which until someone looks: the Medicare Advantage importer or the Marketplace importer read the CMS file wrong, which is fixed, or the plan's filing and the plan's own PDF say different things, which is reported. Neither is corrected silently. The GA draft's check 1a, "Faithful conversion", already asks for 100 percent; this is the number for check 1b.
 
 The CMS file is the source and the carrier PDF is the check. When they disagree, the CMS file is what the MVP serves, and the contradiction is reported.
 
@@ -492,6 +492,8 @@ The results, run on October 20, 2026:
 | Medicare Advantage | | 148 | 118 | 28 | 2 |
 | `68398FL0030058-01`, UHC Bronze Essential ($0 Virtual Urgent Care) | `FL0055 EXFL26IF0275669_000` | 50 | 39 | 11 | 0 |
 | Both programs | | 198 | 157 | 39 | 2 |
+
+As a rate: 196 of the 198 values agree with the carrier's own PDF, 99 percent, and 100 percent of the cost shares do; the 2 that differ are the Aetna web addresses below. 157 of the 198 match character for character, and the other 39 are the same fact printed in a different shape, each kind documented.
 
 Across the 2 Medicare Advantage plans, the 148 values gave 2 contradictions, both on links, and 28 documented readings. 11 of the 148 checks cover the monthly premium and preventive care in and out of network on both plans, the member services phone on Aetna, and the website and the provider directory link on both. The Medicare Advantage readings are of 8 kinds, with the Medicare Advantage importer spec section that sets each:
 
@@ -545,7 +547,7 @@ An item moves from SHOULD to SHALL at GA when, in each program that lists it, it
 
 ## Status and version
 
-Version 0.3.3, a draft for the workgroup, dated October 21, 2026. The Benefit Plan Standard repository's [`docs/changelog.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/changelog.md) and its git history record the drafts before this one.
+Version 0.3.4, a draft for the workgroup, dated October 21, 2026. The Benefit Plan Standard repository's [`docs/changelog.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/changelog.md) and its git history record the drafts before this one.
 
 It covers the PBP files for contract year 2027 and the Marketplace PUFs for plan year 2026. The documents of both programs are written in Benefit Plan Standard schema 1.2.0, a draft (see Scope). The canonical benefit vocabulary is version 1.3.0, with 118 keys. The PBP crosswalk has 41 rows, 35 with a canonical key, and the Marketplace crosswalk maps 84 of the 273 benefit names in the plan year 2026 file.
 
