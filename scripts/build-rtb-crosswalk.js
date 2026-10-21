@@ -380,7 +380,7 @@ function render(ss, m, sbc, rows, names) {
     `${Object.entries(m.ballot.tickets).map(([t, x]) => `${x.title} (${t})`).join(', ').replace(/, ([^,]*)$/, ' and $1')}. ` +
     'They are in the STU2 ballot of September 2026, not in a published release, and each row they apply to names them.', '');
   L.push(`The crosswalk is generated from the Benefit Plan Standard repository by ${repoLink('scripts/build-rtb-crosswalk.js')} from ${repoLink(SHALL_SHOULD, code('shall-should.json'))} and ` +
-    `${repoLink(MAPPING, code('carin-mapping.json'))} in this folder and ${repoLink(SBC_CROSSWALK)} (${mapped} canonical keys mapped to the profile's ` +
+    `${repoLink(MAPPING, code('carin-mapping.json'))} in the same repository folder and ${repoLink(SBC_CROSSWALK)} (${mapped} canonical keys mapped to the profile's ` +
     `benefit categories), all ${IN_REPO}. The item names and field paths are the data ` +
     `dictionary's, so the 2 files list the same rows in the same order. To change it, change those files and run the generator again.`, '');
 

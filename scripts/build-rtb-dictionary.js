@@ -531,8 +531,11 @@ function render(ss, prog, vocabulary, rows, notInFile) {
   L.push(`This data dictionary lists each item in the medical MVP scope and where it is in a Benefit Plan Standard document written by the 2 public-file importers ${IN_REPO}. ` +
     `The Medicare Advantage importer (${repoLink(ma.cfg.importer)}) reads the ${ma.cfg.files} files for contract year ${ma.crosswalk.contract_year}. ` +
     `The Marketplace importer (${repoLink(mp.cfg.importer)}) reads the ${mp.cfg.files} for plan year ${mp.crosswalk.plan_year}. ` +
-    `${ss.attribution}`, '');
-  L.push(`The dictionary is generated from the Benefit Plan Standard repository by ${repoLink('scripts/build-rtb-dictionary.js')} from ${repoLink(SHALL_SHOULD, code('shall-should.json'))} in this folder, ` +
+    // The attribution's second sentence speaks for shall-should.json; the dictionary words it for itself.
+    `${ss.attribution.split('. Service and benefit names')[0]}. ` +
+    'The service and benefit names are the scope\'s suggested names. ' +
+    'Every other sentence in this dictionary was written for the Benefit Plan Standard and is not the workgroup\'s wording.', '');
+  L.push(`The dictionary is generated from the Benefit Plan Standard repository by ${repoLink('scripts/build-rtb-dictionary.js')} from ${repoLink(SHALL_SHOULD, code('shall-should.json'))} in the same repository folder, ` +
     `${repoLink(ma.cfg.crosswalk)} (${ma.crosswalk.benefits.length} rows, ${pbpKeyed} with a canonical key), ` +
     `${repoLink(mp.cfg.crosswalk)} (${mp.crosswalk.map.length} benefit names, ${pufMapped} mapped) and ` +
     `${repoLink(VOCABULARY)} (version ${vocabulary.version}, ${vocabulary.benefits.length} keys), all ${IN_REPO}. ` +
