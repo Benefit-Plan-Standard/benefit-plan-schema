@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://benefitplanstandard.org/schema/v1.2.0/benefit-plan.schema.json",
   "title": "Benefit Plan Standard Schema",
-  "description": "Canonical JSON schema for representing normalized health benefit plans across carriers. v1.2.0 (DRAFT) is a backward-compatible minor release that adds network-tier classification (tier_class, parent_tier_id, provider_set) and verbatim limit text (limits[].raw_text). Origin: reconciliation of the three InsurancePlan changes merged into the HL7 CARIN Digital Insurance Card IG in June 2026 (FHIR-57525 multi-tier cost sharing, FHIR-57526 deductible applicability, FHIR-57527 structured benefit limitation). See docs/carin-dic-reconciliation.md. The draft also adds Medicare Advantage fields (gaps G1 to G11 and G14 of docs/medicare-advantage-notes.md), motivated by two 2026 CMS Summary of Benefits documents (SCAN Classic HMO, Los Angeles; Humana Gold Plus H1036-025 HMO): plan_identifiers, service_area, premium, part_b_premium_reduction, the pharmacy accumulators object, cost-share unit ranges, caps and ranges, deductible_ref, coverage_basis, alternative_group, limit scope, shared limits and carryover, and per-benefit source_references.",
+  "description": "Canonical JSON schema for representing normalized health benefit plans across carriers. v1.2.0 (DRAFT) is a backward-compatible minor release that adds network-tier classification (tier_class, parent_tier_id, provider_set) and verbatim limit text (limits[].raw_text). Origin: reconciliation of the three InsurancePlan changes merged into the HL7 CARIN Digital Insurance Card IG in June 2026 (FHIR-57525 multi-tier cost sharing, FHIR-57526 deductible applicability, FHIR-57527 structured benefit limitation). See docs/carin-dic-reconciliation.md. The draft also adds Medicare Advantage fields (gaps G1 to G11 and G14 of docs/medicare-advantage-notes.md), motivated by two 2026 CMS Summary of Benefits documents (SCAN Classic HMO, Los Angeles; Humana Gold Plus H1036-025 HMO): plan_identifiers, service_area, premium, part_b_premium_reduction, the pharmacy accumulators object, cost-share unit ranges, caps and ranges, deductible_ref, coverage_basis, alternative_group, limit scope, shared limits and carryover, and per-benefit source_references. On 2026-10-20 the draft adds 2 optional fields for the medical MVP technical specification of the CMS Health Tech Ecosystem Real-Time Benefits workgroup (docs/specs/rtb-medical-mvp/): contacts (member services phone and website) and network_tiers[].provider_directory_url.",
   "type": "object",
   "properties": {
     "plan_id": {
@@ -155,6 +155,22 @@
       },
       "additionalProperties": false
     },
+    "contacts": {
+      "type": "object",
+      "description": "How a member reaches the plan. Added to the v1.2.0 draft on 2026-10-20 for the medical MVP technical specification (docs/specs/rtb-medical-mvp/, gap G4), whose scope asks for the member services phone and website. Both properties are optional; leave a property out when the source gives no value.",
+      "properties": {
+        "member_services_phone": {
+          "type": "string",
+          "description": "The phone number a member calls for member services, as the source gives it (e.g. '(800)457-4708')."
+        },
+        "website": {
+          "type": "string",
+          "format": "uri",
+          "description": "The plan's website: a link a member can open, as an absolute URI with its scheme. An address the source gives without a scheme is not a URI; leave the property out and quote the address in source_references."
+        }
+      },
+      "additionalProperties": false
+    },
     "network_tiers": {
       "type": "array",
       "description": "List of network tiers available for this plan. A tier is any label a benefit's cost sharing can be keyed to. v1.2.0 distinguishes three classes of tier via the optional tier_class field: an actual provider network the member accesses, a cost-sharing designation applied to a subset of providers within one network (e.g. a carrier's 'Value Choice' rate), or a modality / site of service (e.g. virtual care). Pre-v1.2.0 documents that omit tier_class are read as class 'network'.",
@@ -201,6 +217,11 @@
             },
             "required": ["name"],
             "additionalProperties": false
+          },
+          "provider_directory_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "A link a member can open to the plan's provider directory for this tier, as an absolute URI with its scheme. Added to the v1.2.0 draft on 2026-10-20 for the medical MVP technical specification (docs/specs/rtb-medical-mvp/, gap G5). Distinct from provider_set.reference, a machine reference to 1 provider-directory entity. An address the source gives without a scheme is not a URI; leave the property out and quote the address in source_references."
           }
         },
         "required": ["tier_id", "name"],

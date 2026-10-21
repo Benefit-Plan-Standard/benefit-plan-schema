@@ -1,6 +1,6 @@
 # Provider directory field proposal
 
-**Status:** Proposed, not in any schema version. Adding a field is a schema change and needs the maintainer's decision; nothing in `schema/`, the importers or the converter reads or writes this field yet.
+**Status:** Superseded on 2026-10-20. The v1.2.0 draft took a simpler field, `network_tiers[].provider_directory_url`, a URI on the network tier, instead of the `provider_network` object below; both importers fill it (the Marketplace importer from the Network PUF's `NetworkURL`, as section 2 below proposes), and the converter does not map it yet. See `docs/specs/rtb-medical-mvp/README.md` (gap G5) and `docs/changelog.md`. The text below is the proposal as written on October 13, 2026.
 **Written:** October 13, 2026
 **Inputs:** `schema/v1.2.0/benefit-plan.schema.json` (draft), the [CMS Network PUF data dictionary for plan year 2026](https://www.cms.gov/files/document/network-datadictionary-py26.pdf) (read 2026-10-13), the Plan Attributes PUF's `NetworkId` column as the Marketplace importer already records it, and the SBC source documents in `examples/sources/`.
 
