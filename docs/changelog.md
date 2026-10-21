@@ -3,6 +3,22 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] – DRAFT (2026-10-21), medical MVP specification 0.3; accumulator network tiers as tier ids
+
+The 1.2.0 schema stays a draft under the release rule in `docs/governance.md` (Releases) and is not tagged.
+
+### Added
+
+- `scripts/pbp-segment.js`: county to segment for a Medicare Advantage plan. From a contract, a plan and an SSA county code (`--county 10150`) or a county name and state (`--county-name "Duval, FL"`), it reads `PlanArea.txt` with the Medicare Advantage importer's reader and prints the segment and the full plan key; it exits 1 when no segment serves the county and 2 when more than 1 does. `--all-pairs` resolves every county of every contract and plan pair with more than 1 segment: in contract year 2027, 266 pairs and 12,640 pair and county checks, each picking exactly 1 segment. `scripts/pbp-segment.test.js` (9 tests) runs on `test/fixtures/pbp-segment/2027/`, 24 `PlanArea.txt` rows cut by `--write-fixtures`.
+- `scripts/publish-fhir.js --pledgee <root>`: writes `<root>/index.json` for a pledgee's documents and Bundles, filed as `<root>/<release>/<plan key>.json` and `<plan key>.bundle.json`, with the site index's header fields and 1 entry per document (`id` the plan key, `program`, `document`, `bundle`, `release`, `data_date`, the Bundle's counts and `label`), newest release first. The site mode is unchanged. `scripts/publish-fhir.test.js` (6 tests) includes a check that the README lists the fields the script writes.
+
+### Changed
+
+- `schema/v1.2.0/benefit-plan.schema.json` (draft): the 2 `network_tier` descriptions, on the deductible and the out-of-pocket maximum accumulators, say the value is the `tier_id` of a tier in `network_tiers` (`IN`, `OUT`, `POS` or another tier_id the document defines). The type is unchanged.
+- `scripts/from-marketplace-puf.js`, the Marketplace importer, writes each accumulator's `network_tier` as `IN` or `OUT` (was `in-network` and `out-of-network`), as the Medicare Advantage importer, `scripts/from-pbp.js`, does. The 5 `examples/*.puf.json` and their Bundles in `examples/fhir-puf/` are regenerated with the download dates they carried; the tier spelling is the only difference (in the Bundles, the accumulator's `type.text`, `comment` and `bps-accumulator` `networkTier`). HL7 validator, seventh run in `examples/fhir/VALIDATION.md`: 0 errors, with the warnings and information messages of the sixth run. Completeness and the 3 accuracy checks are unchanged. Marketplace importer spec section 4.3 updated; 5 tests check the tier ids on the Marketplace examples.
+- `scripts/from-pbp.js` exports `cutFile`, and `scripts/rtb-completeness.js` exports `programOf`, `planKey` and `PROGRAM_NAME`, which the 2 new scripts reuse.
+- `docs/specs/rtb-medical-mvp/`: the README is version 0.3, dated October 21, 2026. It gives county to segment in 4 steps, the plan match check and its result, the pledgee's file names, release folders and index, the Medicare Plan Finder address pattern for the SHOULD link (the Medicare Advantage importer writes nothing; the pledgee builds the link from the plan key), and 1 sentence saying both importers write the same tier ids. "Changes in 0.3" lists the 0.2.1 and 0.3 rounds, and a new section asks the workgroup 2 questions. `data-dictionary.md` and `carin-crosswalk.md` are regenerated; only their version changed.
+
 ## [1.2.0] – DRAFT (2026-10-20), contacts and the provider directory link; the medical MVP gaps G1 to G8 closed
 
 The 1.2.0 schema stays a draft under the release rule in `docs/governance.md` (Releases) and is not tagged.

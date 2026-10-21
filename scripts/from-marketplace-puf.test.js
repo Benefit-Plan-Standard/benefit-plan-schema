@@ -132,7 +132,7 @@ test('buildDocument: mapping rules on a synthetic plan', () => {
   assert.strictEqual(doc.plan_id, 'EXAMPLE_HEALTH_SILVER_1');
   assert.strictEqual(doc.market, 'individual');
   assert.deepStrictEqual(doc.network_tiers.map((t) => t.tier_id), ['IN', 'OUT']);
-  assert.deepStrictEqual(doc.accumulators.individual_deductible, { amount: 1000, currency: 'USD', network_tier: 'in-network', applies_to: 'medical' });
+  assert.deepStrictEqual(doc.accumulators.individual_deductible, { amount: 1000, currency: 'USD', network_tier: 'IN', applies_to: 'medical' });
   assert.strictEqual(doc.accumulators.family_deductible.embedded, true);
   assert.strictEqual(doc.accumulators.family_oop_max.applies_to, 'integrated');
   assert.strictEqual(doc.accumulators.family_oop_max.embedded, false);
@@ -284,6 +284,14 @@ test('the committed examples are the golden set', () => {
 for (const file of goldenFiles()) {
   test(`${file}: valid against the v1.2.0 schema`, () => {
     assert.deepStrictEqual(validateDocument(readJson(path.join(EXAMPLES_DIR, file))), []);
+  });
+  test(`${file}: every accumulator's network_tier is a tier_id of the document, IN or OUT`, () => {
+    const doc = readJson(path.join(EXAMPLES_DIR, file));
+    const ids = doc.network_tiers.map((t) => t.tier_id);
+    for (const [slot, a] of Object.entries(doc.accumulators)) {
+      assert.ok(ids.includes(a.network_tier), `${slot}: network_tier "${a.network_tier}" is not 1 of ${ids.join(', ')}`);
+      assert.strictEqual(a.network_tier, slot.startsWith('oon_') ? 'OUT' : 'IN', slot);
+    }
   });
 }
 

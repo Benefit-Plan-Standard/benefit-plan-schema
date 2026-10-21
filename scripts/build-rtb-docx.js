@@ -10,7 +10,7 @@
  * Output: dist/rtb-medical-mvp-specification-<version>.docx,
  *         dist/rtb-medical-mvp-data-dictionary-<version>.docx,
  *         dist/rtb-medical-mvp-carin-crosswalk-<version>.docx
- * The version and date come from each document's preface ("version 0.2.1, dated
+ * The version and date come from each document's preface ("version 0.3, dated
  * October 21, 2026"). The Word copy carries the same content as the Markdown;
  * the Markdown in the repository is the source. dist/ is git-ignored.
  *

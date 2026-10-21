@@ -33,26 +33,26 @@
     "individual_deductible": {
       "amount": 10600,
       "currency": "USD",
-      "network_tier": "in-network",
+      "network_tier": "IN",
       "applies_to": "integrated"
     },
     "family_deductible": {
       "amount": 21200,
       "currency": "USD",
-      "network_tier": "in-network",
+      "network_tier": "IN",
       "applies_to": "integrated",
       "embedded": true
     },
     "individual_oop_max": {
       "amount": 10600,
       "currency": "USD",
-      "network_tier": "in-network",
+      "network_tier": "IN",
       "applies_to": "integrated"
     },
     "family_oop_max": {
       "amount": 21200,
       "currency": "USD",
-      "network_tier": "in-network",
+      "network_tier": "IN",
       "applies_to": "integrated",
       "embedded": true
     }

@@ -3055,7 +3055,7 @@
                       },
                       {
                         "url": "networkTier",
-                        "valueString": "in-network"
+                        "valueString": "IN"
                       },
                       {
                         "url": "period",
@@ -3077,13 +3077,13 @@
                       "display": "Deductible"
                     }
                   ],
-                  "text": "Individual deductible, in-network"
+                  "text": "Individual deductible, IN"
                 },
                 "cost": {
                   "value": 0,
                   "currency": "USD"
                 },
-                "comment": "in-network; per_year"
+                "comment": "IN; per_year"
               },
               {
                 "extension": [
@@ -3095,7 +3095,7 @@
                       },
                       {
                         "url": "networkTier",
-                        "valueString": "in-network"
+                        "valueString": "IN"
                       },
                       {
                         "url": "period",
@@ -3117,13 +3117,13 @@
                       "display": "Maximum out of pocket"
                     }
                   ],
-                  "text": "Individual out-of-pocket maximum, in-network"
+                  "text": "Individual out-of-pocket maximum, IN"
                 },
                 "cost": {
                   "value": 2000,
                   "currency": "USD"
                 },
-                "comment": "in-network; per_year"
+                "comment": "IN; per_year"
               },
               {
                 "type": {

@@ -39,45 +39,45 @@
     "individual_deductible": {
       "amount": 0,
       "currency": "USD",
-      "network_tier": "in-network",
+      "network_tier": "IN",
       "applies_to": "integrated"
     },
     "family_deductible": {
       "amount": 0,
       "currency": "USD",
-      "network_tier": "in-network",
+      "network_tier": "IN",
       "applies_to": "integrated",
       "embedded": true
     },
     "individual_oop_max": {
       "amount": 5500,
       "currency": "USD",
-      "network_tier": "in-network",
+      "network_tier": "IN",
       "applies_to": "integrated"
     },
     "family_oop_max": {
       "amount": 11000,
       "currency": "USD",
-      "network_tier": "in-network",
+      "network_tier": "IN",
       "applies_to": "integrated",
       "embedded": true
     },
     "oon_individual_deductible": {
       "amount": 500,
       "currency": "USD",
-      "network_tier": "out-of-network",
+      "network_tier": "OUT",
       "applies_to": "integrated"
     },
     "oon_individual_oop_max": {
       "amount": 11000,
       "currency": "USD",
-      "network_tier": "out-of-network",
+      "network_tier": "OUT",
       "applies_to": "integrated"
     },
     "oon_family_oop_max": {
       "amount": 22000,
       "currency": "USD",
-      "network_tier": "out-of-network",
+      "network_tier": "OUT",
       "applies_to": "integrated",
       "embedded": true
     }

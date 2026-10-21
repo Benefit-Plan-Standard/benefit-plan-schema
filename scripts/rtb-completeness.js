@@ -268,6 +268,6 @@ function main(argv) {
   return 0;
 }
 
-module.exports = { count, resolvePath, isQuoted };
+module.exports = { count, resolvePath, isQuoted, programOf, planKey, PROGRAM_NAME };
 
 if (require.main === module) process.exit(main(process.argv.slice(2)));

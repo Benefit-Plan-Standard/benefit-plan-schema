@@ -1748,7 +1748,7 @@ async function main(argv) {
 module.exports = {
   streamTsv, rowsFor, buildDocument, serialize, loadPlan, importPlan, listPlans, validateDocument, parseKey, pad3,
   HOSPITAL_TIER_CATEGORIES, MVP_PLAN_TYPES, B_FILES, READ_FILES, CROSSWALK, GOLDEN, baseSlug, goldenSlugs, buildGolden, writeFixtures,
-  pbpDir, DATA_DIR, EXAMPLES_DIR, FIXTURE_DIR, SCHEMA_VERSION,
+  cutFile, pbpDir, DATA_DIR, EXAMPLES_DIR, FIXTURE_DIR, SCHEMA_VERSION,
 };
 
 if (require.main === module) main(process.argv.slice(2)).then((code) => process.exit(code));

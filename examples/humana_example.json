@@ -204,14 +204,14 @@
       "amount": 0,
       "currency": "USD",
       "period": "per_year",
-      "network_tier": "in-network",
+      "network_tier": "IN",
       "applies_to": "medical"
     },
     "individual_oop_max": {
       "amount": 2000,
       "currency": "USD",
       "period": "per_year",
-      "network_tier": "in-network",
+      "network_tier": "IN",
       "applies_to": "medical"
     }
   },

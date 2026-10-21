@@ -2667,7 +2667,7 @@
                       },
                       {
                         "url": "networkTier",
-                        "valueString": "in-network"
+                        "valueString": "IN"
                       },
                       {
                         "url": "appliesTo",
@@ -2685,13 +2685,13 @@
                       "display": "Deductible"
                     }
                   ],
-                  "text": "Individual deductible, in-network"
+                  "text": "Individual deductible, IN"
                 },
                 "cost": {
                   "value": 2000,
                   "currency": "USD"
                 },
-                "comment": "in-network"
+                "comment": "IN"
               },
               {
                 "extension": [
@@ -2703,7 +2703,7 @@
                       },
                       {
                         "url": "networkTier",
-                        "valueString": "in-network"
+                        "valueString": "IN"
                       },
                       {
                         "url": "embedded",
@@ -2725,13 +2725,13 @@
                       "display": "Deductible"
                     }
                   ],
-                  "text": "Family deductible, in-network"
+                  "text": "Family deductible, IN"
                 },
                 "cost": {
                   "value": 4000,
                   "currency": "USD"
                 },
-                "comment": "in-network; embedded"
+                "comment": "IN; embedded"
               },
               {
                 "extension": [
@@ -2743,7 +2743,7 @@
                       },
                       {
                         "url": "networkTier",
-                        "valueString": "in-network"
+                        "valueString": "IN"
                       },
                       {
                         "url": "appliesTo",
@@ -2761,13 +2761,13 @@
                       "display": "Maximum out of pocket"
                     }
                   ],
-                  "text": "Individual out-of-pocket maximum, in-network"
+                  "text": "Individual out-of-pocket maximum, IN"
                 },
                 "cost": {
                   "value": 8200,
                   "currency": "USD"
                 },
-                "comment": "in-network"
+                "comment": "IN"
               },
               {
                 "extension": [
@@ -2779,7 +2779,7 @@
                       },
                       {
                         "url": "networkTier",
-                        "valueString": "in-network"
+                        "valueString": "IN"
                       },
                       {
                         "url": "embedded",
@@ -2801,13 +2801,13 @@
                       "display": "Maximum out of pocket"
                     }
                   ],
-                  "text": "Family out-of-pocket maximum, in-network"
+                  "text": "Family out-of-pocket maximum, IN"
                 },
                 "cost": {
                   "value": 16400,
                   "currency": "USD"
                 },
-                "comment": "in-network; embedded"
+                "comment": "IN; embedded"
               }
             ],
             "specificCost": [

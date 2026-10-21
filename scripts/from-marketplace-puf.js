@@ -266,21 +266,22 @@ const UNCARRIED_ATTRIBUTES = [
 ];
 
 // Accumulator slots in schema order: [slot, deductible or MOOP column suffix, embedded column suffix, network].
+// network is the tier_id of the slot's tier in network_tiers (IN, OUT), as the PBP importer writes it.
 const DEDUCTIBLE_SLOTS = [
-  ['individual_deductible', 'DedInnTier1Individual', null, 'in-network'],
-  ['family_deductible', 'DedInnTier1FamilyPerGroup', 'DedInnTier1FamilyPerPerson', 'in-network'],
+  ['individual_deductible', 'DedInnTier1Individual', null, 'IN'],
+  ['family_deductible', 'DedInnTier1FamilyPerGroup', 'DedInnTier1FamilyPerPerson', 'IN'],
 ];
 const MOOP_SLOTS = [
-  ['individual_oop_max', 'InnTier1IndividualMOOP', null, 'in-network'],
-  ['family_oop_max', 'InnTier1FamilyPerGroupMOOP', 'InnTier1FamilyPerPersonMOOP', 'in-network'],
+  ['individual_oop_max', 'InnTier1IndividualMOOP', null, 'IN'],
+  ['family_oop_max', 'InnTier1FamilyPerGroupMOOP', 'InnTier1FamilyPerPersonMOOP', 'IN'],
 ];
 const OON_DEDUCTIBLE_SLOTS = [
-  ['oon_individual_deductible', 'DedOutOfNetIndividual', null, 'out-of-network'],
-  ['oon_family_deductible', 'DedOutOfNetFamilyPerGroup', 'DedOutOfNetFamilyPerPerson', 'out-of-network'],
+  ['oon_individual_deductible', 'DedOutOfNetIndividual', null, 'OUT'],
+  ['oon_family_deductible', 'DedOutOfNetFamilyPerGroup', 'DedOutOfNetFamilyPerPerson', 'OUT'],
 ];
 const OON_MOOP_SLOTS = [
-  ['oon_individual_oop_max', 'OutOfNetIndividualMOOP', null, 'out-of-network'],
-  ['oon_family_oop_max', 'OutOfNetFamilyPerGroupMOOP', 'OutOfNetFamilyPerPersonMOOP', 'out-of-network'],
+  ['oon_individual_oop_max', 'OutOfNetIndividualMOOP', null, 'OUT'],
+  ['oon_family_oop_max', 'OutOfNetFamilyPerGroupMOOP', 'OutOfNetFamilyPerPersonMOOP', 'OUT'],
 ];
 
 // Medical (MEHB) columns unless the plan says medical and drug are integrated, or

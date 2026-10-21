@@ -586,7 +586,7 @@
         },
         "network_tier": {
           "type": ["string", "null"],
-          "description": "Network scope: 'in-network', 'out-of-network', or a custom tier_id. The legacy slots default to 'in-network'; the oon_* slots default to 'out-of-network'."
+          "description": "Network scope: the tier_id of a tier in network_tiers (IN, OUT, POS or another tier_id the document defines). The legacy slots default to the in-network tier, IN; the oon_* slots default to the out-of-network tier, OUT."
         },
         "applies_to": {
           "type": ["string", "null"],
@@ -619,7 +619,7 @@
         },
         "network_tier": {
           "type": ["string", "null"],
-          "description": "Network scope: 'in-network', 'out-of-network', or a custom tier_id."
+          "description": "Network scope: the tier_id of a tier in network_tiers (IN, OUT, POS or another tier_id the document defines)."
         },
         "applies_to": {
           "type": ["string", "null"],

@@ -1,6 +1,6 @@
 # Spec: CMS Marketplace public use files to BPS importer
 
-**Status:** Draft, 2026-10-05; updated 2026-10-20 (schema 1.2.0, `plan_identifiers`, the Network PUF, `ImportDate` and the out-of-area descriptions: the medical MVP gaps G5 to G8, [`rtb-medical-mvp/README.md`](rtb-medical-mvp/README.md))
+**Status:** Draft, 2026-10-05; updated 2026-10-20 (schema 1.2.0, `plan_identifiers`, the Network PUF, `ImportDate` and the out-of-area descriptions: the medical MVP gaps G5 to G8, [`rtb-medical-mvp/README.md`](rtb-medical-mvp/README.md)) and 2026-10-21 (accumulator `network_tier` written as the tier ids `IN` and `OUT`, section 4.3, medical MVP specification 0.3)
 **Reads with:** [`insuranceplan-converter.md`](insuranceplan-converter.md) (the exporter this importer feeds), [`marketplace-puf-parse-report.md`](marketplace-puf-parse-report.md) (every cost-share string in the PY2026 file and how it is read), [`marketplace-puf-vs-sbc-flblue-505.md`](marketplace-puf-vs-sbc-flblue-505.md) (the importer's Florida Blue output against the SBC example)
 **Map:** this importer, the Medicare Advantage importer and the converter in one diagram, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow)
 
@@ -82,17 +82,17 @@ The Plan Attributes PUF has 3 column families: medical (`MEHB...`), drug (`DEHB.
 
 | BPS slot | Column (after the family prefix) | `network_tier` |
 |---|---|---|
-| `individual_deductible` | `DedInnTier1Individual` | `in-network` |
-| `family_deductible` | `DedInnTier1FamilyPerGroup` | `in-network` |
-| `individual_oop_max` | `InnTier1IndividualMOOP` | `in-network` |
-| `family_oop_max` | `InnTier1FamilyPerGroupMOOP` | `in-network` |
-| `oon_individual_deductible` | `DedOutOfNetIndividual` | `out-of-network` |
-| `oon_family_deductible` | `DedOutOfNetFamilyPerGroup` | `out-of-network` |
-| `oon_individual_oop_max` | `OutOfNetIndividualMOOP` | `out-of-network` |
-| `oon_family_oop_max` | `OutOfNetFamilyPerGroupMOOP` | `out-of-network` |
+| `individual_deductible` | `DedInnTier1Individual` | `IN` |
+| `family_deductible` | `DedInnTier1FamilyPerGroup` | `IN` |
+| `individual_oop_max` | `InnTier1IndividualMOOP` | `IN` |
+| `family_oop_max` | `InnTier1FamilyPerGroupMOOP` | `IN` |
+| `oon_individual_deductible` | `DedOutOfNetIndividual` | `OUT` |
+| `oon_family_deductible` | `DedOutOfNetFamilyPerGroup` | `OUT` |
+| `oon_individual_oop_max` | `OutOfNetIndividualMOOP` | `OUT` |
+| `oon_family_oop_max` | `OutOfNetFamilyPerGroupMOOP` | `OUT` |
 
 - **Values.** `"$6,000 "`, `"$12000 per group"` and `"$0 per person"` are read as amounts (`$0` is a real $0 deductible and is written). `Not Applicable`, `per group not applicable`, `per person not applicable` and blank mean no value; the slot is omitted. Any other cell is an error.
-- **Fields.** `amount`, `currency` `USD`, `network_tier`, and `applies_to`: `medical` for the `MEHB` family, `integrated` for `TEHB`. `period` is not written: the file does not say plan year or calendar year.
+- **Fields.** `amount`, `currency` `USD`, `network_tier`, the `tier_id` of the slot's tier in `network_tiers` (`IN` or `OUT`, as the PBP importer writes it; `in-network` and `out-of-network` before 2026-10-21), and `applies_to`: `medical` for the `MEHB` family, `integrated` for `TEHB`. `period` is not written: the file does not say plan year or calendar year.
 - **`embedded`.** On a family slot: `true` when the matching `FamilyPerPerson` cell has a dollar amount (each family member has their own amount inside the family total); `false` when it reads `per person not applicable`; omitted when blank.
 - **Not in slots.** Tier 2 accumulators, combined in-and-out-of-network accumulators (`CombInnOon`), the drug family when it is separate, and the default coinsurance cells (`DedInnTier1Coinsurance` and so on). All are carried verbatim in `source_references` (4.4).
 

@@ -259,3 +259,35 @@ The 5 Marketplace Bundles in `examples/fhir-puf/`, against the fifth run:
 | `unitedhealthcare-uhc-gold-standard.json` | 0 | 14 / 14 | 121 / 122 |
 
 **Warnings explained.** The 1 new warning is on Aetna: the 14a preventive services benefit has a point-of-service cost, so it carries the text-only `Point-of-service option` qualifier (12 on Aetna, was 11). The other warnings are those of the fourth and fifth runs. **Information.** All 1,299 messages are the extension slicing message, as above; the new ones are on the `bps-*` extensions of the new source references (2 per PBP Bundle, 1 per Marketplace Bundle) and of the 14a benefit.
+
+## Seventh run: 2026-10-21, the 5 Marketplace Bundles after the accumulator tier spelling
+
+**What changed.** The Marketplace importer writes each accumulator's `network_tier` as the `tier_id` of its tier, `IN` or `OUT`, in place of `in-network` and `out-of-network`, as the PBP importer does (medical MVP specification 0.3, `docs/specs/rtb-medical-mvp/README.md`). The schema 1.2.0 draft's `network_tier` description now says the value is a `tier_id` of the document; the type is unchanged. The 5 Marketplace documents and their Bundles in `examples/fhir-puf/` were regenerated with the download dates they already carry. In each Bundle only the text the converter copies from `network_tier` changed: the `networkTier` part of `bps-accumulator`, the accumulator's `type.text` (for example "Individual deductible, IN") and its `comment`. Of the 15 Bundles in this folder, 13 are byte-identical and are not in this run. The 2 Medicare Advantage Bundles read from Summaries of Benefits, `humana-gold-plus-h1036-025-hmo.json` and `scan-classic-hmo-los-angeles.json`, come from documents that declare schema 1.2.0 and wrote `in-network` on their 2 accumulators; those 4 values became `IN` the same day, the 2 Bundles were re-converted and re-pinned in `scripts/to-insuranceplan.test.js`, and they were validated with the same command (below).
+
+**Result:** all 5 files pass with **0 errors**. Same validator (`validator_cli.jar` 7.0.0, Git# 37795f3f571f), Java and packages as the second run. Command, from the repository root:
+
+```
+java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
+  -ig hl7.fhir.us.insurance-card#2.0.0-ballot \
+  -ig fhir/definitions \
+  examples/fhir-puf/*.json
+```
+
+The 5 Marketplace Bundles in `examples/fhir-puf/`, against the sixth run:
+
+| File | Errors | Warnings, sixth run / seventh | Information, sixth run / seventh |
+|---|---|---|---|
+| `avmed-avmed-entrust-gold-125.json` | 0 | 31 / 31 | 145 / 145 |
+| `blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.json` | 0 | 4 / 4 | 144 / 144 |
+| `florida-blue-blueoptions-gold-1505.json` | 0 | 30 / 30 | 149 / 149 |
+| `unitedhealthcare-uhc-bronze-essential.json` | 0 | 12 / 12 | 121 / 121 |
+| `unitedhealthcare-uhc-gold-standard.json` | 0 | 14 / 14 | 122 / 122 |
+
+**Warnings and information.** Unchanged: the same 91 warnings and 681 information messages as the sixth run, explained in `examples/fhir-puf/README.md`. `networkTier` is a string part of `bps-accumulator`, so the new values raise no message.
+
+The 2 re-converted Bundles in this folder, against the sixth run:
+
+| File | Errors | Warnings, sixth run / seventh | Information, sixth run / seventh |
+|---|---|---|---|
+| `humana-gold-plus-h1036-025-hmo.json` | 0 | 42 / 42 | 180 / 180 |
+| `scan-classic-hmo-los-angeles.json` | 0 | 4 / 4 | 148 / 148 |

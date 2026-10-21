@@ -108,7 +108,9 @@ test('crosswalk codes and displays match the CARIN code system', () => {
 
 // SHA-256 of each golden file (LF line endings). The 8 SBC files were re-pinned on
 // 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs,
-// and 4 of them again the same day after the deductible flags on silent cells were set.
+// and 4 of them again the same day after the deductible flags on silent cells were set. The 2
+// Medicare Advantage files read from Summaries of Benefits (Humana H1036-025, SCAN Classic) were
+// re-pinned on 2026-10-21 when their accumulators moved to the tier id IN (schema 1.2.0 draft text).
 // A change to any of them must be deliberate.
 const GOLDEN_SHA256 = {
   'aetna-ppo-1500-80-50.json': '5b71acace40107ffd7783f7f2dfebb2abc6dc46a48a4b21bb5a384dde58ca69b',
@@ -117,9 +119,9 @@ const GOLDEN_SHA256 = {
   'cigna-oap-bowdoin.json': 'e82c810f43f5e3f66425a3d28f87de55d8f18fabd19a66bbf53a5338b5609d04',
   'flblue-blueoptions-505.json': '579b1dd83c482d759cae849a629f0ccf10ff3de44ffc106ad62b2a08a61cb4af',
   'gatorcare-prime-epo.json': '3ea3d74c082269a1cfded8461d0fa35362c3b7019c86b2c002a50b7a078e9487',
-  'humana-gold-plus-h1036-025-hmo.json': 'f5ede6c8c787cdd8a2789bc188935289a4439ad9bb59183ac02eb62c755f84e4',
+  'humana-gold-plus-h1036-025-hmo.json': 'b6d1e3e225495a45ba8c5ab4d19d3dd8de9401cde7ba8eea852dddacb5e16dfd',
   'kaiser-ca-gold-80-hmo.json': 'a4af8116c546c33f39e65c08a4c3dc06a78dfed61346f8a4294b94bd45227b36',
-  'scan-classic-hmo-los-angeles.json': 'fb58b0d4b50ee7d1654dfc686c201695bb11c835be6f2a09b70f0a521add9005',
+  'scan-classic-hmo-los-angeles.json': '1eb465cabd0e156c66fff87ba86c99f0cb1081ea2ff047d29bd71555d963a078',
   'uhc-choice-plus-hsa-gold-1700.json': '4c385df53392d72d1b39dc74dbc07021f41945648a0aba1675153588c38ee19c',
 };
 

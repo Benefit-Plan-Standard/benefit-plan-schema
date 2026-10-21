@@ -1,0 +1,35 @@
+{
+  "description": "Rows of the plans below cut from PlanArea.txt of the CMS PBP Benefits files, contract year 2027, by node scripts/pbp-segment.js --write-fixtures. The file holds the original header line and the plans' records, byte for byte. For scripts/pbp-segment.test.js.",
+  "downloaded": "2026-10-06",
+  "release_label": "PBP Benefits-2027",
+  "plans": [
+    {
+      "keys": [
+        "H1609-028-000"
+      ],
+      "why": "1 segment; the worked example plan"
+    },
+    {
+      "keys": [
+        "H2406-013-000"
+      ],
+      "why": "1 segment; serves St. Johns, FL (SSA 10540, FIPS 12109)"
+    },
+    {
+      "keys": [
+        "H1019-103-001",
+        "H1019-103-002"
+      ],
+      "why": "2 segments in Florida; the county picks 1"
+    },
+    {
+      "keys": [
+        "H0504-056-000"
+      ],
+      "why": "1 segment; serves Los Angeles, CA under both of its SSA codes, 05200 and 05210"
+    }
+  ],
+  "records": {
+    "PlanArea.txt": 24
+  }
+}
