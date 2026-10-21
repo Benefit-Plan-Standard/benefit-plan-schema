@@ -9,7 +9,8 @@
  * codes, the exit code when 2 segments serve 1 county, and the check over every
  * pair with more than 1 segment; and, with --service-areas, the same answers read from
  * a service-areas.json that scripts/publish-fhir.js --pledgee wrote from the fixture
- * rows. Runs on the PlanArea.txt and PlanRegionArea.txt rows committed in
+ * rows, and a regional PPO answered as regional whether the county is given by code
+ * or by name. Runs on the PlanArea.txt and PlanRegionArea.txt rows committed in
  * test/fixtures/pbp-segment/2027/, so the full PBP files are not needed.
  * Regenerate the fixture on purpose with:
  *   node scripts/pbp-segment.js --write-fixtures
@@ -151,16 +152,14 @@ test('--all-pairs resolves every county of every pair with more than 1 segment',
   assert.strictEqual(bad.lines[2], '  H1019-103 county 10520: segments 001, 002');
 });
 
-// A service-areas.json written by the index writer from the fixture rows, for every fixture
-// plan: each plan key's document is the worked example's, with the plan key changed.
-let serviceAreasFile = null;
-async function writtenServiceAreas() {
-  if (serviceAreasFile) return serviceAreasFile;
+// A service-areas.json written by the index writer from the fixture rows, for the plan keys
+// given: each plan key's document is the worked example's, with the plan key changed.
+async function writeServiceAreas(keys) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'pbp-segment-service-areas-'));
   const folder = path.join(root, 'PBP-Benefits-2027');
   fs.mkdirSync(folder);
   const doc = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'examples', 'aetna-medicare-aetna-medicare-select-extra.pbp.json'), 'utf8'));
-  for (const key of FIXTURE_PLANS.flatMap((p) => p.keys)) {
+  for (const key of keys) {
     const id = doc.plan_identifiers.find((x) => x.system === 'cms_contract_plan_segment');
     id.value = key;
     fs.writeFileSync(path.join(folder, `${key}.json`), JSON.stringify(doc, null, 2) + '\n');
@@ -168,14 +167,20 @@ async function writtenServiceAreas() {
   const log = console.log;
   console.log = () => {};
   try { assert.strictEqual(await pledgeeMain([root, '--data', FIXTURE_DIR]), 0); } finally { console.log = log; }
-  serviceAreasFile = path.join(folder, 'service-areas.json');
+  return path.join(folder, 'service-areas.json');
+}
+
+// The one for every fixture plan, written once.
+let serviceAreasFile = null;
+async function writtenServiceAreas() {
+  if (!serviceAreasFile) serviceAreasFile = await writeServiceAreas(FIXTURE_PLANS.flatMap((p) => p.keys));
   return serviceAreasFile;
 }
 
-async function runServiceAreas(args, y = year) {
+async function runServiceAreas(args, y = year, file = null) {
   const lines = [];
   const out = { log: (l) => lines.push(l), error: (l) => lines.push(l) };
-  const code = await main(['--service-areas', await writtenServiceAreas(), '--year', String(y), ...args], out);
+  const code = await main(['--service-areas', file || await writtenServiceAreas(), '--year', String(y), ...args], out);
   return { code, lines };
 }
 
@@ -208,6 +213,24 @@ test('--service-areas names the file in its messages, and a regional PPO by its 
     '  segment 000, plan key R0759-001-000, region 09 "Florida"'] });
   const wrongYear = await runServiceAreas(['--contract', 'H1609', '--plan', '028', '--county', '10150'], 2026);
   assert.deepStrictEqual(wrongYear, { code: 1, lines: ['error: service-areas.json: contract_year 2027 is not --year 2026'] });
+});
+
+test('a regional PPO gets the regional answer whether the county is given by code or by name', async () => {
+  // A file whose only plan key is regional has no county at all, so the name is in no county of it.
+  const regionalOnly = await writeServiceAreas(['R0759-001-000']);
+  const sa = JSON.parse(fs.readFileSync(regionalOnly, 'utf8'));
+  assert.deepStrictEqual(sa.plans.map((p) => [p.plan_key, p.counties.length, p.regions.length]), [['R0759-001-000', 0, 1]]);
+  const expected = { code: 1, lines: ['R0759-001 is a regional plan, so service-areas.json gives its regions and no counties',
+    '  segment 000, plan key R0759-001-000, region 09 "Florida"'] };
+  for (const by of [['--county', '10150'], ['--county-name', 'Duval, FL'], ['--county-name', 'Nowhere, FL']]) {
+    assert.deepStrictEqual(await runServiceAreas(['--contract', 'R0759', '--plan', '001', ...by], year, regionalOnly), expected, by.join(' '));
+  }
+  // Read from PlanArea.txt, the regional plan has no rows, whichever way the county is given.
+  for (const by of [['--county', '10150'], ['--county-name', 'Nowhere, FL']]) {
+    const r = await run(['--contract', 'R0759', '--plan', '001', ...by]);
+    assert.strictEqual(r.code, 1, by.join(' '));
+    assert.match(r.lines[0], /^no rows for R0759-001 in PlanArea\.txt for contract year 2027; .* PlanRegionArea\.txt$/, by.join(' '));
+  }
 });
 
 test('--service-areas --all-pairs resolves every county of every pair in the file with more than 1 segment', async () => {

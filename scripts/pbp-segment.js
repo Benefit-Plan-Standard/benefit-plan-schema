@@ -15,7 +15,8 @@
  * from the same PlanArea.txt, instead of PlanArea.txt, with the same output and exit
  * codes. That file lists only the pledgee's plan keys; a regional PPO has regions in it,
  * not counties, and the script names its segment and plan key and exits 1, as it does
- * when PlanArea.txt has no rows for the plan.
+ * when PlanArea.txt has no rows for the plan. Both answers come before the county is
+ * looked up, so --county and --county-name give the same one.
  *
  * The county is the 5-digit SSA state and county code, as PlanArea.txt holds it in
  * county_code. A FIPS code is not an SSA code (PBP importer spec section 4.5).
@@ -168,9 +169,8 @@ async function findSegment({ dataDir, year, serviceAreas, contract, plan, county
   const { rows, named, seen } = await readPlanArea({ dataDir, year, serviceAreas, contract, plan, codes: county ? [county] : [], name });
   const pair = `${contract}-${plan}`;
   const src = sourceOf({ serviceAreas });
-  if (name && named.size === 0) return { code: 1, lines: [`no county named "${name.text}" in ${src} for contract year ${year}`] };
-  const codes = county ? [county] : [...named.keys()].sort();
-  const asked = county || `"${name.text}" (${codes.join(', ')})`;
+  // A contract and plan with no counties, such as a regional PPO, is answered before the
+  // county is looked up, so --county and --county-name get the same message.
   if (rows.length === 0 && serviceAreas) {
     const regional = serviceAreaPlans(serviceAreas, year).plans.filter((p) => p.contract === contract && p.plan === plan && (p.regions || []).length);
     if (!regional.length) return { code: 1, lines: [`no plan key of ${pair} in ${src} for contract year ${year}`] };
@@ -181,6 +181,9 @@ async function findSegment({ dataDir, year, serviceAreas, contract, plan, county
     return { code: 1, lines: [`no rows for ${pair} in PlanArea.txt for contract year ${year}; the file lists the counties of local plans, ` +
       'and a regional plan\'s service area is in PlanRegionArea.txt'] };
   }
+  if (name && named.size === 0) return { code: 1, lines: [`no county named "${name.text}" in ${src} for contract year ${year}`] };
+  const codes = county ? [county] : [...named.keys()].sort();
+  const asked = county || `"${name.text}" (${codes.join(', ')})`;
   const found = segmentsFor(rows, codes);
   if (found.length === 0) {
     const lines = [`no segment serves county ${asked}`];
