@@ -1,6 +1,6 @@
 {
   "description": "SHALL and SHOULD assignments for the medical MVP technical specification of the CMS Health Tech Ecosystem Real-Time Benefits workgroup, mapped to Benefit Plan Standard documents written by the 2 public-file importers. One entry per item. scripts/build-rtb-dictionary.js reads this file with the 2 importer crosswalks and the canonical benefit vocabulary and writes data-dictionary.md in this folder.",
-  "attribution": "The assignments follow the workgroup's medical MVP scope (Monica Chopra's pledge proposal, October 2026). Service and benefit names are the scope's suggested names; every other text in this file is ours.",
+  "attribution": "The assignments follow the workgroup's medical MVP scope (Monica Chopra's pledge proposal, October 2026). Service and benefit names are the scope's suggested names; every other text in this file was written for the Benefit Plan Standard and is not the workgroup's wording.",
   "labels": {
     "SHALL": "Required for the MVP. A pledgee makes the item available to the member on request, wherever it applies to the member's plan.",
     "SHOULD": "Optional for the MVP. It may become SHALL at GA.",
@@ -130,7 +130,7 @@
       "title": "Medicare Advantage member services phone is not read.",
       "instead": "The Medicare Advantage importer does not read pbp_a_curmbr_phone in pbp_Section_A.txt, and the Benefit Plan Standard schema 1.2.0 has no field for a phone number. The plan website, pbp_a_org_website, is quoted verbatim in source_references.",
       "closed": "2026-10-20",
-      "closed_by": "The schema 1.2.0 draft has contacts. The Medicare Advantage importer writes contacts.member_services_phone from pbp_a_curmbr_phone, and contacts.website from pbp_a_org_website when the address is a URI with its scheme; an address without one is quoted."
+      "closed_by": "The Benefit Plan Standard schema 1.2.0 draft has contacts. The Medicare Advantage importer writes contacts.member_services_phone from pbp_a_curmbr_phone, and contacts.website from pbp_a_org_website when the address is a URI with its scheme; an address without one is quoted."
     },
     {
       "id": "G5",
@@ -139,7 +139,7 @@
       "title": "The provider directory link has no field.",
       "instead": "Schema 1.2.0 has no field for it. The Medicare Advantage importer quotes pbp_a_phys_web_addr and pbp_a_org_website verbatim in source_references. The Marketplace importer does not read the Network PUF, so NetworkURL is not carried; the plan's NetworkId from the Plan Attributes PUF is quoted.",
       "closed": "2026-10-20",
-      "closed_by": "The schema 1.2.0 draft has network_tiers[].provider_directory_url. The Medicare Advantage importer writes it on the in-network tier from pbp_a_phys_web_addr when the address is a URI with its scheme, and the Marketplace importer from NetworkURL in the Network PUF, the row whose BusinessYear, StateCode, IssuerId, NetworkId and MarketCoverage are the plan's."
+      "closed_by": "The Benefit Plan Standard schema 1.2.0 draft has network_tiers[].provider_directory_url. The Medicare Advantage importer writes it on the in-network tier from pbp_a_phys_web_addr when the address is a URI with its scheme, and the Marketplace importer from NetworkURL in the Network PUF, the row whose BusinessYear, StateCode, IssuerId, NetworkId and MarketCoverage are the plan's."
     },
     {
       "id": "G6",
@@ -157,7 +157,7 @@
       "title": "Marketplace documents have no plan_identifiers.",
       "instead": "The Marketplace importer writes schema 1.1.0, which has no plan_identifiers. The HIOS plan id with its 2-digit variant (for example 68398FL0030058-01) appears only as text inside the first source_references excerpt.",
       "closed": "2026-10-20",
-      "closed_by": "The Marketplace importer writes schema 1.2.0, with plan_identifiers hios_plan_id (for example 68398FL0030058-01) and hios_id (68398FL0030058)."
+      "closed_by": "The Marketplace importer writes Benefit Plan Standard schema 1.2.0, with plan_identifiers hios_plan_id (for example 68398FL0030058-01) and hios_id (68398FL0030058)."
     },
     {
       "id": "G8",
@@ -177,9 +177,9 @@
       "meaning": "The identifier an app uses to pick out the plan's document.",
       "medicare_advantage": {
         "label": "KEY",
-        "path": "plan_identifiers[system=cms_contract_plan_segment].value",
+        "path": ["plan_identifiers[system=cms_contract_plan_segment].value", "plan_identifiers[system=cms_contract_id].value", "plan_identifiers[system=cms_pbp_id].value"],
         "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_hnumber", "pbp_a_plan_identifier", "segment_id"] }],
-        "note": "Written as contract, plan and segment with the segment padded to 3 digits, for example H1609-028-000. The file's own bid_id column writes the same key as H1609_028_0 and is quoted in source_references."
+        "note": "Written as contract, plan and segment with the segment padded to 3 digits, for example H1609-028-000. The file's own bid_id column writes the same key as H1609_028_0 and is quoted in source_references. The contract alone is also written, with system cms_contract_id (H1609), and the plan alone, with system cms_pbp_id (028)."
       },
       "marketplace": {
         "label": "KEY",
@@ -388,7 +388,7 @@
         "quoted": true,
         "unwritten": "pharmacy.deductible",
         "source": [{ "file": "plan-attributes-puf.csv", "read": ["DEHBDedInnTier1Individual", "DEHBDedInnTier1FamilyPerPerson", "DEHBDedInnTier1FamilyPerGroup"] }],
-        "note": "Part of the deductible item when MedicalDrugDeductiblesIntegrated is No. Schema 1.1.0 had no pharmacy accumulator; since 2026-10-20 the Marketplace importer writes schema 1.2.0, whose pharmacy.deductible could hold the amount (README, Follow-ups)."
+        "note": "Part of the deductible item when MedicalDrugDeductiblesIntegrated is No. Benefit Plan Standard schema 1.1.0 had no pharmacy accumulator; since 2026-10-20 the Marketplace importer writes Benefit Plan Standard schema 1.2.0, whose pharmacy.deductible could hold the amount (see README, Follow-ups)."
       }
     },
     {
@@ -418,7 +418,7 @@
         "label": "SHALL",
         "path": ["contacts.member_services_phone", "contacts.website"],
         "source": [{ "file": "pbp_Section_A.txt", "read": ["pbp_a_curmbr_phone", "pbp_a_org_website"], "unread": ["pbp_a_prombr_phone"] }],
-        "note": "pbp_a_curmbr_phone is the customer service number for current members, filled on all 6,872 plans; the number for people who want to join is not read. contacts.website is written only when pbp_a_org_website is a URI with its scheme (457 plans); otherwise the address is quoted in source_references, because the schema field is a URI and the Medicare Advantage importer adds no scheme."
+        "note": "pbp_a_curmbr_phone is the customer service number for current members, filled on all 6,872 plans; the number for people who want to join is not read. contacts.website is written only when pbp_a_org_website is a URI with its scheme (457 plans); otherwise the address is quoted in source_references, because the Benefit Plan Standard schema field is a URI and the Medicare Advantage importer adds no scheme."
       },
       "marketplace": {
         "label": null,
@@ -811,14 +811,19 @@
       "id": "preventive_care",
       "group": "services",
       "key": "preventive_care",
-      "meaning": "Whether preventive services cost the member $0 in network.",
+      "meaning": "The member's in-network cost for preventive services.",
       "medicare_advantage": {
         "label": "SHALL",
         "name": "Preventive services",
         "pbp_benefit_id": "PREVENTIVE_SERVICES",
         "note": "Category 14a has no copay or coinsurance column. The plan attests in pbp_b14a_mc_prevent_attest that the Original Medicare zero dollar preventive services cost nothing in network, which the Medicare Advantage importer writes as a $0 copay that does not apply to the deductible. Out of network and at the point of service, the cost comes from the Section C groups that list 14a."
       },
-      "marketplace": { "label": "SHALL", "name": "Preventive services", "benefit_name": "Preventive Care/Screening/Immunization" }
+      "marketplace": {
+        "label": "SHALL",
+        "name": "Preventive services",
+        "benefit_name": "Preventive Care/Screening/Immunization",
+        "note": "The item is the tier 1 cost the file gives, read like any other service. $0 in network is the Medicare Advantage reading, from the plan's attestation."
+      }
     },
     {
       "id": "telehealth_visit",

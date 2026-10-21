@@ -17,7 +17,7 @@
  *     (the point-of-service cost to HMO-POS plans, for example).
  * When an applicable item is populated:
  *   - An item with a gap recorded for the program is a miss, whatever the document carries (README,
- *     "Known gaps in this version").
+ *     "Gaps closed on October 20, 2026").
  *   - A service: its benefit has in-network tier rows (IN, or the facility cost tiers written under IN),
  *     and each is covered with at least 1 cost share, or not covered. The benefit is found by benefit_id
  *     (Medicare Advantage, pbp_benefit_id) or by raw_label (Marketplace, the exact BenefitName).

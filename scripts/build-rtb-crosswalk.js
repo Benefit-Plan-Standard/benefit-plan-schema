@@ -392,9 +392,10 @@ function render(ss, m, sbc, rows, names) {
   L.push('This crosswalk maps each item of the medical MVP data dictionary to the SBC InsurancePlan profile in the CARIN Digital Insurance Card ' +
     `implementation guide, package ${code(m.package)}. SBC stands for Summary of Benefits and Coverage. For each item it says where the value ` +
     `lands in the Bundle that ${REPOS} ${repoLink(m.converter)} writes from a Benefit Plan Standard document, and gives 1 of 3 verdicts. ${m.attribution}`, '');
-  L.push('The crosswalk to the SBC InsurancePlan profile is a Part B item in the workgroup\'s GA draft, the document "RTB Medical. ' +
-    'What payers would be asked to supply for GA" (Monica Chopra, October 2026, a draft for discussion, not a workgroup decision), not a GA ask. The SBC InsurancePlan profile is at ballot. ' +
-    'This crosswalk exists so a pledgee can produce the Bundle when the SBC InsurancePlan profile publishes, and nothing in the MVP\'s SHALL list depends on it.', '');
+  L.push('This crosswalk is a Part B item of the workgroup\'s GA draft, "RTB Medical. What payers would be asked to supply for GA" ' +
+    '(Monica Chopra, October 2026, a draft for discussion, not a workgroup decision), and Part B there means the draft\'s second part, not Medicare Part B. ' +
+    'The SBC InsurancePlan profile is at ballot. ' +
+    'This crosswalk exists so a pledgee can produce that Bundle when the SBC InsurancePlan profile publishes, and nothing in the MVP SHALL list depends on it.', '');
   L.push('The whole profile is ballot-stage. The SBC InsurancePlan profile, its extensions and the code systems it binds are draft and experimental in that package ' +
     `(${repoLink(m.converter_spec, 'converter specification')} section 2, ${IN_REPO}). ` +
     '3 changes to the SBC InsurancePlan profile were proposed from Benefit Plan Standard implementation experience and merged in June 2026: ' +
@@ -421,14 +422,14 @@ function render(ss, m, sbc, rows, names) {
   L.push('## Summary', '');
   L.push(`The crosswalk has ${rows.length} rows, 1 for each row of the data dictionary. ${both.length} rows apply to both programs, ` +
     `${only('medicare_advantage')} to Medicare Advantage only and ${only('marketplace')} to Marketplace only. On ${split.length} of the ${both.length} ` +
-    'the 2 programs get different verdicts.', '');
+    'the 2 programs get different verdicts. A row has 1 verdict for each program it applies to, and a not covered verdict is either no element or gap, ' +
+    'so the 4 verdict rows below add up to the rows that apply.', '');
   L.push(`| | ${PROGRAMS.map((p) => names[p]).join(' | ')} |`);
   L.push('|---|---|---|');
   const line = (label, f) => L.push(`| ${label} | ${PROGRAMS.map((p) => count(p, f)).join(' | ')} |`);
   line('Rows that apply', () => true);
   line('Aligned', (x) => x.verdict === 'aligned');
   line('Different', (x) => x.verdict === 'different');
-  line('Not covered', (x) => x.verdict === 'not_covered');
   line('Not covered, no element', (x) => x.verdict === 'not_covered' && x.reason === 'no_element');
   line('Not covered, gap', (x) => x.verdict === 'not_covered' && x.reason === 'gap');
   L.push('');

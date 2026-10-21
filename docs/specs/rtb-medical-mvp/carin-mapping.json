@@ -133,8 +133,11 @@
       "medicare_advantage": {
         "element": ["identifier"],
         "verdict": "aligned",
-        "note": "The key is an `identifier` with system `https://benefitplanstandard.org/fhir/identifier/cms_contract_plan_segment`, for example H1609-028-000. The document's `plan_id` is the first `identifier`.",
-        "read_from": [{ "section": "6.1", "cites": "`plan_identifiers[]` (v1.2.0)" }]
+        "note": "The key is an `identifier` with system `https://benefitplanstandard.org/fhir/identifier/cms_contract_plan_segment`, for example H1609-028-000, and the contract and the plan alone are identifiers with systems `https://benefitplanstandard.org/fhir/identifier/cms_contract_id` (H1609) and `https://benefitplanstandard.org/fhir/identifier/cms_pbp_id` (028). The document's `plan_id` is the first `identifier`.",
+        "read_from": [
+          { "section": "6.1", "cites": "`plan_identifiers[]` (v1.2.0)" },
+          { "bundle": "examples/fhir/aetna-medicare-select-extra-hmo-pos-h1609-028-000.json", "path": "entry[0].resource.identifier[3]", "equals": { "system": "https://benefitplanstandard.org/fhir/identifier/cms_pbp_id", "value": "028" } }
+        ]
       },
       "marketplace": {
         "element": ["identifier"],
@@ -326,7 +329,7 @@
       "id": "drug_deductible",
       "marketplace": {
         "verdict": "different",
-        "note": "Since October 20, 2026 the Marketplace importer writes schema 1.2.0, which has `pharmacy.deductible`, but it does not write that field yet and quotes the cells. Once it does, converter specification section 6.4 writes `pharmacy.deductible` to `plan.generalCost`.",
+        "note": "Since October 20, 2026 the Marketplace importer writes Benefit Plan Standard schema 1.2.0, which has `pharmacy.deductible`, but it does not write that field yet and quotes the cells. Once it does, converter specification section 6.4 writes `pharmacy.deductible` to `plan.generalCost`.",
         "read_from": [{ "section": "6.4", "cites": "`pharmacy.deductible`, `pharmacy.out_of_pocket_max` (v1.2.0)" }]
       }
     },
@@ -358,7 +361,7 @@
         "element": [],
         "extension": ["bps-source-reference"],
         "verdict": "different",
-        "note": "The document has `contacts`, but the Benefit Plan Standard converter does not map it yet: the SBC InsurancePlan profile requires `contact`, which the converter writes with data-absent-reason unknown and no telecom. The phone and the website travel as text in `bps-source-reference`, in the excerpt that quotes the Section A cells. Gap G4 was closed on October 20, 2026; the mapping is a follow-up for the Benefit Plan Standard converter spec.",
+        "note": "The document has `contacts`, but the Benefit Plan Standard converter does not map it yet: the SBC InsurancePlan profile requires `contact`, which the Benefit Plan Standard converter writes with data-absent-reason unknown and no telecom. The phone and the website travel as text in `bps-source-reference`, in the excerpt that quotes the Section A cells. Gap G4 was closed on October 20, 2026; the mapping is a follow-up for the Benefit Plan Standard converter spec.",
         "read_from": [
           { "section": "5", "cites": "It invents no telecom." },
           { "section": "9", "cites": "Plan-level `source_references[]`" },

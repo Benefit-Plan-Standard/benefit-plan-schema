@@ -18,6 +18,7 @@
  *   - a column named as read is in neither the importer script nor its golden documents;
  *   - a column named as not read appears in the importer script (the gap it records would be stale);
  *   - the README does not open, under its title, with the author line and the preface this generator writes for it;
+ *   - the README's list of each program's SHALL services is not the one shall-should.json gives;
  *   - a mention to be linked to the repository is no longer in the document.
  * Spec: docs/specs/rtb-medical-mvp/README.md
  */
@@ -36,8 +37,8 @@ const VOCABULARY = 'vocabularies/canonical-benefits.json';
 const REPO = 'https://github.com/Benefit-Plan-Standard/benefit-plan-schema';
 const IN_REPO = 'in the Benefit Plan Standard repository';
 const REPOS = 'the Benefit Plan Standard repository\'s';
-const SPEC_VERSION = '0.2';
-const SPEC_DATE = 'October 20, 2026';
+const SPEC_VERSION = '0.2.1';
+const SPEC_DATE = 'October 21, 2026';
 const AUTHOR = 'Diego Orofino, the Benefit Plan Standard, dorofino@benefitplanstandard.org. A draft for the workgroup, not a workgroup decision.';
 // The 3 documents of the specification: the name the preface gives each, and the term the others use for it
 // when that differs.
@@ -325,7 +326,7 @@ function build() {
     return `${fileText(s.file)}: ${parts.join('; ')}.`;
   }).join(' ');
 
-  const labelText = (l) => (l === 'KEY' ? '**Key**.' : `**${l}**.`);
+  const labelText = (l) => `**${l}**.`;
   const offList = (p) => `Not on the ${prog[p].name} list.`;
 
   const notes = (parts) => [...new Set(parts.filter(Boolean).map((s) => sentence(s)))].join(' ');
@@ -373,7 +374,7 @@ function build() {
         labelText(e.label),
         notWritten ? 'Not written today.' : '',
         e.quoted && !e.unwritten ? `Quoted verbatim in ${code('source_references')}; no Benefit Plan Standard field.` : '',
-        e.unwritten ? `Quoted verbatim in ${code('source_references')}; schema ${prog[p].schemaVersion} has ${code(e.unwritten)}, ` +
+        e.unwritten ? `Quoted verbatim in ${code('source_references')}; Benefit Plan Standard schema ${prog[p].schemaVersion} has ${code(e.unwritten)}, ` +
           `which the ${prog[p].name} importer does not write yet.` : '',
         sourceText(e),
         e.gap ? `Gap ${e.gap}.` : '',
@@ -514,7 +515,8 @@ function build() {
         }
         cells[p] = [labelText(a.label), src, e.gap ? `Gap ${e.gap}.` : ''].filter(Boolean).join(' ');
         if (a.id === 'covered' && e.scope_covered_test) {
-          noteParts.push(progNote(p, `the scope counts the benefit as covered when ${codeify(e.scope_covered_test)}, a different test from the ${prog[p].name} importer's`));
+          noteParts.push(progNote(p, `the scope counts the benefit as covered when ${codeify(e.scope_covered_test)}, a different test from the ${prog[p].name} importer's. ` +
+            `For the MVP a pledgee follows the ${prog[p].name} importer's test, because the published documents hold it, and the difference is listed for the workgroup`));
         }
         noteParts.push(progNote(p, codeify(cfgAspect.note)));
         if (cfgAspect.not_in_file) noteParts.push(nifNote(it, `The extra benefits, ${a.title}`, p, codeify(cfgAspect.not_in_file)));
@@ -524,8 +526,15 @@ function build() {
     }
   }
 
-  if (readText(README).split('\n\n').slice(1, 3).join('\n\n') !== opening(README)) {
+  const readme = readText(README);
+  if (readme.split('\n\n').slice(1, 3).join('\n\n') !== opening(README)) {
     errors.push(`${README} does not open, under its title, with the author line and the preface this generator writes for it`);
+  }
+  // The README names each program's SHALL services, in this file's order, with their keys.
+  for (const p of PROGRAMS) {
+    const xs = ss.items.filter((x) => x.group === 'services' && x[p].label === 'SHALL').map((x) => `${lowerFirst(x[p].name)} (${code(x.key)})`);
+    const list = `In ${prog[p].name} they are ${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}.`;
+    if (!readme.includes(list)) errors.push(`${README} does not list the ${xs.length} ${prog[p].name} SHALL services as ${SHALL_SHOULD} names them: "${list}"`);
   }
   const text = standalone(render(ss, prog, vocabulary, rows, notInFile), DICTIONARY, [
     ['(importer spec section 4.3)', `(${repoLink(ma.cfg.importer_spec, 'importer spec')} section 4.3, ${IN_REPO})`],
@@ -559,11 +568,13 @@ function render(ss, prog, vocabulary, rows, notInFile) {
     'To change it, change those files and run the generator again.', '');
 
   L.push('## How to read it', '');
-  for (const l of ['SHALL', 'SHOULD', 'KEY']) L.push(`- ${l === 'KEY' ? '**Key**' : `**${l}**`}. ${ss.labels[l]}`);
+  for (const l of ['SHALL', 'SHOULD', 'KEY']) L.push(`- **${l}**. ${ss.labels[l]}`);
   L.push('- Each program column gives the label, then the CMS file and the columns the Medicare Advantage importer or the Marketplace importer reads for the item.');
   L.push(`- A field path says where the value is in the document. ${code('benefits[canonical_key=primary_care]')} is the item of ${code('benefits')} ` +
     `whose ${code('canonical_key')} is ${code('primary_care')}, and ${code('[tier_id=IN]')} works the same way; ${code('[]')} means every item and ${code('[0]')} the first. ` +
-    `Medicare Advantage documents follow schema ${ma.schemaVersion} and Marketplace documents schema ${mp.schemaVersion}.`);
+    (ma.schemaVersion === mp.schemaVersion ? `Documents of both programs follow Benefit Plan Standard schema ${ma.schemaVersion}.`
+      : `Medicare Advantage documents follow Benefit Plan Standard schema ${ma.schemaVersion} and Marketplace documents ` +
+        `Benefit Plan Standard schema ${mp.schemaVersion}.`));
   L.push(`- "Quoted verbatim in ${code('source_references')}" means the CMS file has the value but the Benefit Plan Standard schema has no field for it, so the 2 importers copy the column name and the value into a ${code('source_references')} excerpt.`);
   L.push('- "Not on the Medicare Advantage list" or "Not on the Marketplace list" means the scope does not ask for the item in that program. Where a crosswalk still maps the key, the cell names the rows.');
   L.push('- "Not in the CMS file" in a note means the files the Medicare Advantage importer or the Marketplace importer reads cannot carry the item for that program; the note says what that importer writes instead.');
