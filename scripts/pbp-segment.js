@@ -10,6 +10,13 @@
  * key scripts/from-pbp.js --plan takes. Spec: docs/specs/rtb-medical-mvp/README.md,
  * "Identifying the plan" and "Plan match".
  *
+ * --service-areas <file> reads the counties of a pledgee's service-areas.json, which
+ * scripts/publish-fhir.js --pledgee writes in every Medicare Advantage release folder
+ * from the same PlanArea.txt, instead of PlanArea.txt, with the same output and exit
+ * codes. That file lists only the pledgee's plan keys; a regional PPO has regions in it,
+ * not counties, and the script names its segment and plan key and exits 1, as it does
+ * when PlanArea.txt has no rows for the plan.
+ *
  * The county is the 5-digit SSA state and county code, as PlanArea.txt holds it in
  * county_code. A FIPS code is not an SSA code (PBP importer spec section 4.5).
  * --county-name takes the county's name and state instead, "St. Johns, FL", matched
@@ -20,8 +27,9 @@
  *   node scripts/pbp-segment.js --year 2027 --contract H1609 --plan 028 --county 10150
  *   node scripts/pbp-segment.js --year 2027 --contract H1609 --plan 028 --county-name "Duval, FL"
  *   node scripts/pbp-segment.js --year 2027 --all-pairs     every county of every contract and plan with more than 1 segment
+ *   node scripts/pbp-segment.js --service-areas published/PBP-Benefits-2027/service-areas.json --year 2027 --contract H1609 --plan 028 --county-name "Duval, FL"
  *   node scripts/pbp-segment.js --write-fixtures            re-cut test/fixtures/pbp-segment/ (needs data/pbp/)
- *   options: --data <dir> (default data/pbp)
+ *   options: --data <dir> (default data/pbp), --service-areas <file> (in place of PlanArea.txt)
  *
  * Exit codes: 0 = 1 segment (--all-pairs: every county picks exactly 1), 1 = no
  * segment serves the county, or an error, 2 = more than 1 segment serves the county,
@@ -35,15 +43,18 @@ const path = require('path');
 const { streamTsv, pbpDir, pad3, cutFile, DATA_DIR } = require('./from-pbp.js');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
-// PlanArea.txt rows of the plans below, cut from the full file by --write-fixtures
-// and committed (data/ is git-ignored), for scripts/pbp-segment.test.js.
+// PlanArea.txt and PlanRegionArea.txt rows of the plans below, cut from the full files by
+// --write-fixtures and committed (data/ is git-ignored), for scripts/pbp-segment.test.js and
+// the service-areas.json tests of scripts/publish-fhir.test.js.
 const FIXTURE_DIR = path.join(REPO_ROOT, 'test', 'fixtures', 'pbp-segment');
 const FIXTURE_PLANS = [
   { year: 2027, keys: ['H1609-028-000'], why: '1 segment; the worked example plan' },
   { year: 2027, keys: ['H2406-013-000'], why: '1 segment; serves St. Johns, FL (SSA 10540, FIPS 12109)' },
   { year: 2027, keys: ['H1019-103-001', 'H1019-103-002'], why: '2 segments in Florida; the county picks 1' },
   { year: 2027, keys: ['H0504-056-000'], why: '1 segment; serves Los Angeles, CA under both of its SSA codes, 05200 and 05210' },
+  { year: 2027, keys: ['R0759-001-000'], why: 'Regional PPO, 1 segment; region 09, Florida, in PlanRegionArea.txt and on no row of PlanArea.txt' },
 ];
+const FIXTURE_FILES = ['PlanArea.txt', 'PlanRegionArea.txt'];
 const SECTION_41 = 'PBP importer spec section 4.1';
 const SECTION_45 = 'PBP importer spec section 4.5';
 
@@ -60,9 +71,33 @@ function parseCountyName(s) {
 
 const COLUMNS = ['pbp_a_hnumber', 'pbp_a_plan_identifier', 'segment_id', 'county_code', 'partial_flag', 'contract_year', 'eghp_flag', 'county', 'stcd'];
 
-// Streams PlanArea.txt and calls onRow(f, col) for every record, col giving the
-// position of each column in COLUMNS.
-async function eachRow({ dataDir = DATA_DIR, year }, onRow) {
+// The name the messages give the file read: PlanArea.txt, or the service-areas.json given.
+const sourceOf = ({ serviceAreas }) => (serviceAreas ? path.basename(serviceAreas) : 'PlanArea.txt');
+
+// The plans of a service-areas.json, checked against --year.
+function serviceAreaPlans(file, year) {
+  const sa = JSON.parse(fs.readFileSync(file, 'utf8'));
+  if (!Array.isArray(sa.plans)) throw new Error(`${path.basename(file)} has no plans; it is not a service-areas.json written by scripts/publish-fhir.js --pledgee`);
+  if (Number(sa.contract_year) !== year) throw new Error(`${path.basename(file)}: contract_year ${sa.contract_year} is not --year ${year}`);
+  return { plans: sa.plans, contractYear: String(sa.contract_year) };
+}
+
+// Streams PlanArea.txt, or reads the counties of a service-areas.json, each as the
+// PlanArea.txt row it was quoted from, and calls onRow(f, col) for every record, col
+// giving the position of each column in COLUMNS.
+async function eachRow({ dataDir = DATA_DIR, year, serviceAreas = null }, onRow) {
+  if (serviceAreas) {
+    const { plans, contractYear } = serviceAreaPlans(serviceAreas, year);
+    const col = Object.fromEntries(COLUMNS.map((h, i) => [h, i]));
+    for (const p of plans) {
+      for (const c of p.counties || []) {
+        const r = { pbp_a_hnumber: p.contract, pbp_a_plan_identifier: p.plan, segment_id: p.segment, county_code: c.ssa_county_code,
+          partial_flag: c.partial_flag, contract_year: contractYear, eghp_flag: c.eghp_flag, county: c.county, stcd: c.state };
+        onRow(COLUMNS.map((h) => String(r[h] === undefined ? '' : r[h])), col);
+      }
+    }
+    return;
+  }
   const file = pbpDir(dataDir, year).find('PlanArea.txt');
   let col = null;
   await streamTsv(file, (f, idx) => {
@@ -78,29 +113,30 @@ async function eachRow({ dataDir = DATA_DIR, year }, onRow) {
 }
 
 // The columns of 1 record that this script reads, checked.
-function rowOf(f, col, year) {
+function rowOf(f, col, year, src = 'PlanArea.txt') {
   const r = {};
   for (const h of COLUMNS) r[h] = f[col[h]];
-  if (!/^\d{1,3}$/.test(r.segment_id)) throw new Error(`PlanArea.txt: segment_id "${r.segment_id}" is not 1 to 3 digits`);
-  if (!/^\d{5}$/.test(r.county_code)) throw new Error(`PlanArea.txt: county_code "${r.county_code}" is not 5 digits`);
-  if (Number(r.contract_year) !== year) throw new Error(`PlanArea.txt: contract_year "${r.contract_year}" is not --year ${year}`);
+  if (!/^\d{1,3}$/.test(r.segment_id)) throw new Error(`${src}: segment_id "${r.segment_id}" is not 1 to 3 digits`);
+  if (!/^\d{5}$/.test(r.county_code)) throw new Error(`${src}: county_code "${r.county_code}" is not 5 digits`);
+  if (Number(r.contract_year) !== year) throw new Error(`${src}: contract_year "${r.contract_year}" is not --year ${year}`);
   return r;
 }
 
-// 1 pass over PlanArea.txt. Returns the rows of 1 contract and plan (every segment),
-// the county codes whose county and stcd match the name, and which of the wanted
-// codes appear on any row of the file.
-async function readPlanArea({ dataDir, year, contract, plan, codes = [], name = null }) {
+// 1 pass over PlanArea.txt (or a service-areas.json). Returns the rows of 1 contract and
+// plan (every segment), the county codes whose county and stcd match the name, and which
+// of the wanted codes appear on any row of the file.
+async function readPlanArea({ dataDir, year, serviceAreas, contract, plan, codes = [], name = null }) {
   const rows = [];
   const named = new Map();
   const seen = new Set();
-  await eachRow({ dataDir, year }, (f, col) => {
+  const src = sourceOf({ serviceAreas });
+  await eachRow({ dataDir, year, serviceAreas }, (f, col) => {
     const code = f[col.county_code];
     if (codes.includes(code)) seen.add(code);
     if (name && f[col.county].trim().toLowerCase() === name.county && f[col.stcd].trim().toLowerCase() === name.state) {
       named.set(code, `${f[col.county]} ${f[col.stcd]}`);
     }
-    if (f[col.pbp_a_hnumber] === contract && f[col.pbp_a_plan_identifier] === plan) rows.push(rowOf(f, col, year));
+    if (f[col.pbp_a_hnumber] === contract && f[col.pbp_a_plan_identifier] === plan) rows.push(rowOf(f, col, year, src));
   });
   return { rows, named, seen };
 }
@@ -123,17 +159,24 @@ function segmentsFor(rows, codes) {
 const countyLine = (r) => `county ${r.county_code} ${r.county} ${r.stcd}, partial_flag "${r.partial_flag}", eghp_flag "${r.eghp_flag}"`;
 
 // Returns { code, lines }: the exit code and what to print.
-async function findSegment({ dataDir, year, contract, plan, county, countyName }) {
+async function findSegment({ dataDir, year, serviceAreas, contract, plan, county, countyName }) {
   if (!/^[A-Z]\d{4}$/.test(contract || '')) throw new Error(`--contract must be like H1609; got "${contract}"`);
   if (!/^\d{3}$/.test(plan || '')) throw new Error(`--plan must be the 3-digit plan number, like 028; got "${plan}"`);
   if (!county === !countyName) throw new Error('give --county <SSA code> or --county-name "<county>, <state>", not both');
   if (county && !/^\d{5}$/.test(county)) throw new Error(`--county must be the 5-digit SSA state and county code, like 10150; got "${county}"`);
   const name = countyName ? parseCountyName(countyName) : null;
-  const { rows, named, seen } = await readPlanArea({ dataDir, year, contract, plan, codes: county ? [county] : [], name });
+  const { rows, named, seen } = await readPlanArea({ dataDir, year, serviceAreas, contract, plan, codes: county ? [county] : [], name });
   const pair = `${contract}-${plan}`;
-  if (name && named.size === 0) return { code: 1, lines: [`no county named "${name.text}" in PlanArea.txt for contract year ${year}`] };
+  const src = sourceOf({ serviceAreas });
+  if (name && named.size === 0) return { code: 1, lines: [`no county named "${name.text}" in ${src} for contract year ${year}`] };
   const codes = county ? [county] : [...named.keys()].sort();
   const asked = county || `"${name.text}" (${codes.join(', ')})`;
+  if (rows.length === 0 && serviceAreas) {
+    const regional = serviceAreaPlans(serviceAreas, year).plans.filter((p) => p.contract === contract && p.plan === plan && (p.regions || []).length);
+    if (!regional.length) return { code: 1, lines: [`no plan key of ${pair} in ${src} for contract year ${year}`] };
+    return { code: 1, lines: [`${pair} is a regional plan, so ${src} gives its regions and no counties`,
+      ...regional.map((p) => `  segment ${p.segment}, plan key ${p.plan_key}, ${p.regions.map((g) => `region ${g.region_code} "${g.region}"`).join(', ')}`)] };
+  }
   if (rows.length === 0) {
     return { code: 1, lines: [`no rows for ${pair} in PlanArea.txt for contract year ${year}; the file lists the counties of local plans, ` +
       'and a regional plan\'s service area is in PlanRegionArea.txt'] };
@@ -141,7 +184,9 @@ async function findSegment({ dataDir, year, contract, plan, county, countyName }
   const found = segmentsFor(rows, codes);
   if (found.length === 0) {
     const lines = [`no segment serves county ${asked}`];
-    if (county && !seen.has(county)) lines.push(`county_code ${county} is on no row of PlanArea.txt; a FIPS code is not an SSA code (${SECTION_45})`);
+    if (county && !seen.has(county)) {
+      lines.push(`county_code ${county} is ${serviceAreas ? 'in no county' : 'on no row'} of ${src}; a FIPS code is not an SSA code (${SECTION_45})`);
+    }
     return { code: 1, lines };
   }
   const counties = (rs) => [...new Map(rs.map((r) => [countyLine(r), r])).keys()];
@@ -158,11 +203,12 @@ async function findSegment({ dataDir, year, contract, plan, county, countyName }
 
 // Every county of every contract and plan with more than 1 segment, each resolved
 // as findSegment resolves it: the proposed plan match check (README, "Plan match").
-async function checkAllPairs({ dataDir, year }) {
+async function checkAllPairs({ dataDir, year, serviceAreas }) {
   // Contract and plan -> county code -> segments; the file has 2.4 million rows, so only these are kept.
   const pairs = new Map();
-  await eachRow({ dataDir, year }, (f, col) => {
-    const r = rowOf(f, col, year);
+  const src = sourceOf({ serviceAreas });
+  await eachRow({ dataDir, year, serviceAreas }, (f, col) => {
+    const r = rowOf(f, col, year, src);
     const k = `${r.pbp_a_hnumber}-${r.pbp_a_plan_identifier}`;
     if (!pairs.has(k)) pairs.set(k, new Map());
     const byCode = pairs.get(k);
@@ -180,16 +226,16 @@ async function checkAllPairs({ dataDir, year }) {
     }
   }
   const lines = [
-    `contract year ${year}: ${count(pairs.size)} contract and plan pairs in PlanArea.txt, ${count(multi.length)} with more than 1 segment`,
+    `contract year ${year}: ${count(pairs.size)} contract and plan ${pairs.size === 1 ? 'pair' : 'pairs'} in ${src}, ${count(multi.length)} with more than 1 segment`,
     `${count(checks)} pair and county checks: ${count(checks - conflicts.length)} pick exactly 1 segment, ${count(conflicts.length)} pick more than 1`,
     ...conflicts,
   ];
   return { code: conflicts.length ? 2 : 0, lines, pairs: pairs.size, multi: multi.length, checks, conflicts: conflicts.length };
 }
 
-// Copies the header and the fixture plans' rows of PlanArea.txt, byte for byte,
-// into FIXTURE_DIR/<year>/, with a download.json that keeps the release label and
-// download date of the full files.
+// Copies the header and the fixture plans' rows of PlanArea.txt and PlanRegionArea.txt,
+// byte for byte, into FIXTURE_DIR/<year>/, with a download.json that keeps the release
+// label and download date of the full files.
 async function writeFixtures({ dataDir = DATA_DIR, fixtureDir = FIXTURE_DIR } = {}) {
   const lines = [];
   for (const year of [...new Set(FIXTURE_PLANS.map((p) => p.year))]) {
@@ -198,18 +244,20 @@ async function writeFixtures({ dataDir = DATA_DIR, fixtureDir = FIXTURE_DIR } = 
     const { dir, find } = pbpDir(dataDir, year);
     const outDir = path.join(fixtureDir, String(year));
     fs.mkdirSync(outDir, { recursive: true });
-    const records = await cutFile(find('PlanArea.txt'), path.join(outDir, 'PlanArea.txt'), keys);
+    const records = {};
+    for (const name of FIXTURE_FILES) records[name] = await cutFile(find(name), path.join(outDir, name), keys);
     const m = JSON.parse(fs.readFileSync(path.join(dir, 'download.json'), 'utf8'));
     const manifest = {
-      description: `Rows of the plans below cut from PlanArea.txt of the CMS PBP Benefits files, contract year ${year}, by node scripts/pbp-segment.js --write-fixtures. ` +
-        'The file holds the original header line and the plans\' records, byte for byte. For scripts/pbp-segment.test.js.',
+      description: `Rows of the plans below cut from PlanArea.txt and PlanRegionArea.txt of the CMS PBP Benefits files, contract year ${year}, ` +
+        'by node scripts/pbp-segment.js --write-fixtures. Each file holds the original header line and the plans\' records, byte for byte. ' +
+        'For scripts/pbp-segment.test.js and scripts/publish-fhir.test.js.',
       downloaded: m.downloaded,
       release_label: m.release_label,
       plans: plans.map((p) => ({ keys: p.keys, why: p.why })),
-      records: { 'PlanArea.txt': records },
+      records,
     };
     fs.writeFileSync(path.join(outDir, 'download.json'), JSON.stringify(manifest, null, 2) + '\n');
-    lines.push(`wrote ${path.relative(REPO_ROOT, outDir).split(path.sep).join('/')}: PlanArea.txt, ${records} records`);
+    lines.push(`wrote ${path.relative(REPO_ROOT, outDir).split(path.sep).join('/')}: ${FIXTURE_FILES.map((f) => `${f}, ${records[f]} ${records[f] === 1 ? 'record' : 'records'}`).join('; ')}`);
   }
   return lines;
 }
@@ -225,6 +273,7 @@ async function main(argv, out = console) {
     else if (x === '--county') opt.county = argv[++i];
     else if (x === '--county-name') opt.countyName = argv[++i];
     else if (x === '--data') opt.dataDir = path.resolve(argv[++i]);
+    else if (x === '--service-areas') opt.serviceAreas = path.resolve(argv[++i] || '');
     else if (x === '--all-pairs') opt.allPairs = true;
     else if (x === '--write-fixtures') opt.writeFixtures = true;
     else if (x === '-h' || x === '--help') {
@@ -232,7 +281,7 @@ async function main(argv, out = console) {
         '       node scripts/pbp-segment.js --year <YYYY> --contract <H1234> --plan <028> --county-name "<county>, <state>"\n' +
         '       node scripts/pbp-segment.js --year <YYYY> --all-pairs     every county of every contract and plan with more than 1 segment\n' +
         '       node scripts/pbp-segment.js --write-fixtures              re-cut test/fixtures/pbp-segment/ from the full files\n' +
-        '       options: --data <dir> (default data/pbp)');
+        '       options: --data <dir> (default data/pbp), --service-areas <file> (a service-areas.json in place of PlanArea.txt)');
       return 0;
     } else {
       out.error(`error: unknown argument "${x}"`);
@@ -254,6 +303,6 @@ async function main(argv, out = console) {
   }
 }
 
-module.exports = { parseCountyName, readPlanArea, segmentsFor, findSegment, checkAllPairs, writeFixtures, main, COLUMNS, FIXTURE_DIR, FIXTURE_PLANS };
+module.exports = { parseCountyName, readPlanArea, segmentsFor, findSegment, checkAllPairs, writeFixtures, main, COLUMNS, FIXTURE_DIR, FIXTURE_PLANS, FIXTURE_FILES };
 
 if (require.main === module) main(process.argv.slice(2)).then((code) => process.exit(code));

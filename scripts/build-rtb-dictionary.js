@@ -37,7 +37,7 @@ const VOCABULARY = 'vocabularies/canonical-benefits.json';
 const REPO = 'https://github.com/Benefit-Plan-Standard/benefit-plan-schema';
 const IN_REPO = 'in the Benefit Plan Standard repository';
 const REPOS = 'the Benefit Plan Standard repository\'s';
-const SPEC_VERSION = '0.3';
+const SPEC_VERSION = '0.3.1';
 const SPEC_DATE = 'October 21, 2026';
 const AUTHOR = 'Diego Orofino, the Benefit Plan Standard, dorofino@benefitplanstandard.org. A draft for the workgroup, not a workgroup decision.';
 // The 3 documents of the specification: the name the preface gives each, and the term the others use for it
@@ -102,10 +102,15 @@ function preface(file) {
     'technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup. ' +
     `The other 2 are ${a} and ${b}. All 3 are in the [repository folder](${githubUrl(`${SPEC_DIR}/`)}), ` +
     `and the files they name are in the [repository](${REPO}). ` +
-    `This document is published as ${code(file.split('/').pop())} in that folder; a Word copy carries the same content.`;
+    `This document is published as ${code(file.split('/').pop())} in that folder; a Word copy with the same content is sent with the specification ` +
+    'and is not in the repository.';
 }
 
 const opening = (file) => `${AUTHOR}\n\n${preface(file)}`;
+
+// The first paragraph after the preface of the data dictionary and the crosswalk; standalone() links "README".
+const TERMS_POINTER = 'The terms the 3 documents use, such as SSA county code, Section A, PBP benefit category, tier row, accumulator, slot, ' +
+  'excerpt and STU2, are defined at the top of the README, the technical specification.';
 
 // Puts the author line and the preface under the title of a generated document, links every mention of the other
 // 2 documents by name to it on GitHub, and replaces the first appearance of each [text, replacement] in mentions,
@@ -537,7 +542,7 @@ function build() {
     if (!readme.includes(list)) errors.push(`${README} does not list the ${xs.length} ${prog[p].name} SHALL services as ${SHALL_SHOULD} names them: "${list}"`);
   }
   const text = standalone(render(ss, prog, vocabulary, rows, notInFile), DICTIONARY, [
-    ['(importer spec section 4.3)', `(${repoLink(ma.cfg.importer_spec, 'importer spec')} section 4.3, ${IN_REPO})`],
+    ['(Medicare Advantage importer spec section 4.3)', `(${repoLink(ma.cfg.importer_spec, 'Medicare Advantage importer spec')} section 4.3, ${IN_REPO})`],
   ], errors);
   if (errors.length) return { errors };
   return { text, rows, notInFile, gaps: ss.gaps };
@@ -554,6 +559,7 @@ function render(ss, prog, vocabulary, rows, notInFile) {
   const idRange = (gs) => (gs.length > 1 ? `${gs[0].id} to ${gs[gs.length - 1].id}` : gs[0].id);
   const L = [];
   L.push('# Medical MVP data dictionary', '');
+  L.push(TERMS_POINTER, '');
   L.push(`This data dictionary lists each item in the medical MVP scope and where it is in a Benefit Plan Standard document written by the 2 public-file importers ${IN_REPO}. ` +
     `The Medicare Advantage importer (${repoLink(ma.cfg.importer)}) reads the ${ma.cfg.files} files for contract year ${ma.crosswalk.contract_year}. ` +
     `The Marketplace importer (${repoLink(mp.cfg.importer)}) reads the ${mp.cfg.files} for plan year ${mp.crosswalk.plan_year}. ` +
@@ -677,4 +683,4 @@ function main(argv) {
 
 if (require.main === module) process.exit(main(process.argv.slice(2)));
 
-module.exports = { build, standalone, repoLink, IN_REPO, REPOS };
+module.exports = { build, standalone, repoLink, IN_REPO, REPOS, TERMS_POINTER };

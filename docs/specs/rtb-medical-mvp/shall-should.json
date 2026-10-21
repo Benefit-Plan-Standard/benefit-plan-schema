@@ -368,7 +368,7 @@
         "label": "SHALL",
         "path": "accumulators.individual_deductible",
         "source": [{ "file": "pbp_Section_D.txt", "read": ["pbp_d_inn_deduct_yn", "pbp_d_inn_deduct_partb_yn", "pbp_d_inn_deduct_amt", "pbp_d_ann_deduct_yn", "pbp_d_ann_deduct_amt_type", "pbp_d_ann_deduct_amt", "pbp_d_ann_deduct_bens"] }],
-        "note": "HMO and HMO-POS plans use the in-network columns and PPOs the annual ones; a PPO's network_tier is IN, null or OUT by the deductible's scope (importer spec section 4.3). A Medicare-defined deductible has no amount in the file, so no slot is written and the answer is quoted in source_references. Section D has no family amounts."
+        "note": "HMO and HMO-POS plans use the in-network columns and PPOs the annual ones; a PPO's network_tier is IN, null or OUT by the deductible's scope, and null means the slot does not apply to 1 tier, because the scope names both in-network and out-of-network services (Medicare Advantage importer spec section 4.3). A Medicare-defined deductible has no amount in the file, so no slot is written and the answer is quoted in source_references. Section D has no family amounts."
       },
       "marketplace": {
         "label": "SHALL",
@@ -545,7 +545,7 @@
         "label": "SHALL",
         "path": "accumulators.oon_individual_deductible",
         "source": [{ "file": "pbp_Section_D.txt", "read": ["pbp_d_oon_deduct_yn", "pbp_d_oon_deduct_amt"] }],
-        "note": "On HMO-POS plans the slot's network_tier is POS. On a PPO whose annual deductible names no in-network scope, the annual deductible is written here with network_tier OUT (importer spec section 4.3)."
+        "note": "On HMO-POS plans the slot's network_tier is POS. On a PPO whose annual deductible names no in-network scope, the annual deductible is written here with network_tier OUT (Medicare Advantage importer spec section 4.3)."
       },
       "marketplace": {
         "label": "SHALL",
@@ -580,7 +580,7 @@
         "label": "SHALL",
         "quoted": true,
         "source": [{ "file": "pbp_Section_D.txt", "read": ["pbp_d_comb_deduct_yn", "pbp_d_comb_deduct_amt", "pbp_d_comb_max_enr_amt_yn", "pbp_d_comb_max_enr_amt"] }],
-        "note": "The Benefit Plan Standard schema 1.2.0 has no combined slot. The PBP importer spec (section 9.1) proposes accumulators.combined_deductible and accumulators.combined_oop_max."
+        "note": "The Benefit Plan Standard schema 1.2.0 has no combined slot. The Medicare Advantage importer spec (section 9.1) proposes accumulators.combined_deductible and accumulators.combined_oop_max."
       },
       "marketplace": {
         "label": "SHALL",

@@ -31,7 +31,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { build: buildDictionary, standalone, repoLink, IN_REPO, REPOS } = require('./build-rtb-dictionary.js');
+const { build: buildDictionary, standalone, repoLink, IN_REPO, REPOS, TERMS_POINTER } = require('./build-rtb-dictionary.js');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const SPEC_DIR = 'docs/specs/rtb-medical-mvp';
@@ -389,6 +389,7 @@ function render(ss, m, sbc, rows, names) {
   const mapped = Object.keys(sbc.map).length;
 
   L.push('# Medical MVP crosswalk to the SBC InsurancePlan profile', '');
+  L.push(TERMS_POINTER, '');
   L.push('This crosswalk maps each item of the medical MVP data dictionary to the SBC InsurancePlan profile in the CARIN Digital Insurance Card ' +
     `implementation guide, package ${code(m.package)}. SBC stands for Summary of Benefits and Coverage. For each item it says where the value ` +
     `lands in the Bundle that ${REPOS} ${repoLink(m.converter)} writes from a Benefit Plan Standard document, and gives 1 of 3 verdicts. ${m.attribution}`, '');
@@ -400,11 +401,12 @@ function render(ss, m, sbc, rows, names) {
     `(${repoLink(m.converter_spec, 'converter specification')} section 2, ${IN_REPO}). ` +
     '3 changes to the SBC InsurancePlan profile were proposed from Benefit Plan Standard implementation experience and merged in June 2026: ' +
     `${Object.entries(m.ballot.tickets).map(([t, x]) => `${x.title} (${t})`).join(', ').replace(/, ([^,]*)$/, ' and $1')}. ` +
-    'They are in the STU2 ballot of September 2026, not in a published release, and each row they apply to names them.', '');
+    'They are in the September 2026 ballot of STU2, Standard for Trial Use release 2 of the CARIN Digital Insurance Card implementation guide, ' +
+    'not in a published release, and each row they apply to names them.', '');
   L.push(`The crosswalk is generated from the Benefit Plan Standard repository by ${repoLink('scripts/build-rtb-crosswalk.js')} from ${repoLink(SHALL_SHOULD, code('shall-should.json'))} and ` +
     `${repoLink(MAPPING, code('carin-mapping.json'))} in the same repository folder and ${repoLink(SBC_CROSSWALK)} (${mapped} canonical keys mapped to the SBC InsurancePlan profile's ` +
     `benefit categories), all ${IN_REPO}. The item names and field paths are the data ` +
-    `dictionary's, so the 2 files list the same rows in the same order. To change it, change those files and run the generator again.`, '');
+    `dictionary's, so the crosswalk and the data dictionary list the same rows in the same order. To change it, change those files and run the generator again.`, '');
 
   L.push('## How to read it', '');
   L.push(`- **aligned**. ${m.verdicts.aligned}`);
