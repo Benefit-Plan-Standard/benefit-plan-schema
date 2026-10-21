@@ -20,6 +20,9 @@
  *   - the README does not open, under its title, with the author line and the preface this generator writes for it;
  *   - the README's list of each program's SHALL services is not the one shall-should.json gives;
  *   - a mention to be linked to the repository is no longer in the document.
+ * The gaps in shall-should.json are a build check, not reader text. A SHALL item with no field, no canonical key or no
+ * crosswalk row passes only with an open gap recorded for it. An open gap prints in the row as a plain sentence,
+ * "The <program> importer does not read <columns> today", with no gap id; a closed gap prints nothing.
  * Spec: docs/specs/rtb-medical-mvp/README.md
  */
 
@@ -37,7 +40,7 @@ const VOCABULARY = 'vocabularies/canonical-benefits.json';
 const REPO = 'https://github.com/Benefit-Plan-Standard/benefit-plan-schema';
 const IN_REPO = 'in the Benefit Plan Standard repository';
 const REPOS = 'the Benefit Plan Standard repository\'s';
-const SPEC_VERSION = '0.3.2';
+const SPEC_VERSION = '0.3.3';
 const SPEC_DATE = 'October 21, 2026';
 const AUTHOR = 'Diego Orofino, the Benefit Plan Standard, dorofino@benefitplanstandard.org. A draft for the workgroup, not a workgroup decision.';
 // The 3 documents of the specification: the name the preface gives each, and the term the others use for it
@@ -56,8 +59,6 @@ const SERVICE_COST = 'network_cost_shares[tier_id=IN].cost_shares[]';
 const ITEM_PROPS = new Set(['id', 'group', 'name', 'key', 'meaning', 'note', ...PROGRAMS]);
 const ENTRY_PROPS = new Set(['label', 'on_list', 'name', 'path', 'source', 'quoted', 'unwritten', 'gap', 'not_in_file', 'note',
   'pbp_benefit_id', 'benefit_name', 'scope_covered_test']);
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-const longDate = (iso) => { const [y, m, d] = iso.split('-').map(Number); return `${MONTHS[m - 1]} ${d}, ${y}`; };
 const SOURCE_PROPS = new Set(['file', 'read', 'unread']);
 
 const readText = (rel) => fs.readFileSync(path.join(REPO_ROOT, rel), 'utf8');
@@ -83,6 +84,13 @@ function codeify(text) {
     if (/^[a-z]{3,}(\.[a-z]{3,})+$/.test(core)) return `${lead}${code(core)}${trail}`;
     return tok;
   }).join(' ');
+}
+
+// An open gap in reader text, with no gap id: the columns the importer does not read today, or, when the item names
+// no such column, what the importer writes instead.
+function openGapText(programName, entry, gap) {
+  const cols = arr(entry.source).flatMap((s) => arr(s.unread));
+  return codeify(sentence(cols.length ? `The ${programName} importer does not read ${codes(cols)} today` : gap.instead));
 }
 
 const fileText = (file) => file.replace(/[\w<>/.-]+\.(?:txt|csv|json)\b/g, (m) => code(m));
@@ -336,7 +344,7 @@ function build() {
 
   const notes = (parts) => [...new Set(parts.filter(Boolean).map((s) => sentence(s)))].join(' ');
   const progNote = (p, text) => (text ? `${prog[p].name}: ${text}` : '');
-  const gapNote = (e) => (e.gap ? `Gap ${e.gap}: ${gaps.get(e.gap).instead}` : '');
+  const gapNote = (p, e) => (e.gap ? openGapText(prog[p].name, e, gaps.get(e.gap)) : '');
   const notInFile = [];
   const nifNote = (it, itemName, p, text) => {
     if (!text) return '';
@@ -382,11 +390,10 @@ function build() {
         e.unwritten ? `Quoted verbatim in ${code('source_references')}; Benefit Plan Standard schema ${prog[p].schemaVersion} has ${code(e.unwritten)}, ` +
           `which the ${prog[p].name} importer does not write yet.` : '',
         sourceText(e),
-        e.gap ? `Gap ${e.gap}.` : '',
       ].filter(Boolean).join(' ');
       noteParts.push(progNote(p, codeify(e.note)));
       noteParts.push(nifNote(it, it.name, p, codeify(e.not_in_file)));
-      noteParts.push(codeify(gapNote(e)));
+      noteParts.push(gapNote(p, e));
       if (gap && gap.proposed) noteParts.push(`Proposed field: ${codeify(gap.proposed)}`);
     }
     rows.push({ group: it.group, item: it.name, path: pathCell(paths), meaning: codeify(it.meaning), cells, note: notes(noteParts), labels });
@@ -471,7 +478,7 @@ function build() {
         if (!row) src = ['Not written today.', sourceText(e) || 'No crosswalk row.'].join(' ');
         else if (p === 'medicare_advantage') src = maServiceText(row);
         else src = `${benefitNameText(row)} ${codes(mp.cfg.columns.in_network)}.`;
-        cells[p] = [labelText(e.label), src, e.gap ? `Gap ${e.gap}.` : ''].filter(Boolean).join(' ');
+        cells[p] = [labelText(e.label), src].filter(Boolean).join(' ');
         if (p === 'medicare_advantage' && row) {
           const others = pbpRows.filter((b) => it.key !== null && b.canonical_key === it.key && b !== row);
           if (others.length) noteParts.push(progNote(p, `${others.map((b) => `${code(b.benefit_id)} (category ${b.pbp_code})`).join(', ')} is also written with this key`));
@@ -482,7 +489,7 @@ function build() {
         }
         noteParts.push(progNote(p, codeify(e.note)));
         noteParts.push(nifNote(it, plainName(it), p, codeify(e.not_in_file)));
-        noteParts.push(codeify(gapNote(e)));
+        noteParts.push(gapNote(p, e));
       }
       rows.push({ group: it.group, item: itemName(it), path: pathCell(paths), meaning: codeify(it.meaning), cells, note: notes(noteParts), labels });
       continue;
@@ -518,14 +525,14 @@ function build() {
         } else {
           src = `${benefitNameText(row)} ${codes(mp.cfg.columns[a.id])}.`;
         }
-        cells[p] = [labelText(a.label), src, e.gap ? `Gap ${e.gap}.` : ''].filter(Boolean).join(' ');
+        cells[p] = [labelText(a.label), src].filter(Boolean).join(' ');
         if (a.id === 'covered' && e.scope_covered_test) {
           noteParts.push(progNote(p, `the scope counts the benefit as covered when ${codeify(e.scope_covered_test)}, a different test from the ${prog[p].name} importer's. ` +
             `For the MVP a pledgee follows the ${prog[p].name} importer's test, because the published documents hold it, and the difference is listed for the workgroup`));
         }
         noteParts.push(progNote(p, codeify(cfgAspect.note)));
         if (cfgAspect.not_in_file) noteParts.push(nifNote(it, `The extra benefits, ${a.title}`, p, codeify(cfgAspect.not_in_file)));
-        if (a.id === 'covered') noteParts.push(codeify(gapNote(e)));
+        if (a.id === 'covered') noteParts.push(gapNote(p, e));
       }
       rows.push({ group: it.group, item: itemName(it, a.title), path: pathCell(paths), meaning: codeify(a.meaning), cells, note: notes(noteParts), labels });
     }
@@ -553,10 +560,6 @@ function render(ss, prog, vocabulary, rows, notInFile) {
   const mp = prog.marketplace;
   const pbpKeyed = ma.crosswalk.benefits.filter((b) => b.canonical_key).length;
   const pufMapped = mp.crosswalk.map.filter((r) => r.canonical_key).length;
-  const open = ss.gaps.filter((g) => !g.closed);
-  const closed = ss.gaps.filter((g) => g.closed);
-  const closedDates = [...new Set(closed.map((g) => g.closed))].sort();
-  const idRange = (gs) => (gs.length > 1 ? `${gs[0].id} to ${gs[gs.length - 1].id}` : gs[0].id);
   const L = [];
   L.push('# Medical MVP data dictionary', '');
   L.push(TERMS_POINTER, '');
@@ -585,11 +588,6 @@ function render(ss, prog, vocabulary, rows, notInFile) {
   L.push('- "Not on the Medicare Advantage list" or "Not on the Marketplace list" means the scope does not ask for the item in that program. Where a crosswalk still maps the key, the cell names the rows.');
   L.push('- "Not in the CMS file" in a note means the files the Medicare Advantage importer or the Marketplace importer reads cannot carry the item for that program; the note says what that importer writes instead.');
   L.push('- "(not read)" marks a column that is in the CMS file but that the Medicare Advantage importer or the Marketplace importer does not read today.');
-  if (open.length) L.push(`- Gaps ${idRange(open)} are listed at the end. Each row a gap touches repeats it in its note.`);
-  if (closed.length) {
-    L.push(`- Gaps ${idRange(closed)}, known in earlier versions, were closed on ${closedDates.map(longDate).join(' and ')}. ` +
-      'The list at the end says how each was closed.');
-  }
   L.push('');
   for (const p of PROGRAMS) {
     L.push(`How the ${prog[p].name} importer reads the files:`, '');
@@ -628,20 +626,6 @@ function render(ss, prog, vocabulary, rows, notInFile) {
     const items = notInFile.filter((n) => n.program === p && !seen.has(n.item) && seen.add(n.item));
     if (!items.length) L.push('- None.');
     for (const n of items) L.push(`- ${n.item}. ${n.text}`);
-    L.push('');
-  }
-
-  const programNames = (g) => g.programs.map((p) => prog[p].name).join(' and ');
-  if (open.length) {
-    L.push('## Known gaps', '');
-    for (const g of open) {
-      L.push(`- **${g.id}** (${programNames(g)}). ${codeify(g.title)} ${codeify(g.instead)}${g.proposed ? ` Proposed field: ${codeify(g.proposed)}` : ''}`);
-    }
-    L.push('');
-  }
-  for (const date of closedDates) {
-    L.push(`## Gaps closed on ${longDate(date)}`, '');
-    for (const g of closed.filter((x) => x.closed === date)) L.push(`- **${g.id}** (${programNames(g)}). ${codeify(g.closed_by)}`);
     L.push('');
   }
   return L.join('\n');
@@ -683,4 +667,4 @@ function main(argv) {
 
 if (require.main === module) process.exit(main(process.argv.slice(2)));
 
-module.exports = { build, standalone, repoLink, IN_REPO, REPOS, TERMS_POINTER };
+module.exports = { build, standalone, repoLink, openGapText, IN_REPO, REPOS, TERMS_POINTER };

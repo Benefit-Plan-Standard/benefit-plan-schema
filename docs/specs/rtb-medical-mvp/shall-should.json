@@ -87,7 +87,7 @@
     {
       "id": "extras",
       "title": "The extra benefits",
-      "intro": "Benefits a plan may or may not offer. Whether the plan covers the benefit is SHALL; its cost and conditions and its limits are SHOULD. Limits are SHOULD because use case 3 has no SHALL in the MVP: a known gap, to revisit for GA.",
+      "intro": "Benefits a plan may or may not offer. Whether the plan covers the benefit is SHALL; its cost and conditions and its limits are SHOULD. Limits are SHOULD because use case 3 has no SHALL in the MVP; the workgroup may add limits at GA.",
       "aspects": [
         { "id": "covered", "title": "covered or not", "label": "SHALL", "meaning": "Whether the plan covers this benefit." },
         { "id": "cost", "title": "cost and details", "label": "SHOULD", "meaning": "What the member pays for this benefit, and the conditions the plan files with it." },
@@ -388,7 +388,7 @@
         "quoted": true,
         "unwritten": "pharmacy.deductible",
         "source": [{ "file": "plan-attributes-puf.csv", "read": ["DEHBDedInnTier1Individual", "DEHBDedInnTier1FamilyPerPerson", "DEHBDedInnTier1FamilyPerGroup"] }],
-        "note": "Part of the deductible item when MedicalDrugDeductiblesIntegrated is No. Benefit Plan Standard schema 1.1.0 had no pharmacy accumulator; since 2026-10-20 the Marketplace importer writes Benefit Plan Standard schema 1.2.0, whose pharmacy.deductible could hold the amount (see README, Follow-ups)."
+        "note": "Part of the deductible item when MedicalDrugDeductiblesIntegrated is No. The Marketplace importer writes Benefit Plan Standard schema 1.2.0, whose pharmacy.deductible could hold the amount (see README, Follow-ups)."
       }
     },
     {

@@ -17,13 +17,14 @@
  *   - a verdict, reason, extension or ballot ticket is not one carin-mapping.json defines;
  *   - a cited passage is not in the cited section (the converter specification is silent), or a cited Bundle value differs;
  *   - a service or extra benefit's verdict is not the one fhir/carin-sbc-crosswalk.json and shall-should.json give;
- *   - an entry is "not covered, gap" without a gap in shall-should.json, or has a gap and another verdict;
+ *   - an entry is "not covered, not read" without a gap in shall-should.json, or has a gap and another verdict;
  *   - a quoted item is not "different" in bps-source-reference;
  *   - FHIR-57526 is named on an entry whose cost does not reach plan.specificCost.benefit.cost, or is missing from
  *     one whose cost does; FHIR-57525 likewise for cost.qualifiers; FHIR-57527 anywhere but the limit rows;
  *   - a change request is not one carin-mapping.json defines, or is named on an entry that is not "different"
  *     (it is named only where merging it would move the verdict to aligned);
  *   - a file a verdict is read from is not named in the document, so it cannot be introduced where first named.
+ * No gap id is printed: a "not covered, not read" row's note opens with the data dictionary's plain sentence for an open gap.
  * Spec: docs/specs/rtb-medical-mvp/README.md
  */
 
@@ -31,7 +32,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { build: buildDictionary, standalone, repoLink, IN_REPO, REPOS, TERMS_POINTER } = require('./build-rtb-dictionary.js');
+const { build: buildDictionary, standalone, repoLink, openGapText, IN_REPO, REPOS, TERMS_POINTER } = require('./build-rtb-dictionary.js');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const SPEC_DIR = 'docs/specs/rtb-medical-mvp';
@@ -125,7 +126,6 @@ function build() {
   const bundles = new Map();
   const tickets = m.ballot.tickets;
   const requests = m.change_requests;
-  const importers = (ps) => (ps.length === 2 ? 'the 2 importers' : `the ${names[ps[0]]} importer`);
 
   // Extension names: Benefit Plan Standard ones must be defined in fhir/definitions, the others named in
   // converter specification section 10.1.
@@ -268,7 +268,6 @@ function build() {
     return {
       verdict: entry.verdict,
       reason: entry.reason,
-      gap: e.gap || null,
       element,
       extension,
       category,
@@ -276,7 +275,7 @@ function build() {
       readFrom,
       rowSentence: (r.row_sentence || {})[p] || null,
       parts: [
-        e.gap ? sentence(fill(m.gap_sentence, { gap: e.gap, importers: importers(gaps.get(e.gap).programs) })) : '',
+        e.gap ? openGapText(names[p], e, gaps.get(e.gap)) : '',
         sentence(fill(r.note, vars)),
         sentence(fill((r.notes || {})[p], vars)),
         sentence(fill(entry.note, vars)),
@@ -287,7 +286,7 @@ function build() {
     };
   };
 
-  const verdictText = (r) => (r.verdict === 'not_covered' ? `**not covered** (${r.reason === 'gap' ? `gap ${r.gap}` : 'no element'})` : `**${r.verdict}**`);
+  const verdictText = (r) => (r.verdict === 'not_covered' ? `**not covered** (${r.reason === 'gap' ? 'gap' : 'no element'})` : `**${r.verdict}**`);
   const elementText = (r) => {
     const parts = r.element.map((x, i) => (i === 0 && r.category
       ? `${code(x)}, category ${code(r.category.category)}${r.category.type !== r.category.category ? ` and type ${code(r.category.type)}` : ''}`
@@ -411,7 +410,9 @@ function render(ss, m, sbc, rows, names) {
   L.push('## How to read it', '');
   L.push(`- **aligned**. ${m.verdicts.aligned}`);
   L.push(`- **different**. ${m.verdicts.different}`);
-  L.push(`- **not covered**. ${m.verdicts.not_covered} The verdict adds "no element" when ${m.reasons.no_element}, and "gap" when ${m.reasons.gap}. ${m.gap_note}`);
+  const gapRows = rows.filter((r) => Object.values(r.res).some((x) => x.reason === 'gap')).length;
+  L.push(`- **not covered**. ${m.verdicts.not_covered} The verdict adds "no element" when ${m.reasons.no_element}, and "not read" when ${m.reasons.gap}. ` +
+    `${m.gap_note}${gapRows ? '' : ' No row has the verdict "not covered, not read".'}`);
   L.push('- A row that applies to 1 program names the program in the Verdict cell. Where the 2 programs get different verdicts, the cell gives both, ' +
     'the same way the data dictionary splits field paths.');
   L.push(`- The SBC InsurancePlan element is a FHIR path inside ${code('InsurancePlan')}. When the value travels in an extension, the cell gives the ` +
@@ -424,7 +425,7 @@ function render(ss, m, sbc, rows, names) {
   L.push('## Summary', '');
   L.push(`The crosswalk has ${rows.length} rows, 1 for each row of the data dictionary. ${both.length} rows apply to both programs, ` +
     `${only('medicare_advantage')} to Medicare Advantage only and ${only('marketplace')} to Marketplace only. On ${split.length} of the ${both.length} ` +
-    'the 2 programs get different verdicts. A row has 1 verdict for each program it applies to, and a not covered verdict is either no element or gap, ' +
+    'the 2 programs get different verdicts. A row has 1 verdict for each program it applies to, and a not covered verdict is either no element or not read, ' +
     'so the 4 verdict rows below add up to the rows that apply.', '');
   L.push(`| | ${PROGRAMS.map((p) => names[p]).join(' | ')} |`);
   L.push('|---|---|---|');
@@ -433,7 +434,7 @@ function render(ss, m, sbc, rows, names) {
   line('Aligned', (x) => x.verdict === 'aligned');
   line('Different', (x) => x.verdict === 'different');
   line('Not covered, no element', (x) => x.verdict === 'not_covered' && x.reason === 'no_element');
-  line('Not covered, gap', (x) => x.verdict === 'not_covered' && x.reason === 'gap');
+  line('Not covered, not read', (x) => x.verdict === 'not_covered' && x.reason === 'gap');
   L.push('');
   L.push('| Section | Rows | Medicare Advantage aligned | Medicare Advantage different | Medicare Advantage not covered | Marketplace aligned | Marketplace different | Marketplace not covered |');
   L.push('|---|---|---|---|---|---|---|---|');
