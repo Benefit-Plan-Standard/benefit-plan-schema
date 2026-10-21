@@ -96,7 +96,7 @@ For each plan, 2 files:
 
 The documents quote the CMS cells they were read from. Each tier row of a benefit quotes its cells in `notes`, except a Marketplace row that is not covered (Follow-ups), and a value with no field is quoted in `source_references`.
 
-The crosswalk to the SBC InsurancePlan profile in the CARIN Digital Insurance Card implementation guide is a Part B item in the workgroup's GA draft (the profile is at ballot), not a GA ask; the crosswalk, [`carin-crosswalk.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/carin-crosswalk.md), exists so a pledgee can produce that Bundle when the profile publishes, and nothing in the MVP's SHALL list depends on it.
+The crosswalk to the SBC InsurancePlan profile in the CARIN Digital Insurance Card implementation guide is a Part B item in the workgroup's GA draft, the document "RTB Medical. What payers would be asked to supply for GA" (Monica Chopra, October 2026, a draft for discussion, not a workgroup decision) (the profile is at ballot), not a GA ask; the crosswalk, [`carin-crosswalk.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/carin-crosswalk.md), exists so a pledgee can produce that Bundle when the profile publishes, and nothing in the MVP's SHALL list depends on it.
 
 ### How to get them
 
@@ -142,9 +142,9 @@ On the files used for the examples, these 4 commands write documents and Bundles
 
 The Benefit Plan Standard repository has 5 examples for each program: [`examples/*.pbp.json`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/tree/main/examples) with their Bundles in [`examples/fhir/`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/tree/main/examples/fhir), and [`examples/*.puf.json`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/tree/main/examples) with their Bundles in [`examples/fhir-puf/`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/tree/main/examples/fhir-puf). The [site's index](https://benefitplanstandard.org/fhir/index.json) lists 15 Bundles: the 5 Medicare Advantage Bundles and 10 read from plan documents. The Marketplace Bundles are not on the site.
 
-### Source, date and refresh (GA draft checks 2 and 6)
+### Source, date and refresh
 
-The workgroup's GA draft asks that every answer carry its source and date (check 2) and that the data be refreshed with each CMS release (check 6). This section is where both checks land.
+Section 5 of the GA draft, "MVP accuracy and QA", asks that every answer carry its source and date (its check 2, "Source and date on every answer") and that the data be refreshed with each CMS release (its check 6, "Refresh with each CMS release"). This section is where both land.
 
 Every document a pledgee publishes, and every answer an app builds from it, SHALL carry:
 
@@ -274,11 +274,11 @@ BlueOptions Gold 1505 is read from the plan year 2023 files and is in the table 
 
 The 5 Medicare Advantage examples are under the proposed 90 percent today. The number is a target, not a claim. Every Medicare Advantage miss is a known gap, the same 6 items on every plan. A Medicare Advantage plan has 43 applicable items, or 39 for an HMO, which has no out-of-network cost, deductible, maximum or combined amounts. A Marketplace plan has 47, 1 more when the drug deductible is separate and 2 more when the plan has a second in-network tier. Every Marketplace plan misses G5, G6 and G8, and 3 plans also miss the plan-wide exclusions, because their `PlanLevelExclusions` cell is blank in the Plan Attributes PUF. G7 touches only the plan key, which is not counted.
 
-### Accuracy (GA draft check 1b, proposal for the workgroup to set)
+### Accuracy (proposal for the workgroup to set)
 
-On a checked sample of plans, how many values agree with the carrier's own plan document: the Summary of Benefits for a Medicare Advantage plan, the Summary of Benefits and Coverage for a Marketplace plan. This is check 1b of the GA draft, "CMS filing agrees with the plan's own documents".
+On a checked sample of plans, how many values agree with the carrier's own plan document: the Summary of Benefits for a Medicare Advantage plan, the Summary of Benefits and Coverage for a Marketplace plan. This is check 1b in section 5 of the GA draft, "CMS filing agrees with the plan's own documents".
 
-The proposed threshold is 0 contradictions on the checked sample, with every reading documented, because a contradiction means the member could get a different answer from the plan than from the app. A contradiction is a defect to fix in the importer or a correction to report, and it is never corrected silently. The GA draft's check 1a already asks for 100 percent faithful conversion; this is the number for check 1b.
+The proposed threshold is 0 contradictions on the checked sample, with every reading documented, because a contradiction means the member could get a different answer from the plan than from the app. A contradiction is a defect to fix in the importer or a correction to report, and it is never corrected silently. The GA draft's check 1a, "Faithful conversion", already asks for 100 percent; this is the number for check 1b.
 
 The CMS file is the source and the carrier document is the check. When they disagree, the CMS file is what the MVP serves, and the contradiction is reported.
 
@@ -330,10 +330,10 @@ Version 0.2, a draft for the workgroup, dated October 20, 2026. Version 0.1 was 
 
 Version 0.2 adds these to version 0.1:
 
-- The file contract section is now Retrieval and the file contract, with a new subsection, Source, date and refresh (GA draft checks 2 and 6). It sets what every document and answer carries and says what each importer stamps today. It also proposes a refresh cadence.
+- The file contract section is now Retrieval and the file contract, with a new subsection, Source, date and refresh, where the GA draft's source-and-date and refresh checks land. It sets what every document and answer carries and says what each importer stamps today. It also proposes a refresh cadence.
 - A new section, What a pledgee publishes, is the minimum contract.
 - A new section, Worked example, walks a primary care question through 1 plan in each program.
-- Conformance has a proposed number for each measure. Completeness is counted on the 10 examples by the new `scripts/rtb-completeness.js`. Accuracy has its method and first results as GA draft check 1b, 186 values across 3 plans with 0 contradictions, including the first Marketplace check. Plan match has its test set, and the rule for moving SHOULD items to SHALL at GA is proposed.
+- Conformance has a proposed number for each measure. Completeness is counted on the 10 examples by the new `scripts/rtb-completeness.js`. Accuracy has its method and first results as the GA draft's accuracy check 1b, 186 values across 3 plans with 0 contradictions, including the first Marketplace check. Plan match has its test set, and the rule for moving SHOULD items to SHALL at GA is proposed.
 - Follow-ups is now 1 section, with follow-ups for the importers and the published files beside those for the converter spec.
 - What comes back now says that a Marketplace row that is not covered quotes no cell.
 

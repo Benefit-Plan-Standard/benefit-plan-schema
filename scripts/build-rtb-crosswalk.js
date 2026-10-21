@@ -372,7 +372,8 @@ function render(ss, m, sbc, rows, names) {
   L.push('This crosswalk maps each item of the medical MVP data dictionary to the SBC InsurancePlan profile in the CARIN Digital Insurance Card ' +
     `implementation guide, package ${code(m.package)}. SBC stands for Summary of Benefits and Coverage. For each item it says where the value ` +
     `lands in the Bundle that ${REPOS} ${repoLink(m.converter)} writes from a Benefit Plan Standard document, and gives 1 of 3 verdicts. ${m.attribution}`, '');
-  L.push('The crosswalk to the SBC InsurancePlan profile is a Part B item in the workgroup\'s GA draft, not a GA ask. The profile is at ballot. ' +
+  L.push('The crosswalk to the SBC InsurancePlan profile is a Part B item in the workgroup\'s GA draft, the document "RTB Medical. ' +
+    'What payers would be asked to supply for GA" (Monica Chopra, October 2026, a draft for discussion, not a workgroup decision), not a GA ask. The profile is at ballot. ' +
     'This crosswalk exists so a pledgee can produce the Bundle when the profile publishes, and nothing in the MVP\'s SHALL list depends on it.', '');
   L.push('The whole profile is ballot-stage. The profile, its extensions and the code systems it binds are draft and experimental in that package ' +
     `(${repoLink(m.converter_spec, 'converter specification')} section 2, ${IN_REPO}). ` +
