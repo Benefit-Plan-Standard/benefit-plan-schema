@@ -1,4 +1,4 @@
-# 📦 Benefit Plan Standard — JSON Schema  
+# 📦 Benefit Plan Standard: JSON Schema  
 The canonical, vendor-neutral JSON Schema for representing U.S. health insurance benefit plans in a consistent, machine-readable format.
 
 <p align="left">
@@ -7,6 +7,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
   </a>
   <img src="https://img.shields.io/badge/Schema-v1.1.0-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Status-Stable-blueviolet?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Draft-v1.2.0%20draft%205-orange?style=for-the-badge" />
   <img src="https://img.shields.io/github/license/Benefit-Plan-Standard/benefit-plan-schema?style=for-the-badge" />
 </p>
 
@@ -16,13 +17,18 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 
 - Documentation: https://benefitplanstandard.org  
 - Canonical schema file (current): `schema/v1.1.0/benefit-plan.schema.json`  
+- Draft schema (v1.2.0, draft 5): `schema/v1.2.0/benefit-plan.schema.json`; each published draft is a git tag, `v1.2.0-draft.1` through `v1.2.0-draft.5`  
 - Previous schema (v1.0.0): `schema/v1.0.0/benefit-plan.schema.json`  
-- Example plans: `examples/`  
+- Example plans: `examples/`, 20 plans: 10 read from plan documents, 5 imported from the CMS Marketplace public use files, 5 from the CMS Medicare Advantage PBP files  
 - Vocabularies (canonical benefits, categories, markets, plan types): `vocabularies/`  
 - FHIR alignment: `docs/fhir-alignment.md`  
 - FHIR InsurancePlan converter (CARIN SBC profile): `scripts/to-insuranceplan.js`, spec `docs/specs/insuranceplan-converter.md`  
 - Importer from the CMS Marketplace public use files: `scripts/from-marketplace-puf.js`, spec `docs/specs/marketplace-puf-importer.md`, 5 examples in `examples/*.puf.json` and their Bundles in `examples/fhir-puf/`  
 - Importer from the CMS Medicare Advantage Plan Benefit Package files: `scripts/from-pbp.js`, spec `docs/specs/pbp-importer.md`, 5 examples in `examples/*.pbp.json` and their Bundles in `examples/fhir/`  
+- Medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup: `docs/specs/rtb-medical-mvp/` (the specification, the data dictionary and the crosswalk to the SBC InsurancePlan profile, version 0.3.4)  
+- Segment tool for Medicare Advantage plans (county to segment): `scripts/pbp-segment.js`  
+- Pledgee publishing, the release layout and index the specification describes: `scripts/publish-fhir.js --pledgee <root>`  
+- Completeness count against the specification: `scripts/rtb-completeness.js`  
 - The 10 document-derived examples and the 5 PBP examples as FHIR InsurancePlan: `examples/fhir/`, the 15 published at https://benefitplanstandard.org/fhir/index.json  
 - CARIN Digital Insurance Card reconciliation: `docs/carin-dic-reconciliation.md`  
 - Modules: `modules/README.md`  
@@ -45,11 +51,13 @@ It is designed to support:
 
 This repository contains:
 
-- The **canonical JSON Schema (v1.1.0)** — backward-compatible with v1.0.0  
-- Example normalized plans across 9 carriers  
+- The **canonical JSON Schema (v1.1.0)**, backward-compatible with v1.0.0, and the v1.2.0 draft  
+- 20 example plans: 10 read from plan documents across 9 carriers, 5 imported from the CMS Marketplace public use files, 5 from the CMS Medicare Advantage PBP files  
 - Recommended vocabularies (canonical benefits, categories, markets, plan types)  
 - FHIR R4 `InsurancePlan` alignment guide  
 - A converter from BPS to FHIR R4 `InsurancePlan` in the CARIN Digital Insurance Card SBC InsurancePlan profile (STU 2 ballot), with the 10 examples converted and validated  
+- Two importers from CMS public files (Marketplace public use files, Medicare Advantage Plan Benefit Package files)  
+- The medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup, with its data dictionary and its crosswalk to the SBC InsurancePlan profile  
 - Module definitions (pharmacy, behavioral health, dental/vision, etc.)  
 - Governance guidelines and roadmap  
 
@@ -67,47 +75,66 @@ schema/
   ├── v1.1.0/
   │   └── benefit-plan.schema.json   ← current
   └── v1.2.0/
-      └── benefit-plan.schema.json   ← draft
+      └── benefit-plan.schema.json   ← draft (draft 5; each published draft is a git tag, v1.2.0-draft.N)
 docs/
   ├── carin-dic-reconciliation.md
   ├── changelog.md
   ├── fhir-alignment.md
   ├── governance.md
   ├── medicare-advantage-notes.md
+  ├── medicare-advantage-schema-proposal.md
+  ├── provider-directory-schema-proposal.md
   ├── roadmap.md
   └── specs/
-      ├── insuranceplan-converter.md ← the FHIR converter spec
-      ├── pbp-importer.md            ← the CMS Medicare Advantage PBP importer spec
-      └── pbp-sob-checks/            ← expectations from the CMS Summary of Benefits, 1 per checked plan
+      ├── insuranceplan-converter.md     ← the FHIR converter spec
+      ├── marketplace-puf-importer.md    ← the CMS Marketplace public use files importer spec
+      ├── marketplace-puf-parse-report.md
+      ├── marketplace-puf-vs-sbc-flblue-505.md
+      ├── pbp-importer.md                ← the CMS Medicare Advantage PBP importer spec
+      ├── pbp-record-layout-notes.md
+      ├── pbp-sob-checks/                ← expectations from the CMS Summary of Benefits, 1 per checked plan
+      ├── puf-sbc-checks/                ← expectations from the carrier's SBC, 1 per checked Marketplace plan
+      └── rtb-medical-mvp/               ← the medical MVP technical specification for the RTB workgroup
+          ├── README.md                  ← the specification
+          ├── data-dictionary.md         ← generated by scripts/build-rtb-dictionary.js
+          ├── carin-crosswalk.md         ← generated by scripts/build-rtb-crosswalk.js
+          ├── shall-should.json          ← the SHALL and SHOULD assignments
+          └── carin-mapping.json         ← the crosswalk's source
 examples/
   ├── README.md
-  ├── aetna_example.json
-  ├── aetna_ppo5000_example.json
-  ├── ambetter_example.json
-  ├── bluecross_example.json
-  ├── cigna_example.json
-  ├── gatorcare_example.json
-  ├── humana_example.json
-  ├── kaiser_example.json
-  ├── scan_example.json
-  ├── united_example.json
-  ├── fhir/                          ← each document-derived and PBP example as a FHIR InsurancePlan Bundle, plus VALIDATION.md
-  ├── fhir-puf/                      ← the 5 Marketplace public-file examples as FHIR Bundles
-  └── sources/                       ← the source PDF each example comes from
+  ├── *_example.json                 ← 10 plans read from plan documents (aetna, aetna_ppo5000, ambetter, bluecross, cigna, gatorcare, humana, kaiser, scan, united)
+  ├── *.puf.json                     ← 5 plans imported from the CMS Marketplace public use files
+  ├── *.pbp.json                     ← 5 plans imported from the CMS Medicare Advantage PBP files
+  ├── fhir/                          ← the 10 document-derived and the 5 PBP plans as FHIR InsurancePlan Bundles, plus VALIDATION.md
+  ├── fhir-puf/                      ← the 5 Marketplace plans as FHIR Bundles
+  └── sources/                       ← the source PDF each document-derived example comes from
 fhir/
   ├── carin-sbc-crosswalk.json       ← BPS canonical keys to CARIN SBC benefit codes
-  └── definitions/                   ← BPS extension StructureDefinitions and CodeSystem
+  ├── marketplace-puf-crosswalk.json ← Marketplace PUF benefit names to canonical keys
+  ├── pbp-crosswalk.json             ← PBP service categories to canonical keys
+  └── definitions/                   ← BPS extension StructureDefinitions and CodeSystem (scripts/build-fhir-definitions.js)
 scripts/
   ├── validate.js                    ← schema and vocabulary validation
   ├── to-insuranceplan.js            ← BPS to FHIR InsurancePlan converter
   ├── from-marketplace-puf.js        ← CMS Marketplace public use files to BPS importer
   ├── from-pbp.js                    ← CMS Medicare Advantage PBP files to BPS importer
-  └── pbp-sob-check.js               ← checks an imported plan against its Summary of Benefits
+  ├── pbp-segment.js                 ← county to segment lookup for a Medicare Advantage plan
+  ├── pbp-sob-check.js               ← checks an imported plan against its Summary of Benefits
+  ├── puf-parse-report.js            ← parse report over a Marketplace plan year
+  ├── rtb-completeness.js            ← completeness count against the medical MVP specification
+  ├── build-rtb-dictionary.js        ← writes docs/specs/rtb-medical-mvp/data-dictionary.md
+  ├── build-rtb-crosswalk.js         ← writes docs/specs/rtb-medical-mvp/carin-crosswalk.md
+  ├── build-rtb-docx.js              ← writes the Word copies of the specification into dist/ (git-ignored)
+  ├── build-fhir-definitions.js      ← writes fhir/definitions/
+  ├── publish-fhir.js                ← copies the example Bundles to the site, or with --pledgee writes a pledgee's release index
+  ├── publish-schema.js              ← copies the schema files to the site
+  └── *.test.js                      ← node --test
 test/
   └── fixtures/
-      └── pbp/                       ← rows of the 5 PBP golden plans, for scripts/from-pbp.test.js
+      ├── pbp/                       ← rows of the 5 PBP golden plans, for scripts/from-pbp.test.js
+      └── pbp-segment/               ← PlanArea and PlanRegionArea cuts, for scripts/pbp-segment.test.js
 vocabularies/
-  ├── canonical-benefits.json
+  ├── canonical-benefits.json        ← v1.3.0, 118 keys
   ├── categories.json
   ├── markets.json
   ├── plan-types.json
@@ -128,6 +155,8 @@ The schema follows **semantic versioning**:
 - **PATCH** → Fixes & clarifications  
 
 Current version: **v1.1.0** (backward-compatible with v1.0.0)
+
+Draft: **v1.2.0**, draft 5, tagged `v1.2.0-draft.5`. Drafts are numbered as they are published, and each one is a git tag on this repository, so any earlier draft can be checked out by its tag. Under the release rule in `docs/governance.md`, v1.2.0 becomes final after two independent adopters implement and validate it; until then every v1.2.0 document says which draft it validates against. The two importers write v1.2.0 draft documents.
 
 Validation uses:
 
@@ -170,7 +199,7 @@ The schema enforces:
 > controlled vocabularies as enums, so adopters can extend without forking
 > (see the field descriptions, e.g. `benefit_type`, `market`). Vocabulary
 > conformance is a second, advisory layer checked against the published lists
-> in [`/vocabularies`](vocabularies/) — see **Validating a plan** below.
+> in [`/vocabularies`](vocabularies/); see **Validating a plan** below.
 
 ### ✔ Core benefit model consistency
 - Valid network tier references  
@@ -297,16 +326,38 @@ node scripts/from-pbp.js --year 2027 --plan H2406-013-000 --out plan.json
 node --test scripts/from-pbp.test.js
 ```
 
+### Segments, completeness and pledgee publishing
+
+Three scripts sit beside the importers for the medical MVP. `scripts/pbp-segment.js` gives a Medicare Advantage plan's segment and plan key for a contract, a plan and a county, from an SSA county code or from the county's name and state, read from the PBP files or from a pledgee's `service-areas.json`; its test runs on the cuts in `test/fixtures/pbp-segment/`. `scripts/rtb-completeness.js` counts, for one or more documents, how many of the specification's SHALL items that apply to the plan the document populates. `scripts/publish-fhir.js --pledgee <root>` reads a pledgee's release folders and writes the index and `service-areas.json` the specification describes.
+
+```bash
+node scripts/pbp-segment.js --year 2027 --contract H1609 --plan 028 --county 10150
+node scripts/pbp-segment.js --year 2027 --contract H1609 --plan 028 --county-name "Duval, FL"
+node scripts/rtb-completeness.js                                   # the 10 examples
+node scripts/publish-fhir.js --pledgee published/
+node --test scripts/pbp-segment.test.js scripts/publish-fhir.test.js
+```
+
+### The medical MVP technical specification
+
+[`docs/specs/rtb-medical-mvp/`](docs/specs/rtb-medical-mvp/) holds the medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup, a draft for the workgroup and not a workgroup decision: the specification (`README.md`), the data dictionary and the crosswalk to the SBC InsurancePlan profile of the CARIN Digital Insurance Card implementation guide. The dictionary and the crosswalk are generated from `shall-should.json` and `carin-mapping.json`; do not edit them by hand.
+
+```bash
+node scripts/build-rtb-dictionary.js --check     # exit 1 if data-dictionary.md on disk differs
+node scripts/build-rtb-crosswalk.js --check      # exit 1 if carin-crosswalk.md on disk differs
+npm install docx && node scripts/build-rtb-docx.js   # the Word copies, into dist/ (git-ignored)
+```
+
 ---
 
 ## 🤝 Contributing
 
 We welcome contributions from the community.
 
-Please read:
+Please read, in the documentation repository:
 
-- `CONTRIBUTING.md`  
-- `CODE_OF_CONDUCT.md`  
+- [`CONTRIBUTING.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-docs/blob/main/CONTRIBUTING.md)  
+- [`CODE_OF_CONDUCT.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-docs/blob/main/CODE_OF_CONDUCT.md)  
 
 Schema updates must follow the governance model and include example payloads where relevant.
 
@@ -320,7 +371,7 @@ https://github.com/Benefit-Plan-Standard/benefit-plan-docs/discussions
 
 ## 📄 License
 
-MIT License — open for academic, commercial, and regulatory use.
+MIT License, open for academic, commercial, and regulatory use.
 
 ---
 
