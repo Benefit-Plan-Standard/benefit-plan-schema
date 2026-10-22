@@ -4,9 +4,8 @@ This directory contains **non-normative recommended vocabularies** referenced fr
 
 | File | Used for | Field on schema |
 |------|----------|-----------------|
-| [`canonical-benefits.json`](./canonical-benefits.json) | Machine-readable canonical identifiers for benefit services (117 entries across 13 categories) | `benefits[].canonical_key` |
+| [`canonical-benefits.json`](./canonical-benefits.json) | Machine-readable canonical identifiers for benefit services (118 entries across 13 categories) | `benefits[].canonical_key` |
 | [`categories.json`](./categories.json) | Uppercase snake_case category codes for grouping benefits | `benefits[].category` |
-| [`benefit-types.json`](./benefit-types.json) | Domain discriminator values used to support modules | `benefits[].benefit_type` |
 | [`markets.json`](./markets.json) | Market segment codes | `market` (top-level) |
 | [`plan-types.json`](./plan-types.json) | Plan-design classification codes | `plan_type` (top-level) |
 

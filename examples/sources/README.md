@@ -32,7 +32,7 @@ value is omitted rather than filled in, and the example's `source_references` qu
 passage that prints it.
 
 The two Medicare Advantage examples, `scan_example.json` and `humana_example.json`, were
-built by hand from their Summary of Benefits and checked value by value in a separate pass.
+read from their Summary of Benefits and checked value by value in a separate pass.
 A script found every quoted value on its cited page (in the plan's own column for SCAN), and
 a review then compared every benefit with the page images. They use the v1.2.0 draft schema.
 How they were built, what didn't fit, and the verification record are in

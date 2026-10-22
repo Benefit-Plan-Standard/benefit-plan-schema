@@ -140,7 +140,10 @@ vocabularies/
   ├── plan-types.json
   └── README.md
 modules/
-  └── README.md
+  ├── README.md
+  └── pharmacy/
+      ├── v0.2.0/
+      └── v0.2.1/                    ← pharmacy module, draft, with its own README
 LICENSE
 ```
 

@@ -64,7 +64,7 @@ Added 2026-10-06. Each is the converter's output for 1 of the PBP importer's 5 g
 | H5533-019-000 | 0 | 4 | 126 | 4 text-only `cost.qualifiers` (hospital cost tier names) |
 | H5425-140-000 | 0 | 0 | 122 | |
 
-The 16 qualifier warnings are because the Cost Tier value set has only `value-choice`, `standard` and `virtual`. The `plan.type` warning is because the SBC Plan Type value set has no HMO-POS code. The full record is the sixth run in [`VALIDATION.md`](VALIDATION.md). The copies published on the site are those of 2026-10-15 until the site is published again.
+The 16 qualifier warnings are because the Cost Tier value set has only `value-choice`, `standard` and `virtual`. The `plan.type` warning is because the SBC Plan Type value set has no HMO-POS code. The full record is the sixth run in [`VALIDATION.md`](VALIDATION.md); the seventh run, 2026-10-21, covers the 5 Marketplace Bundles after the accumulator tier spelling changed, and these 5 files did not change. The copies published on the site are byte-identical to these files (site published 2026-10-21).
 
 ## Reading the files
 
