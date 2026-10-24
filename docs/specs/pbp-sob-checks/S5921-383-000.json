@@ -1,0 +1,329 @@
+{
+  "plan": "S5921-383-000",
+  "document": {
+    "title": "Summary of Benefits 2027, AARP Medicare Rx Preferred from UHC (PDP)",
+    "id": "Y0066_SB_S5921_383_000_2027_M",
+    "file": "data/pbp/2027/sob/S5921-383-000-2027-SB.pdf",
+    "source": "https://www.uhc.com/medicare/alphadog/PDFL27PD0398689_000, the \"Summary of Benefits (PDF)\" link of https://www.uhc.com/medicare/health-plans/details.html/33401/099/S5921383000/2027, downloaded 2026-10-24, SHA-256 0d24f911994f7737ff2a3e5956f357d8ca949e8860a9b3722f8f7cb1f77002e1",
+    "pages": 5,
+    "read_with": "pdftotext -layout; pages counted in the PDF (the document prints no page numbers). Part D on pages 2 and 3; the service area and the pharmacy network on page 4. The tier table's columns are Retail Preferred 30-day and 100-day, Retail Standard 30-day and 100-day, Mail Order Preferred 100-day and Mail Order Standard 100-day."
+  },
+  "golden": "examples/unitedhealthcare-aarp-medicare-rx-preferred-from-uhc.pbp.json",
+  "spec": "docs/specs/pbp-part-d-mapping.md section 18",
+  "status": "Written 2026-10-24, before the Part D importer: the golden file does not exist yet (the plan joins GOLDEN in session 2), so these checks pass only once session 2 builds it. The benefit indexes are those of docs/specs/pbp-part-d/profile/plans/S5921-383-000-benefits.md (a PDP has no medical benefits).",
+  "checks": [
+    {
+      "item": "Plan type",
+      "page": 4,
+      "printed": "AARP Medicare Rx Preferred from UHC (PDP) is a Medicare Prescription Drug Plan with a Medicare contract.",
+      "expected": "PDP",
+      "path": "/plan_type"
+    },
+    {
+      "item": "Monthly plan premium",
+      "page": 2,
+      "printed": "Monthly plan premium $184.10",
+      "expected": { "amount": 184.1 },
+      "path": "/premium",
+      "expected_reading": { "$absent": true },
+      "note": "The PDP premium is in no PBP Benefits file (Section D has no PDP rows; the 3 MRx files have no premium column), so no premium is written and a root source_references entry says so (docs/specs/pbp-part-d-mapping.md section 4)."
+    },
+    {
+      "item": "Service area",
+      "page": 4,
+      "printed": "Our service area includes Florida.",
+      "expected": { "state": "FL" },
+      "path": "/service_area",
+      "expected_reading": { "$absent": true },
+      "note": "A PDP is sold by Part D region: PlanRegionArea.txt ma_or_pdp_region_code \"11\", region \"Florida\", region_type \"PD\". The schema has counties and 1 state code and no region field, so the region is quoted in source_references, as for regional PPOs (docs/specs/pbp-part-d-mapping.md section 4)."
+    },
+    {
+      "item": "Annual prescription drug deductible and the tiers it applies to",
+      "page": 2,
+      "printed": "Annual Prescription Drug Deductible: $0 per year for Tier 1 and Tier 2; $300 for Tier 3, Tier 4 and Tier 5 Part D prescription drugs.",
+      "expected": { "amount": 300, "currency": "USD", "applies_to_tiers": ["T3", "T4", "T5"] },
+      "path": "/pharmacy/deductible"
+    },
+    {
+      "item": "Part D out-of-pocket threshold",
+      "page": 2,
+      "printed": "Once you, and others on your behalf, have paid a combined total of $2,400, which includes the amount you paid towards your deductible, you move to the Catastrophic Coverage stage.",
+      "expected": { "amount": 2400, "currency": "USD" },
+      "path": "/pharmacy/out_of_pocket_max",
+      "note": "The importer writes 2400 from the CY 2027 Rate Announcement (Attachment V, Table V-2, page 95), not from a PBP cell (docs/specs/pbp-part-d-mapping.md section 5.5)."
+    },
+    {
+      "item": "Prescription drug payment stages",
+      "page": 2,
+      "printed": "Deductible; Initial Coverage; Catastrophic Coverage (after $2,400)",
+      "expected": [{ "stage_id": "DEDUCTIBLE", "stage_type": "deductible" }, { "stage_id": "INITIAL", "stage_type": "initial" }, { "stage_id": "CATASTROPHIC", "stage_type": "catastrophic", "applies_after_total_out_of_pocket": 2400 }],
+      "path": "/pharmacy/coverage_stages"
+    },
+    {
+      "item": "Drug tiers",
+      "page": 2,
+      "printed": "Tier 1: Preferred Generic; Tier 2: Generic; Tier 3: Preferred Brand; Tier 4: Non-Preferred Drug; Tier 5: Specialty Tier",
+      "expected": [{ "tier_id": "T1", "name": "Tier 1: Preferred Generic" }, { "tier_id": "T2", "name": "Tier 2: Generic" }, { "tier_id": "T3", "name": "Tier 3: Preferred Brand" }, { "tier_id": "T4", "name": "Tier 4: Non-Preferred Drug" }, { "tier_id": "T5", "name": "Tier 5: Specialty Tier" }],
+      "path": "/pharmacy/formulary_tiers"
+    },
+    {
+      "item": "Pharmacy networks",
+      "page": 2,
+      "printed": "Retail: Preferred, Standard; Mail Order: Preferred, Standard (page 2); out-of-network pharmacies (page 4); long-term care facilities (page 3)",
+      "expected": [{ "network_id": "RETAIL_STANDARD" }, { "network_id": "RETAIL_PREFERRED" }, { "network_id": "MAIL_ORDER_STANDARD" }, { "network_id": "MAIL_ORDER_PREFERRED" }, { "network_id": "OUT_OF_NETWORK" }, { "network_id": "LONG_TERM_CARE" }],
+      "path": "/pharmacy/pharmacy_networks"
+    },
+    {
+      "item": "Tier 1: Preferred Generic, preferred retail, 30-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 1: Preferred Generic, Retail, Preferred, 30-day supply: $0",
+      "expected": { "benefit_id": "RX_T1_RETAIL_PREFERRED_1M_INITIAL", "formulary_tier_id": "T1", "pharmacy_network_id": "RETAIL_PREFERRED", "coverage_stage_id": "INITIAL", "day_supply": 30, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 0 }] }] },
+      "path": "/benefits/2"
+    },
+    {
+      "item": "Tier 1: Preferred Generic, preferred retail, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 1: Preferred Generic, Retail, Preferred, 100-day supply: $0",
+      "expected": { "benefit_id": "RX_T1_RETAIL_PREFERRED_3M_INITIAL", "formulary_tier_id": "T1", "pharmacy_network_id": "RETAIL_PREFERRED", "coverage_stage_id": "INITIAL", "day_supply": 100, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 0 }] }] },
+      "path": "/benefits/3"
+    },
+    {
+      "item": "Tier 1: Preferred Generic, standard retail, 30-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 1: Preferred Generic, Retail, Standard, 30-day supply: $5",
+      "expected": { "benefit_id": "RX_T1_RETAIL_STANDARD_1M_INITIAL", "formulary_tier_id": "T1", "pharmacy_network_id": "RETAIL_STANDARD", "coverage_stage_id": "INITIAL", "day_supply": 30, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 5 }] }] },
+      "path": "/benefits/0"
+    },
+    {
+      "item": "Tier 1: Preferred Generic, standard retail, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 1: Preferred Generic, Retail, Standard, 100-day supply: $15",
+      "expected": { "benefit_id": "RX_T1_RETAIL_STANDARD_3M_INITIAL", "formulary_tier_id": "T1", "pharmacy_network_id": "RETAIL_STANDARD", "coverage_stage_id": "INITIAL", "day_supply": 100, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 15 }] }] },
+      "path": "/benefits/1"
+    },
+    {
+      "item": "Tier 1: Preferred Generic, preferred mail order, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 1: Preferred Generic, Mail Order, Preferred, 100-day supply: $0",
+      "expected": { "benefit_id": "RX_T1_MAIL_ORDER_PREFERRED_3M_INITIAL", "formulary_tier_id": "T1", "pharmacy_network_id": "MAIL_ORDER_PREFERRED", "coverage_stage_id": "INITIAL", "day_supply": 100, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 0 }] }] },
+      "path": "/benefits/5"
+    },
+    {
+      "item": "Tier 1: Preferred Generic, standard mail order, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 1: Preferred Generic, Mail Order, Standard, 100-day supply: $15",
+      "expected": { "benefit_id": "RX_T1_MAIL_ORDER_STANDARD_3M_INITIAL", "formulary_tier_id": "T1", "pharmacy_network_id": "MAIL_ORDER_STANDARD", "coverage_stage_id": "INITIAL", "day_supply": 100, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 15 }] }] },
+      "path": "/benefits/4"
+    },
+    {
+      "item": "Tier 2: Generic, preferred retail, 30-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 2: Generic, Retail, Preferred, 30-day supply: $5",
+      "expected": { "benefit_id": "RX_T2_RETAIL_PREFERRED_1M_INITIAL", "formulary_tier_id": "T2", "pharmacy_network_id": "RETAIL_PREFERRED", "coverage_stage_id": "INITIAL", "day_supply": 30, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 5 }] }] },
+      "path": "/benefits/10"
+    },
+    {
+      "item": "Tier 2: Generic, preferred retail, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 2: Generic, Retail, Preferred, 100-day supply: $15",
+      "expected": { "benefit_id": "RX_T2_RETAIL_PREFERRED_3M_INITIAL", "formulary_tier_id": "T2", "pharmacy_network_id": "RETAIL_PREFERRED", "coverage_stage_id": "INITIAL", "day_supply": 100, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 15 }] }] },
+      "path": "/benefits/11"
+    },
+    {
+      "item": "Tier 2: Generic, standard retail, 30-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 2: Generic, Retail, Standard, 30-day supply: $10",
+      "expected": { "benefit_id": "RX_T2_RETAIL_STANDARD_1M_INITIAL", "formulary_tier_id": "T2", "pharmacy_network_id": "RETAIL_STANDARD", "coverage_stage_id": "INITIAL", "day_supply": 30, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 10 }] }] },
+      "path": "/benefits/8"
+    },
+    {
+      "item": "Tier 2: Generic, standard retail, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 2: Generic, Retail, Standard, 100-day supply: $30",
+      "expected": { "benefit_id": "RX_T2_RETAIL_STANDARD_3M_INITIAL", "formulary_tier_id": "T2", "pharmacy_network_id": "RETAIL_STANDARD", "coverage_stage_id": "INITIAL", "day_supply": 100, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 30 }] }] },
+      "path": "/benefits/9"
+    },
+    {
+      "item": "Tier 2: Generic, preferred mail order, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 2: Generic, Mail Order, Preferred, 100-day supply: $0",
+      "expected": { "benefit_id": "RX_T2_MAIL_ORDER_PREFERRED_3M_INITIAL", "formulary_tier_id": "T2", "pharmacy_network_id": "MAIL_ORDER_PREFERRED", "coverage_stage_id": "INITIAL", "day_supply": 100, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 0 }] }] },
+      "path": "/benefits/13"
+    },
+    {
+      "item": "Tier 2: Generic, standard mail order, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 2: Generic, Mail Order, Standard, 100-day supply: $30",
+      "expected": { "benefit_id": "RX_T2_MAIL_ORDER_STANDARD_3M_INITIAL", "formulary_tier_id": "T2", "pharmacy_network_id": "MAIL_ORDER_STANDARD", "coverage_stage_id": "INITIAL", "day_supply": 100, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 30 }] }] },
+      "path": "/benefits/12"
+    },
+    {
+      "item": "Tier 3: Preferred Brand, preferred retail, 30-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 3: Preferred Brand, Retail, Preferred, 30-day supply: 22%",
+      "expected": { "benefit_id": "RX_T3_RETAIL_PREFERRED_1M_INITIAL", "formulary_tier_id": "T3", "pharmacy_network_id": "RETAIL_PREFERRED", "coverage_stage_id": "INITIAL", "day_supply": 30, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.22 }] }] },
+      "path": "/benefits/18"
+    },
+    {
+      "item": "Tier 3: Preferred Brand, preferred retail, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 3: Preferred Brand, Retail, Preferred, 100-day supply: 22%",
+      "expected": { "benefit_id": "RX_T3_RETAIL_PREFERRED_3M_INITIAL", "formulary_tier_id": "T3", "pharmacy_network_id": "RETAIL_PREFERRED", "coverage_stage_id": "INITIAL", "day_supply": 100, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.22 }] }] },
+      "path": "/benefits/19"
+    },
+    {
+      "item": "Tier 3: Preferred Brand, standard retail, 30-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 3: Preferred Brand, Retail, Standard, 30-day supply: 22%",
+      "expected": { "benefit_id": "RX_T3_RETAIL_STANDARD_1M_INITIAL", "formulary_tier_id": "T3", "pharmacy_network_id": "RETAIL_STANDARD", "coverage_stage_id": "INITIAL", "day_supply": 30, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.22 }] }] },
+      "path": "/benefits/16"
+    },
+    {
+      "item": "Tier 3: Preferred Brand, standard retail, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 3: Preferred Brand, Retail, Standard, 100-day supply: 22%",
+      "expected": { "benefit_id": "RX_T3_RETAIL_STANDARD_3M_INITIAL", "formulary_tier_id": "T3", "pharmacy_network_id": "RETAIL_STANDARD", "coverage_stage_id": "INITIAL", "day_supply": 100, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.22 }] }] },
+      "path": "/benefits/17"
+    },
+    {
+      "item": "Tier 3: Preferred Brand, preferred mail order, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 3: Preferred Brand, Mail Order, Preferred, 100-day supply: 22%",
+      "expected": { "benefit_id": "RX_T3_MAIL_ORDER_PREFERRED_3M_INITIAL", "formulary_tier_id": "T3", "pharmacy_network_id": "MAIL_ORDER_PREFERRED", "coverage_stage_id": "INITIAL", "day_supply": 100, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.22 }] }] },
+      "path": "/benefits/21"
+    },
+    {
+      "item": "Tier 3: Preferred Brand, standard mail order, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 3: Preferred Brand, Mail Order, Standard, 100-day supply: 22%",
+      "expected": { "benefit_id": "RX_T3_MAIL_ORDER_STANDARD_3M_INITIAL", "formulary_tier_id": "T3", "pharmacy_network_id": "MAIL_ORDER_STANDARD", "coverage_stage_id": "INITIAL", "day_supply": 100, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.22 }] }] },
+      "path": "/benefits/20"
+    },
+    {
+      "item": "Tier 4: Non-Preferred Drug, preferred retail, 30-day supply, initial coverage",
+      "page": 3,
+      "printed": "Tier 4: Non-Preferred Drug, Retail, Preferred, 30-day supply: 30%",
+      "expected": { "benefit_id": "RX_T4_RETAIL_PREFERRED_1M_INITIAL", "formulary_tier_id": "T4", "pharmacy_network_id": "RETAIL_PREFERRED", "coverage_stage_id": "INITIAL", "day_supply": 30, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.3 }] }] },
+      "path": "/benefits/25"
+    },
+    {
+      "item": "Tier 4: Non-Preferred Drug, standard retail, 30-day supply, initial coverage",
+      "page": 3,
+      "printed": "Tier 4: Non-Preferred Drug, Retail, Standard, 30-day supply: 30%",
+      "expected": { "benefit_id": "RX_T4_RETAIL_STANDARD_1M_INITIAL", "formulary_tier_id": "T4", "pharmacy_network_id": "RETAIL_STANDARD", "coverage_stage_id": "INITIAL", "day_supply": 30, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.3 }] }] },
+      "path": "/benefits/24"
+    },
+    {
+      "item": "Tier 5: Specialty Tier, preferred retail, 30-day supply, initial coverage",
+      "page": 3,
+      "printed": "Tier 5: Specialty Tier, Retail, Preferred, 30-day supply: 30%",
+      "expected": { "benefit_id": "RX_T5_RETAIL_PREFERRED_1M_INITIAL", "formulary_tier_id": "T5", "pharmacy_network_id": "RETAIL_PREFERRED", "coverage_stage_id": "INITIAL", "day_supply": 30, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.3 }] }] },
+      "path": "/benefits/31"
+    },
+    {
+      "item": "Tier 5: Specialty Tier, standard retail, 30-day supply, initial coverage",
+      "page": 3,
+      "printed": "Tier 5: Specialty Tier, Retail, Standard, 30-day supply: 30%",
+      "expected": { "benefit_id": "RX_T5_RETAIL_STANDARD_1M_INITIAL", "formulary_tier_id": "T5", "pharmacy_network_id": "RETAIL_STANDARD", "coverage_stage_id": "INITIAL", "day_supply": 30, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.3 }] }] },
+      "path": "/benefits/30"
+    },
+    {
+      "item": "Tier 1: Preferred Generic: subject to the Part D deductible",
+      "page": 2,
+      "printed": "There is no deductible for drugs in Tier 1 and 2.",
+      "expected": { "applies_to_deductible": false, "deductible_ref": "pharmacy", "applies_to_moop": true, "moop_ref": "pharmacy" },
+      "path": "/benefits/0/network_cost_shares/0/cost_shares/0"
+    },
+    {
+      "item": "Tier 2: Generic: subject to the Part D deductible",
+      "page": 2,
+      "printed": "There is no deductible for drugs in Tier 1 and 2.",
+      "expected": { "applies_to_deductible": false, "deductible_ref": "pharmacy", "applies_to_moop": true, "moop_ref": "pharmacy" },
+      "path": "/benefits/8/network_cost_shares/0/cost_shares/0"
+    },
+    {
+      "item": "Tier 3: Preferred Brand: subject to the Part D deductible",
+      "page": 2,
+      "printed": "There is a $300 deductible for drugs in Tier 3, 4 and 5.",
+      "expected": { "applies_to_deductible": true, "deductible_ref": "pharmacy", "applies_to_moop": true, "moop_ref": "pharmacy" },
+      "path": "/benefits/16/network_cost_shares/0/cost_shares/0"
+    },
+    {
+      "item": "Tier 4: Non-Preferred Drug: subject to the Part D deductible",
+      "page": 2,
+      "printed": "There is a $300 deductible for drugs in Tier 3, 4 and 5.",
+      "expected": { "applies_to_deductible": true, "deductible_ref": "pharmacy", "applies_to_moop": true, "moop_ref": "pharmacy" },
+      "path": "/benefits/24/network_cost_shares/0/cost_shares/0"
+    },
+    {
+      "item": "Tier 5: Specialty Tier: subject to the Part D deductible",
+      "page": 2,
+      "printed": "There is a $300 deductible for drugs in Tier 3, 4 and 5.",
+      "expected": { "applies_to_deductible": true, "deductible_ref": "pharmacy", "applies_to_moop": true, "moop_ref": "pharmacy" },
+      "path": "/benefits/30/network_cost_shares/0/cost_shares/0"
+    },
+    {
+      "item": "Tier 1: Preferred Generic, catastrophic coverage, covered Part D drugs",
+      "page": 3,
+      "printed": "Once you're in this stage, you won't pay anything for your Medicare-covered Part D drugs for the rest of the plan year.",
+      "expected": { "benefit_id": "RX_T1_CATASTROPHIC", "formulary_tier_id": "T1", "coverage_stage_id": "CATASTROPHIC", "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 0 }] }] },
+      "path": "/benefits/36",
+      "note": "The $0 is the covered Part D drug's cost share after the threshold, from 42 CFR 423.104(d)(5)(i), not a PBP cell; the file's post-threshold cells are quoted in the step's source_references (docs/specs/pbp-part-d-mapping.md section 6.6)."
+    },
+    {
+      "item": "Tier 2: Generic, catastrophic coverage, covered Part D drugs",
+      "page": 3,
+      "printed": "Once you're in this stage, you won't pay anything for your Medicare-covered Part D drugs for the rest of the plan year.",
+      "expected": { "benefit_id": "RX_T2_CATASTROPHIC", "formulary_tier_id": "T2", "coverage_stage_id": "CATASTROPHIC", "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 0 }] }] },
+      "path": "/benefits/37",
+      "note": "The $0 is the covered Part D drug's cost share after the threshold, from 42 CFR 423.104(d)(5)(i), not a PBP cell; the file's post-threshold cells are quoted in the step's source_references (docs/specs/pbp-part-d-mapping.md section 6.6). Tier 2's own cell is mrx_tier_post_copay_amt \"10.00\" (mrx_tier_post_includes \"3\"; mrx_alt_cstshr_post_oopt \"3\", Cost-Share Tiers (Same cost sharing as the ICP)): the amount of the drugs on the tier that are excluded from Part D, named as such in the step's notes. The page prints no figure for those drugs after the threshold (page 3 says only that the plan covers them \"as Tier 2 medications\"), so there is no second check for them."
+    },
+    {
+      "item": "Tier 3: Preferred Brand, catastrophic coverage, covered Part D drugs",
+      "page": 3,
+      "printed": "Once you're in this stage, you won't pay anything for your Medicare-covered Part D drugs for the rest of the plan year.",
+      "expected": { "benefit_id": "RX_T3_CATASTROPHIC", "formulary_tier_id": "T3", "coverage_stage_id": "CATASTROPHIC", "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 0 }] }] },
+      "path": "/benefits/38",
+      "note": "The $0 is the covered Part D drug's cost share after the threshold, from 42 CFR 423.104(d)(5)(i), not a PBP cell; the file's post-threshold cells are quoted in the step's source_references (docs/specs/pbp-part-d-mapping.md section 6.6)."
+    },
+    {
+      "item": "Tier 4: Non-Preferred Drug, catastrophic coverage, covered Part D drugs",
+      "page": 3,
+      "printed": "Once you're in this stage, you won't pay anything for your Medicare-covered Part D drugs for the rest of the plan year.",
+      "expected": { "benefit_id": "RX_T4_CATASTROPHIC", "formulary_tier_id": "T4", "coverage_stage_id": "CATASTROPHIC", "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 0 }] }] },
+      "path": "/benefits/39",
+      "note": "The $0 is the covered Part D drug's cost share after the threshold, from 42 CFR 423.104(d)(5)(i), not a PBP cell; the file's post-threshold cells are quoted in the step's source_references (docs/specs/pbp-part-d-mapping.md section 6.6)."
+    },
+    {
+      "item": "Tier 5: Specialty Tier, catastrophic coverage, covered Part D drugs",
+      "page": 3,
+      "printed": "Once you're in this stage, you won't pay anything for your Medicare-covered Part D drugs for the rest of the plan year.",
+      "expected": { "benefit_id": "RX_T5_CATASTROPHIC", "formulary_tier_id": "T5", "coverage_stage_id": "CATASTROPHIC", "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 0 }] }] },
+      "path": "/benefits/40",
+      "note": "The $0 is the covered Part D drug's cost share after the threshold, from 42 CFR 423.104(d)(5)(i), not a PBP cell; the file's post-threshold cells are quoted in the step's source_references (docs/specs/pbp-part-d-mapping.md section 6.6)."
+    },
+    {
+      "item": "Tier 1: Preferred Generic, long-term care pharmacy, 31-day supply, initial coverage",
+      "page": 3,
+      "printed": "Members living in long-term care facilities pay the same for a 31-day supply as a 30-day supply at a Standard retail pharmacy (Tier 1: Preferred Generic, Standard retail 30-day: $5)",
+      "expected": { "benefit_id": "RX_T1_LONG_TERM_CARE_1M_INITIAL", "formulary_tier_id": "T1", "pharmacy_network_id": "LONG_TERM_CARE", "coverage_stage_id": "INITIAL", "day_supply": 31, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "copay", "amount": 5 }] }] },
+      "path": "/benefits/7"
+    },
+    {
+      "item": "Tier 3: Preferred Brand, long-term care pharmacy, 31-day supply, initial coverage",
+      "page": 3,
+      "printed": "Members living in long-term care facilities pay the same for a 31-day supply as a 30-day supply at a Standard retail pharmacy (Tier 3: Preferred Brand, Standard retail 30-day: 22%)",
+      "expected": { "benefit_id": "RX_T3_LONG_TERM_CARE_1M_INITIAL", "formulary_tier_id": "T3", "pharmacy_network_id": "LONG_TERM_CARE", "coverage_stage_id": "INITIAL", "day_supply": 31, "network_cost_shares": [{ "tier_id": "IN", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 0.22 }] }] },
+      "path": "/benefits/23"
+    },
+    {
+      "item": "Covered insulin drugs, Tier 3, retail preferred 30-day",
+      "page": 3,
+      "printed": "Covered Insulin Drugs: 22%, up to $35 (Retail, Preferred, 30-day supply)",
+      "expected": [{ "type": "coinsurance", "rate": 0.22, "max_amount": 35 }],
+      "path": "/benefits/18/network_cost_shares/0/cost_shares",
+      "expected_reading": [{ "type": "coinsurance", "rate": 0.22 }],
+      "note": "No insulin benefit is written (docs/specs/pbp-part-d-mapping.md section 10, question Q1): the pointer is Tier 3's own preferred retail 30-day step, and the insulin cells mrx_tier_ira_rspfd_coins_1m \"22\" and mrx_tier_ira_rspfd_copay_1m \"35.00\" are quoted in the root source_references entry for Tier 3."
+    }
+  ]
+}

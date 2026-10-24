@@ -1,0 +1,17 @@
+mrx_form_model_type,mrx_form_model_desc,plans
+5F,"Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier",4152
+5F4,"Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier, Select Care Drugs",571
+5H4,"Generic, Preferred Brand, Non-Preferred Drug, Injectable Drugs, Specialty Tier, Select Care Drugs",234
+5F2,"Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier, Vaccines",130
+5F1,"Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier, Supplemental Drugs",48
+5A4,"Preferred Generic, Generic, Preferred Brand, Non-Preferred Brand, Specialty Tier, Select Care Drugs",38
+5H,"Generic, Preferred Brand, Non-Preferred Drug, Injectable Drugs, Specialty Tier",34
+4E,"Preferred Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier",29
+5A3,"Preferred Generic, Generic, Preferred Brand, Non-Preferred Brand, Specialty Tier, Select Diabetic Drugs",12
+4E3,"Preferred Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier, Select Diabetic Drugs",8
+1,Single Tier,4
+4H1,"Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier, Supplemental Drugs",4
+5F3,"Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier, Select Diabetic Drugs",4
+4A4,"Generic, Preferred Brand, Non-Preferred Brand, Specialty Tier, Select Care Drugs",3
+4C,"Preferred Generic, Generic, Preferred Brand, Specialty Tier",2
+2A,"Generic, Brand",1

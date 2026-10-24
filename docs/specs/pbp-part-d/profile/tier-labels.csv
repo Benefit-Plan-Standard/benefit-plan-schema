@@ -1,0 +1,14 @@
+mrx_tier_label_list,tier_rows,mrx_tier_id_counts
+Preferred Brand,5269,"2: 312, 3: 4957"
+Specialty Tier,5269,"4: 46, 5: 5223"
+Generic,5233,"1: 276, 2: 4957"
+Non-Preferred Drug,5214,"3: 309, 4: 4905"
+Preferred Generic,4994,1: 4994
+Select Care Drugs,846,"5: 3, 6: 843"
+Injectable Drugs,268,4: 268
+Vaccines,130,6: 130
+Non-Preferred Brand,53,"3: 3, 4: 50"
+Supplemental Drugs,52,"5: 4, 6: 48"
+Select Diabetic Drugs,24,"5: 8, 6: 16"
+Single Tier,4,1: 4
+Brand,1,2: 1
