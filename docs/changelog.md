@@ -3,9 +3,18 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Medical MVP technical specification, drafts of October 20 and 21, 2026
+## Medical MVP technical specification, drafts of October 20 to 24, 2026
 
 From version 0.3.3, dated October 21, 2026, the 3 documents of `docs/specs/rtb-medical-mvp/` state the present only: what the 2 importers read, what the documents carry, the numbers and how to rerun them. The README no longer has a Changes section or the section "Gaps closed on October 20, 2026", and its Status and version section is 1 paragraph that points here. What the README said about its drafts, from version 0.1 to version 0.3.2, is kept below as the README gave it in version 0.3.2. `scripts/build-rtb-dictionary.js` and `scripts/build-rtb-crosswalk.js` print no gap id and no closed gap; an open gap prints in the row as a plain sentence, "The <program> importer does not read <columns> today", and the checks are unchanged. A Changes section returns to the README from the first circulated version on, starting at 0.3.3.
+
+### In 0.3.5, October 24, 2026
+
+Version 0.3.5 adds 2 proposals to the Conformance section of the README. Both come from the workgroup's breakout of October 22, 2026, where a payer in the workgroup asked that an app say beside MVP values that they are not the payer's, so that members do not call a payer about values the payer did not serve, and the breakout agreed it.
+
+- A new subsection, What an app shows beside the data, proposes a SHALL on an app that displays values from a pledgee's MVP files: on the same screen as the values, a statement that the information does not come from the member's insurance company, the plan year and the as-of date of the release, a direction to check with the plan for the member's own coverage and cost, and that a service not listed may still be covered. The specification sets the 4 parts, not the sentence, and gives 1 example wording. The plan year and the as-of date are those the file contract already carries, under Source, date and refresh.
+- A new subsection, Plan identity at GA, says that at GA the plan identifier of a member who has signed in with the payer comes from the payer's coverage record, and the payer supplies the plan's SBC InsurancePlan Bundle; the resolution paths under Identifying the plan are the case where no payer gives the app a coverage record, and the 2 are 1 design.
+- The terms define payer, and the opening of Conformance names the 2 new subsections.
+- The preface of the 3 documents, which `scripts/build-rtb-dictionary.js` writes, gives version 0.3.5, dated October 24, 2026. Nothing else in the data dictionary or the crosswalk changed, `shall-should.json` has no new item, and the counts are unchanged.
 
 ### Status and version, as of 0.3.2
 
