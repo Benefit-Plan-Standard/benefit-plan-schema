@@ -235,8 +235,10 @@ async function printBenefits(plan, offset) {
       }
     }
   }
+  // The catastrophic step is $0 for a covered Part D drug (mapping 6.6, Question Q6); the
+  // file's post-threshold cells are listed beside it, never as the step.
   for (const p of ps) {
-    rows.push([`RX_T${p.mrx_tier_post_id}_CATASTROPHIC`, '', step(p.mrx_tier_post_cost_struct, p.mrx_tier_post_copay_amt, p.mrx_tier_post_coins_pct),
+    rows.push([`RX_T${p.mrx_tier_post_id}_CATASTROPHIC`, '', 'copay $0',
       `\`mrx_tier_post_includes\` "${p.mrx_tier_post_includes}", \`mrx_tier_post_cost_struct\` "${p.mrx_tier_post_cost_struct}", ` +
       (p.mrx_tier_post_cost_struct === '2' ? `\`mrx_tier_post_copay_amt\` "${p.mrx_tier_post_copay_amt}"` : `\`mrx_tier_post_coins_pct\` "${p.mrx_tier_post_coins_pct}"`)]);
   }

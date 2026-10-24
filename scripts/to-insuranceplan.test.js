@@ -18,6 +18,7 @@ const test = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 const { toInsurancePlanBundle, serialize, exampleFiles, pbpExampleFiles, EXAMPLES_DIR, GOLDEN_DIR } = require('./to-insuranceplan.js');
 const { buildAll, OUT_DIR } = require('./build-fhir-definitions.js');
@@ -130,13 +131,15 @@ const GOLDEN_SHA256 = {
 // (examples/*.pbp.json), pinned 2026-10-06 when the converter learned the POS tier and
 // re-pinned 2026-10-09 when 18b1, 18a1, 17a1 and 7f_2 gained canonical keys, and
 // 2026-10-20 when the importer began reading 14a, the premium and the Section A
-// contacts, and 7i gained a canonical key (medical MVP gaps G1 to G5).
+// contacts, and 7i gained a canonical key (medical MVP gaps G1 to G5), and 2026-10-24
+// when the importer began reading the Part D files: each Bundle lists its Part D
+// benefits as unmapped and gains the 2 pharmacy generalCost entries.
 const PBP_BUNDLE_SHA256 = {
-  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': '4fb3e1adb75bd241ec177e7544d19ef7bc87b0c21dda72d25c5d4a2800e80ecc',
-  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': 'd2e95cfc34f9db28386047e3f3182957a5a1c024c937686a893f80e0f8ac5df1',
-  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '25a851b4d94a4cc1dfa9086f48d913412fa0f2bda6cc9c053d19f292d65c3255',
-  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': '15b8144f05b33081f59aaef357589ae4c065db5cc48384d810cd5924a06504c5',
-  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': 'f8ba4c93f582530d8369e6fd9b9f0049a90219c3a8a3f0dd182d30e41ea61648',
+  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': 'e7a545a724deb336266cd0420e9f0d69b76ee471417a9ad0f526114a3b738c3f',
+  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': 'd2a347778338aadd3f7b502eb1ae4bc29c96101e334474d5fdfe4518998a2f9d',
+  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': 'a8c617a24120239fa58b905f6cb75f01717230424e22c524ca79617479586d5a',
+  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': '803f3e7337a756167b1348b5820fe130061b036cf9968449359df06c19355aed',
+  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': '9b8438a4f220e0645a133aee8fb7a672c673cdc79cfb69bf74957229a6b86313',
 };
 
 test('the 10 golden files are byte-identical to the pinned versions, and the converter reproduces them', () => {
@@ -293,8 +296,10 @@ test('the POS tier (Aetna H1609-028 golden) maps to out-of-network with the "Poi
   assert.ok(specialist.every((c) => c.type.text !== 'Not stated in the BPS document'));
   const primary = benefits.find((b) => b.type.coding[1].code === 'primary_care').cost;
   assert.deepStrictEqual(primary.map((c) => c.type.text || c.type.coding[0].code), ['copay', 'Not stated in the BPS document']);
-  // The deductible written to the POS tier reaches generalCost with its tier as text; the premium (since 2026-10-20) follows.
-  assert.deepStrictEqual(plan.plan[0].generalCost.map((g) => g.type.text), ['Individual out-of-pocket maximum, IN', 'Individual deductible, POS', 'Premium']);
+  // The deductible written to the POS tier reaches generalCost with its tier as text; the premium (since 2026-10-20) and the
+  // Part D deductible and out-of-pocket threshold (since 2026-10-24) follow.
+  assert.deepStrictEqual(plan.plan[0].generalCost.map((g) => g.type.text), ['Individual out-of-pocket maximum, IN', 'Individual deductible, POS', 'Premium',
+    'Pharmacy deductible', 'Pharmacy out-of-pocket maximum']);
 });
 
 test('only tier_id POS is the point-of-service tier: a network tier named "Point-of-Service" under another id still fails', () => {
@@ -314,14 +319,18 @@ test('rejects unsupported schema versions and unknown tiers', () => {
 // ---- pharmacy module v0.2.1 documents (schema 1.2.0 draft 6) ---------------------
 // The SBC InsurancePlan profile has no formulary, so the converter ignores the pharmacy
 // module fields that core admits since draft 6, and cost_shares[].moop_ref with them.
+// A benefit with a coverage stage (a Medicare Part D benefit) and a PDP document are
+// the exceptions (docs/specs/pbp-part-d-mapping.md section 14, Question Q7).
 const MODULE_EXAMPLES = path.join(__dirname, '..', 'modules', 'pharmacy', 'v0.2.1', 'examples');
 const MODULE_PHARMACY_FIELDS = ['formulary_tiers', 'pharmacy_networks', 'formulary_items', 'formulary_reference', 'mail_order_supply_multiplier'];
-const MODULE_BENEFIT_FIELDS = ['formulary_tier_id', 'pharmacy_network_id', 'coverage_stage_id', 'day_supply', 'drug_examples', 'step_therapy_required', 'quantity_limit'];
+const MODULE_BENEFIT_FIELDS = ['formulary_tier_id', 'pharmacy_network_id', 'day_supply', 'drug_examples', 'step_therapy_required', 'quantity_limit'];
+const PDP_REFUSAL = /plan_type "PDP": a stand-alone Medicare Part D plan has no medical benefits, and the CARIN SBC InsurancePlan profile describes a medical plan/;
 
-test('the 2 pharmacy module v0.2.1 examples convert, and the module fields and moop_ref change nothing in the Bundle', () => {
+test('the commercial pharmacy module v0.2.1 example converts, and the module fields and moop_ref change nothing in the Bundle; the Part D one is a PDP and is refused', () => {
   const files = fs.readdirSync(MODULE_EXAMPLES).filter((f) => f.endsWith('.json')).sort();
   assert.deepStrictEqual(files, ['formulary_indication_example.json', 'humana_part_d_example.json']);
-  for (const file of files) {
+  assert.throws(() => toInsurancePlanBundle(readJson(path.join(MODULE_EXAMPLES, 'humana_part_d_example.json'))), PDP_REFUSAL);
+  for (const file of ['formulary_indication_example.json']) {
     const bps = readJson(path.join(MODULE_EXAMPLES, file));
     const plan = toInsurancePlanBundle(bps).entry[0].resource;
     assert.strictEqual(plan.extension.filter((e) => e.url === UNMAPPED).length, 0, `${file}: every drug tier row is placed`);
@@ -335,4 +344,28 @@ test('the 2 pharmacy module v0.2.1 examples convert, and the module fields and m
     assert.notDeepStrictEqual(without, bps, `${file} carries module fields`);
     assert.strictEqual(serialize(toInsurancePlanBundle(bps)), serialize(toInsurancePlanBundle(without)), file);
   }
+});
+
+// ---- Medicare Part D benefits and PDP documents (docs/specs/pbp-part-d-mapping.md section 14) ----
+test('converter: Part D benefits are listed as unmapped, the pharmacy generalCost entries are kept, and a PDP document is not converted', () => {
+  const bps = readJson(path.join(EXAMPLES_DIR, 'humana-humana-gold-plus-h1036-068.pbp.json'));
+  const plan = toInsurancePlanBundle(bps).entry[0].resource;
+  const rx = bps.benefits.filter((b) => b.coverage_stage_id).map((b) => b.benefit_id);
+  assert.strictEqual(rx.length, 42);
+  const unmapped = plan.extension.filter((e) => e.url === UNMAPPED).map((e) => subValue(e, 'benefitId'));
+  const placed = plan.coverage.flatMap((c) => c.benefit).map((b) => subValue(b.extension.find((e) => e.url === BENEFIT), 'benefitId'));
+  assert.deepStrictEqual(unmapped.filter((id) => rx.includes(id)), rx, 'every Part D benefit is unmapped, in document order');
+  assert.ok(!placed.some((id) => rx.includes(id)), 'no Part D benefit is placed');
+  assert.ok(bps.benefits.some((b) => b.coverage_stage_id && b.canonical_key === 'generic_drugs'), 'a key the CARIN crosswalk places is still unmapped');
+  assert.deepStrictEqual(plan.plan[0].generalCost.map((g) => g.type.text).slice(-2), ['Pharmacy deductible', 'Pharmacy out-of-pocket maximum']);
+  assert.deepStrictEqual(plan.plan[0].generalCost.slice(-2).map((g) => g.cost), [{ value: 700, currency: 'USD' }, { value: 2400, currency: 'USD' }]);
+  assert.match(plan.text.div, /and 42 Part D benefits \(benefits with a coverage stage, which the SBC profile has no place for\) are listed, by identity only, in the bps-unmapped-benefit extension/);
+
+  const pdp = readJson(path.join(EXAMPLES_DIR, 'unitedhealthcare-aarp-medicare-rx-preferred-from-uhc.pbp.json'));
+  assert.strictEqual(pdp.plan_type, 'PDP');
+  assert.throws(() => toInsurancePlanBundle(pdp), PDP_REFUSAL);
+  assert.ok(!pbpExampleFiles().includes('unitedhealthcare-aarp-medicare-rx-preferred-from-uhc.pbp.json'), 'pbpExampleFiles() skips a PDP');
+  const cli = spawnSync(process.execPath, [path.join(__dirname, 'to-insuranceplan.js'), path.join(EXAMPLES_DIR, 'wellcare-wellcare-value-script.pbp.json')], { encoding: 'utf8' });
+  assert.strictEqual(cli.status, 1);
+  assert.match(cli.stderr, /^error: plan_type "PDP": a stand-alone Medicare Part D plan has no medical benefits/);
 });

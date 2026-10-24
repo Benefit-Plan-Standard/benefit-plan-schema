@@ -19,12 +19,12 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 - Canonical schema file (current): `schema/v1.1.0/benefit-plan.schema.json`  
 - Draft schema (v1.2.0, draft 6): `schema/v1.2.0/benefit-plan.schema.json`; each published draft is a git tag, `v1.2.0-draft.1` through `v1.2.0-draft.6`  
 - Previous schema (v1.0.0): `schema/v1.0.0/benefit-plan.schema.json`  
-- Example plans: `examples/`, 20 plans: 10 read from plan documents, 5 imported from the CMS Marketplace public use files, 5 from the CMS Medicare Advantage PBP files  
+- Example plans: `examples/`, 22 plans: 10 read from plan documents, 5 imported from the CMS Marketplace public use files, 7 from the CMS PBP files (5 Medicare Advantage plans with drug coverage and 2 stand-alone Part D plans)  
 - Vocabularies (canonical benefits, categories, markets, plan types): `vocabularies/`  
 - FHIR alignment: `docs/fhir-alignment.md`  
 - FHIR InsurancePlan converter (CARIN SBC profile): `scripts/to-insuranceplan.js`, spec `docs/specs/insuranceplan-converter.md`  
 - Importer from the CMS Marketplace public use files: `scripts/from-marketplace-puf.js`, spec `docs/specs/marketplace-puf-importer.md`, 5 examples in `examples/*.puf.json` and their Bundles in `examples/fhir-puf/`  
-- Importer from the CMS Medicare Advantage Plan Benefit Package files: `scripts/from-pbp.js`, spec `docs/specs/pbp-importer.md`, 5 examples in `examples/*.pbp.json` and their Bundles in `examples/fhir/`  
+- Importer from the CMS Medicare Advantage Plan Benefit Package files: `scripts/from-pbp.js`, spec `docs/specs/pbp-importer.md`, with the Part D sections and stand-alone Part D plans in `docs/specs/pbp-part-d-mapping.md`; 7 examples in `examples/*.pbp.json` and the Bundles of the 5 Medicare Advantage ones in `examples/fhir/`  
 - Medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup: `docs/specs/rtb-medical-mvp/` (the specification, the data dictionary and the crosswalk to the SBC InsurancePlan profile, version 0.3.5)  
 - Segment tool for Medicare Advantage plans (county to segment): `scripts/pbp-segment.js`  
 - Pledgee publishing, the release layout and index the specification describes: `scripts/publish-fhir.js --pledgee <root>`  
@@ -53,7 +53,7 @@ It is designed to support:
 This repository contains:
 
 - The **canonical JSON Schema (v1.1.0)**, backward-compatible with v1.0.0, and the v1.2.0 draft  
-- 20 example plans: 10 read from plan documents across 9 carriers, 5 imported from the CMS Marketplace public use files, 5 from the CMS Medicare Advantage PBP files  
+- 22 example plans: 10 read from plan documents across 9 carriers, 5 imported from the CMS Marketplace public use files, 7 from the CMS PBP files (5 Medicare Advantage, 2 stand-alone Part D)  
 - Recommended vocabularies (canonical benefits, categories, markets, plan types)  
 - FHIR R4 `InsurancePlan` alignment guide  
 - A converter from BPS to FHIR R4 `InsurancePlan` in the CARIN Digital Insurance Card SBC InsurancePlan profile (STU 2 ballot), with the 10 examples converted and validated  
@@ -92,6 +92,8 @@ docs/
       ├── marketplace-puf-parse-report.md
       ├── marketplace-puf-vs-sbc-flblue-505.md
       ├── pbp-importer.md                ← the CMS Medicare Advantage PBP importer spec
+      ├── pbp-part-d-mapping.md          ← its Part D sections and stand-alone Part D plans
+      ├── pbp-part-d/profile/            ← the profile of the CY 2027 Part D files the mapping counts from
       ├── pbp-record-layout-notes.md
       ├── pbp-sob-checks/                ← expectations from the CMS Summary of Benefits, 1 per checked plan
       ├── puf-sbc-checks/                ← expectations from the carrier's SBC, 1 per checked Marketplace plan
@@ -105,7 +107,7 @@ examples/
   ├── README.md
   ├── *_example.json                 ← 10 plans read from plan documents (aetna, aetna_ppo5000, ambetter, bluecross, cigna, gatorcare, humana, kaiser, scan, united)
   ├── *.puf.json                     ← 5 plans imported from the CMS Marketplace public use files
-  ├── *.pbp.json                     ← 5 plans imported from the CMS Medicare Advantage PBP files
+  ├── *.pbp.json                     ← 7 plans imported from the CMS PBP files: 5 Medicare Advantage, 2 stand-alone Part D
   ├── fhir/                          ← the 10 document-derived and the 5 PBP plans as FHIR InsurancePlan Bundles, plus VALIDATION.md
   ├── fhir-puf/                      ← the 5 Marketplace plans as FHIR Bundles
   └── sources/                       ← the source PDF each document-derived example comes from
@@ -132,13 +134,13 @@ scripts/
   └── *.test.js                      ← node --test
 test/
   └── fixtures/
-      ├── pbp/                       ← rows of the 5 PBP golden plans, for scripts/from-pbp.test.js
+      ├── pbp/                       ← rows of the 7 PBP golden plans, for scripts/from-pbp.test.js
       ├── pbp-segment/               ← PlanArea and PlanRegionArea cuts, for scripts/pbp-segment.test.js
       └── validate/                  ← 1 document per pharmacy warning, for scripts/validate.test.js
 vocabularies/
-  ├── canonical-benefits.json        ← v1.3.0, 118 keys
+  ├── canonical-benefits.json        ← v1.4.0, 124 keys
   ├── categories.json
-  ├── markets.json
+  ├── markets.json                   ← v1.2.0, 13 codes
   ├── plan-types.json
   └── README.md
 modules/
@@ -187,7 +189,7 @@ The eight SBC examples (`aetna`, `aetna_ppo5000`, `ambetter`, `bluecross`, `cign
 
 The Marketplace public-file example set is 5 files (`*.puf.json`), written by `scripts/from-marketplace-puf.js` from the CMS Marketplace Plan Attributes and Benefits and Cost Sharing files, with no PDF read; the plans and their FHIR Bundles in `examples/fhir-puf/` are listed in [`examples/README.md`](examples/README.md).
 
-The Medicare Advantage public-file example set is 5 files (`*.pbp.json`), written by `scripts/from-pbp.js` from the CMS Plan Benefit Package (PBP) Benefits files for 2027, with no PDF read; the plans and their FHIR Bundles in `examples/fhir/` are listed in [`examples/README.md`](examples/README.md).
+The Medicare Advantage public-file example set is 7 files (`*.pbp.json`), written by `scripts/from-pbp.js` from the CMS Plan Benefit Package (PBP) Benefits files for 2027, with no PDF read: 5 Medicare Advantage plans, each with its Part D benefit, and 2 stand-alone Medicare Prescription Drug Plans. The plans and the FHIR Bundles of the 5 in `examples/fhir/` are listed in [`examples/README.md`](examples/README.md); the 2 Part D plans are not converted, because the SBC InsurancePlan profile describes a medical plan.
 
 ---
 
@@ -326,7 +328,7 @@ node scripts/from-marketplace-puf.js --year 2026 --plan 40220TX0080024-01 --out 
 node --test scripts/from-marketplace-puf.test.js
 ```
 
-`scripts/from-pbp.js` reads the CMS Medicare Advantage Plan Benefit Package (PBP) Benefits files and writes one BPS v1.2.0 document per plan; the FHIR converter above reads that output unchanged (it maps the point-of-service tier of HMO-POS plans to out-of-network with a text-only qualifier). The PBP files are not in the repository: download them into `data/pbp/<year>/` (git-ignored). Service categories map to canonical keys through `fhir/pbp-crosswalk.json`; a value the reader cannot read stops the import instead of being guessed. The test runs on the golden plans' rows committed in `test/fixtures/pbp/`, so it needs no download. Spec: [`docs/specs/pbp-importer.md`](docs/specs/pbp-importer.md); examples: `examples/*.pbp.json`.
+`scripts/from-pbp.js` reads the CMS Medicare Advantage Plan Benefit Package (PBP) Benefits files and writes one BPS v1.2.0 document per plan; the FHIR converter above reads that output unchanged (it maps the point-of-service tier of HMO-POS plans to out-of-network with a text-only qualifier). Since October 24, 2026 it also reads the Part D files: a Medicare Advantage plan with drug coverage gets its `pharmacy` object (deductible, out-of-pocket threshold, coverage stages, formulary tiers, pharmacy networks) and 1 Part D benefit per tier, pharmacy network and day supply, and a stand-alone Medicare Prescription Drug Plan gets a document of its own ([`docs/specs/pbp-part-d-mapping.md`](docs/specs/pbp-part-d-mapping.md)). The converter lists the Part D benefits as unmapped and does not convert a stand-alone Part D plan. The PBP files are not in the repository: download them into `data/pbp/<year>/` (git-ignored). Service categories map to canonical keys through `fhir/pbp-crosswalk.json`; a value the reader cannot read stops the import instead of being guessed. The test runs on the golden plans' rows committed in `test/fixtures/pbp/`, so it needs no download. Spec: [`docs/specs/pbp-importer.md`](docs/specs/pbp-importer.md); examples: `examples/*.pbp.json`.
 
 ```bash
 node scripts/from-pbp.js --year 2027 --contract H2406                                # list a contract's plans

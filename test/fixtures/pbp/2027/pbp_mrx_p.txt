@@ -1,0 +1,37 @@
+pbp_a_hnumber	pbp_a_plan_identifier	segment_id	pbp_a_ben_cov	pbp_a_plan_type	orgtype	bid_id	version	part_d_model_demo	part_d_enhncd_cvrg_demo	mrx_tier_post_label_list	mrx_tier_post_benefit_type	mrx_tier_post_form_model_desc	mrx_tier_post_id	mrx_tier_post_type_id	mrx_tier_post_drug_type	mrx_tier_post_includes	mrx_tier_post_cost_struct	mrx_tier_post_copay_amt	mrx_tier_post_coins_pct
+H1036	068	0	1	01	01	H1036_068_0	5			Preferred Generic	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	1	2	11	3	2	0.00	
+H1036	068	0	1	01	01	H1036_068_0	5			Generic	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	2	2	11	1	2	0.00	
+H1036	068	0	1	01	01	H1036_068_0	5			Preferred Brand	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	3	2	11	1	2	0.00	
+H1036	068	0	1	01	01	H1036_068_0	5			Non-Preferred Drug	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	4	2	11	1	2	0.00	
+H1036	068	0	1	01	01	H1036_068_0	5			Specialty Tier	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	5	2	11	1	2	0.00	
+H1609	028	0	1	02	01	H1609_028_0	4			Preferred Generic	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	1	2	11	1	2	0.00	
+H1609	028	0	1	02	01	H1609_028_0	4			Generic	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	2	2	11	1	2	0.00	
+H1609	028	0	1	02	01	H1609_028_0	4			Preferred Brand	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	3	2	11	1	2	0.00	
+H1609	028	0	1	02	01	H1609_028_0	4			Non-Preferred Drug	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	4	2	11	1	2	0.00	
+H1609	028	0	1	02	01	H1609_028_0	4			Specialty Tier	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	5	2	11	1	2	0.00	
+H2406	013	0	1	04	01	H2406_013_0	5			Preferred Generic	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	1	2	01	1	2	0.00	
+H2406	013	0	1	04	01	H2406_013_0	5			Generic	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	2	2	01	3	2	5.00	
+H2406	013	0	1	04	01	H2406_013_0	5			Preferred Brand	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	3	2	11	1	2	0.00	
+H2406	013	0	1	04	01	H2406_013_0	5			Non-Preferred Drug	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	4	2	11	1	2	0.00	
+H2406	013	0	1	04	01	H2406_013_0	5			Specialty Tier	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	5	2	11	1	2	0.00	
+H5425	140	0	1	01	01	H5425_140_0	10			Preferred Generic	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	1	2	11	1	2	0.00	
+H5425	140	0	1	01	01	H5425_140_0	10			Generic	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	2	2	11	1	2	0.00	
+H5425	140	0	1	01	01	H5425_140_0	10			Preferred Brand	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	3	2	11	1	2	0.00	
+H5425	140	0	1	01	01	H5425_140_0	10			Non-Preferred Drug	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	4	2	11	1	2	0.00	
+H5425	140	0	1	01	01	H5425_140_0	10			Specialty Tier	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	5	2	11	1	2	0.00	
+H5533	019	0	1	04	01	H5533_019_0	6			Preferred Generic	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	1	2	11	1	2	0.00	
+H5533	019	0	1	04	01	H5533_019_0	6			Generic	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	2	2	11	1	2	0.00	
+H5533	019	0	1	04	01	H5533_019_0	6			Preferred Brand	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	3	2	11	1	2	0.00	
+H5533	019	0	1	04	01	H5533_019_0	6			Non-Preferred Drug	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	4	2	11	1	2	0.00	
+H5533	019	0	1	04	01	H5533_019_0	6			Specialty Tier	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	5	2	11	1	2	0.00	
+S4802	146	0		29	10	S4802_146_0	2			Generic	4	Generic, Preferred Brand, Non-Preferred Drug, Injectable Drugs, Specialty Tier, Select Care Drugs	1	2	11	1	2	0.00	
+S4802	146	0		29	10	S4802_146_0	2			Preferred Brand	4	Generic, Preferred Brand, Non-Preferred Drug, Injectable Drugs, Specialty Tier, Select Care Drugs	2	2	11	1	2	0.00	
+S4802	146	0		29	10	S4802_146_0	2			Non-Preferred Drug	4	Generic, Preferred Brand, Non-Preferred Drug, Injectable Drugs, Specialty Tier, Select Care Drugs	3	2	11	1	2	0.00	
+S4802	146	0		29	10	S4802_146_0	2			Injectable Drugs	4	Generic, Preferred Brand, Non-Preferred Drug, Injectable Drugs, Specialty Tier, Select Care Drugs	4	2	11	1	2	0.00	
+S4802	146	0		29	10	S4802_146_0	2			Specialty Tier	4	Generic, Preferred Brand, Non-Preferred Drug, Injectable Drugs, Specialty Tier, Select Care Drugs	5	2	11	1	2	0.00	
+S4802	146	0		29	10	S4802_146_0	2			Select Care Drugs	4	Generic, Preferred Brand, Non-Preferred Drug, Injectable Drugs, Specialty Tier, Select Care Drugs	6	2	11	1	2	0.00	
+S5921	383	0		29	10	S5921_383_0	2			Preferred Generic	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	1	2	01	1	2	0.00	
+S5921	383	0		29	10	S5921_383_0	2			Generic	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	2	2	01	3	2	10.00	
+S5921	383	0		29	10	S5921_383_0	2			Preferred Brand	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	3	2	11	1	2	0.00	
+S5921	383	0		29	10	S5921_383_0	2			Non-Preferred Drug	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	4	2	11	1	2	0.00	
+S5921	383	0		29	10	S5921_383_0	2			Specialty Tier	4	Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier	5	2	11	1	2	0.00	

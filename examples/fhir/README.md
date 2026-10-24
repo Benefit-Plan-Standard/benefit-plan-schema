@@ -14,10 +14,10 @@ Validation record: [`VALIDATION.md`](VALIDATION.md).
 
 ## Files
 
-| File | BPS source | BPS schema | Benefits placed | Benefits outside the SBC codes | `Not stated in the BPS document` entries |
+| File | BPS source | BPS schema | Benefits placed | Benefits listed as unmapped (outside the SBC codes, and Part D) | `Not stated in the BPS document` entries |
 |---|---|---|---|---|---|
-| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | `unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json` | 1.2.0 | 16 | 22 | 2 |
-| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | `aetna-medicare-aetna-medicare-select-extra.pbp.json` | 1.2.0 | 16 | 22 | 4 |
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | `unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json` | 1.2.0 | 16 | 55 (22 and 33 Part D) | 2 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | `aetna-medicare-aetna-medicare-select-extra.pbp.json` | 1.2.0 | 16 | 89 (22 and 67 Part D) | 4 |
 | `aetna-ppo-1500-80-50.json` | `aetna_example.json` | 1.1.0 | 26 | 1 | 0 |
 | `aetna-ppo-5000-80-50.json` | `aetna_ppo5000_example.json` | 1.1.0 | 26 | 1 | 0 |
 | `ambetter-ca-silver-94-hmo.json` | `ambetter_example.json` | 1.1.0 | 27 | 3 | 2 |
@@ -25,14 +25,14 @@ Validation record: [`VALIDATION.md`](VALIDATION.md).
 | `flblue-blueoptions-505.json` | `bluecross_example.json` | 1.1.0 | 27 | 4 | 0 |
 | `gatorcare-prime-epo.json` | `gatorcare_example.json` | 1.1.0 | 25 | 4 | 1 |
 | `humana-gold-plus-h1036-025-hmo.json` | `humana_example.json` | 1.2.0 | 26 | 46 | 9 |
-| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | `humana-humana-gold-plus-h1036-068.pbp.json` | 1.2.0 | 16 | 22 | 14 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | `humana-humana-gold-plus-h1036-068.pbp.json` | 1.2.0 | 16 | 64 (22 and 42 Part D) | 14 |
 | `kaiser-ca-gold-80-hmo.json` | `kaiser_example.json` | 1.1.0 | 28 | 3 | 0 |
 | `scan-classic-hmo-los-angeles.json` | `scan_example.json` | 1.2.0 | 22 | 49 | 20 |
-| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | 1.2.0 | 16 | 22 | 14 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | 1.2.0 | 16 | 89 (22 and 67 Part D) | 14 |
 | `uhc-choice-plus-hsa-gold-1700.json` | `united_example.json` | 1.1.0 | 26 | 3 | 0 |
-| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | 1.2.0 | 16 | 22 | 2 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | 1.2.0 | 16 | 89 (22 and 67 Part D) | 2 |
 
-The 5 files whose BPS source is a `.pbp.json` file are the PBP Bundles, described below.
+The 5 files whose BPS source is a `.pbp.json` file are the PBP Bundles, described below. The 2 other `.pbp.json` files, stand-alone Part D plans, are not converted (converter spec section 8.4).
 
 ## Medicare Advantage files
 
@@ -44,7 +44,7 @@ A Summary of Benefits is not an SBC. These two files conform structurally to the
 
 ## Medicare Advantage files from the CMS PBP public files
 
-Added 2026-10-06. Each is the converter's output for 1 of the PBP importer's 5 golden files (`examples/*.pbp.json`, BPS 1.2.0, written by `scripts/from-pbp.js` from the CMS CY 2027 PBP Benefits files; spec [`../../docs/specs/pbp-importer.md`](../../docs/specs/pbp-importer.md) section 13). They are golden-tested like the 10 above and, since 2026-10-15, published to the docs site with them. Their label in the site's `index.json`: Medicare Advantage, imported from the CMS PBP benefits files for contract year 2027, validates against the v1.2.0 draft only. The `POS` tier of the HMO-POS plan maps to out-of-network with the text-only qualifier `Point-of-service option` (converter spec 6.3). Their rows are in the Files table above. The 5 plans, as the Bundles name them:
+Added 2026-10-06. Each is the converter's output for 1 of the PBP importer's 5 golden files (`examples/*.pbp.json`, BPS 1.2.0, written by `scripts/from-pbp.js` from the CMS CY 2027 PBP Benefits files; spec [`../../docs/specs/pbp-importer.md`](../../docs/specs/pbp-importer.md) section 13). They are golden-tested like the 10 above and, since 2026-10-15, published to the docs site with them. Their label in the site's `index.json`: Medicare Advantage, imported from the CMS PBP benefits files for contract year 2027, validates against the v1.2.0 draft only. The `POS` tier of the HMO-POS plan maps to out-of-network with the text-only qualifier `Point-of-service option` (converter spec 6.3). Since 2026-10-24 each document carries its Part D benefit, and the converter lists every Part D benefit (a benefit with a `coverage_stage_id`) in `bps-unmapped-benefit`, whatever its key, because the SBC profile has no coverage stage, pharmacy network or day supply; the Part D deductible and out-of-pocket threshold are `plan.generalCost` entries (converter spec section 8.4). Their rows are in the Files table above. The 5 plans, as the Bundles name them:
 
 | Plan | Contract-plan-segment |
 |---|---|
@@ -54,17 +54,17 @@ Added 2026-10-06. Each is the converter's output for 1 of the PBP importer's 5 g
 | UPMC for Life PPO Rx Choice (PPO) | H5533-019-000 |
 | SCAN Costco Medicare Advantage (HMO) | H5425-140-000 |
 
-**HL7 validation.** Run on 2026-10-20, after the medical MVP gaps closed (the premium, the contacts, the provider directory link, 14a preventive services and the 7i key), with `validator_cli.jar` 7.0.0 (Git# 37795f3f571f, built 2026-10-06T19:02:34Z), OpenJDK 17.0.19, FHIR 4.0.1, packages `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions`. All 5 pass with 0 errors and 17 warnings:
+**HL7 validation.** Run on 2026-10-24, after the Part D sections were added (the eighth run), with `validator_cli.jar` 7.0.0 (Git# 37795f3f571f, built 2026-10-06T19:02:34Z), OpenJDK 17.0.19, FHIR 4.0.1, packages `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions`. All 5 pass with 0 errors and 17 warnings:
 
 | Plan | Errors | Warnings | Information | Warnings are |
 |---|---|---|---|---|
-| H2406-013-000 | 0 | 0 | 126 | |
-| H1036-068-000 | 0 | 0 | 119 | |
-| H1609-028-000 | 0 | 13 | 125 | 12 text-only `cost.qualifiers` (`Point-of-service option`) and the `plan.type` |
-| H5533-019-000 | 0 | 4 | 126 | 4 text-only `cost.qualifiers` (hospital cost tier names) |
-| H5425-140-000 | 0 | 0 | 122 | |
+| H2406-013-000 | 0 | 0 | 168 | |
+| H1036-068-000 | 0 | 0 | 172 | |
+| H1609-028-000 | 0 | 13 | 201 | 12 text-only `cost.qualifiers` (`Point-of-service option`) and the `plan.type` |
+| H5533-019-000 | 0 | 4 | 203 | 4 text-only `cost.qualifiers` (hospital cost tier names) |
+| H5425-140-000 | 0 | 0 | 197 | |
 
-The 16 qualifier warnings are because the Cost Tier value set has only `value-choice`, `standard` and `virtual`. The `plan.type` warning is because the SBC Plan Type value set has no HMO-POS code. The full record is the sixth run in [`VALIDATION.md`](VALIDATION.md); the seventh run, 2026-10-21, covers the 5 Marketplace Bundles after the accumulator tier spelling changed, and these 5 files did not change. The copies published on the site are byte-identical to these files (site published 2026-10-21).
+The 16 qualifier warnings are because the Cost Tier value set has only `value-choice`, `standard` and `virtual`. The `plan.type` warning is because the SBC Plan Type value set has no HMO-POS code. The warnings are those of the sixth run (2026-10-20); the new information messages are on the extensions of the Part D benefits and the Part D source references. The full record is the eighth run in [`VALIDATION.md`](VALIDATION.md), after the sixth (2026-10-20) and the seventh (2026-10-21, the 5 Marketplace Bundles, these 5 files unchanged). The copies in the docs site's `static/fhir/` were written from these files by `scripts/publish-fhir.js` on 2026-10-24 and are byte-identical to them; the site serves them once that folder is published.
 
 ## Reading the files
 

@@ -571,7 +571,7 @@ At GA, for a member who has signed in with the payer, the plan identifier comes 
 
 Version 0.3.5, a draft for the workgroup, dated October 24, 2026. The Benefit Plan Standard repository's [`docs/changelog.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/changelog.md) and its git history record the drafts before this one.
 
-It covers the PBP files for contract year 2027 and the Marketplace PUFs for plan year 2026. The documents of both programs are written in Benefit Plan Standard schema 1.2.0, a draft (see Scope). The canonical benefit vocabulary is version 1.3.0, with 118 keys. The PBP crosswalk has 41 rows, 35 with a canonical key, and the Marketplace crosswalk maps 84 of the 273 benefit names in the plan year 2026 file.
+It covers the PBP files for contract year 2027 and the Marketplace PUFs for plan year 2026. The documents of both programs are written in Benefit Plan Standard schema 1.2.0, a draft (see Scope). The canonical benefit vocabulary is version 1.4.0, with 124 keys. The PBP crosswalk has 41 rows, 35 with a canonical key, and the Marketplace crosswalk maps 84 of the 273 benefit names in the plan year 2026 file.
 
 The crosswalk to the SBC InsurancePlan profile, [`carin-crosswalk.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/carin-crosswalk.md), has 106 rows, 1 for each row of the dictionary. Each row has a verdict for each program it applies to, so the counts are per program. A not covered verdict is either no element or not read, so the 4 verdict rows add up to the rows that apply:
 

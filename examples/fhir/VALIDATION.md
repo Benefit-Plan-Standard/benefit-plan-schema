@@ -1,7 +1,7 @@
 # Validation record
 
 **Date:** 2026-09-24; United, Ambetter and Kaiser re-validated 2026-09-25 after data fixes; the 8 SBC files re-validated 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs; Aetna PPO 1500, Aetna PPO 5000, GatorCare and United re-validated 2026-10-05 after the deductible flags on silent cells were set (no count changed)
-**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run) again on 2026-10-09 after 4 of their benefits gained canonical keys (third run), and on 2026-10-11 after the importer gained 10 service categories (fourth run), all at the end of this file: 0 errors; 15 warnings in the second and third runs, 16 in the fourth. On 2026-10-13 all 15 Bundles here were validated again, unchanged, with the 5 Marketplace Bundles of `examples/fhir-puf/` after the adult dental keys and the `excluded-services` extension (fifth run): the same counts for the 15, 0 errors for the 5.
+**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run) again on 2026-10-09 after 4 of their benefits gained canonical keys (third run), and on 2026-10-11 after the importer gained 10 service categories (fourth run), all at the end of this file: 0 errors; 15 warnings in the second and third runs, 16 in the fourth. On 2026-10-13 all 15 Bundles here were validated again, unchanged, with the 5 Marketplace Bundles of `examples/fhir-puf/` after the adult dental keys and the `excluded-services` extension (fifth run): the same counts for the 15, 0 errors for the 5. The sixth (2026-10-20) and seventh (2026-10-21) runs are described where they are. On 2026-10-24 the 5 PBP Bundles were validated after the importer began reading the Part D files (eighth run, at the end of this file): 0 errors and the same 17 warnings as the sixth run.
 
 ## Setup
 
@@ -291,3 +291,19 @@ The 2 re-converted Bundles in this folder, against the sixth run:
 |---|---|---|---|
 | `humana-gold-plus-h1036-025-hmo.json` | 0 | 42 / 42 | 180 / 180 |
 | `scan-classic-hmo-los-angeles.json` | 0 | 4 / 4 | 148 / 148 |
+
+## Eighth run: 2026-10-24, the 5 PBP Bundles after the Part D sections
+
+**What changed.** `scripts/from-pbp.js` reads the Part D files (`pbp_mrx.txt`, `pbp_mrx_tier.txt`, `pbp_mrx_p.txt`; `docs/specs/pbp-part-d-mapping.md`). Each of the 5 Medicare Advantage golden documents gains a `pharmacy` object and its Part D benefits after the 38 medical ones (H2406-013 33, H1036-068 42, H1609-028 67, H5533-019 67, H5425-140 67), and the Part D root `source_references` entries after the medical ones. The converter lists every benefit with a `coverage_stage_id` in a `bps-unmapped-benefit` extension, whatever its key, because the SBC profile has no stage, pharmacy network or day supply, and keeps the `pharmacy.deductible` and `pharmacy.out_of_pocket_max` `generalCost` entries (converter spec section 8.4). Each Bundle still places its 16 medical benefits; it lists 22 medical benefits and its Part D benefits as unmapped (H2406-013 55, H1036-068 64, the other 3 89). The 2 stand-alone Part D plans among the golden documents (S5921-383-000, S4802-146-000) are not converted. The 10 Bundles read from plan documents are byte-identical and are not in this run.
+
+**Result:** all 5 files pass with **0 errors**. Same validator (`validator_cli.jar` 7.0.0, Git# 37795f3f571f, built 2026-10-06T19:02:34Z), OpenJDK 17.0.19, FHIR 4.0.1, packages `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions`, and the command of the second run. The run was repeated the same day after the canonical benefit vocabulary went to version 1.4.0 (`fhir/definitions/CodeSystem-canonical-benefits.json` version 1.4.0, 124 concepts, the 6 Part D tier keys among them): every count below is the same in both runs, and the 5 Bundles did not change.
+
+| File | Errors | Warnings, sixth run / eighth | Information, sixth run / eighth |
+|---|---|---|---|
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 / 0 | 126 / 168 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 / 0 | 119 / 172 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 13 / 13 | 125 / 201 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 / 4 | 126 / 203 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 / 0 | 122 / 197 |
+
+**Warnings.** The same 17 as the sixth run: 16 text-only `cost.qualifiers` and the Aetna `plan.type`. No Part D benefit is placed, so none adds a cost entry or a qualifier. **Information.** All 941 messages are the extension slicing message, as above: 495 on `InsurancePlan`, 312 on `coverage.benefit` and 134 on `specificCost.benefit.cost`. The new ones are all on `InsurancePlan`: the `bps-unmapped-benefit` extension of each Part D benefit and the `bps-source-reference` extension of each Part D root entry. The 2 pharmacy `generalCost` entries raise no message.

@@ -8,6 +8,10 @@
  * exists only in hl7.fhir.us.insurance-card#2.0.0-ballot (draft, experimental).
  * Spec: docs/specs/insuranceplan-converter.md
  *
+ * A Medicare Part D benefit (a benefit with a coverage_stage_id) is listed as unmapped,
+ * and a stand-alone Medicare Part D plan (plan_type "PDP") is refused, because the
+ * profile describes a medical plan (spec section 8.4).
+ *
  * toInsurancePlanBundle(bps, options) is a pure function: no network, no clock, no
  * randomness, no state. The same input and options always produce the same output.
  *
@@ -18,7 +22,7 @@
  *                                                             also write the CARIN excluded-services extension,
  *                                                             derived from coverage flags (Marketplace public-file
  *                                                             documents only; spec section 10.1)
- *   node scripts/to-insuranceplan.js --write-golden           regenerate examples/fhir/ (10 examples, 5 PBP files)
+ *   node scripts/to-insuranceplan.js --write-golden           regenerate examples/fhir/ (10 examples, 5 PBP files; the 2 PDP files are not converted)
  *   node scripts/to-insuranceplan.js --no-validate <bps.json> skip the input schema check
  *
  * Exit codes: 0 = converted, 1 = invalid input or usage error.
@@ -103,6 +107,9 @@ const TEXT_NOT_COVERED = 'Not covered';
 const TEXT_AMOUNT_NOT_STATED = 'Covered; amount not stated in the BPS document';
 const TEXT_PLACEHOLDER = 'Not stated in the BPS document';
 const TEXT_EXCLUDED_DERIVED = "Derived from the plan's coverage flags in the CMS Benefits and Cost Sharing PUF, not from a printed Excluded Services section.";
+// A stand-alone Medicare Part D plan is not converted (spec section 8.4).
+const PDP_REFUSAL = 'plan_type "PDP": a stand-alone Medicare Part D plan has no medical benefits, and the CARIN SBC InsurancePlan profile ' +
+  'describes a medical plan, so the converter does not convert it (docs/specs/insuranceplan-converter.md section 8.4)';
 
 // The first plan-level source reference the Marketplace public-file importer writes
 // (docs/specs/marketplace-puf-importer.md section 4.4).
@@ -554,13 +561,15 @@ function excludedServicesExt(bps) {
   }));
 }
 
-function narrative(bps, p, placed, unmapped, excluded) {
+function narrative(bps, p, placed, unmapped, partD, excluded) {
   const when = [p.start, p.end].filter(Boolean).join(' to ');
   const parts = [
     `<p><b>${escapeXml(bps.plan_name)}</b></p>`,
     `<p>Carrier: ${escapeXml(bps.carrier)}. Plan type: ${escapeXml(bps.plan_type || 'not stated')}. Period: ${escapeXml(when)}.</p>`,
     `<p>${placed} benefits are placed in CARIN SBC benefit categories. ` +
-      `${unmapped} benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p>`,
+      `${unmapped - partD} benefits have no code in the SBC benefit category code system and ` +
+      `${partD ? `${partD} Part D benefits (benefits with a coverage stage, which the SBC profile has no place for) ` : ''}` +
+      'are listed, by identity only, in the bps-unmapped-benefit extension.</p>',
     ...(has(excluded) ? [`<p>${excluded} benefits are not covered on any tier and are listed in the excluded-services extension, ` +
       'derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p>'] : []),
     `<p>Converted from Benefit Plan Standard document ${escapeXml(bps.plan_id)} (schema version ${escapeXml(bps.schema_version)}).</p>`,
@@ -576,16 +585,20 @@ function toInsurancePlanBundle(bps, options = {}) {
   if (!SUPPORTED_VERSIONS.includes(bps.schema_version)) {
     throw new Error(`schema_version "${bps.schema_version}" is not supported (expected ${SUPPORTED_VERSIONS.join(' or ')})`);
   }
+  if (bps.plan_type === 'PDP') throw new Error(PDP_REFUSAL);
   const id = fhirId(bps.plan_id);
   const orgId = 'org-' + slug(bps.carrier);
   const planUrl = 'urn:uuid:' + uuidV5('InsurancePlan/' + id);
   const orgUrl = 'urn:uuid:' + uuidV5('Organization/' + orgId);
   const tiers = tierIndex(bps);
 
-  // Group placed benefits by SBC category, in order of first appearance.
+  // Group placed benefits by SBC category, in order of first appearance. A benefit with a
+  // coverage stage (Medicare Part D) is listed as unmapped whatever its key (spec 8.4).
   const groups = new Map();
   const unmapped = [];
+  let partD = 0;
   for (const b of bps.benefits) {
+    if (has(b.coverage_stage_id)) { unmapped.push(b); partD++; continue; }
     const x = crosswalkFor(bps.plan_id, b);
     if (!x) { unmapped.push(b); continue; }
     if (!groups.has(x.category)) groups.set(x.category, []);
@@ -617,7 +630,7 @@ function toInsurancePlanBundle(bps, options = {}) {
     resourceType: 'InsurancePlan',
     id,
     meta: { profile: [SBC_PROFILE] },
-    text: narrative(bps, p, placed, unmapped.length,
+    text: narrative(bps, p, placed, unmapped.length, partD,
       options.excludedServices ? (excluded ? excluded.extension.length : 0) : null),
     extension: [
       planMetadataExt(bps),
@@ -686,9 +699,18 @@ function exampleFiles() {
 }
 
 // The PBP importer's golden files (docs/specs/pbp-importer.md section 13); their
-// Bundles sit in examples/fhir/ beside the 10 above.
-function pbpExampleFiles() {
+// Bundles sit in examples/fhir/ beside the 10 above. The stand-alone Part D plans
+// among them are not converted (spec section 8.4).
+function allPbpFiles() {
   return fs.readdirSync(EXAMPLES_DIR).filter((f) => f.endsWith('.pbp.json')).sort();
+}
+
+function isPdpFile(f) {
+  return JSON.parse(fs.readFileSync(path.join(EXAMPLES_DIR, f), 'utf8')).plan_type === 'PDP';
+}
+
+function pbpExampleFiles() {
+  return allPbpFiles().filter((f) => !isPdpFile(f));
 }
 
 function main(argv) {
@@ -732,6 +754,7 @@ function main(argv) {
         fs.writeFileSync(target, serialize(bundle));
         console.log(`wrote ${path.relative(REPO_ROOT, target)}  (from ${f})`);
       }
+      for (const f of allPbpFiles().filter(isPdpFile)) console.log(`not converted: examples/${f}, ${PDP_REFUSAL}`);
       return 0;
     }
     if (files.length !== 1) {

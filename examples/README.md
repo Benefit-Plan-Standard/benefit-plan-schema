@@ -1,6 +1,6 @@
 # Examples
 
-20 plans expressed in the Benefit Plan Standard. 10 are read from a published plan document, which ships alongside them in `sources/`. 5 are imported from the CMS Marketplace public use files and 5 from the CMS Medicare Advantage Plan Benefit Package files. Use them to see how a real plan maps into the standard, to test a parser or importer, or as input to the FHIR converter.
+22 plans expressed in the Benefit Plan Standard. 10 are read from a published plan document, which ships alongside them in `sources/`. 5 are imported from the CMS Marketplace public use files and 7 from the CMS Plan Benefit Package files: 5 Medicare Advantage plans and 2 stand-alone Medicare Part D plans. Use them to see how a real plan maps into the standard, to test a parser or importer, or as input to the FHIR converter.
 
 How the CMS files become these examples and their FHIR Bundles, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow).
 
@@ -33,7 +33,7 @@ How the CMS files become these examples and their FHIR Bundles, with every comma
 
 "Benefits placed" is the number of entries in `benefits[]` out of the plan's rows in the Benefits and Cost Sharing PUF. A row is placed when its benefit name maps to a canonical key in `../fhir/marketplace-puf-crosswalk.json`; the other rows (21, 23, 23, 16 and 16) are listed by name and coverage in `source_references[]`. The plan ID after each name is the HIOS plan ID, which each document carries in `plan_identifiers` (system `hios_plan_id`) since 2026-10-20. Each document's in-network tier also carries the provider directory link from the Network PUF.
 
-## The 5 Medicare Advantage public-file examples
+## The 7 PBP public-file examples
 
 | File | Plan | Issuer | State | Market | Plan type | Plan year | Schema | Benefits placed | Source | FHIR Bundle in `fhir/` |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -42,15 +42,29 @@ How the CMS files become these examples and their FHIR Bundles, with every comma
 | `aetna-medicare-aetna-medicare-select-extra.pbp.json` | Aetna Medicare Select Extra (HMO-POS), H1609-028-000, 11 counties | Aetna Medicare | FL | Medicare Advantage | HMO-POS | 2027 | v1.2.0 | 38 of 41 | CMS PBP Benefits 2027 (Plan Benefit Package data), downloaded 2026-10-06 | Yes |
 | `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | UPMC for Life PPO Rx Choice (PPO), H5533-019-000, 1 county | UPMC for Life | PA | Medicare Advantage | PPO | 2027 | v1.2.0 | 38 of 41 | CMS PBP Benefits 2027 (Plan Benefit Package data), downloaded 2026-10-06 | Yes |
 | `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | SCAN Costco Medicare Advantage (HMO), H5425-140-000, 1 county | SCAN Health Plan | CA | Medicare Advantage | HMO | 2027 | v1.2.0 | 38 of 41 | CMS PBP Benefits 2027 (Plan Benefit Package data), downloaded 2026-10-06 | Yes |
+| `unitedhealthcare-aarp-medicare-rx-preferred-from-uhc.pbp.json` | AARP Medicare Rx Preferred from UHC (PDP), S5921-383-000, region 11 Florida | UnitedHealthcare | FL | Medicare Part D | PDP | 2027 | v1.2.0 | Part D only | CMS PBP Benefits 2027 (Plan Benefit Package data), downloaded 2026-10-06 | No |
+| `wellcare-wellcare-value-script.pbp.json` | Wellcare Value Script (PDP), S4802-146-000, region 11 Florida | Wellcare | FL | Medicare Part D | PDP | 2027 | v1.2.0 | Part D only | CMS PBP Benefits 2027 (Plan Benefit Package data), downloaded 2026-10-06 | No |
 
-"Benefits placed" is the number of entries in `benefits[]` out of the 41 service categories in `../fhir/pbp-crosswalk.json`, the importer's benefit set; each file's `source_references[]` says "38 written". The 3 not written are the single-type hearing aid rows (18b2, 18b3, 18b4), which none of the 5 plans chooses. A benefit the plan does not offer is written with `covered: false`; dental cleaning and fillings with no entry in the plan's PBP dental section are written that way too, with a note saying the plan filed no entry. Each Bundle places 16 benefits and lists 22 by name as outside the SBC benefit category codes. Since 2026-10-20 each document also has the premium, the member services phone and, where Section A gives a full address, the website and the provider directory link (UPMC both, Humana the directory). The plan ID after each name is the contract-plan-segment. The 5 FHIR Bundles are in `fhir/`, not in a folder of their own, and are published on the site with the 10 document-derived Bundles.
+| File | Part D benefits (initial coverage and catastrophic) | Drug tiers | Pharmacy networks | Part D deductible |
+|---|---|---|---|---|
+| `unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json` | 33 (28 and 5) | 5 | 5 | 685 USD, Tiers 3 to 5 |
+| `humana-humana-gold-plus-h1036-068.pbp.json` | 42 (37 and 5) | 5 | 5 | 700 USD, Tiers 4 and 5 |
+| `aetna-medicare-aetna-medicare-select-extra.pbp.json` | 67 (62 and 5) | 5 | 6 | 700 USD, Tiers 3 to 5 |
+| `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | 67 (62 and 5) | 5 | 6 | 700 USD, Tiers 3 to 5 |
+| `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | 67 (62 and 5) | 5 | 6 | 450 USD, Tiers 3 to 5 |
+| `unitedhealthcare-aarp-medicare-rx-preferred-from-uhc.pbp.json` | 41 (36 and 5) | 5 | 6 | 300 USD, Tiers 3 to 5 |
+| `wellcare-wellcare-value-script.pbp.json` | 70 (64 and 6) | 6 | 6 | 700 USD, Tiers 2 to 5 |
+
+Every Part D document carries `pharmacy.out_of_pocket_max` 2,400 USD, the contract year 2027 Part D threshold, from the CMS Rate Announcement (no PBP column states it), and a $0 catastrophic step per tier for covered Part D drugs; the mapping is [`../docs/specs/pbp-part-d-mapping.md`](../docs/specs/pbp-part-d-mapping.md).
+
+"Benefits placed" is the number of entries in `benefits[]` out of the 41 service categories in `../fhir/pbp-crosswalk.json`, the importer's benefit set; each file's `source_references[]` says "38 written". The 3 not written are the single-type hearing aid rows (18b2, 18b3, 18b4), which none of the 5 plans chooses. A benefit the plan does not offer is written with `covered: false`; dental cleaning and fillings with no entry in the plan's PBP dental section are written that way too, with a note saying the plan filed no entry. Each Bundle places 16 benefits and lists 22 by name as outside the SBC benefit category codes, and since 2026-10-24 its Part D benefits as well, which the SBC profile has no place for. The 2 stand-alone Part D plans have no medical benefits and are not converted. Since 2026-10-20 each document also has the premium, the member services phone and, where Section A gives a full address, the website and the provider directory link (UPMC both, Humana the directory). The plan ID after each name is the contract-plan-segment. The 5 FHIR Bundles are in `fhir/`, not in a folder of their own, and are published on the site with the 10 document-derived Bundles.
 
 ## How they were made
 
 - **The 8 SBC examples** are generated from the source Summary of Benefits and Coverage and verified value by value against it. On 2026-10-05 the 8 were corrected against their PDFs for limits and deductible flags; [`../docs/changelog.md`](../docs/changelog.md) has the detail. Also on 2026-10-05, the deductible flags on cost shares whose cell is silent about the deductible were set from the issuer's annotation convention and the SBC template footnote, with the page 1 answer to "Are there services covered before you meet your deductible?". They validate against v1.1.0 and, unchanged, against the v1.2.0 draft.
 - **The 2 Medicare Advantage examples** are read from the CMS Summary of Benefits and verified value by value against the cited pages. They use fields added in the v1.2.0 draft, so they validate against that draft only. See [`../docs/medicare-advantage-notes.md`](../docs/medicare-advantage-notes.md).
 - **The 5 Marketplace public-file examples** are produced by `scripts/from-marketplace-puf.js` from 3 CMS files for the plan year: the Plan Attributes PUF, the Benefits and Cost Sharing PUF and the Network PUF, which gives the provider directory link. No PDF is read. The output is deterministic: the same 3 files and download dates always give byte-identical output. They are v1.2.0 documents since 2026-10-20 (v1.1.0 before). See [`../docs/specs/marketplace-puf-importer.md`](../docs/specs/marketplace-puf-importer.md).
-- **The 5 Medicare Advantage public-file examples** are produced by `scripts/from-pbp.js` from the CMS Plan Benefit Package (PBP) Benefits files for contract year 2027. No PDF is read by the importer. The output is deterministic: the same files and download date always give byte-identical output. They are v1.2.0 documents. Two of them were checked against the carrier's 2027 Summary of Benefits with `scripts/pbp-sob-check.js`: H2406-013 (UnitedHealthcare) and H1609-028 (Aetna). See [`../docs/specs/pbp-importer.md`](../docs/specs/pbp-importer.md).
+- **The 7 PBP public-file examples** are produced by `scripts/from-pbp.js` from the CMS Plan Benefit Package (PBP) Benefits files for contract year 2027. No PDF is read by the importer. The output is deterministic: the same files and download date always give byte-identical output. They are v1.2.0 documents. Four of them were checked against the carrier's 2027 Summary of Benefits with `scripts/pbp-sob-check.js`: H2406-013 (UnitedHealthcare) and H1609-028 (Aetna) on their medical benefits, H1036-068 (Humana) and S5921-383 (UnitedHealthcare, a stand-alone Part D plan) on their Part D benefits. See [`../docs/specs/pbp-importer.md`](../docs/specs/pbp-importer.md) and [`../docs/specs/pbp-part-d-mapping.md`](../docs/specs/pbp-part-d-mapping.md).
 
 ## Source references
 
@@ -59,7 +73,7 @@ Every example carries `source_references[]`.
 - The 8 SBC examples carry page references at the plan level (18 to 26 per plan), each with a page number and the source text. Individual benefits do not point to a specific reference.
 - The 2 Medicare Advantage examples also carry references on every benefit (72 of 72 for Humana, 71 of 71 for SCAN).
 - The 5 public-file examples carry 5 plan-level entries each, as text only, because the public files have no pages. The first names the 3 files and their download URLs, the plan year, the download dates (2026-10-05, and 2026-10-20 for the Network PUF), each file's `ImportDate`, the HIOS plan IDs and the SBC URL from the Plan Attributes PUF. The other 4 hold, verbatim, the plan attributes with no BPS field (metal level, cost-sharing reduction variation, network and formulary IDs, the out-of-area and out-of-country answers and descriptions, and others), the Network PUF row behind the provider directory link, every accumulator cell, and the benefit rows with no canonical key. Individual benefits carry no references.
-- The 5 Medicare Advantage public-file examples carry 10 to 15 plan-level entries each, as text only, because the PBP files have no pages: the file names, release, URL and download date, the plan type, the Section A values with no BPS field, the Section A cells behind the contacts and the provider directory link, the service area, the Section D premium cells, the deductible and out-of-pocket cells (verbatim), and the benefit count. Every benefit (38 of 38 in each) also carries its own references.
+- The 5 Medicare Advantage public-file examples carry 18 to 24 plan-level entries each, as text only, because the PBP files have no pages: the file names, release, URL and download date, the plan type, the Section A values with no BPS field, the Section A cells behind the contacts and the provider directory link, the service area, the Section D premium cells, the deductible and out-of-pocket cells (verbatim), the benefit count, and since 2026-10-24 the Part D entries (the benefit type, the deductible reading, the threshold and its source, the pharmacy networks, the stages, the insulin cells of each tier and every `pbp_mrx.txt` cell). The 2 stand-alone Part D plans carry 15 and 14, with the Part D regions and a premium entry in place of the medical ones; their member services phone is read from Section A's Part D phone column, `pbp_a_pd_curmbr_phone`. Every benefit also carries its own references (all 71 to 105 in each).
 
 ## Things to know
 
@@ -126,6 +140,7 @@ The public files must first be downloaded into `data/puf/<year>/`; the importer 
 
 ```
 node scripts/from-pbp.js --year 2027 --plan H2406-013-000 --out plan.json
+node scripts/from-pbp.js --year 2027 --plan S5921-383-000 --out pdp.json    # a stand-alone Part D plan
 ```
 
 The PBP files must first be downloaded into `data/pbp/<year>/`; the importer spec, section 11, gives the steps.

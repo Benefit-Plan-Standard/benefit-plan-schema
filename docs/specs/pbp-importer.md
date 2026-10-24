@@ -1,7 +1,7 @@
 # Spec: CMS Plan Benefit Package (PBP) Benefits to BPS importer
 
-**Status:** Draft, 2026-10-06; 10 service categories added 2026-10-11. Phase 1 (sources, layout, MVP field map, 1 proven parse), phase 2 session 1 (the plan level), session 2 (the MVP benefits, checked line by line against the H2406-013-000 Summary of Benefits) and session 3 (decisions S1, N1, A5, C3 and 5; 5 golden files; the test on committed fixtures; the Summary of Benefits check script; sections 10 to 13) and session 4 (decision 4 confirmed on the Aetna H1609-028 Summary of Benefits; the converter maps the `POS` tier; the 5 golden files converted to FHIR; a second Summary of Benefits check) are done, and on 2026-10-11 (session 5) the 8 Medicare Advantage benefits of the workgroup's list and the 2 use case 2 settings were added: mental health individual sessions, dental cleaning and fillings, eyeglasses, over-the-counter items, meals, transportation and fitness, plus skilled nursing facility and home health (section 5.2). Confirmed readings and readings still to confirm: end of section 7.
-**Reads with:** [`pbp-record-layout-notes.md`](pbp-record-layout-notes.md) (every PBP file, its key and grain), [`marketplace-puf-importer.md`](marketplace-puf-importer.md) (the pattern this importer follows), [`../medicare-advantage-notes.md`](../medicare-advantage-notes.md) (gaps G1 to G14), [`../../fhir/pbp-crosswalk.json`](../../fhir/pbp-crosswalk.json) (the benefit-to-column mapping)
+**Status:** Draft, 2026-10-06; 10 service categories added 2026-10-11. Phase 1 (sources, layout, MVP field map, 1 proven parse), phase 2 session 1 (the plan level), session 2 (the MVP benefits, checked line by line against the H2406-013-000 Summary of Benefits) and session 3 (decisions S1, N1, A5, C3 and 5; 5 golden files; the test on committed fixtures; the Summary of Benefits check script; sections 10 to 13) and session 4 (decision 4 confirmed on the Aetna H1609-028 Summary of Benefits; the converter maps the `POS` tier; the 5 golden files converted to FHIR; a second Summary of Benefits check) are done, and on 2026-10-11 (session 5) the 8 Medicare Advantage benefits of the workgroup's list and the 2 use case 2 settings were added: mental health individual sessions, dental cleaning and fillings, eyeglasses, over-the-counter items, meals, transportation and fitness, plus skilled nursing facility and home health (section 5.2). On 2026-10-24 the Part D sections were added: `pbp_mrx.txt`, `pbp_mrx_tier.txt` and `pbp_mrx_p.txt` give the `pharmacy` object and the Part D benefits of every Medicare Advantage plan with drug coverage, and of stand-alone Medicare Prescription Drug Plans (type 29), which get documents of their own. Their mapping, decisions, tests and results are in [`pbp-part-d-mapping.md`](pbp-part-d-mapping.md), which this spec points at for everything Part D (section 14). Confirmed readings and readings still to confirm: end of section 7.
+**Reads with:** [`pbp-part-d-mapping.md`](pbp-part-d-mapping.md) (the Part D sections and stand-alone PDPs), [`pbp-record-layout-notes.md`](pbp-record-layout-notes.md) (every PBP file, its key and grain), [`marketplace-puf-importer.md`](marketplace-puf-importer.md) (the pattern this importer follows), [`../medicare-advantage-notes.md`](../medicare-advantage-notes.md) (gaps G1 to G14), [`../../fhir/pbp-crosswalk.json`](../../fhir/pbp-crosswalk.json) (the benefit-to-column mapping)
 **Map:** this importer, the Marketplace importer and the converter in one diagram, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow)
 
 This spec defines the second importer for the Benefit Plan Standard (BPS): the CMS Medicare Advantage PBP Benefits files in, one BPS document per plan out. It follows the Marketplace importer's pattern: 1 direction, 1 plan in and 1 document out, nothing invented, nothing dropped silently, the mapping in a data file, deterministic output, golden files and a test. Sections marked **Not yet** are headings kept for later work.
@@ -12,11 +12,11 @@ This spec defines the second importer for the Benefit Plan Standard (BPS): the C
 
 - One direction: PBP files to BPS JSON. The importer never writes FHIR.
 - One plan in, one BPS v1.2.0 document out. A plan is 1 PBP key: contract (`pbp_a_hnumber`), plan (`pbp_a_plan_identifier`) and segment (`segment_id`), written `H2406-013-000` (section 4.1).
-- Medicare Advantage plan types only for the MVP: 01 HMO, 02 HMOPOS, 04 Local PPO, 31 Regional PPO. Part D-only plans (29, 30), PACE (20), MSA (07), PFFS (09) and cost plans (18) are refused until someone asks for them; the B files hold no cost shares for PACE, MSA and 3 cost plans anyway (layout notes, section 2).
-- Benefits: the workgroup MVP, 41 rows in `fhir/pbp-crosswalk.json` (section 5.2). Other service categories are not imported yet (section 8).
+- Medicare Advantage plan types for the MVP: 01 HMO, 02 HMOPOS, 04 Local PPO, 31 Regional PPO; and since 2026-10-24 type 29, the stand-alone Medicare Prescription Drug Plan (PDP), with a document of its own and no medical benefits (`pbp-part-d-mapping.md` section 4). Type 30 (Employer/Union Only Direct Contract PDP, no Part D row in the file), the employer PDPs with no Part D design, PACE (20), MSA (07), PFFS (09) and cost plans (18) are refused; the B files hold no cost shares for PACE, MSA and 3 cost plans anyway (layout notes, section 2). The refusal message names the types in scope: "HMO, HMOPOS, Local PPO, Regional PPO and Medicare Prescription Drug Plan only".
+- Benefits: the workgroup MVP, 41 rows in `fhir/pbp-crosswalk.json` (section 5.2), then, since 2026-10-24, the Part D benefits of a plan with drug coverage (`pbp-part-d-mapping.md` section 6). Other service categories are not imported yet (section 8).
 - The importer never adds a value the files do not contain. In particular it does not fill in Medicare-defined amounts (the Part A or Part B deductible, the Medicare-defined inpatient cost share) that the files name but do not state (section 7).
 - Nothing is dropped silently: a value with no BPS field goes to `source_references` (plan or benefit level) or to a tier or step `notes`, as in the Marketplace importer.
-- The schema is not changed. Section 9 lists the gaps. The only vocabulary change is `HMO_POS` in `vocabularies/plan-types.json` (decision 3, section 4.1).
+- The schema is not changed. Section 9 lists the gaps. The vocabulary changes are `HMO_POS` in `vocabularies/plan-types.json` (decision 3, section 4.1), the keys this importer's rows use in `vocabularies/canonical-benefits.json` (section 5.2), and, for the Part D sections, the market `medicare_part_d` and 6 pharmacy keys (`pbp-part-d-mapping.md` section 13).
 
 **Schema version: v1.2.0** (decided 2026-10-06). The output is checked against `schema/v1.2.0/benefit-plan.schema.json`, the draft in the repo, not v1.1.0 as the Marketplace importer uses. Why: the PBP data needs fields that only v1.2.0 has, and v1.1.0 would push them into free text:
 
@@ -51,10 +51,10 @@ The index page also lists CY 2026 (`pbp-benefits-2026`), CY 2026 JSON (`pbp-bene
 - **Where the files go.** `data/pbp/<year>/`, unzipped next to the zip. `data/` is in `.gitignore`.
 - **Download record.** `data/pbp/2027/download.json`: `downloaded` (2026-10-06), `source_page`, `index_page`, `release_label`, `report_period`, `quarter` (null, see layout notes Question 1), `urls`, `zip_last_modified`, `zip_bytes`, and `sha256` of the zip and each of the 144 files in it.
 - **Reading.** Tab-delimited, CRLF, header row, no quoting, read as Windows-1252 (layout notes, section 2). The files are streamed; each chunk decodes on its own because Windows-1252 is 1 byte per character. A record whose field count differs from the header, or a CR or LF inside a record, is an error. Columns are matched by lowercased name; a repeated name must hold the same value in both places or it is an error. File names are matched case-insensitively. No npm dependency is added.
-- **Files read.** `pbp_Section_A`, `pbp_Section_C`, `pbp_Section_C_OON` and `pbp_Section_C_POS` (the plan's groups), `pbp_Section_D`, the B files named in the crosswalk and the hospital tier files (`pbp_b1a_inpat_hosp`, `pbp_b1b_inpat_hosp`, `pbp_b2_snf`, `pbp_b4_emerg_urgent`, `pbp_b6_home_health`, `pbp_b7_health_prof`, `pbp_b8_clin_diag_ther`, `pbp_b9_outpat_hosp`, `pbp_b10_amb_trans`, `pbp_b13_other_services`, `pbp_b14_preventive`, `pbp_b16_dental`, `pbp_b17_eye_exams_wear`, `pbp_b18_hearing_exams_aids`), `PlanArea`, `PlanRegionArea`: 21 files since 2026-10-11 (`pbp_b6_home_health`, `pbp_b14_preventive` and `pbp_b16_dental` added). One plan takes about 5 seconds, most of it the 172 MB `PlanArea.txt`.
+- **Files read.** `pbp_Section_A`, `pbp_Section_C`, `pbp_Section_C_OON` and `pbp_Section_C_POS` (the plan's groups), `pbp_Section_D`, the B files named in the crosswalk and the hospital tier files (`pbp_b1a_inpat_hosp`, `pbp_b1b_inpat_hosp`, `pbp_b2_snf`, `pbp_b4_emerg_urgent`, `pbp_b6_home_health`, `pbp_b7_health_prof`, `pbp_b8_clin_diag_ther`, `pbp_b9_outpat_hosp`, `pbp_b10_amb_trans`, `pbp_b13_other_services`, `pbp_b14_preventive`, `pbp_b16_dental`, `pbp_b17_eye_exams_wear`, `pbp_b18_hearing_exams_aids`), the Part D files `pbp_mrx`, `pbp_mrx_tier` and `pbp_mrx_p` (since 2026-10-24), `PlanArea`, `PlanRegionArea`: 24 files (21 since 2026-10-11, when `pbp_b6_home_health`, `pbp_b14_preventive` and `pbp_b16_dental` were added). One plan takes about 5 seconds, most of it the 172 MB `PlanArea.txt`.
 - **Rows.** For each file, the rows whose `pbp_a_hnumber` and `pbp_a_plan_identifier` equal the key and whose `segment_id`, read as a number, equals the key's segment. More than 1 row in a 1-per-plan file is an error; no row in `pbp_Section_A` is an error. The out-of-network and point-of-service group files have 1 row per group.
 - **Output.** 1 BPS v1.2.0 document, checked against the v1.2.0 schema with the same local Ajv setup as the Marketplace importer before it is written. A document that fails is not written. `buildDocument` also returns warnings (conditions that do not stop the import); the CLI prints them to stderr. Golden files: `examples/<slug>.pbp.json` (section 13).
-- **Fixtures.** `test/fixtures/pbp/2027/`: the header and the golden plans' records of each of the 21 files read, cut byte for byte from the full files by `--write-fixtures`, with a `download.json` that keeps the release label and download date. Committed, 129,724 bytes on 2026-10-11; `data/` is git-ignored, so they cannot live there. `.gitattributes` marks them `-text`, because the reader requires CRLF and the repository default is `eol=lf`.
+- **Fixtures.** `test/fixtures/pbp/2027/`: the header and the golden plans' records of each of the 24 files read, cut byte for byte from the full files by `--write-fixtures`, with a `download.json` that keeps the release label and download date. Committed, 157,356 bytes on 2026-10-24 (129,724 on 2026-10-11); `data/` is git-ignored, so they cannot live there. `.gitattributes` marks them `-text`, because the reader requires CRLF and the repository default is `eol=lf`.
 
 ## 4. Plan-level mapping
 
@@ -120,12 +120,13 @@ Every entry is an `excerpt`, in this order:
 1. **Source.** Release, zip URL, download date, the files read, and the key as the file writes it (`segment_id "0"`).
 2. **Plan type.** The code, its dictionary label and what was written.
 3. **Section A values with no BPS field,** each as `column "value"`, blanks skipped: `bid_id`, `version`, `orgtype`, `pbp_a_org_name`, `pbp_a_org_type`, `pbp_a_ben_cov`, `pbp_a_network_flag`, `pbp_a_plan_geog_name`, `pbp_a_segment_name`, `pbp_a_eghp_yn`, `pbp_a_special_need_flag`, `pbp_a_special_need_plan_type`, `pbp_a_snp_institutional_type`, `pbp_a_snp_cond`, `pbp_a_snp_pct`, `pbp_a_dsnp_zerodollar`, `pbp_a_snp_state_cvg_yn`, `pbp_a_contract_partd_flag`, `pbp_a_hospice_care_yn`, `pbp_a_continue_yn`, and the drug list and pharmacy addresses (`pbp_a_formulary_web_addr`, `pbp_a_pharmacy_website`).
-4. **Contacts and the provider directory** (since 2026-10-20): `pbp_a_curmbr_phone`, `pbp_a_org_website` and `pbp_a_phys_web_addr`, each as `column "value"` with the field it was written to, or why it was not.
+4. **Contacts and the provider directory** (since 2026-10-20): `pbp_a_curmbr_phone`, `pbp_a_org_website` and `pbp_a_phys_web_addr`, each as `column "value"` with the field it was written to, or why it was not. A stand-alone Part D plan files its member services phone in `pbp_a_pd_curmbr_phone` instead (since 2026-10-24; `pbp-part-d-mapping.md` section 4), which its entry quotes in the same way.
 5. **Service area.** Each county's SSA code, name, state, `partial_flag` and `eghp_flag`; a note when the counties span more than 1 state; regions for regional plans.
 6. **Premium** (since 2026-10-20): `pbp_d_mplusc_premium`, `pbp_d_mplusc_bonly_premium` when filled, `pbp_d_mco_pay_reduct_yn` and `pbp_d_mco_pay_reduct_amt`, with what was written.
 7. **Accumulator readings,** 1 entry each: the deductible reading (decision 1 or the `null` note), "No" answers, Medicare-defined deductibles, the combined deductible, the maximum's type, the combined maximum, the decision 4 notes, and the Section C POS deductible and maximum on HMO-POS plans.
 8. **Every non-blank deductible and out-of-pocket cell** of Section D, verbatim, in file order.
 9. **Benefits.** How many crosswalk rows were written, and that other categories are not imported yet.
+10. **Part D** (since 2026-10-24): the entries of `pbp-part-d-mapping.md` section 8, after the 9 above: the Part D answer and benefit type, the deductible reading, the threshold and its source, the pharmacy networks, the stages, 1 insulin entry per tier with insulin cells, and every non-blank `pbp_mrx.txt` cell. An MA plan with no Part D benefit gets 1 entry that quotes the answer. A PDP's document has entries 1 to 5 as above (its service area entry gives its Part D regions), an entry that says the PDP premium is in no PBP file, and the Part D entries; it has no Section D entries.
 
 Each benefit has its own `source_references` (v1.2.0): the PBP category, file and crosswalk; "no canonical key, carried by name" when that applies; the crosswalk's `quote` columns that are not blank; and the coverage-basis note for `4 Both`.
 
@@ -450,20 +451,22 @@ First run on 2026-10-06 (session 3) over the 5 golden files; updated in session 
 |---|---|
 | Purity | `buildDocument(rows, source)` makes no network call, reads no clock, uses no randomness and keeps no state. `loadPlan` streams the files and passes the rows in. `fhir/pbp-crosswalk.json` is read once when the module loads. |
 | Download date and release label | Inputs, from the year folder's `download.json` or `--downloaded`; never the clock. The fixtures carry the full files' values. |
-| Order | Plan fields in the order of 4.1 (`plan_id` first, `schema_version` last); accumulator slots in schema order; counties in SSA code order; tiers `IN`, `OUT`, `POS`, then hospital tiers by category and number; benefits in crosswalk order; tier rows `IN` (or the hospital tiers), then `OUT`, then `POS`; steps numbered deductible, copay, coinsurance, then the $0 step of decision S1; step fields in schema order; groups in file order; `source_references` in the order of 4.4. |
+| Order | Plan fields in the order of 4.1 (`plan_id` first, `schema_version` last; `pharmacy` between `accumulators` and `benefits`); accumulator slots in schema order; counties in SSA code order; tiers `IN`, `OUT`, `POS`, then hospital tiers by category and number; benefits in crosswalk order, then the Part D benefits in the order of `pbp-part-d-mapping.md` section 6.8; tier rows `IN` (or the hospital tiers), then `OUT`, then `POS`; steps numbered deductible, copay, coinsurance, then the $0 step of decision S1; step fields in schema order; groups in file order; `source_references` in the order of 4.4. |
 | Numbers | Amounts are read exactly from the decimal text (`"550.00"` gives 550). Rates are the whole percent divided by 100 (`"40"` gives 0.4). Day numbers are integers. |
 | Text | Cells are quoted verbatim as `column "value"`; names are trimmed; nothing else is normalized. |
 | Serialization | `JSON.stringify(doc, null, 2)` plus `\n`, UTF-8, LF line endings. |
 
-**Checked on 2026-10-06, again on 2026-10-09 after 4 crosswalk rows gained canonical keys, and again on 2026-10-11 after the 10 rows were added.** Each of the 5 golden plans imported twice from the full files with the CLI: both runs and the committed golden file have the same SHA-256. The values of 2026-10-11:
+**Checked on 2026-10-06, again on 2026-10-09 after 4 crosswalk rows gained canonical keys, on 2026-10-11 after the 10 rows were added, and on 2026-10-24 after the Part D sections were added.** Each golden plan imported twice from the full files with the CLI: both runs and the committed golden file have the same SHA-256. The values of 2026-10-24:
 
 | Plan | SHA-256 (first 16 hex digits), run 1 = run 2 = golden |
 |---|---|
-| H2406-013-000 | `ed4ab2859e5c6bc4` |
-| H1036-068-000 | `10c80aa281dadedb` |
-| H1609-028-000 | `7aac9050a8e40ada` |
-| H5533-019-000 | `3d873e38ef19d678` |
-| H5425-140-000 | `9f351e19a3c25a8b` |
+| H2406-013-000 | `e7e833073504d849` |
+| H1036-068-000 | `3e8fb58ee659f977` |
+| H1609-028-000 | `9dadc6038e01e501` |
+| H5533-019-000 | `a922efa6feacfaaa` |
+| H5425-140-000 | `e6a8a90448a7c10d` |
+| S5921-383-000 | `f93022b672edaf97` |
+| S4802-146-000 | `59b6d4caf8a4abfe` |
 
 The test checks the same on every run, from the fixtures (a second build of each plan is byte-identical) and, when the full files are present, from the full files. A run over every MVP plan of the CY 2027 file gave 0 errors (section 13).
 
@@ -474,7 +477,7 @@ The test checks the same on every run, from the fixtures (a second build of each
 ```
 git clone https://github.com/Benefit-Plan-Standard/benefit-plan-schema.git && cd benefit-plan-schema
 npm install ajv ajv-formats     # one time
-node --test scripts/from-pbp.test.js        # 23 pass, 5 skip: the full files are not there yet
+node --test scripts/from-pbp.test.js        # 62 pass, 7 skip: the full files are not there yet
 ```
 
 **Get the files** (once per contract year, about 23 MB zipped):
@@ -497,9 +500,11 @@ node scripts/validate.js --schema schema/v1.2.0/benefit-plan.schema.json h2406.j
 node scripts/to-insuranceplan.js h2406.json -o h2406.bundle.json            # FHIR (HMO-POS too since session 4, 9.3)
 node scripts/pbp-sob-check.js h2406.json docs/specs/pbp-sob-checks/H2406-013-000.json
 node scripts/pbp-sob-check.js examples/aetna-medicare-aetna-medicare-select-extra.pbp.json docs/specs/pbp-sob-checks/H1609-028-000.json
-node scripts/from-pbp.js --write-golden                                      # regenerate the 5 examples, on purpose only
+node scripts/from-pbp.js --year 2027 --plan S5921-383-000 --out s5921.json   # a stand-alone Part D plan (PDP)
+node scripts/pbp-sob-check.js s5921.json docs/specs/pbp-sob-checks/S5921-383-000.json
+node scripts/from-pbp.js --write-golden                                      # regenerate the 7 examples, on purpose only
 node scripts/from-pbp.js --write-fixtures                                    # re-cut test/fixtures/pbp/, on purpose only
-node --test scripts/from-pbp.test.js                                         # 28 pass with the full files
+node --test scripts/from-pbp.test.js                                         # 69 pass with the full files
 ```
 
 Options: `--data <dir>` (default `data/pbp`), `--downloaded YYYY-MM-DD`. A plan import streams every file it reads and takes about 4 seconds, most of it the 172 MB `PlanArea.txt`. Exit code 0 means written or listed; 1 means an error, with nothing written. Warnings go to stderr as `warning: <kind>: <detail>`. `--write-golden` and `--write-fixtures` need the full files and take about 20 seconds together. `scratch/pbp-bulk2.js` (git-ignored, throwaway) builds every MVP plan in about 3.5 minutes with `node --max-old-space-size=8192`.
@@ -521,15 +526,19 @@ CMS updates the PBP Benefits files during the year and publishes a new contract 
 
 Written by `node scripts/from-pbp.js --write-golden` from the full CY 2027 files and never by hand. Slug: carrier and plan name, text in parentheses dropped, cut back at `_` to 64 characters, lowercased, `_` changed to `-`, as the Marketplace importer names its examples; when 2 golden plans would share a slug, the contract-plan-segment is appended to both (none do).
 
-Each writes 38 of the 41 crosswalk rows (2026-10-20, with 14a; 37 of 40 on 2026-10-11, 27 of 30 before): the 3 single-type hearing aid rows are not written on any of them.
+Each Medicare Advantage plan writes 38 of the 41 crosswalk rows (2026-10-20, with 14a; 37 of 40 on 2026-10-11, 27 of 30 before): the 3 single-type hearing aid rows are not written on any of them. Since 2026-10-24 each also writes its `pharmacy` object and Part D benefits after the 38, and 2 stand-alone Part D plans are golden plans too (`pbp-part-d-mapping.md` section 15).
 
-| File | Bytes (2026-10-20) | Plan | Type | Why |
+| File | Bytes (2026-10-24) | Plan | Type | Why |
 |---|---|---|---|---|
-| `unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json` | 87,306 | H2406-013-000 AARP Medicare Advantage from UHC FL-0021 (PPO), UnitedHealthcare, FL | Local PPO | The Summary of Benefits check plan; decision 1 out-of-network deductible; ranges; emergency note (decision 5) |
-| `humana-humana-gold-plus-h1036-068.pbp.json` | 66,344 | H1036-068-000 Humana Gold Plus H1036-068 (HMO), Humana, FL | HMO | No deductible (decision 2); copay ranges; acupuncture limit |
-| `aetna-medicare-aetna-medicare-select-extra.pbp.json` | 78,740 | H1609-028-000 Aetna Medicare Select Extra (HMO-POS), Aetna Medicare, FL | HMO-POS | Point-of-service groups; decision 4 POS deductible; Section C quoted |
-| `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | 89,304 | H5533-019-000 UPMC for Life PPO Rx Choice (PPO), UPMC for Life, PA | Local PPO | Inpatient hospital cost tiers (`IN_1A_TIER_1` $175 and `IN_1A_TIER_2` $200 per day, days 1 to 3); out-of-network hearing aids at a $5,000 copay, as the file states (group 181) |
-| `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | 65,205 | H5425-140-000 SCAN Costco Medicare Advantage (HMO), SCAN Health Plan, CA | HMO | Hearing aids under the 18a maximum ($400 per year, `shared_limit_id` `PBP_18A_MAXPLAN` on hearing aids and routine hearing exams); 14 decision S1 $0 steps |
+| `unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json` | 156,007 | H2406-013-000 AARP Medicare Advantage from UHC FL-0021 (PPO), UnitedHealthcare, FL | Local PPO | The Summary of Benefits check plan; decision 1 out-of-network deductible; ranges; emergency note (decision 5) |
+| `humana-humana-gold-plus-h1036-068.pbp.json` | 152,870 | H1036-068-000 Humana Gold Plus H1036-068 (HMO), Humana, FL | HMO | No deductible (decision 2); copay ranges; acupuncture limit |
+| `aetna-medicare-aetna-medicare-select-extra.pbp.json` | 204,676 | H1609-028-000 Aetna Medicare Select Extra (HMO-POS), Aetna Medicare, FL | HMO-POS | Point-of-service groups; decision 4 POS deductible; Section C quoted |
+| `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | 218,842 | H5533-019-000 UPMC for Life PPO Rx Choice (PPO), UPMC for Life, PA | Local PPO | Inpatient hospital cost tiers (`IN_1A_TIER_1` $175 and `IN_1A_TIER_2` $200 per day, days 1 to 3); out-of-network hearing aids at a $5,000 copay, as the file states (group 181) |
+| `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | 192,197 | H5425-140-000 SCAN Costco Medicare Advantage (HMO), SCAN Health Plan, CA | HMO | Hearing aids under the 18a maximum ($400 per year, `shared_limit_id` `PBP_18A_MAXPLAN` on hearing aids and routine hearing exams); 14 decision S1 $0 steps |
+| `unitedhealthcare-aarp-medicare-rx-preferred-from-uhc.pbp.json` | 86,900 | S5921-383-000 AARP Medicare Rx Preferred from UHC (PDP), UnitedHealthcare, region 11 Florida | PDP | A stand-alone Part D plan; deductible skipping Tiers 1 and 2; split retail and mail order; excluded-drug cost share after the threshold; the Part D Summary of Benefits check plan |
+| `wellcare-wellcare-value-script.pbp.json` | 134,380 | S4802-146-000 Wellcare Value Script (PDP), Wellcare, region 11 Florida | PDP | 6 tiers, Injectable Drugs and Select Care Drugs with no tier code |
+
+Part D benefits written (initial coverage and catastrophic): H2406-013 33 (28 and 5), H1036-068 42 (37 and 5), H1609-028 67 (62 and 5), H5533-019 67 (62 and 5), H5425-140 67 (62 and 5), S5921-383 41 (36 and 5), S4802-146 70 (64 and 6).
 
 ### FHIR Bundles and HL7 validation
 
@@ -537,13 +546,15 @@ Since session 4 (2026-10-06) the 5 golden files are also converted with `scripts
 
 | Bundle (`examples/fhir/`) | Plan | Bytes (2026-10-20) | Placed / unmapped benefits | `cost[]` entries | Placeholders | Text-only qualifiers |
 |---|---|---|---|---|---|---|
-| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | H2406-013-000 | 194,973 | 16 / 22 | 35 | 2 | 0 |
-| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | H1036-068-000 | 168,991 | 16 / 22 | 33 | 14 | 0 |
-| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | H1609-028-000 | 191,792 | 16 / 22 | 34 | 4 | 12 (`Point-of-service option`) |
-| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | H5533-019-000 | 194,449 | 16 / 22 | 36 | 2 | 4 (hospital tiers) |
-| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | H5425-140-000 | 165,121 | 16 / 22 | 32 | 14 | 0 |
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | H2406-013-000 | 229,334 | 16 / 55 | 35 | 2 | 0 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | H1036-068-000 | 212,206 | 16 / 64 | 33 | 14 | 0 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | H1609-028-000 | 251,875 | 16 / 89 | 34 | 4 | 12 (`Point-of-service option`) |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | H5533-019-000 | 256,672 | 16 / 89 | 36 | 2 | 4 (hospital tiers) |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | H5425-140-000 | 224,318 | 16 / 89 | 32 | 14 | 0 |
 
-**HL7 FHIR validator: validated on 2026-10-06, again on 2026-10-09 after 4 benefits gained canonical keys (the same counts), on 2026-10-11 after the 10 rows were added, and on 2026-10-20 after the medical MVP gaps closed (the table below).** `validator_cli.jar` 7.0.0 (Git# 37795f3f571f, built 2026-10-06T19:02:34Z), OpenJDK 17.0.19, FHIR 4.0.1, packages `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions`. The command, the one `examples/fhir/VALIDATION.md` gives, limited to the 5 files, from the repository root (the latest `validator_cli.jar` is at https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar; the jar is git-ignored and downloaded per run, with its version recorded; `-Dfile.encoding=UTF-8` is there because the validator warns without it):
+Bytes and unmapped counts as of 2026-10-24: each Bundle lists its Part D benefits as unmapped beside its 22 medical ones, and its `generalCost` gains the Part D deductible and threshold (converter spec section 8.4). The 2 PDP golden files are not converted.
+
+**HL7 FHIR validator: validated on 2026-10-06, again on 2026-10-09 after 4 benefits gained canonical keys (the same counts), on 2026-10-11 after the 10 rows were added, on 2026-10-20 after the medical MVP gaps closed, and on 2026-10-24 after the Part D sections were added (the table below).** `validator_cli.jar` 7.0.0 (Git# 37795f3f571f, built 2026-10-06T19:02:34Z), OpenJDK 17.0.19, FHIR 4.0.1, packages `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions`. The command, the one `examples/fhir/VALIDATION.md` gives, limited to the 5 files, from the repository root (the latest `validator_cli.jar` is at https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar; the jar is git-ignored and downloaded per run, with its version recorded; `-Dfile.encoding=UTF-8` is there because the validator warns without it):
 
 ```
 java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
@@ -558,19 +569,19 @@ java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
 
 | File | Errors | Warnings | Information |
 |---|---|---|---|
-| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 | 126 |
-| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 | 119 |
-| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 13 | 125 |
-| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 | 126 |
-| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 122 |
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 | 168 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 | 172 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 13 | 201 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 | 203 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 197 |
 
-All 5 pass with 0 errors. The 17 warnings: 16 are text-only `cost.qualifiers` (12 `Point-of-service option` on Aetna, the 11th on the skilled nursing facility row and the 12th, since 2026-10-20, on the 14a preventive services row; 4 hospital cost tier names on UPMC), because the Cost Tier value set has only `value-choice`, `standard` and `virtual`; 1 is the Aetna `plan.type`, because the SBC Plan Type value set has no HMO-POS code (section 9.3). The information messages are the extension slicing messages, as for the SBC Bundles. The full record is the second to sixth runs in `examples/fhir/VALIDATION.md`.
+All 5 pass with 0 errors. The 17 warnings: 16 are text-only `cost.qualifiers` (12 `Point-of-service option` on Aetna, the 11th on the skilled nursing facility row and the 12th, since 2026-10-20, on the 14a preventive services row; 4 hospital cost tier names on UPMC), because the Cost Tier value set has only `value-choice`, `standard` and `virtual`; 1 is the Aetna `plan.type`, because the SBC Plan Type value set has no HMO-POS code (section 9.3). The information messages are the extension slicing messages, as for the SBC Bundles; the new ones of 2026-10-24 are on the `bps-unmapped-benefit` extensions of the Part D benefits and the `bps-source-reference` extensions of the Part D root entries. The full record is the second to sixth and the eighth runs in `examples/fhir/VALIDATION.md`.
 
 A Bundle with errors is fixed in the importer or the converter and regenerated, never edited by hand.
 
 ### Fixtures
 
-`test/fixtures/pbp/2027/` holds the 21 files the importer reads (section 3), each with its original header line and the 5 golden plans' records, byte for byte (2026-10-11: 272 records, 129,724 bytes with `download.json`), plus `download.json` (description, download date, release label, the 5 plans, the record count per file). Written by `node scripts/from-pbp.js --write-fixtures`. The importer reads them through the same streaming reader as the full files (`--data test/fixtures/pbp`).
+`test/fixtures/pbp/2027/` holds the 24 files the importer reads (section 3), each with its original header line and the 7 golden plans' records, byte for byte (2026-10-24: 355 records, 157,356 bytes with `download.json`; 272 records and 129,724 bytes in 21 files on 2026-10-11), plus `download.json` (description, download date, release label, the 7 plans, the record count per file). The 2 PDPs have rows in Section A, the 3 Part D files and `PlanRegionArea.txt` only. Written by `node scripts/from-pbp.js --write-fixtures`. The importer reads them through the same streaming reader as the full files (`--data test/fixtures/pbp`).
 
 ### The test
 
@@ -585,11 +596,14 @@ A Bundle with errors is fixed in the importer or the converter and regenerated, 
 - Mapping rules on the golden plans: decision N1 (every `network_tier` is `IN`, `OUT`, `POS` or `null`), decision 1, decision 4 and the Section C quote, ranges and day intervals, decision 5, hospital tiers, the shared 18a maximum and decision S1, decision 2.
 - Altered fixture rows: an unreadable amount, an unknown code and a minimum above its maximum are errors that quote the cell, with no document; a Medicare-covered category with no answer is not written, with a warning and a source reference.
 - The Summary of Benefits checker: pointer and matching rules, and the H2406-013 golden file against its expectations with 0 differences (and 1 difference when a value is changed).
-- Since 2026-10-20, the medical MVP gaps G1 to G5 on the golden plans and on altered rows: the 7i key in vocabulary 1.3.0; 14a in and out of network, its conditions, a blank or unknown attestation, and an in-network deductible on all Medicare-covered services against one whose list names 14a; the premium and the Part B reduction, a blank premium, a reduction with no amount and a B-only premium; the phone, the website and the directory link, an address with no scheme, and a Section A with none of the 3.
+- Since 2026-10-20, the medical MVP gaps G1 to G5 on the golden plans and on altered rows: the 7i key in vocabulary 1.3.0; 14a in and out of network, its conditions, a blank or unknown attestation, and an in-network deductible on all Medicare-covered services against one whose list names 14a; the premium and the Part B reduction, a blank premium, a reduction with no amount and a B-only premium; the phone, the website and the directory link, an address with no scheme, and a Section A with none of the 3. These run on the 5 Medicare Advantage golden plans.
+- Since 2026-10-24, the Part D tests of `pbp-part-d-mapping.md` section 16, named `part-d ...` (29 tests), and the PDP member services phone, on the 7 golden plans and on altered rows, and the H1036-068 and S5921-383 golden files against their Summary of Benefits.
 
 **Output on 2026-10-06**, with the full files present: `tests 28, pass 28, fail 0, skipped 0` (about 20 seconds). In a copy of the repository without `data/`: `tests 28, pass 23, fail 0, skipped 5` (about 1.5 seconds). The Marketplace importer test (18 pass) and the converter test (62 pass) pass unchanged. **Session 4, 2026-10-06:** the same 28 pass here; the converter test has 65 (the 62, 2 of them now expecting the 5 PBP Bundles beside the 10 in `examples/fhir/`, and 3 new: the PBP Bundles, the `POS` tier on the Aetna golden file, and a misnamed point-of-service tier); the Marketplace importer test 18.
 
 **Session 5, 2026-10-11** (the 10 rows), with the full files present: `tests 28, pass 28, fail 0`. The converter test: 65 pass (the 5 PBP Bundles re-pinned; the Aetna golden file has 11 `Point-of-service option` entries, 10 before). The Marketplace importer test: 22 pass. The crosswalk test skips the non-column keys the new rows use (`code`, `section_c`, `section`, `label`, `source`, `covers`, `codes`), and the H2406-013 check test expects 68 MATCH, 10 READING.
+
+**2026-10-24** (the Part D sections), with the full files present: `tests 69, pass 69, fail 0` (the 34 below, 2 loops of 2 more golden plans, 30 Part D tests and 1 more Summary of Benefits check test); the converter test 70; the whole suite (`node --test scripts/*.test.js`) 206.
 
 **2026-10-20** (the medical MVP gaps), with the full files present: `tests 34, pass 34, fail 0`. The converter test: 68 pass (the 5 PBP Bundles re-pinned; the Aetna golden file has 12 `Point-of-service option` entries, and its `generalCost` gains the premium). The Marketplace importer test: 28 pass. The new schema test, `scripts/schema.test.js`: 3 pass. The H2406-013 check test expects 71 MATCH, 12 READING.
 
@@ -797,9 +811,15 @@ READING    p5   Hearing aids, out of network [HEARING_AIDS]
 
 **Again on 2026-10-20, after the medical MVP gaps G1 to G5 closed** (a throwaway script in the session's scratch space, the same loop as `scratch/pbp-bulk2.js`): 6,872 MVP plans built, 0 errors, 0 schema failures against the v1.2.0 draft with `contacts` and `provider_directory_url`; 260,800 benefits written (6,872 more, the 14a row). Warnings: `medicare-covered-cost-share-blank` 234, as before. Written: `premium` on 5,510 plans (blank on 1,362), `part_b_premium_reduction` on 1,412, `contacts.member_services_phone` on 6,872, `contacts.website` on 457, `provider_directory_url` on 1,585; 14a on all 6,872, with an `OUT` row on 2,484 and a `POS` row on 315; 7i keyed on all 6,872. A first run stopped 117 plans whose in-network deductible applies to all Medicare-covered services; the attestation reading in 5.4 settles them, and they build.
 
+**Again on 2026-10-24, after the Part D sections were added** (a throwaway script in the session's scratch space, the same loop, with the PDP and type 30 plans and the schema check on every document): 6,872 MVP plans and 323 stand-alone PDPs built, 0 errors, 0 schema failures; 283 employer PDPs with no Part D design and the 2 type 30 plans refused, each with its message. Warnings: `medicare-covered-cost-share-blank` 234 on 117 plans, as before, and `part-d-deductible-stage-cost-share` 1 (H4045-001-000). Part D benefits written: 235,324 on Medicare Advantage plans and 16,304 on PDPs; `contacts.member_services_phone` on 6,872 Medicare Advantage plans and 323 PDPs; the rest of the counts are in `pbp-part-d-mapping.md` section 20.
+
 ### Open questions
 
 - P1 (carrier: marketing or legal name), H1 (coverage basis "Both"), H2 (per-pair hearing aid copays).
 - O1 (a covered category the POS or out-of-network lists leave out, 7.14).
 - The HL7 validator run over the 5 PBP Bundles ("FHIR Bundles and HL7 validation" above).
 - The readings at the end of section 7.
+
+## 14. Part D
+
+The Part D sections are specified in [`pbp-part-d-mapping.md`](pbp-part-d-mapping.md): the 2 populations and how each is detected (MA-PD plans and stand-alone PDPs, section 3), the PDP document (section 4), the `pharmacy` object (section 5), 1 benefit per tier, pharmacy network and chosen supply in initial coverage and 1 per tier in catastrophic coverage (section 6), the citations (section 8), the tier label table (section 9), insulin (section 10), errors and warnings (section 12), the vocabulary and module proposals (section 13), the converter (section 14), the fixtures and tests (sections 15 and 16), the Summary of Benefits checks (section 18) and the whole-file results (section 20). The rules of this spec hold for them unchanged: nothing invented, nothing dropped silently, deterministic output, the schema checked before a document is written. The 2 values no PBP column states, the contract year's Part D out-of-pocket threshold and the $0 after it, are constants in `PART_D_PARAMETERS` with their sources (mapping 5.5 and 6.6); a contract year with no entry is an error.

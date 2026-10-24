@@ -15,7 +15,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Aetna Medicare Select Extra (HMO-POS)</b></p><p>Carrier: Aetna Medicare. Plan type: HMO_POS. Period: 2027 to 2027.</p><p>16 benefits are placed in CARIN SBC benefit categories. 22 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document AETNA_MEDICARE_SELECT_EXTRA_HMO_POS_H1609_028_000 (schema version 1.2.0).</p></div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Aetna Medicare Select Extra (HMO-POS)</b></p><p>Carrier: Aetna Medicare. Plan type: HMO_POS. Period: 2027 to 2027.</p><p>16 benefits are placed in CARIN SBC benefit categories. 22 benefits have no code in the SBC benefit category code system and 67 Part D benefits (benefits with a coverage stage, which the SBC profile has no place for) are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document AETNA_MEDICARE_SELECT_EXTRA_HMO_POS_H1609_028_000 (schema version 1.2.0).</p></div>"
         },
         "extension": [
           {
@@ -87,7 +87,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "CMS Plan Benefit Package (PBP) Benefits, contract year 2027, release \"PBP Benefits-2027\" (https://www.cms.gov/files/zip/pbp-benefits-2027.zip), downloaded 2026-10-06. Files read: pbp_Section_A.txt, pbp_Section_C.txt, pbp_Section_C_OON.txt, pbp_Section_C_POS.txt, pbp_Section_D.txt, pbp_b10_amb_trans.txt, pbp_b13_other_services.txt, pbp_b14_preventive.txt, pbp_b16_dental.txt, pbp_b17_eye_exams_wear.txt, pbp_b18_hearing_exams_aids.txt, pbp_b1a_inpat_hosp.txt, pbp_b1b_inpat_hosp.txt, pbp_b2_snf.txt, pbp_b4_emerg_urgent.txt, pbp_b6_home_health.txt, pbp_b7_health_prof.txt, pbp_b8_clin_diag_ther.txt, pbp_b9_outpat_hosp.txt, PlanArea.txt, PlanRegionArea.txt. PBP key: pbp_a_hnumber \"H1609\", pbp_a_plan_identifier \"028\", segment_id \"0\" (written padded to 3 digits in plan_identifiers)."
+                "valueString": "CMS Plan Benefit Package (PBP) Benefits, contract year 2027, release \"PBP Benefits-2027\" (https://www.cms.gov/files/zip/pbp-benefits-2027.zip), downloaded 2026-10-06. Files read: pbp_Section_A.txt, pbp_Section_C.txt, pbp_Section_C_OON.txt, pbp_Section_C_POS.txt, pbp_Section_D.txt, pbp_b10_amb_trans.txt, pbp_b13_other_services.txt, pbp_b14_preventive.txt, pbp_b16_dental.txt, pbp_b17_eye_exams_wear.txt, pbp_b18_hearing_exams_aids.txt, pbp_b1a_inpat_hosp.txt, pbp_b1b_inpat_hosp.txt, pbp_b2_snf.txt, pbp_b4_emerg_urgent.txt, pbp_b6_home_health.txt, pbp_b7_health_prof.txt, pbp_b8_clin_diag_ther.txt, pbp_b9_outpat_hosp.txt, pbp_mrx.txt, pbp_mrx_tier.txt, pbp_mrx_p.txt, PlanArea.txt, PlanRegionArea.txt. PBP key: pbp_a_hnumber \"H1609\", pbp_a_plan_identifier \"028\", segment_id \"0\" (written padded to 3 digits in plan_identifiers)."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -214,6 +214,87 @@
               {
                 "url": "excerpt",
                 "valueString": "Benefits: the 41 service categories in fhir/pbp-crosswalk.json (the workgroup MVP), 38 written. Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8)."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Part D: pbp_mrx.txt mrx_drug_ben_yn \"1\" (Yes), mrx_benefit_type \"4\" (Enhanced Alternative), mrx_formulary_tiers_num \"5\", mrx_form_model_type \"5F\", mrx_form_model_desc \"Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier\". Written: pharmacy and 67 Part D benefits (docs/specs/pbp-part-d-mapping.md)."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Part D deductible: mrx_alt_ded_charge \"1\" (Yes), mrx_alt_ded_amount \"700.00\", mrx_alt_ded_type_yn \"2\", mrx_alt_no_ded_tier \"0110000\" (Tier 1; Tier 2), mrx_alt_ded_tier_cstshr_yn \"1\". Written as pharmacy.deductible 700 USD with applies_to_tiers T3, T4, T5, and a DEDUCTIBLE coverage stage. The plan charges the Medicare-defined deductible, and the amount is the contract year 2027 standard deductible, 700 USD (CMS, \"Announcement of Calendar Year (CY) 2027 Medicare Advantage (MA) Capitation Rates and Part C and Part D Payment Policies\", April 6, 2026, Attachment V, Table V-2 (page 95) and Table V-6 (page 99), https://www.cms.gov/files/document/2027-announcement.pdf)."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "pharmacy.out_of_pocket_max and the CATASTROPHIC stage's applies_after_total_out_of_pocket are 2400 USD, the contract year 2027 Part D annual out-of-pocket threshold. No PBP column states it; source: CMS, \"Announcement of Calendar Year (CY) 2027 Medicare Advantage (MA) Capitation Rates and Part C and Part D Payment Policies\", April 6, 2026, Attachment V, Table V-2 (page 95) and Table V-6 (page 99), https://www.cms.gov/files/document/2027-announcement.pdf. Each CATASTROPHIC benefit's cost share is $0, the cost sharing for a covered Part D drug after the threshold, also not read from a PBP cell: 42 CFR 423.104(d)(5)(i) (eCFR, version of 2026-10-01): \"After an enrollee's incurred costs exceed the annual out-of-pocket threshold ... for 2024 and each subsequent year, cost-sharing equal to $0\"; 42 CFR 423.104(e)(2) holds alternative prescription drug coverage to \"cost-sharing no greater than\" that once the threshold is met, and 42 CFR 423.104(f) holds enhanced alternative coverage to paragraph (e) (docs/specs/pbp-part-d-mapping.md section 6.6)."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Pharmacy networks: mrx_partd_network_loc \"101101\" (Long-Term Care; Standard/Preferred Retail; Out-of-Network; Standard/Preferred Mail-Order), the locations the tier rows use; written as pharmacy_networks RETAIL_STANDARD, RETAIL_PREFERRED, MAIL_ORDER_STANDARD, MAIL_ORDER_PREFERRED, OUT_OF_NETWORK, LONG_TERM_CARE. Out-of-network cost-sharing structure: mrx_alt_oon_cstshr_struct \"3\" (Standard Retail Copay/Coinsurance with Limited Day Supply). default_day_supply is not written: the file states days per tier, location and supply, and each benefit carries its day_supply (docs/specs/pbp-part-d-mapping.md section 5.2)."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Coverage stages: mrx_alt_pre_icl_cost_share \"3\" (Cost Share Tiers), mrx_alt_cstshr_post_oopt \"1\" (No cost sharing). Written as DEDUCTIBLE, INITIAL, CATASTROPHIC (CATASTROPHIC after 2400 USD); no coverage gap stage: Table V-6 of the CY 2027 Rate Announcement (page 99) lists a Deductible Phase, an Initial Coverage Phase and the Out-of-Pocket Threshold, and nothing between them. Part D benefits are written for INITIAL (pbp_mrx_tier.txt) and CATASTROPHIC (pbp_mrx_p.txt); what the deductible does is carried by applies_to_deductible and deductible_ref on the INITIAL steps."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Insulin cost sharing for Tier 3 (Preferred Brand), no Benefit Plan Standard benefit written (docs/specs/pbp-part-d-mapping.md section 10): mrx_alt_ira_covg_tier \"0001110\" (Tier 3; Tier 4; Tier 5), mrx_tier_ira_rstd_copay_1m \"35.00\", mrx_tier_ira_rstd_copay_2m \"70.00\", mrx_tier_ira_rstd_copay_3m \"105.00\", mrx_tier_ira_rspfd_copay_1m \"35.00\", mrx_tier_ira_rspfd_copay_2m \"70.00\", mrx_tier_ira_rspfd_copay_3m \"105.00\", mrx_tier_ira_mostd_copay_1m \"35.00\", mrx_tier_ira_mostd_copay_2m \"70.00\", mrx_tier_ira_mostd_copay_3m \"105.00\", mrx_tier_ira_mopfd_copay_1m \"35.00\", mrx_tier_ira_mopfd_copay_2m \"70.00\", mrx_tier_ira_mopfd_copay_3m \"105.00\", mrx_tier_ira_oonp_copay_1m \"35.00\", mrx_tier_ira_ltcp_copay_1m \"35.00\", mrx_tier_ira_rstd_coins_1m \"17\", mrx_tier_ira_rstd_coins_2m \"17\", mrx_tier_ira_rstd_coins_3m \"17\", mrx_tier_ira_rspfd_coins_1m \"17\", mrx_tier_ira_rspfd_coins_2m \"17\", mrx_tier_ira_rspfd_coins_3m \"17\", mrx_tier_ira_mostd_coins_1m \"17\", mrx_tier_ira_mostd_coins_2m \"17\", mrx_tier_ira_mostd_coins_3m \"17\", mrx_tier_ira_mopfd_coins_1m \"17\", mrx_tier_ira_mopfd_coins_2m \"17\", mrx_tier_ira_mopfd_coins_3m \"17\", mrx_tier_ira_oonp_coins_1m \"17\", mrx_tier_ira_ltcp_coins_1m \"17\"."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Insulin cost sharing for Tier 4 (Non-Preferred Drug), no Benefit Plan Standard benefit written (docs/specs/pbp-part-d-mapping.md section 10): mrx_alt_ira_covg_tier \"0001110\" (Tier 3; Tier 4; Tier 5), mrx_tier_ira_rstd_copay_1m \"35.00\", mrx_tier_ira_rstd_copay_2m \"70.00\", mrx_tier_ira_rstd_copay_3m \"105.00\", mrx_tier_ira_rspfd_copay_1m \"35.00\", mrx_tier_ira_rspfd_copay_2m \"70.00\", mrx_tier_ira_rspfd_copay_3m \"105.00\", mrx_tier_ira_mostd_copay_1m \"35.00\", mrx_tier_ira_mostd_copay_2m \"70.00\", mrx_tier_ira_mostd_copay_3m \"105.00\", mrx_tier_ira_mopfd_copay_1m \"35.00\", mrx_tier_ira_mopfd_copay_2m \"70.00\", mrx_tier_ira_mopfd_copay_3m \"105.00\", mrx_tier_ira_oonp_copay_1m \"35.00\", mrx_tier_ira_ltcp_copay_1m \"35.00\", mrx_tier_ira_rstd_coins_1m \"25\", mrx_tier_ira_rstd_coins_2m \"25\", mrx_tier_ira_rstd_coins_3m \"25\", mrx_tier_ira_rspfd_coins_1m \"25\", mrx_tier_ira_rspfd_coins_2m \"25\", mrx_tier_ira_rspfd_coins_3m \"25\", mrx_tier_ira_mostd_coins_1m \"25\", mrx_tier_ira_mostd_coins_2m \"25\", mrx_tier_ira_mostd_coins_3m \"25\", mrx_tier_ira_mopfd_coins_1m \"25\", mrx_tier_ira_mopfd_coins_2m \"25\", mrx_tier_ira_mopfd_coins_3m \"25\", mrx_tier_ira_oonp_coins_1m \"25\", mrx_tier_ira_ltcp_coins_1m \"25\"."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Insulin cost sharing for Tier 5 (Specialty Tier), no Benefit Plan Standard benefit written (docs/specs/pbp-part-d-mapping.md section 10): mrx_alt_ira_covg_tier \"0001110\" (Tier 3; Tier 4; Tier 5), mrx_tier_ira_rstd_copay_1m \"35.00\", mrx_tier_ira_rspfd_copay_1m \"35.00\", mrx_tier_ira_mostd_copay_1m \"35.00\", mrx_tier_ira_mopfd_copay_1m \"35.00\", mrx_tier_ira_oonp_copay_1m \"35.00\", mrx_tier_ira_ltcp_copay_1m \"35.00\", mrx_tier_ira_rstd_coins_1m \"25\", mrx_tier_ira_rspfd_coins_1m \"25\", mrx_tier_ira_mostd_coins_1m \"25\", mrx_tier_ira_mopfd_coins_1m \"25\", mrx_tier_ira_oonp_coins_1m \"25\", mrx_tier_ira_ltcp_coins_1m \"25\"."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "excerpt",
+                "valueString": "Every non-blank pbp_mrx.txt cell, verbatim, in file order: mrx_form_model_type \"5F\"; mrx_drug_ben_yn \"1\"; mrx_benefit_type \"4\"; mrx_partd_network_loc \"101101\"; mrx_ltc_attest_flag \"1\"; mrx_first_fill \"2\"; mrx_otc_meds_pay_ump_yn \"2\"; mrx_formulary_tiers_num \"5\"; mrx_tier_form_ex \"4\"; mrx_tier_form_ex_2_yn \"2\"; mrx_form_model_desc \"Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier\"; mrx_alt_ded_charge \"1\"; mrx_alt_ded_amount \"700.00\"; mrx_alt_ded_type_yn \"2\"; mrx_alt_no_ded_tier \"0110000\"; mrx_alt_ded_tier_cstshr_yn \"1\"; mrx_alt_oon_cstshr_struct \"3\"; mrx_alt_red_cost_sharing \"1\"; mrx_alt_red_cost_sharing_items \"101\"; mrx_alt_excl_drugs_yn \"2\"; mrx_alt_pre_icl_cost_share \"3\"; mrx_alt_ira_covg_tier \"0001110\"; mrx_alt_cstshr_post_oopt \"1\"; mrx_avg_exp_cost_share_attest \"1\"; mrx_vaccine_attest \"1\"; mrx_insulin_attest \"1\"."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -664,6 +745,1413 @@
               {
                 "url": "category",
                 "valueString": "FITNESS"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_RETAIL_STANDARD_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), standard retail, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_RETAIL_STANDARD_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), standard retail, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_RETAIL_STANDARD_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), standard retail, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_RETAIL_PREFERRED_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), preferred retail, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_RETAIL_PREFERRED_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), preferred retail, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_RETAIL_PREFERRED_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), preferred retail, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_MAIL_ORDER_STANDARD_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), standard mail order, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_MAIL_ORDER_STANDARD_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), standard mail order, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_MAIL_ORDER_STANDARD_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), standard mail order, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_MAIL_ORDER_PREFERRED_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), preferred mail order, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_MAIL_ORDER_PREFERRED_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), preferred mail order, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_MAIL_ORDER_PREFERRED_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), preferred mail order, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_OUT_OF_NETWORK_OTHER_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), out-of-network pharmacy, 10-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_LONG_TERM_CARE_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), long-term care pharmacy, 31-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_RETAIL_STANDARD_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), standard retail, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_RETAIL_STANDARD_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), standard retail, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_RETAIL_STANDARD_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), standard retail, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_RETAIL_PREFERRED_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), preferred retail, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_RETAIL_PREFERRED_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), preferred retail, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_RETAIL_PREFERRED_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), preferred retail, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_MAIL_ORDER_STANDARD_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), standard mail order, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_MAIL_ORDER_STANDARD_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), standard mail order, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_MAIL_ORDER_STANDARD_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), standard mail order, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_MAIL_ORDER_PREFERRED_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), preferred mail order, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_MAIL_ORDER_PREFERRED_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), preferred mail order, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_MAIL_ORDER_PREFERRED_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), preferred mail order, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_OUT_OF_NETWORK_OTHER_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), out-of-network pharmacy, 10-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_LONG_TERM_CARE_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), long-term care pharmacy, 31-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_RETAIL_STANDARD_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), standard retail, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_RETAIL_STANDARD_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), standard retail, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_RETAIL_STANDARD_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), standard retail, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_RETAIL_PREFERRED_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), preferred retail, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_RETAIL_PREFERRED_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), preferred retail, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_RETAIL_PREFERRED_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), preferred retail, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_MAIL_ORDER_STANDARD_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), standard mail order, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_MAIL_ORDER_STANDARD_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), standard mail order, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_MAIL_ORDER_STANDARD_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), standard mail order, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_MAIL_ORDER_PREFERRED_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), preferred mail order, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_MAIL_ORDER_PREFERRED_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), preferred mail order, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_MAIL_ORDER_PREFERRED_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), preferred mail order, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_OUT_OF_NETWORK_OTHER_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), out-of-network pharmacy, 10-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_LONG_TERM_CARE_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), long-term care pharmacy, 31-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_RETAIL_STANDARD_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), standard retail, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_RETAIL_STANDARD_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), standard retail, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_RETAIL_STANDARD_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), standard retail, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_RETAIL_PREFERRED_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), preferred retail, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_RETAIL_PREFERRED_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), preferred retail, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_RETAIL_PREFERRED_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), preferred retail, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_MAIL_ORDER_STANDARD_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), standard mail order, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_MAIL_ORDER_STANDARD_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), standard mail order, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_MAIL_ORDER_STANDARD_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), standard mail order, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_MAIL_ORDER_PREFERRED_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), preferred mail order, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_MAIL_ORDER_PREFERRED_2M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), preferred mail order, 60-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_MAIL_ORDER_PREFERRED_3M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), preferred mail order, 100-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_OUT_OF_NETWORK_OTHER_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), out-of-network pharmacy, 10-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_LONG_TERM_CARE_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), long-term care pharmacy, 31-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T5_RETAIL_STANDARD_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "specialty_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 5 (Specialty Tier), standard retail, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T5_RETAIL_PREFERRED_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "specialty_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 5 (Specialty Tier), preferred retail, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T5_MAIL_ORDER_STANDARD_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "specialty_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 5 (Specialty Tier), standard mail order, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T5_MAIL_ORDER_PREFERRED_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "specialty_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 5 (Specialty Tier), preferred mail order, 30-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T5_OUT_OF_NETWORK_OTHER_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "specialty_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 5 (Specialty Tier), out-of-network pharmacy, 10-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T5_LONG_TERM_CARE_1M_INITIAL"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "specialty_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 5 (Specialty Tier), long-term care pharmacy, 31-day supply, initial coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T1_CATASTROPHIC"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 1 (Preferred Generic), catastrophic coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T2_CATASTROPHIC"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "generic_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 2 (Generic), catastrophic coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T3_CATASTROPHIC"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "preferred_brand_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 3 (Preferred Brand), catastrophic coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T4_CATASTROPHIC"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "nonpreferred_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 4 (Non-Preferred Drug), catastrophic coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T5_CATASTROPHIC"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "specialty_drugs"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 5 (Specialty Tier), catastrophic coverage"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
@@ -2092,6 +3580,73 @@
                 },
                 "cost": {
                   "value": 0,
+                  "currency": "USD"
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "slot",
+                        "valueString": "pharmacy.deductible"
+                      },
+                      {
+                        "url": "appliesToTier",
+                        "valueString": "T3"
+                      },
+                      {
+                        "url": "appliesToTier",
+                        "valueString": "T4"
+                      },
+                      {
+                        "url": "appliesToTier",
+                        "valueString": "T5"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-accumulator"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                      "code": "deductible",
+                      "display": "Deductible"
+                    }
+                  ],
+                  "text": "Pharmacy deductible"
+                },
+                "cost": {
+                  "value": 700,
+                  "currency": "USD"
+                },
+                "comment": "applies to T3, T4, T5"
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "slot",
+                        "valueString": "pharmacy.out_of_pocket_max"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-accumulator"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                      "code": "maxoutofpocket",
+                      "display": "Maximum out of pocket"
+                    }
+                  ],
+                  "text": "Pharmacy out-of-pocket maximum"
+                },
+                "cost": {
+                  "value": 2400,
                   "currency": "USD"
                 }
               }

@@ -69,7 +69,8 @@ test('a root with no release folders: 1 release with no name, entries by plan ke
   assert.deepStrictEqual(Object.keys(r.index), [...INDEX_HEADER_FIELDS, 'plans']);
   for (const e of r.index.plans) assert.deepStrictEqual(Object.keys(e), PLEDGEE_ENTRY_FIELDS);
   // The counts are those of the Bundles' own records: examples/fhir-puf/README.md (27 placed, 25 outside the SBC
-  // codes) and the sixth validator run in examples/fhir/VALIDATION.md (16 placed, 22 listed).
+  // codes) and the eighth validator run in examples/fhir/VALIDATION.md (16 placed, 89 listed: 22 outside the SBC
+  // codes and the plan's 67 Part D benefits).
   assert.deepStrictEqual(r.index.plans, [
     {
       id: '68398FL0030058-01', plan_name: 'UHC Bronze Essential ($0 Virtual Urgent Care)', carrier: 'UnitedHealthcare', plan_type: 'HMO', plan_year: 2026,
@@ -80,7 +81,7 @@ test('a root with no release folders: 1 release with no name, entries by plan ke
     {
       id: 'H1609-028-000', plan_name: 'Aetna Medicare Select Extra (HMO-POS)', carrier: 'Aetna Medicare', plan_type: 'HMO_POS', plan_year: 2027,
       program: 'Medicare Advantage', bps_schema_version: '1.2.0', document: 'H1609-028-000.json', bundle: 'H1609-028-000.bundle.json',
-      service_areas: null, release: null, data_date: '2026-10-06', benefits_placed: 16, benefits_unmapped: 22,
+      service_areas: null, release: null, data_date: '2026-10-06', benefits_placed: 16, benefits_unmapped: 89,
       label: 'Medicare Advantage, imported from the CMS PBP Benefits files for contract year 2027.',
     },
   ]);
@@ -97,7 +98,7 @@ test('release folders: newest release first, paths include the folder, a release
   assert.strictEqual(r.flat, false);
   assert.strictEqual(r.releases, 3);
   assert.deepStrictEqual(r.index.plans.map((e) => [e.release, e.id, e.data_date, e.document, e.bundle, e.benefits_placed, e.benefits_unmapped]), [
-    ['PBP-Benefits-2027', 'H1609-028-000', '2026-10-06', 'PBP-Benefits-2027/H1609-028-000.json', 'PBP-Benefits-2027/H1609-028-000.bundle.json', 16, 22],
+    ['PBP-Benefits-2027', 'H1609-028-000', '2026-10-06', 'PBP-Benefits-2027/H1609-028-000.json', 'PBP-Benefits-2027/H1609-028-000.bundle.json', 16, 89],
     ['marketplace-puf-2026-2026-10-05', '68398FL0030058-01', '2026-10-05', 'marketplace-puf-2026-2026-10-05/68398FL0030058-01.json',
       'marketplace-puf-2026-2026-10-05/68398FL0030058-01.bundle.json', 27, 25],
     ['marketplace-puf-2026-2026-09-01', '68398FL0030058-01', '2026-09-01', 'marketplace-puf-2026-2026-09-01/68398FL0030058-01.json', null, null, null],

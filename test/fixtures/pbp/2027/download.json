@@ -8,10 +8,12 @@
     "H1036-068-000",
     "H1609-028-000",
     "H5533-019-000",
-    "H5425-140-000"
+    "H5425-140-000",
+    "S5921-383-000",
+    "S4802-146-000"
   ],
   "records": {
-    "pbp_Section_A.txt": 5,
+    "pbp_Section_A.txt": 7,
     "pbp_Section_C.txt": 5,
     "pbp_Section_C_OON.txt": 152,
     "pbp_Section_C_POS.txt": 6,
@@ -30,7 +32,10 @@
     "pbp_b7_health_prof.txt": 5,
     "pbp_b8_clin_diag_ther.txt": 5,
     "pbp_b9_outpat_hosp.txt": 5,
+    "pbp_mrx.txt": 7,
+    "pbp_mrx_tier.txt": 36,
+    "pbp_mrx_p.txt": 36,
     "PlanArea.txt": 29,
-    "PlanRegionArea.txt": 0
+    "PlanRegionArea.txt": 2
   }
 }

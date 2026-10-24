@@ -33,7 +33,7 @@ This spec defines a converter from a Benefit Plan Standard (BPS) document to a F
 - The CLI checks the input against the schema its `schema_version` names (`schema/v1.1.0` or `schema/v1.2.0`), using the same local Ajv setup as `scripts/validate.js`. A document that fails the schema is rejected. Nothing is converted.
 - Absent v1.2.0 fields take their v1.1.0 meaning. For example, a tier with no `tier_class` is a `network` tier.
 - The 10 `examples/*_example.json` files are the original test corpus. The 8 SBC examples declare v1.1.0 and the 2 Medicare Advantage examples (`humana_example.json`, `scan_example.json`) declare v1.2.0.
-- The PBP importer's 5 golden files (`examples/*.pbp.json`, v1.2.0) are converted too, since 2026-10-06; their Bundles sit in `examples/fhir/` beside the 10 (section 12) and are published with them since 2026-10-15 (section 13).
+- The PBP importer's 5 Medicare Advantage golden files (`examples/*.pbp.json`, v1.2.0) are converted too, since 2026-10-06; their Bundles sit in `examples/fhir/` beside the 10 (section 12) and are published with them since 2026-10-15 (section 13). Since 2026-10-24 the importer also writes 2 stand-alone Part D plans (`plan_type` `PDP`) among its golden files; they are not converted (section 8.4).
 
 ## 4. Outputs
 
@@ -174,7 +174,7 @@ Order: slots in BPS object order, then premium, then pharmacy.
 
 ### 6.5 Benefits
 
-For each BPS benefit whose `canonical_key` is in the crosswalk (section 8):
+For each BPS benefit whose `canonical_key` is in the crosswalk (section 8) and that has no `coverage_stage_id` (section 8.4):
 
 | BPS | `coverage[c].benefit[]` | `plan[0].specificCost[c].benefit[]` |
 |---|---|---|
@@ -227,6 +227,9 @@ Two BPS benefits that share an SBC row code (for example `diagnostic_lab`, `imag
 | Limit `per_year` and non-CARIN limit types | Text-only CodeableConcept | Text only |
 | Limit `scope`, `shared_limit_id`, `carryover` | Not carried (only in `limitText` when the source prints it) | No |
 | `pharmacy.coverage_stages` | Not carried | No |
+| Medicare Part D benefits (a `coverage_stage_id`), with `formulary_tier_id`, `pharmacy_network_id` and `day_supply` | `bps-unmapped-benefit` (identity only; section 8.4) | Identity only. Their cost shares are **not** in the FHIR output. |
+| `cost_shares[].moop_ref` (v1.2.0 draft 6) | Not carried. Follow-up: a `moopRef` part of `bps-cost-share`, as `deductibleRef` carries `deductible_ref`, for a benefit the converter places; today every step with `moop_ref` is on a Part D benefit, which is unmapped (8.4) | No |
+| A document with `plan_type` `PDP` | Not converted (8.4) | No |
 | `network_tiers[].description` | Not carried (only `name` goes into qualifier text) | No |
 | Second in-network tier (`IN2`) | `in-network` plus a qualifier: `value-choice` only when the tier name says "Value Choice", otherwise text only. The Cost Tier value set has no code for "tier 2", so the tier order is not coded; tier 1 entries carry no qualifier, and the validator warns on each text-only qualifier. The `tier_id` is kept in `bps-cost-share` (`tierId`) | Yes, through `tierId` and the qualifier text |
 | Point-of-service tier (`POS`) | `out-of-network` plus the text-only qualifier `Point-of-service option` (6.3); the validator warns on each text-only qualifier. The `tier_id` is kept in `bps-cost-share` (`tierId`) | Yes, through `tierId` and the qualifier text |
@@ -297,6 +300,16 @@ Two consequences of the code system as balloted:
 
 - **Home health care.** "Home health care" is a standard SBC row, but `sbc-benefit-category` has no general home health code (only `pregnancy-home-health`). This is a gap in the code system, so the eight SBC examples and SCAN list home health care as unmapped (Humana has no home health benefit).
 - **Medicare Advantage.** Most Summary of Benefits content (dental, vision, hearing, supplemental benefits, Part B drugs, site-of-service pricing) has no home in an SBC profile. The two MA outputs are structurally valid against the profile, but they carry less than a third of their benefits in structured form. The docs page states this plainly.
+
+### 8.4 Medicare Part D benefits and stand-alone Part D plans
+
+Since 2026-10-24 the PBP importer writes the Part D benefit of a Medicare Advantage plan with drug coverage and of a stand-alone Medicare Prescription Drug Plan (`docs/specs/pbp-part-d-mapping.md`, Question Q7):
+
+- **A benefit with a `coverage_stage_id` is not placed**, whatever its `canonical_key`. It is listed in `bps-unmapped-benefit`, in input order, like a benefit outside the 29 codes. The crosswalk places `generic_drugs`, `preferred_generic_drugs`, `preferred_brand_drugs`, `nonpreferred_brand_drugs` and `specialty_drugs`, but the SBC profile has no coverage stage, pharmacy network or day supply, so a Part D tier's dozens of rows (1 per pharmacy network, supply and stage) would sit under 1 SBC row with nothing to tell them apart. The narrative counts them apart from the benefits with no SBC code: "... benefits have no code in the SBC benefit category code system and N Part D benefits (benefits with a coverage stage, which the SBC profile has no place for) are listed, by identity only, in the bps-unmapped-benefit extension." A document with no such benefit has the narrative of before.
+- **`pharmacy.deductible` and `pharmacy.out_of_pocket_max` stay `generalCost` entries** (6.4).
+- **A document whose `plan_type` is `PDP` is not converted.** `toInsurancePlanBundle` throws `plan_type "PDP": a stand-alone Medicare Part D plan has no medical benefits, and the CARIN SBC InsurancePlan profile describes a medical plan, so the converter does not convert it (docs/specs/insuranceplan-converter.md section 8.4)`, and the CLI prints it as its error. `pbpExampleFiles()` leaves the PDP golden files out, and `--write-golden` prints 1 "not converted" line for each. The pharmacy module v0.2.1 example `humana_part_d_example.json` is a PDP and is refused the same way.
+
+The 5 PBP Bundles each place their 16 medical benefits and list 22 medical benefits plus their Part D benefits (H2406-013 33, H1036-068 42, H1609-028, H5533-019 and H5425-140 67 each); the 10 Bundles read from plan documents have no Part D benefit and are byte-identical. HL7 validator, eighth run in `examples/fhir/VALIDATION.md`: 0 errors, the same 17 warnings.
 
 ## 9. Source references
 
@@ -377,18 +390,19 @@ Canonical base: `https://benefitplanstandard.org/fhir/`. All are `status: draft`
   - asserts that `fhir/definitions/` matches what the definitions script generates;
   - pins the SHA-256 of each of the 10 golden files (LF line endings) and asserts the files and the converter output still hash to those values;
   - checks second in-network tiers (6.2): `IN2` and name-based recognition map to `in-network` with the right qualifier, `value-choice` is coded only for a "Value Choice" name, other unknown network tiers still fail, no placeholder is added, and `examples/florida-blue-blueoptions-gold-1505.puf.json` converts;
-  - converts the 5 PBP golden files (`examples/*.pbp.json`) and compares each with its Bundle in `examples/fhir/` byte for byte, twice, against a pinned SHA-256; the directory must hold exactly the 10 and the 5;
+  - converts the 5 Medicare Advantage PBP golden files (`examples/*.pbp.json` less the 2 PDPs) and compares each with its Bundle in `examples/fhir/` byte for byte, twice, against a pinned SHA-256; the directory must hold exactly the 10 and the 5;
   - checks the point-of-service tier (6.3) on the Aetna H1609-028 golden file: `POS` entries are `out-of-network` with the `Point-of-service option` qualifier (10 entries), the specialist's $70 copay keeps `DeductibleApplies` true, a benefit priced in network and at the POS option has no placeholder, and a network tier named "Point-of-Service" under another `tier_id` still fails;
-  - checks `excluded-services` (10.1): a benefit not covered on any tier gets an entry with the vocabulary label and the fixed description, a benefit not covered out of network only gets none; without the option no Bundle carries it; on each of the 5 Marketplace golden files it lists exactly the benefits not covered on any tier, in input order, the 3 adult dental classes among them; the option is refused for the 10 examples and the 5 PBP files, and for a key with no label.
+  - checks `excluded-services` (10.1): a benefit not covered on any tier gets an entry with the vocabulary label and the fixed description, a benefit not covered out of network only gets none; without the option no Bundle carries it; on each of the 5 Marketplace golden files it lists exactly the benefits not covered on any tier, in input order, the 3 adult dental classes among them; the option is refused for the 10 examples and the 5 PBP files, and for a key with no label;
+  - checks Medicare Part D (8.4) on the Humana H1036-068 golden file: its 42 Part D benefits are unmapped, in input order, none placed, and the 2 pharmacy `generalCost` entries are kept; a PDP golden file is refused, by the function and by the CLI, and `pbpExampleFiles()` leaves it out; the pharmacy module's PDP example is refused, and its commercial example converts unchanged by the module fields.
 
-  68 tests on 2026-10-13 (65 on 2026-10-06, 62 before the POS tier).
-- Goldens are refreshed only on purpose, with `node scripts/to-insuranceplan.js --write-golden`, which writes the 10 and the 5 PBP Bundles.
+  70 tests on 2026-10-24 (68 on 2026-10-13, 65 on 2026-10-06, 62 before the POS tier).
+- Goldens are refreshed only on purpose, with `node scripts/to-insuranceplan.js --write-golden`, which writes the 10 and the 5 PBP Bundles and names the 2 PDP golden files it does not convert.
 
 The golden files double as fixtures for ports to other languages.
 
 ## 13. Publishing layout
 
-All 10 outputs are converted, golden-tested and published. Since 2026-10-15 the 5 PBP Bundles in `examples/fhir/` (section 12) are published too: `scripts/publish-fhir.js` reads `examples/*_example.json` and then `examples/*.pbp.json`, so `index.json` lists 15 plans. The Marketplace Bundles in `examples/fhir-puf/` are not published.
+All 10 outputs are converted, golden-tested and published. Since 2026-10-15 the 5 PBP Bundles in `examples/fhir/` (section 12) are published too: `scripts/publish-fhir.js` reads `examples/*_example.json` and then the `examples/*.pbp.json` that are not PDPs (8.4), so `index.json` lists 15 plans. The Marketplace Bundles in `examples/fhir-puf/` are not published.
 
 ```
 benefit-plan-schema/

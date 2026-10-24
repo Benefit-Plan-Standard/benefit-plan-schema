@@ -11,7 +11,10 @@
  * and Part B premium reduction, member services phone and website, deductibles,
  * out-of-pocket maximums, network tiers with the provider directory link) and the benefits named in
  * fhir/pbp-crosswalk.json (the workgroup MVP), with cost shares per network
- * tier, ranges, day intervals, limits and coverage.
+ * tier, ranges, day intervals, limits and coverage. From the Part D files it writes
+ * the pharmacy object and the Part D benefits of a plan with drug coverage, and a
+ * document of its own for a stand-alone Medicare Prescription Drug Plan (PDP);
+ * mapping: docs/specs/pbp-part-d-mapping.md.
  *
  * The files are not in the repository. Put them in data/pbp/<year>/ (git-ignored),
  * unzipped, with a download.json that records the download date. The golden
@@ -50,6 +53,8 @@ const GOLDEN = [
   { year: 2027, plan: 'H1609-028-000', why: 'HMO-POS; point-of-service groups; decision 4 POS deductible' },
   { year: 2027, plan: 'H5533-019-000', why: 'Local PPO with inpatient hospital cost tiers (IN_1A_TIER_1, IN_1A_TIER_2)' },
   { year: 2027, plan: 'H5425-140-000', why: 'HMO; hearing aids covered under the 18a maximum (shared_limit_id); decision S1 $0 steps' },
+  { year: 2027, plan: 'S5921-383-000', why: 'PDP (UnitedHealthcare); deductible skipping Tiers 1 and 2; split retail and mail order; excluded-drug cost share after the threshold' },
+  { year: 2027, plan: 'S4802-146-000', why: 'PDP (Wellcare); 6 tiers, Injectable Drugs and Select Care Drugs with no tier code' },
 ];
 const SCHEMA_VERSION = '1.2.0';
 const PBP_ZIP = (year) => `https://www.cms.gov/files/zip/pbp-benefits-${year}.zip`;
@@ -465,8 +470,10 @@ const CROSSWALK_FILE = path.join(REPO_ROOT, 'fhir', 'pbp-crosswalk.json');
 const CROSSWALK = JSON.parse(fs.readFileSync(CROSSWALK_FILE, 'utf8'));
 const BENEFIT_FILES = [...new Set(CROSSWALK.benefits.map((b) => b.file))];
 const B_FILES = [...new Set([...HOSPITAL_TIER_CATEGORIES.map((c) => c.file), ...BENEFIT_FILES])].sort();
+// The Part D files (docs/specs/pbp-part-d-mapping.md section 2).
+const MRX_FILES = ['pbp_mrx.txt', 'pbp_mrx_tier.txt', 'pbp_mrx_p.txt'];
 const READ_FILES = ['pbp_Section_A.txt', 'pbp_Section_C.txt', 'pbp_Section_C_OON.txt', 'pbp_Section_C_POS.txt', 'pbp_Section_D.txt',
-  ...B_FILES, 'PlanArea.txt', 'PlanRegionArea.txt'];
+  ...B_FILES, ...MRX_FILES, 'PlanArea.txt', 'PlanRegionArea.txt'];
 const AMO = { 2: 'supplemental_mandatory', 3: 'supplemental_optional' };
 const AMO_LABELS = { 2: 'Mandatory', 3: 'Optional', 4: 'Both' };
 const WAIVER_UNITS = { 1: 'days', 2: 'hours' };
@@ -475,7 +482,7 @@ const PEREAR = { 1: 'per_ear', 2: 'one_ear' };
 const PEREAR_LABELS = { 1: 'Per ear', 2: 'One single ear', 3: 'Both ears combined' };
 const IN_OON_LABELS = { 1: 'In-network services only', 2: 'Both in-network and out-of-network services' };
 const STEP_ORDER = ['type', 'sequence', 'amount', 'amount_min', 'amount_max', 'rate', 'rate_min', 'rate_max', 'basis',
-  'max_amount', 'max_basis', 'unit_range', 'applies_to_deductible', 'applies_to_moop', 'notes'];
+  'max_amount', 'max_basis', 'unit_range', 'applies_to_deductible', 'deductible_ref', 'applies_to_moop', 'moop_ref', 'notes'];
 
 // Column names of the out-of-network and point-of-service group files.
 const GROUP_COLS = {
@@ -1263,6 +1270,605 @@ function buildBenefits(rows, ctx, errors, warn) {
   return out;
 }
 
+// ---- Part D (docs/specs/pbp-part-d-mapping.md) -----------------------------------------------
+// pbp_mrx.txt (1 row per plan), pbp_mrx_tier.txt (1 row per tier) and pbp_mrx_p.txt (1 row
+// per tier after the out-of-pocket threshold) give the pharmacy object, 1 initial coverage
+// benefit per tier, pharmacy network and chosen supply, and 1 catastrophic benefit per tier.
+// "Mapping" below means that document.
+const PDP_TYPE = '29';
+
+// The contract year's Part D parameters, which no PBP column states (mapping 5.4, 5.5 and
+// 6.6): the standard deductible the file's amount is checked against, the annual
+// out-of-pocket threshold, and the source of the $0 cost sharing after it.
+const PART_D_PARAMETERS = {
+  2027: {
+    deductible: 700,
+    out_of_pocket_threshold: 2400,
+    source: 'CMS, "Announcement of Calendar Year (CY) 2027 Medicare Advantage (MA) Capitation Rates and Part C and Part D Payment Policies", ' +
+      'April 6, 2026, Attachment V, Table V-2 (page 95) and Table V-6 (page 99), https://www.cms.gov/files/document/2027-announcement.pdf',
+    post_threshold_source: '42 CFR 423.104(d)(5)(i) (eCFR, version of 2026-10-01): "After an enrollee\'s incurred costs exceed the annual ' +
+      'out-of-pocket threshold ... for 2024 and each subsequent year, cost-sharing equal to $0"; 42 CFR 423.104(e)(2) holds alternative ' +
+      'prescription drug coverage to "cost-sharing no greater than" that once the threshold is met, and 42 CFR 423.104(f) holds enhanced ' +
+      'alternative coverage to paragraph (e)',
+  },
+};
+
+// Code lists of the 3 files, verbatim from PBP_Benefits_2027_dictionary.xlsx
+// (docs/specs/pbp-part-d/profile/code-lists.md). A position string's list is the label of
+// each position, position 1 first.
+const MRX_YES_NO = { 1: 'Yes', 2: 'No' };
+const MRX_BENEFIT_TYPES = { 1: 'Defined Standard', 2: 'Actuarially Equivalent Standard', 3: 'Basic Alternative', 4: 'Enhanced Alternative' };
+const MRX_DED_CHARGE = { 1: 'Yes', 2: 'No, enter amount', 3: 'No Deductible' };
+const MRX_COST_STRUCTURES = { 1: 'Coinsurance', 2: 'Copayment', 3: 'Greater of Coinsurance and Copayment', 4: 'Lesser of Coinsurance and Copayment' };
+const MRX_TIER_INCLUDES = { 1: 'Part D Drugs Only', 2: 'Excluded Drugs Only (e.g., erectile dysfunction drugs)', 3: 'Both Part D and Excluded Drugs' };
+const MRX_POST_INCLUDES = { 1: 'Part D Drugs Only', 2: 'Excluded drugs only (e.g., erectile dysfunction drugs)', 3: 'Both Part D and Excluded drugs' };
+const MRX_TIER_TYPES = { 1: 'ICP' };
+const MRX_POST_TYPES = { 2: 'OOP' };
+const MRX_OON_STRUCTURES = {
+  mrx_alt_oon_cstshr_struct: {
+    1: 'Standard Retail Copay/Coinsurance (no differential)*',
+    2: 'Standard Retail Copay/Coinsurance plus a differential between the OON billed charge and the Standard Retail allowable',
+    3: 'Standard Retail Copay/Coinsurance with Limited Day Supply',
+    4: 'The plan\'s network cost-sharing plus the differential between the OON billed charge and network allowable, with a limited days supply',
+  },
+  mrx_ae_oon_cstshr_struct: {
+    1: 'Standard Retail Copay/Coinsurance (No Differential)*',
+    2: 'Standard Retail Copay/Coinsurance plus a differential between the OON billed charge and the Standard Retail allowable',
+    3: 'Standard Retail Copay/Coinsurance with Limited Day supply',
+    4: 'The plan\'s network cost-sharing plus the differential between the OON billed charge and network allowable, with a limited days supply',
+  },
+};
+const MRX_STAGE_COLUMNS = {
+  mrx_alt_pre_icl_cost_share: { 1: 'No cost sharing', 2: 'Medicare-defined Part D Coinsurance Amount', 3: 'Cost Share Tiers' },
+  mrx_ae_cstshr_apply: { 1: 'Medicare-defined Part D Coinsurance amount', 2: 'Cost-Share Tiers' },
+  mrx_alt_cstshr_post_oopt: { 1: 'No cost sharing', 2: 'Cost-Share Tiers (Different cost sharing than the ICP)', 3: 'Cost-Share Tiers (Same cost sharing as the ICP)' },
+  mrx_ae_ooptcs_apply: { 1: 'No cost sharing', 2: 'Cost Share Tiers' },
+};
+const MRX_NETWORK_LOC = ['Long-Term Care', 'Standard Retail', 'Standard/Preferred Retail', 'Out-of-Network', 'Standard Mail-Order', 'Standard/Preferred Mail-Order'];
+const MRX_TIERS_7 = ['Tier 7', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Tier 6'];
+const MRX_DRUG_TYPES = ['Brand', 'Generic'];
+// The key and the Section A columns every Part D file repeats; not quoted.
+const MRX_KEY_COLS = ['pbp_a_hnumber', 'pbp_a_plan_identifier', 'segment_id', 'pbp_a_ben_cov', 'pbp_a_plan_type', 'orgtype', 'bid_id', 'version'];
+
+// The pharmacy locations of a tier row (mapping 5.2): the flag column, the position of the
+// location in mrx_partd_network_loc, the position that chooses each supply with its
+// dictionary label, and the days column of each supply.
+const RX_LOCATIONS = {
+  rstd: {
+    flag: 'mrx_tier_locat_rstd', loc: 2, supplies: { '3M': 1, '1M': 2, '2M': 3 },
+    labels: ['Standard Retail Cost-Sharing - three month supply', 'Standard Retail Cost-Sharing - one month supply', 'Standard Retail Cost-Sharing - two month supply'],
+    days: { '1M': 'mrx_tier_rstd_1m_num', '2M': 'mrx_tier_rstd_2m_num', '3M': 'mrx_tier_rstd_3m_num' },
+  },
+  rsplt: {
+    flag: 'mrx_tier_locat_rsplt', loc: 3, supplies: { '3M': 1, '1M': 2, '2M': 3 },
+    labels: ['Standard Retail/Preferred Retail Cost-Sharing - three month supply', 'Standard Retail/Preferred Retail Cost-Sharing - one month supply',
+      'Standard Retail/Preferred Retail Cost-Sharing - two month supply'],
+    days: { '1M': 'mrx_tier_rsplt_1m_num', '2M': 'mrx_tier_rsplt_2m_num', '3M': 'mrx_tier_rsplt_3m_num' },
+  },
+  mostd: {
+    flag: 'mrx_tier_locat_mostd', loc: 5, supplies: { '3M': 1, '1M': 2, '2M': 3 },
+    labels: ['Standard Mail Order Cost-Sharing - three month supply', 'Standard Mail Order Cost-Sharing - one month supply', 'Standard Mail Order Cost-Sharing - two month supply'],
+    days: { '1M': 'mrx_tier_mostd_1m_num', '2M': 'mrx_tier_mostd_2m_num', '3M': 'mrx_tier_mostd_3m_num' },
+  },
+  mosplt: {
+    flag: 'mrx_tier_locat_mosplt', loc: 6, supplies: { '3M': 1, '1M': 2, '2M': 3 },
+    labels: ['Standard/Preferred Mail Order Cost-Sharing - three month supply', 'Standard/Preferred Mail Order Cost-Sharing - one month supply',
+      'Standard/Preferred Mail Order Cost-Sharing - two month supply'],
+    days: { '1M': 'mrx_tier_mosplt_1m_num', '2M': 'mrx_tier_mosplt_2m_num', '3M': 'mrx_tier_mosplt_3m_num' },
+  },
+  oon: {
+    flag: 'mrx_tier_locat_oon', loc: 4, supplies: { OTHER: 1, '1M': 2 },
+    labels: ['Out-of-Network Pharmacy - other day supply', 'Out-of-Network Pharmacy - one month supply'],
+    days: { '1M': 'mrx_tier_oonp_1m_num', OTHER: 'mrx_tier_oonp_othnumn' },
+  },
+  ltc: { flag: 'mrx_tier_locat_ltc', loc: 1, supplies: { '1M': 1 }, labels: ['Long Term Care Pharmacy - one month supply'], days: { '1M': 'mrx_tier_ltcp_1m' } },
+};
+
+// The pharmacy networks (mapping 5.2), in order, each with the locations and amount
+// column parts it is read from: a split location's standard columns are the same network
+// as the unsplit location's.
+const RX_NETWORKS = [
+  { network_id: 'RETAIL_STANDARD', name: 'Standard retail', network_type: 'standard_retail', from: [['rstd', 'rstd'], ['rsplt', 'rsstd']] },
+  { network_id: 'RETAIL_PREFERRED', name: 'Preferred retail', network_type: 'preferred_retail', from: [['rsplt', 'rspfd']] },
+  { network_id: 'MAIL_ORDER_STANDARD', name: 'Standard mail order', network_type: 'mail_order', from: [['mostd', 'mostd'], ['mosplt', 'mosstd']] },
+  { network_id: 'MAIL_ORDER_PREFERRED', name: 'Preferred mail order', network_type: 'mail_order', from: [['mosplt', 'mospfd']] },
+  { network_id: 'OUT_OF_NETWORK', name: 'Out-of-network pharmacy', network_type: 'out_of_network', from: [['oon', 'oonp']] },
+  { network_id: 'LONG_TERM_CARE', name: 'Long-term care pharmacy', network_type: 'long_term_care', from: [['ltc', 'ltcp']] },
+];
+const RX_SUPPLIES = ['1M', '2M', '3M', 'OTHER'];
+const RX_SUPPLY_WORDS = { '1M': '1-month', '2M': '2-month', '3M': '3-month', OTHER: 'other day' };
+
+// The tier labels of the CY 2027 file (mapping section 9): the DrugTierCS code
+// (http://hl7.org/fhir/us/davinci-drug-formulary/CodeSystem/usdf-DrugTierCS-TEMPORARY-TRIAL-USE),
+// the schema's recommended drug_class and the canonical key, where the label is that value.
+const RX_TIER_LABELS = {
+  'Preferred Generic': { tier_code: 'preferred-generic', drug_class: 'preferred_generic', canonical_key: 'preferred_generic_drugs' },
+  Generic: { tier_code: 'generic', drug_class: 'generic', canonical_key: 'generic_drugs' },
+  'Preferred Brand': { tier_code: 'preferred-brand', drug_class: 'preferred_brand', canonical_key: 'preferred_brand_drugs' },
+  'Non-Preferred Drug': { tier_code: 'non-preferred', canonical_key: 'nonpreferred_drugs' },
+  'Non-Preferred Brand': { tier_code: 'non-preferred-brand', drug_class: 'nonpreferred_brand', canonical_key: 'nonpreferred_brand_drugs' },
+  Brand: { tier_code: 'brand' },
+  'Specialty Tier': { tier_code: 'specialty', canonical_key: 'specialty_drugs' },
+  'Select Care Drugs': { canonical_key: 'select_care_drugs' },
+  'Injectable Drugs': { canonical_key: 'injectable_drugs' },
+  Vaccines: { canonical_key: 'vaccine_drugs' },
+  'Supplemental Drugs': { canonical_key: 'supplemental_drugs' },
+  'Select Diabetic Drugs': { canonical_key: 'select_diabetic_drugs' },
+  'Single Tier': {},
+};
+
+const INCURRED_COSTS = '42 CFR 423.100, incurred costs';
+const NO_KEY = '; no canonical key, carried by name (spec section 9.1)';
+const Q3_SUMMARY = 'the 2027 Summary of Benefits of S5884-105-000, Humana Basic Rx Plan (PDP), an Actuarially Equivalent Standard plan ' +
+  '(document S5884_SB_PD_PDP_105000_2027_M, page 4), prints a $700 deductible with no tier exception and says "You pay the full cost ' +
+  'of your drugs until you reach $700"';
+
+// A cell with its dictionary label: mrx_tier_includes "1" (Part D Drugs Only).
+function coded(row, col, labels) {
+  const v = q(row, col);
+  return labels[v] ? `${cell(row, col)} (${labels[v]})` : cell(row, col);
+}
+
+// A position string with the labels of the positions it chooses.
+function positions(row, col, labels) {
+  const chosen = labels.filter((l, i) => q(row, col)[i] === '1');
+  return chosen.length ? `${cell(row, col)} (${chosen.join('; ')})` : cell(row, col);
+}
+
+function codeOf(row, col, labels, errors, allowBlank = false) {
+  const v = q(row, col);
+  if (labels[v] || (allowBlank && v === '')) return v;
+  errors.push(`${cell(row, col)} is not a dictionary code${allowBlank ? ' or blank' : ''}`);
+  return null;
+}
+
+// A position string of n characters 0 or 1; blank is the empty string.
+function positionString(row, col, n, errors) {
+  const v = q(row, col);
+  if (v === '' || (v.length === n && /^[01]+$/.test(v))) return v;
+  errors.push(`${cell(row, col)} is not a string of ${n} characters 0 or 1`);
+  return null;
+}
+
+function rxAmountCols(part, supply) {
+  if (part === 'oonp') {
+    const s = supply === 'OTHER' ? 'othnum' : '1m';
+    return { copay: `mrx_tier_oonp_copay_${s}`, coins: `mrx_tier_oonp_coins_${s}` };
+  }
+  if (part === 'ltcp') return { copay: 'mrx_tier_ltcp_copay_1m', coins: 'mrx_tier_ltcp_coins_1m' };
+  const s = supply.toLowerCase();
+  return { copay: `mrx_tier_${part}_copay_${s}`, coins: `mrx_tier_${part}_coins_${s}` };
+}
+
+// The 1-month cells of a location that have no field (mapping section 8).
+function rxNoFieldCols(part, row) {
+  return [`mrx_tier_${part}_copay_daily`, `mrx_tier_${part}_coins_avg_1m`].filter((col) => col in row);
+}
+
+// The pharmacy deductible (mapping 5.4) and what it does to each tier's initial coverage
+// step (6.4). Returns { deductible, applies(tierId), ref, rowNote, planCells, excerpt } or null.
+function partDDeductible(mrx, btLabel, tierIds, tiered, params, year, errors, warn) {
+  const charge = codeOf(mrx, 'mrx_alt_ded_charge', MRX_DED_CHARGE, errors, true);
+  if (charge === null) return null;
+  const amountCell = cell(mrx, 'mrx_alt_ded_amount');
+  const amt = amount(mrx, 'mrx_alt_ded_amount', errors);
+  const unread = q(mrx, 'mrx_alt_ded_amount') !== '' && amt === null;
+  const cells = [coded(mrx, 'mrx_alt_ded_charge', MRX_DED_CHARGE), amountCell, cell(mrx, 'mrx_alt_ded_type_yn'),
+    positions(mrx, 'mrx_alt_no_ded_tier', MRX_TIERS_7), cell(mrx, 'mrx_alt_ded_tier_cstshr_yn')].join(', ');
+  const standard = (a) => `the amount ${a === params.deductible ? 'is' : 'is not'} the contract year ${year} standard deductible, ` +
+    `${params.deductible} USD (${params.source})`;
+  const notStandard = (a) => {
+    if (a !== params.deductible) warn('part-d-deductible-not-standard', `${cells}: not the contract year ${year} standard deductible, ${params.deductible} USD`);
+  };
+  const out = { deductible: null, applies: () => false, ref: null, rowNote: null, planCells: [], excerpt: null };
+  if (charge === '3') {
+    if (q(mrx, 'mrx_alt_ded_amount') !== '') errors.push(`${amountCell} but mrx_alt_ded_charge "3" (No Deductible)`);
+    out.planCells = [coded(mrx, 'mrx_alt_ded_charge', MRX_DED_CHARGE)];
+    out.excerpt = `Part D deductible: ${cells}. No deductible: no pharmacy.deductible and no DEDUCTIBLE coverage stage are written, and ` +
+      'applies_to_deductible is false on every Part D step (docs/specs/pbp-part-d-mapping.md section 5.4).';
+    return out;
+  }
+  if (amt === null) {
+    if (!unread) errors.push(charge === '' ? `mrx_alt_ded_charge is blank and ${amountCell} on ${btLabel}` : `${coded(mrx, 'mrx_alt_ded_charge', MRX_DED_CHARGE)} but ${amountCell}`);
+    return null;
+  }
+  out.deductible = { amount: amt, currency: 'USD' };
+  out.ref = 'pharmacy';
+  if (charge === '') {
+    // The standard benefit types (mapping 5.4 and 6.4, Question Q3).
+    if (!['1', '2'].includes(q(mrx, 'mrx_benefit_type'))) {
+      errors.push(`mrx_alt_ded_charge is blank on ${btLabel}; only the standard benefit types leave it blank (docs/specs/pbp-part-d-mapping.md section 5.4)`);
+      return null;
+    }
+    for (const col of ['mrx_alt_ded_type_yn', 'mrx_alt_no_ded_tier']) if (q(mrx, col) !== '') errors.push(`${cell(mrx, col)} but mrx_alt_ded_charge is blank`);
+    notStandard(amt);
+    out.applies = () => true;
+    out.planCells = [btLabel, cell(mrx, 'mrx_alt_ded_type_yn')];
+    out.rowNote = `The Part D deductible applies to every tier of the ${MRX_BENEFIT_TYPES[q(mrx, 'mrx_benefit_type')]} benefit ` +
+      `(mrx_benefit_type "${q(mrx, 'mrx_benefit_type')}"; mrx_alt_ded_type_yn blank, as the file leaves it for the standard benefit types); ` +
+      'confirmed on the 2027 Summary of Benefits of S5884-105-000 (docs/specs/pbp-part-d-mapping.md section 6.4, Question Q3).';
+    out.excerpt = `Part D deductible: ${cells}. The file leaves mrx_alt_ded_charge and mrx_alt_ded_type_yn blank for the standard benefit type ` +
+      `(${btLabel}). Written as pharmacy.deductible ${amt} USD ${tiered ? 'for every tier' : 'for every drug (the plan has no tier rows)'} ` +
+      '(applies_to_tiers not written), with a DEDUCTIBLE coverage stage' +
+      `${tiered ? ', and applies_to_deductible true with deductible_ref "pharmacy" on every initial coverage step' : ''}: ${Q3_SUMMARY} ` +
+      `(docs/specs/pbp-part-d-mapping.md section 5.4, Question Q3). The ${standard(amt).slice(4)}.`;
+    return out;
+  }
+  if (charge === '1') notStandard(amt);
+  const all = yn(mrx, 'mrx_alt_ded_type_yn', errors, false);
+  if (all === null) return null;
+  out.planCells = [cell(mrx, 'mrx_alt_ded_type_yn')];
+  if (all === '1') out.applies = () => true;
+  else {
+    const list = positionString(mrx, 'mrx_alt_no_ded_tier', 7, errors);
+    if (list === null) return null;
+    if (list === '') { errors.push(`mrx_alt_ded_type_yn "2" but ${cell(mrx, 'mrx_alt_no_ded_tier')}`); return null; }
+    const skipped = [];
+    for (let i = 0; i < 7; i++) {
+      if (list[i] !== '1') continue;
+      const t = `T${i === 0 ? 7 : i}`;
+      if (!tierIds.includes(t)) errors.push(`${cell(mrx, 'mrx_alt_no_ded_tier')} names ${MRX_TIERS_7[i]}, which the plan does not have`);
+      skipped.push(t);
+    }
+    out.deductible.applies_to_tiers = tierIds.filter((t) => !skipped.includes(t));
+    out.applies = (t) => !skipped.includes(t);
+    out.planCells.push(positions(mrx, 'mrx_alt_no_ded_tier', MRX_TIERS_7));
+  }
+  const scope = out.deductible.applies_to_tiers ? `with applies_to_tiers ${out.deductible.applies_to_tiers.join(', ')}` :
+    'for every tier (applies_to_tiers not written)';
+  out.excerpt = `Part D deductible: ${cells}. Written as pharmacy.deductible ${amt} USD ${scope}, and a DEDUCTIBLE coverage stage. ` +
+    `${charge === '1' ? 'The plan charges the Medicare-defined deductible, and' : 'The plan charges its own amount;'} ${standard(amt)}.`;
+  return out;
+}
+
+// The plan's Part D: { pharmacy, benefits, refs } with refs the root source_references
+// entries in the order of mapping section 8. A plan with no Part D gets 1 entry.
+function buildPartD(rows, source, errors, warn) {
+  const { a, mrx } = rows;
+  const isPdp = a.pbp_a_plan_type === PDP_TYPE;
+  const out = { pharmacy: null, benefits: [], refs: [] };
+  const before = errors.length;
+  const failed = () => errors.length > before;
+  if (!mrx) {
+    errors.push('no pbp_mrx.txt row (every plan of types 01, 02, 04, 31 and 29 has one; docs/specs/pbp-part-d-mapping.md section 3)');
+    return out;
+  }
+  const tiers = [...rows.mrxTiers].sort((x, y) => (x.mrx_tier_id < y.mrx_tier_id ? -1 : (x.mrx_tier_id > y.mrx_tier_id ? 1 : 0)));
+  const posts = [...rows.mrxPost].sort((x, y) => (x.mrx_tier_post_id < y.mrx_tier_post_id ? -1 : (x.mrx_tier_post_id > y.mrx_tier_post_id ? 1 : 0)));
+  const rowCounts = `${tiers.length} pbp_mrx_tier.txt rows and ${posts.length} pbp_mrx_p.txt rows`;
+  const otherCells = (pattern) => Object.keys(mrx).filter((k) => pattern.test(k) && k !== 'mrx_drug_ben_yn' && mrx[k] !== '').map((k) => cell(mrx, k));
+  const offers = yn(mrx, 'mrx_drug_ben_yn', errors, false);
+  if (offers === null) return out;
+  const offerCell = coded(mrx, 'mrx_drug_ben_yn', MRX_YES_NO);
+  if (offers === '2') {
+    if (isPdp) errors.push(`${offerCell} on a Medicare Prescription Drug Plan`);
+    if (tiers.length || posts.length) errors.push(`${offerCell} but the plan has ${rowCounts}`);
+    const others = otherCells(/^(mrx_|part_d_)/);
+    out.refs.push(`Part D: pbp_mrx.txt ${offerCell}: the plan offers no Medicare prescription drug (Part D) benefit, so no pharmacy object and no ` +
+      `Part D benefit is written (docs/specs/pbp-part-d-mapping.md section 3).${others.length ? ` Other non-blank pbp_mrx.txt cells, verbatim: ${others.join('; ')}.` : ''}`);
+    return out;
+  }
+  const btype = q(mrx, 'mrx_benefit_type');
+  if (btype === '') {
+    // An employer group plan whose pbp_mrx.txt row holds only the Part D answer (mapping section 3).
+    const others = otherCells(/^mrx_/);
+    if (others.length) errors.push(`mrx_benefit_type is blank but pbp_mrx.txt fills ${others.join(', ')} (docs/specs/pbp-part-d-mapping.md section 3)`);
+    if (tiers.length || posts.length) errors.push(`mrx_benefit_type is blank but the plan has ${rowCounts}`);
+    if (failed()) return out;
+    if (isPdp) {
+      errors.push(`the PBP files hold no Part D design for this ${q(a, 'pbp_a_eghp_yn') === '1' ? 'employer group ' : ''}PDP (${cell(a, 'pbp_a_eghp_yn')}; ` +
+        'mrx_benefit_type blank; only mrx_drug_ben_yn "1" is filled; docs/specs/pbp-part-d-mapping.md section 4.1)');
+      return out;
+    }
+    const demo = otherCells(/^part_d_/);
+    out.refs.push(`Part D: pbp_mrx.txt ${offerCell}, and mrx_benefit_type is blank: the PBP files hold no Part D design for this plan ` +
+      `(${cell(a, 'pbp_a_eghp_yn')}; no other mrx_ column is filled, and the plan has no pbp_mrx_tier.txt or pbp_mrx_p.txt row), so no pharmacy ` +
+      `object and no Part D benefit is written (docs/specs/pbp-part-d-mapping.md section 3).${demo.length ? ` Other non-blank pbp_mrx.txt cells, verbatim: ${demo.join('; ')}.` : ''}`);
+    return out;
+  }
+  if (!MRX_BENEFIT_TYPES[btype]) { errors.push(`${cell(mrx, 'mrx_benefit_type')} is not a dictionary code`); return out; }
+  const btLabel = coded(mrx, 'mrx_benefit_type', MRX_BENEFIT_TYPES);
+  const tiered = btype !== '1';
+  const ae = btype === '2';
+  if (tiered && !tiers.length) errors.push(`${btLabel} but the plan has no pbp_mrx_tier.txt row (docs/specs/pbp-part-d-mapping.md section 3)`);
+  if (!tiered && (tiers.length || posts.length)) errors.push(`${btLabel} but the plan has ${rowCounts}; a Defined Standard plan has none (docs/specs/pbp-part-d-mapping.md section 3)`);
+  const params = PART_D_PARAMETERS[source.year];
+  if (!params) {
+    errors.push(`no Part D out-of-pocket threshold is recorded for contract year ${source.year}; add it from that year's Rate Announcement ` +
+      '(docs/specs/pbp-part-d-mapping.md section 5.5)');
+  }
+  if (failed()) return out;
+
+  // Tiers (mapping 5.1) and the rows that repeat the plan's cells.
+  const tiersNum = q(mrx, 'mrx_formulary_tiers_num');
+  if (tiered ? tiersNum !== String(tiers.length) : !['', '0'].includes(tiersNum)) {
+    errors.push(`${cell(mrx, 'mrx_formulary_tiers_num')} but the plan has ${tiers.length} pbp_mrx_tier.txt rows`);
+  }
+  const ids = tiers.map((t) => t.mrx_tier_id);
+  if (ids.join() !== ids.map((x, i) => String(i + 1)).join()) errors.push(`mrx_tier_id values ${ids.map((v) => `"${v}"`).join(', ')} do not run 1 to ${ids.length}`);
+  for (const label of new Set(tiers.map((t) => t.mrx_tier_label_list))) {
+    if (tiers.filter((t) => t.mrx_tier_label_list === label).length > 1) errors.push(`mrx_tier_label_list "${label}" is on more than 1 tier`);
+  }
+  const pairs = (rs, id, label) => rs.map((r) => `${r[id]} "${r[label]}"`).join(', ');
+  if (pairs(posts, 'mrx_tier_post_id', 'mrx_tier_post_label_list') !== pairs(tiers, 'mrx_tier_id', 'mrx_tier_label_list')) {
+    errors.push('the pbp_mrx_p.txt tiers (mrx_tier_post_id, mrx_tier_post_label_list) are not the pbp_mrx_tier.txt tiers (mrx_tier_id, mrx_tier_label_list): ' +
+      `${pairs(posts, 'mrx_tier_post_id', 'mrx_tier_post_label_list') || 'none'} against ${pairs(tiers, 'mrx_tier_id', 'mrx_tier_label_list') || 'none'}`);
+  }
+  const repeats = [['part_d_model_demo', 'part_d_model_demo'], ['part_d_enhncd_cvrg_demo', 'part_d_enhncd_cvrg_demo']];
+  for (const [file, rs, id, cols] of [
+    ['pbp_mrx_tier.txt', tiers, 'mrx_tier_id', [...repeats, ['mrx_tier_benefit_type', 'mrx_benefit_type'], ['mrx_tier_form_model_desc', 'mrx_form_model_desc']]],
+    ['pbp_mrx_p.txt', posts, 'mrx_tier_post_id', [...repeats, ['mrx_tier_post_benefit_type', 'mrx_benefit_type'], ['mrx_tier_post_form_model_desc', 'mrx_form_model_desc']]],
+  ]) {
+    for (const r of rs) {
+      for (const [col, planCol] of cols) {
+        if (q(r, col) !== q(mrx, planCol)) errors.push(`${file} ${cell(r, id)}: ${cell(r, col)} is not pbp_mrx.txt ${cell(mrx, planCol)}`);
+      }
+    }
+  }
+  const tierIds = tiers.map((t) => `T${t.mrx_tier_id}`);
+
+  // Location flags and the pharmacy networks (mapping 5.2).
+  const flags = tiers.map((t) => {
+    const f = {};
+    for (const [k, loc] of Object.entries(RX_LOCATIONS)) f[k] = positionString(t, loc.flag, loc.labels.length, errors);
+    return f;
+  });
+  if (failed()) return out;
+  const usesLoc = (k) => flags.some((f) => f[k].includes('1'));
+  const usedLoc = MRX_NETWORK_LOC.map((l, i) => (Object.entries(RX_LOCATIONS).some(([k, loc]) => loc.loc === i + 1 && usesLoc(k)) ? '1' : '0')).join('');
+  const networks = RX_NETWORKS.filter((n) => n.from.some(([k]) => usesLoc(k)));
+  const oonCol = ae ? 'mrx_ae_oon_cstshr_struct' : 'mrx_alt_oon_cstshr_struct';
+  const oonCell = coded(mrx, oonCol, MRX_OON_STRUCTURES[oonCol]);
+  if (tiered) {
+    const loc = positionString(mrx, 'mrx_partd_network_loc', 6, errors);
+    if (loc !== null && loc !== usedLoc) {
+      errors.push(`${positions(mrx, 'mrx_partd_network_loc', MRX_NETWORK_LOC)} but the tier rows use ` +
+        `${MRX_NETWORK_LOC.filter((l, i) => usedLoc[i] === '1').join('; ') || 'no location'}`);
+    }
+    if (usesLoc('oon')) codeOf(mrx, oonCol, MRX_OON_STRUCTURES[oonCol], errors);
+  }
+  for (const col of Object.keys(MRX_STAGE_COLUMNS)) codeOf(mrx, col, MRX_STAGE_COLUMNS[col], errors, true);
+  // How the plan applies cost sharing after the threshold, as the catastrophic notes quote it.
+  const postCol = ae ? 'mrx_ae_ooptcs_apply' : 'mrx_alt_cstshr_post_oopt';
+  const postLabel = MRX_STAGE_COLUMNS[postCol][q(mrx, postCol)];
+
+  const ded = partDDeductible(mrx, btLabel, tierIds, tiered, params, source.year, errors, warn);
+  if (failed() || !ded) return out;
+  const dedStageCells = cellsOf(mrx, ['mrx_alt_ded_tier_cstshr_yn', 'mrx_alt_gen_cstshr_struct', 'mrx_alt_gen_coins_pct', 'mrx_alt_gen_copay_amt']);
+  if (q(mrx, 'mrx_alt_ded_tier_cstshr_yn') === '2') warn('part-d-deductible-stage-cost-share', dedStageCells.join(', '));
+
+  // The pharmacy object (mapping 5.3 to 5.6).
+  const threshold = params.out_of_pocket_threshold;
+  const pharmacy = {};
+  if (ded.deductible) pharmacy.deductible = ded.deductible;
+  pharmacy.out_of_pocket_max = { amount: threshold, currency: 'USD' };
+  pharmacy.coverage_stages = [
+    ...(ded.deductible ? [{ stage_id: 'DEDUCTIBLE', name: 'Deductible', stage_type: 'deductible' }] : []),
+    { stage_id: 'INITIAL', name: 'Initial Coverage', stage_type: 'initial' },
+    { stage_id: 'CATASTROPHIC', name: 'Catastrophic Coverage', stage_type: 'catastrophic', applies_after_total_out_of_pocket: threshold },
+  ];
+  const formularyTiers = [];
+  for (const t of tiers) {
+    const label = t.mrx_tier_label_list;
+    const info = RX_TIER_LABELS[label];
+    if (!info) warn('part-d-tier-label-unknown', `pbp_mrx_tier.txt ${cell(t, 'mrx_tier_id')}, ${cell(t, 'mrx_tier_label_list')}: not in the label table of docs/specs/pbp-part-d-mapping.md section 9`);
+    const ft = { tier_id: `T${t.mrx_tier_id}`, name: `Tier ${t.mrx_tier_id}: ${label}` };
+    if (info && info.drug_class) ft.drug_class = info.drug_class;
+    if (info && info.tier_code) ft.tier_code = info.tier_code;
+    ft.description = 'pbp_mrx_tier.txt ' + [cell(t, 'mrx_tier_id'), cell(t, 'mrx_tier_label_list'), coded(t, 'mrx_tier_type_id', MRX_TIER_TYPES),
+      positions(t, 'mrx_tier_drug_type', MRX_DRUG_TYPES), coded(t, 'mrx_tier_includes', MRX_TIER_INCLUDES),
+      coded(t, 'mrx_tier_cstshr_struct_type', MRX_COST_STRUCTURES),
+      ...cellsOf(t, ['mrx_tier_extd_days_yn', 'mrx_tier_extd_first_fill'])].join(', ') + '.';
+    formularyTiers.push(ft);
+  }
+  if (tiered) {
+    pharmacy.formulary_tiers = formularyTiers;
+    pharmacy.pharmacy_networks = networks.map((n) => ({ network_id: n.network_id, name: n.name, network_type: n.network_type }));
+  }
+
+  // Benefits (mapping section 6): initial coverage, then catastrophic.
+  const keyOf = (r) => `row ${cell(r, 'pbp_a_hnumber')}, ${cell(r, 'pbp_a_plan_identifier')}, ${cell(r, 'segment_id')}`;
+  const finish = (sentences, key) => `${sentences.join('. ')}${key ? '' : NO_KEY}.`;
+  const moopOf = (row, col, labels) => {
+    const v = q(row, col);
+    if (v === '2') {
+      return { applies: false, note: `The tier holds only drugs excluded from Part D (${cell(row, col)}); their cost sharing does not count toward ` +
+        `the Part D out-of-pocket threshold (${INCURRED_COSTS}).` };
+    }
+    if (v === '3') {
+      return { applies: true, note: `The tier also holds drugs excluded from Part D (${cell(row, col)}, ${labels[v]}); the file gives 1 cost share ` +
+        `for the tier, and the excluded drugs' cost sharing does not count toward the Part D out-of-pocket threshold (${INCURRED_COSTS}).` };
+    }
+    return { applies: true, note: null };
+  };
+  const leftovers = [];
+  const insulin = [];
+  const initial = [];
+  tiers.forEach((t, ti) => {
+    const n = t.mrx_tier_id;
+    const label = t.mrx_tier_label_list;
+    const key = (RX_TIER_LABELS[label] || {}).canonical_key;
+    const struct = codeOf(t, 'mrx_tier_cstshr_struct_type', MRX_COST_STRUCTURES, errors);
+    const includes = codeOf(t, 'mrx_tier_includes', MRX_TIER_INCLUDES, errors);
+    if (struct === null || includes === null) return;
+    const structCell = coded(t, 'mrx_tier_cstshr_struct_type', MRX_COST_STRUCTURES);
+    if (struct !== '1' && struct !== '2') {
+      errors.push(`pbp_mrx_tier.txt ${cell(t, 'mrx_tier_id')}: ${structCell} is not mapped (0 tier rows in CY 2027; docs/specs/pbp-part-d-mapping.md section 6.3)`);
+      return;
+    }
+    const moop = moopOf(t, 'mrx_tier_includes', MRX_TIER_INCLUDES);
+    const read = new Set([...MRX_KEY_COLS, 'part_d_model_demo', 'part_d_enhncd_cvrg_demo', 'mrx_tier_benefit_type', 'mrx_tier_form_model_desc',
+      'mrx_tier_id', 'mrx_tier_label_list', 'mrx_tier_type_id', 'mrx_tier_drug_type', 'mrx_tier_includes', 'mrx_tier_cstshr_struct_type',
+      'mrx_tier_extd_days_yn', 'mrx_tier_extd_first_fill', ...Object.values(RX_LOCATIONS).map((l) => l.flag)]);
+    for (const net of RX_NETWORKS) {
+      for (const [locKey, part] of net.from) {
+        const loc = RX_LOCATIONS[locKey];
+        const flag = flags[ti][locKey];
+        for (const supply of RX_SUPPLIES) {
+          if (!(supply in loc.supplies) || flag[loc.supplies[supply] - 1] !== '1') continue;
+          const cols = rxAmountCols(part, supply);
+          const [useCol, otherCol] = struct === '2' ? [cols.copay, cols.coins] : [cols.coins, cols.copay];
+          read.add(loc.days[supply]).add(useCol).add(otherCol);
+          const days = dayNumber(t, loc.days[supply], errors);
+          if (q(t, otherCol) !== '') errors.push(`pbp_mrx_tier.txt ${cell(t, 'mrx_tier_id')}: ${structCell} but ${cell(t, otherCol)} is filled`);
+          if (q(t, useCol) === '') {
+            errors.push(`pbp_mrx_tier.txt ${cell(t, 'mrx_tier_id')}: ${cell(t, loc.flag)} chooses the ${RX_SUPPLY_WORDS[supply]} supply but ${useCol} is blank`);
+            continue;
+          }
+          const v = struct === '2' ? amount(t, useCol, errors) : percent(t, useCol, errors);
+          if (v === null || days === null) continue;
+          const step = { type: struct === '2' ? 'copay' : 'coinsurance', sequence: 1 };
+          if (struct === '2') step.amount = v;
+          else step.rate = v / 100;
+          step.basis = 'per_prescription';
+          step.applies_to_deductible = ded.applies(`T${n}`);
+          if (ded.ref) step.deductible_ref = ded.ref;
+          step.applies_to_moop = moop.applies;
+          step.moop_ref = 'pharmacy';
+          const notes = [moop.note, ded.rowNote];
+          const planCells = [...ded.planCells];
+          if (net.network_id === 'OUT_OF_NETWORK') {
+            const s = q(mrx, oonCol);
+            notes.push(`Out of network: ${oonCell}.` + (s === '2' || s === '4' ? ' The differential has no amount in the file and no Benefit Plan ' +
+              `Standard field; it counts toward the Part D out-of-pocket threshold (${INCURRED_COSTS}, "any price differential"), so applies_to_moop ` +
+              'stays true.' : '') + ' tier_id IN is the document\'s tier for every Part D row; the pharmacy is pharmacy_network_id OUT_OF_NETWORK ' +
+              '(docs/specs/pbp-part-d-mapping.md section 6.7).');
+            planCells.push(oonCell);
+          }
+          const row = { tier_id: 'IN', covered: true, cost_shares: [orderStep(step)] };
+          if (notes.some(Boolean)) row.notes = notes.filter(Boolean).join(' ');
+          const sentences = [`pbp_mrx_tier.txt, ${keyOf(t)}, ${cell(t, 'mrx_tier_label_list')}: ${cell(t, 'mrx_tier_id')}, ${structCell}, ` +
+            `${coded(t, 'mrx_tier_includes', MRX_TIER_INCLUDES)}, ${positions(t, loc.flag, loc.labels)}, ${cell(t, loc.days[supply])}, ${cell(t, useCol)}`,
+          `pbp_mrx.txt: ${planCells.join(', ')}`];
+          if (supply === '1M') {
+            const extra = rxNoFieldCols(part, t);
+            extra.forEach((c) => read.add(c));
+            const quoted = cellsOf(t, extra);
+            if (quoted.length) sentences.push(`Values with no Benefit Plan Standard field, verbatim: ${quoted.join('; ')}`);
+          }
+          const b = {
+            benefit_id: `RX_T${n}_${net.network_id}_${supply}_INITIAL`,
+            benefit_type: 'pharmacy',
+            category: 'PHARMACY',
+            service_name: `Tier ${n} (${label}), ${net.name.toLowerCase()}, ${days}-day supply, initial coverage`,
+          };
+          if (key) b.canonical_key = key;
+          Object.assign(b, {
+            raw_label: label,
+            network_cost_shares: [row],
+            limits: [],
+            conditions: [],
+            source_references: [{ excerpt: finish(sentences, key) }],
+            formulary_tier_id: `T${n}`,
+            pharmacy_network_id: net.network_id,
+            coverage_stage_id: 'INITIAL',
+            day_supply: days,
+          });
+          initial.push(b);
+        }
+      }
+    }
+    // Insulin cells are quoted per tier (mapping section 10); any other filled cell no
+    // rule reads is quoted at the plan level, so nothing is dropped.
+    const ira = Object.keys(t).filter((c) => c.startsWith('mrx_tier_ira_') && t[c] !== '');
+    ira.forEach((c) => read.add(c));
+    if (ira.length) {
+      insulin.push(`Insulin cost sharing for Tier ${n} (${label}), no Benefit Plan Standard benefit written (docs/specs/pbp-part-d-mapping.md section 10): ` +
+        `${positions(mrx, 'mrx_alt_ira_covg_tier', MRX_TIERS_7)}, ${ira.map((c) => cell(t, c)).join(', ')}.`);
+    }
+    const rest = Object.keys(t).filter((c) => !read.has(c) && t[c] !== '');
+    if (rest.length) leftovers.push(`${cell(t, 'mrx_tier_id')}: ${rest.map((c) => cell(t, c)).join(', ')}`);
+  });
+  const catastrophic = [];
+  for (const p of posts) {
+    const n = p.mrx_tier_post_id;
+    const label = p.mrx_tier_post_label_list;
+    const key = (RX_TIER_LABELS[label] || {}).canonical_key;
+    const includes = codeOf(p, 'mrx_tier_post_includes', MRX_POST_INCLUDES, errors);
+    if (codeOf(p, 'mrx_tier_post_cost_struct', MRX_COST_STRUCTURES, errors) === null || includes === null) continue;
+    const amountCells = [];
+    let nonZero = false;
+    for (const [col, reader] of [['mrx_tier_post_copay_amt', amount], ['mrx_tier_post_coins_pct', percent]]) {
+      if (q(p, col) === '') continue;
+      const v = reader(p, col, errors);
+      if (v !== null && v > 0) nonZero = true;
+      amountCells.push(cell(p, col));
+    }
+    const moop = moopOf(p, 'mrx_tier_post_includes', MRX_POST_INCLUDES);
+    const step = { type: 'copay', sequence: 1, amount: 0, basis: 'per_prescription', applies_to_deductible: false, applies_to_moop: moop.applies, moop_ref: 'pharmacy' };
+    if (nonZero) {
+      const context = `${cell(p, 'mrx_tier_post_includes')}, ${MRX_POST_INCLUDES[includes]}; ${cell(mrx, postCol)}${postLabel ? `, ${postLabel}` : ''}`;
+      if (includes === '1') {
+        warn('part-d-post-threshold-cost-share', `pbp_mrx_p.txt ${cell(p, 'mrx_tier_post_id')}: ${amountCells.join(', ')} on a tier of Part D drugs only`);
+        step.notes = `The file's post-threshold amount for this tier, ${amountCells.join(', ')} (${context}), is not written: the tier holds only ` +
+          'Part D drugs, whose cost sharing after the out-of-pocket threshold is $0 (42 CFR 423.104(d)(5)(i); warning part-d-post-threshold-cost-share).';
+      } else {
+        step.notes = `The file's post-threshold amount for this tier, ${amountCells.join(', ')} (${context}), applies to the drugs on the tier that ` +
+          `are excluded from Part D, which do not count toward the out-of-pocket threshold (${INCURRED_COSTS}). The $0 of this step is the ` +
+          'covered Part D drug\'s (42 CFR 423.104(d)(5)(i)).';
+      }
+    }
+    const row = { tier_id: 'IN', covered: true, cost_shares: [orderStep(step)] };
+    if (moop.note) row.notes = moop.note;
+    const sentences = [`pbp_mrx_p.txt, ${keyOf(p)}, ${cell(p, 'mrx_tier_post_label_list')}: ` + [cell(p, 'mrx_tier_post_id'),
+      coded(p, 'mrx_tier_post_type_id', MRX_POST_TYPES), positions(p, 'mrx_tier_post_drug_type', MRX_DRUG_TYPES),
+      coded(p, 'mrx_tier_post_includes', MRX_POST_INCLUDES), coded(p, 'mrx_tier_post_cost_struct', MRX_COST_STRUCTURES), ...amountCells].join(', '),
+    'The step\'s $0 is not read from this row: it is the cost sharing for a covered Part D drug after the out-of-pocket threshold, ' +
+      '42 CFR 423.104(d)(5)(i) (docs/specs/pbp-part-d-mapping.md section 6.6)',
+    `pbp_mrx.txt: ${coded(mrx, postCol, MRX_STAGE_COLUMNS[postCol])}`];
+    const b = { benefit_id: `RX_T${n}_CATASTROPHIC`, benefit_type: 'pharmacy', category: 'PHARMACY', service_name: `Tier ${n} (${label}), catastrophic coverage` };
+    if (key) b.canonical_key = key;
+    Object.assign(b, {
+      raw_label: label,
+      network_cost_shares: [row],
+      limits: [],
+      conditions: [],
+      source_references: [{ excerpt: finish(sentences, key) }],
+      formulary_tier_id: `T${n}`,
+      coverage_stage_id: 'CATASTROPHIC',
+    });
+    catastrophic.push(b);
+  }
+  if (failed()) return out;
+  out.pharmacy = pharmacy;
+  out.benefits = [...initial, ...catastrophic];
+
+  // Plan-level references (mapping section 8).
+  const head = [offerCell, btLabel, ...cellsOf(mrx, ['mrx_formulary_tiers_num', 'mrx_form_model_type', 'mrx_form_model_desc'])].join(', ');
+  out.refs.push(tiered
+    ? `Part D: pbp_mrx.txt ${head}. Written: pharmacy and ${out.benefits.length} Part D benefits (docs/specs/pbp-part-d-mapping.md).`
+    : `Part D: pbp_mrx.txt ${head}. Written: pharmacy with the deductible, the out-of-pocket threshold and the coverage stages, and no ` +
+      'formulary_tiers, pharmacy_networks or Part D benefit: a Defined Standard plan has no pbp_mrx_tier.txt or pbp_mrx_p.txt row, and the file ' +
+      'states no initial coverage cost share for it (the defined standard\'s 25 percent, Table V-6, is a Medicare-defined amount the importer ' +
+      'does not fill; docs/specs/pbp-part-d-mapping.md section 5.7). Its location, days and insulin cells (mrx_partd_network_loc, mrx_gen_*) are ' +
+      'in the last pbp_mrx.txt entry.');
+  out.refs.push(ded.excerpt);
+  out.refs.push(`pharmacy.out_of_pocket_max and the CATASTROPHIC stage's applies_after_total_out_of_pocket are ${threshold} USD, the contract ` +
+    `year ${source.year} Part D annual out-of-pocket threshold. No PBP column states it; source: ${params.source}.` +
+    (tiered ? ' Each CATASTROPHIC benefit\'s cost share is $0, the cost sharing for a covered Part D drug after the threshold, also not read ' +
+      `from a PBP cell: ${params.post_threshold_source} (docs/specs/pbp-part-d-mapping.md section 6.6).` : ''));
+  if (tiered) {
+    out.refs.push(`Pharmacy networks: ${positions(mrx, 'mrx_partd_network_loc', MRX_NETWORK_LOC)}, the locations the tier rows use; written as ` +
+      `pharmacy_networks ${networks.map((x) => x.network_id).join(', ')}. Out-of-network cost-sharing structure: ${oonCell}. default_day_supply ` +
+      'is not written: the file states days per tier, location and supply, and each benefit carries its day_supply (docs/specs/pbp-part-d-mapping.md section 5.2).');
+  }
+  const stageCells = Object.keys(MRX_STAGE_COLUMNS).filter((c) => q(mrx, c) !== '').map((c) => coded(mrx, c, MRX_STAGE_COLUMNS[c]));
+  out.refs.push(`Coverage stages: ${stageCells.length ? stageCells.join(', ') : 'pbp_mrx.txt fills no stage column for this benefit type'}. Written as ` +
+    `${pharmacy.coverage_stages.map((s) => s.stage_id).join(', ')} (CATASTROPHIC after ${threshold} USD); no coverage gap stage: Table V-6 of the ` +
+    `CY ${source.year} Rate Announcement (page 99) lists a Deductible Phase, an Initial Coverage Phase and the Out-of-Pocket Threshold, and nothing ` +
+    'between them.' + (tiered ? ' Part D benefits are written for INITIAL (pbp_mrx_tier.txt) and CATASTROPHIC (pbp_mrx_p.txt); what the ' +
+      'deductible does is carried by applies_to_deductible and deductible_ref on the INITIAL steps.' : '') +
+    (q(mrx, 'mrx_alt_ded_tier_cstshr_yn') === '2' ? ` The cost share for drugs to which the deductible does not apply differs from the initial ` +
+      `coverage one (${dedStageCells.join(', ')}) and has no field (warning part-d-deductible-stage-cost-share; docs/specs/pbp-part-d-mapping.md section 5.3).` : ''));
+  out.refs.push(...insulin);
+  if (leftovers.length) {
+    out.refs.push(`pbp_mrx_tier.txt cells no rule of docs/specs/pbp-part-d-mapping.md reads, verbatim: ${leftovers.join('; ')}.`);
+  }
+  out.refs.push('Every non-blank pbp_mrx.txt cell, verbatim, in file order: ' +
+    Object.keys(mrx).filter((c) => !MRX_KEY_COLS.includes(c) && mrx[c] !== '').map((c) => cell(mrx, c)).join('; ') + '.');
+  return out;
+}
+
 // ---- service area -------------------------------------------------------------------------
 // PlanArea.county_code is the SSA state and county code, not FIPS (spec section
 // 4.1), so fips is null and the code goes to source_references.
@@ -1360,18 +1966,24 @@ function whyNotWebAddress(s) {
     'it has no scheme, so it is not a URI, and the importer does not add one';
 }
 
+// The member services phone columns of Section A, with their dictionary titles: a
+// Medicare Advantage plan files the first, a stand-alone Part D plan the Part D one
+// (docs/specs/pbp-part-d-mapping.md section 4).
+const MEMBER_PHONE = { col: 'pbp_a_curmbr_phone', ext: 'pbp_a_curmbr_phone_ext', title: 'Customer Service Contact Phone Number for Current Medicare Beneficiaries' };
+const PART_D_MEMBER_PHONE = { col: 'pbp_a_pd_curmbr_phone', ext: 'pbp_a_pd_curmbr_phone_ext',
+  title: 'Customer Service Contact Phone Number for Current Part D Medicare Beneficiaries' };
+
 // Returns { contacts, directory, excerpt }: contacts null when Section A gives
 // neither a phone nor a web address, directory the IN tier's link or null.
-function buildContacts(a) {
+function buildContacts(a, phoneCols = MEMBER_PHONE) {
   const contacts = {};
   const parts = [];
-  const phone = q(a, 'pbp_a_curmbr_phone').trim();
+  const phone = q(a, phoneCols.col).trim();
   if (phone) {
     contacts.member_services_phone = phone;
-    parts.push(`${cell(a, 'pbp_a_curmbr_phone')} (Customer Service Contact Phone Number for Current Medicare Beneficiaries), ` +
-      'written as contacts.member_services_phone');
-  } else parts.push('pbp_a_curmbr_phone is blank, so contacts.member_services_phone is not written');
-  if (q(a, 'pbp_a_curmbr_phone_ext') !== '') parts.push(`${cell(a, 'pbp_a_curmbr_phone_ext')}, which has no Benefit Plan Standard field`);
+    parts.push(`${cell(a, phoneCols.col)} (${phoneCols.title}), written as contacts.member_services_phone`);
+  } else parts.push(`${phoneCols.col} is blank, so contacts.member_services_phone is not written`);
+  if (q(a, phoneCols.ext) !== '') parts.push(`${cell(a, phoneCols.ext)}, which has no Benefit Plan Standard field`);
   const web = (col, target) => {
     const v = q(a, col).trim();
     if (v === '') { parts.push(`${col} is blank, so ${target} is not written`); return null; }
@@ -1414,18 +2026,32 @@ function buildDocument(rows, source) {
   const key = { contract: a.pbp_a_hnumber, plan: a.pbp_a_plan_identifier, segment: pad3(a.segment_id) };
   const keyText = `${key.contract}-${key.plan}-${key.segment}`;
   const planType = a.pbp_a_plan_type;
-  if (!MVP_PLAN_TYPES[planType]) {
-    errors.push(`plan type ${planType} (${PLAN_TYPE_LABELS[planType] || 'not in the dictionary'}) is outside the importer's scope: ` +
-      'HMO, HMOPOS, Local PPO and Regional PPO only (spec section 1)');
+  if (planType === '30') {
+    // docs/specs/pbp-part-d-mapping.md section 4.1: no type 30 plan of the CY 2027 file has a pbp_mrx.txt row.
+    errors.push(rows.mrx
+      ? 'plan type 30 (Employer/Union Only Direct Contract PDP) is outside the importer\'s scope: this plan has a pbp_mrx.txt row, which no ' +
+        'type 30 plan of the contract year 2027 files has, and the mapping is to be extended before it is read (docs/specs/pbp-part-d-mapping.md section 4.1)'
+      : 'plan type 30 (Employer/Union Only Direct Contract PDP) is outside the importer\'s scope: the PBP files hold no Part D benefit for it ' +
+        '(no pbp_mrx.txt row; docs/specs/pbp-part-d-mapping.md section 4.1)');
     return { doc: null, errors, warnings };
   }
-  if (!d) errors.push('no pbp_Section_D.txt row');
+  if (!MVP_PLAN_TYPES[planType] && planType !== PDP_TYPE) {
+    errors.push(`plan type ${planType} (${PLAN_TYPE_LABELS[planType] || 'not in the dictionary'}) is outside the importer's scope: ` +
+      'HMO, HMOPOS, Local PPO, Regional PPO and Medicare Prescription Drug Plan only (spec section 1)');
+    return { doc: null, errors, warnings };
+  }
   for (const col of ['pbp_a_plan_name', 'pbp_a_org_marketing_name']) if (!a[col] || !a[col].trim()) errors.push(`${col} is blank`);
+  if (planType === PDP_TYPE) {
+    if (errors.length) return { doc: null, errors, warnings };
+    return buildPdpDocument(rows, source, key, keyText, errors, warnings, warn);
+  }
+  if (!d) errors.push('no pbp_Section_D.txt row');
   if (errors.length) return { doc: null, errors, warnings };
 
   const { accumulators, notes: accNotes } = buildAccumulators(d, rows.c, planType, errors);
   const network_tiers = buildTiers(rows.c, rows.oonGroups.length > 0, rows.posGroups.length > 0, rows.hospital, errors);
   const area = buildServiceArea(rows.area, rows.region, source.year, errors);
+  const partD = buildPartD(rows, source, errors, warn);
   if (errors.length) return { doc: null, errors, warnings };
   // An HMO with no out-of-network or point-of-service tier that still fills
   // Section D's out-of-network families keeps the file's wording; the note says
@@ -1473,14 +2099,11 @@ function buildDocument(rows, source) {
   if (contacts.contacts) doc.contacts = contacts.contacts;
   doc.network_tiers = network_tiers;
   doc.accumulators = accumulators;
-  doc.benefits = benefits;
+  if (partD.pharmacy) doc.pharmacy = partD.pharmacy;
+  doc.benefits = [...benefits, ...partD.benefits];
 
   const excerpts = [
-    `CMS Plan Benefit Package (PBP) Benefits, contract year ${source.year}, release "${source.releaseLabel}" ` +
-      `(${PBP_ZIP(source.year)}), downloaded ${source.downloaded}. Files read: ${READ_FILES.join(', ')}. ` +
-      `PBP key: pbp_a_hnumber "${a.pbp_a_hnumber}", ` +
-      `pbp_a_plan_identifier "${a.pbp_a_plan_identifier}", segment_id "${a.segment_id}" (written padded to 3 digits in plan_identifiers).`,
-    `Plan type: pbp_a_plan_type "${planType}" (${PLAN_TYPE_LABELS[planType]}), written as plan_type "${MVP_PLAN_TYPES[planType]}".`,
+    ...releaseExcerpts(a, source, planType, MVP_PLAN_TYPES[planType]),
     'Section A values with no Benefit Plan Standard field, verbatim: ' +
       SECTION_A_UNCARRIED.filter((col) => (a[col] || '') !== '').map((col) => cell(a, col)).join('; ') + '.',
     contacts.excerpt,
@@ -1493,6 +2116,77 @@ function buildDocument(rows, source) {
     ctx.skipped.length
       ? `Medicare-covered categories with no copay or coinsurance answer in the file, not written (${cell(a, 'pbp_a_ben_cov')}): ${ctx.skipped.join('; ')}.`
       : null,
+    ...partD.refs,
+  ];
+  doc.source_references = excerpts.filter(Boolean).map((excerpt) => ({ excerpt }));
+  doc.schema_version = SCHEMA_VERSION;
+  return { doc, errors: [], warnings };
+}
+
+// The first 2 root source_references entries of every document: the release and the files
+// read, then the plan type.
+function releaseExcerpts(a, source, planType, written) {
+  return [
+    `CMS Plan Benefit Package (PBP) Benefits, contract year ${source.year}, release "${source.releaseLabel}" ` +
+      `(${PBP_ZIP(source.year)}), downloaded ${source.downloaded}. Files read: ${READ_FILES.join(', ')}. ` +
+      `PBP key: pbp_a_hnumber "${a.pbp_a_hnumber}", ` +
+      `pbp_a_plan_identifier "${a.pbp_a_plan_identifier}", segment_id "${a.segment_id}" (written padded to 3 digits in plan_identifiers).`,
+    `Plan type: pbp_a_plan_type "${planType}" (${PLAN_TYPE_LABELS[planType]}), written as plan_type "${written}".`,
+  ];
+}
+
+// A stand-alone Medicare Prescription Drug Plan (docs/specs/pbp-part-d-mapping.md section 4):
+// Section A, the Part D rows and PlanRegionArea.txt, and no medical benefit.
+function buildPdpDocument(rows, source, key, keyText, errors, warnings, warn) {
+  const { a } = rows;
+  const medical = [];
+  if (rows.d) medical.push('a pbp_Section_D.txt row');
+  if (rows.c) medical.push('a pbp_Section_C.txt row');
+  if (rows.oonGroups.length || rows.posGroups.length) medical.push('pbp_Section_C_OON.txt or pbp_Section_C_POS.txt rows');
+  if (Object.keys(rows.b).length) medical.push(`rows in ${Object.keys(rows.b).sort().join(', ')}`);
+  if (rows.area.length) medical.push(`${rows.area.length} PlanArea.txt rows`);
+  if (medical.length) {
+    errors.push(`plan type 29 (Medicare Prescription Drug Plan) has ${medical.join(', ')}; a PDP has only Section A, Part D and ` +
+      'PlanRegionArea.txt rows (docs/specs/pbp-part-d-mapping.md section 4)');
+  }
+  const area = buildServiceArea([], rows.region, source.year, errors);
+  const partD = buildPartD(rows, source, errors, warn);
+  const contacts = buildContacts(a, PART_D_MEMBER_PHONE);
+  if (errors.length) return { doc: null, errors, warnings };
+  const network_tiers = [{
+    tier_id: 'IN',
+    name: 'In-Network',
+    description: 'A stand-alone Part D plan has no medical provider network. Its Part D cost shares are written on this tier; the pharmacy each ' +
+      "applies at is the benefit's pharmacy_network_id (docs/specs/pbp-part-d-mapping.md section 6).",
+    tier_class: 'network',
+  }];
+  if (contacts.directory) network_tiers[0].provider_directory_url = contacts.directory;
+
+  const doc = {};
+  doc.plan_id = planIdFor(a, keyText);
+  doc.plan_identifiers = [
+    { system: 'cms_contract_plan_segment', value: keyText },
+    { system: 'cms_contract_id', value: key.contract },
+    { system: 'cms_pbp_id', value: key.plan },
+  ];
+  doc.plan_name = a.pbp_a_plan_name.trim();
+  doc.carrier = a.pbp_a_org_marketing_name.trim();
+  doc.plan_type = 'PDP';
+  doc.plan_year = area.planYear;
+  doc.market = 'medicare_part_d';
+  if (contacts.contacts) doc.contacts = contacts.contacts;
+  doc.network_tiers = network_tiers;
+  doc.pharmacy = partD.pharmacy;
+  doc.benefits = partD.benefits;
+  const excerpts = [
+    ...releaseExcerpts(a, source, PDP_TYPE, 'PDP'),
+    'Section A values with no Benefit Plan Standard field, verbatim: ' +
+      SECTION_A_UNCARRIED.filter((col) => (a[col] || '') !== '').map((col) => cell(a, col)).join('; ') + '.',
+    contacts.excerpt,
+    area.excerpt,
+    'Premium: not written. The PDP premium is in no PBP file: pbp_Section_D.txt, which holds the Medicare Advantage premium, has no row for a ' +
+      'PDP, and pbp_mrx.txt, pbp_mrx_tier.txt and pbp_mrx_p.txt have no premium column (docs/specs/pbp-part-d-mapping.md section 4).',
+    ...partD.refs,
   ];
   doc.source_references = excerpts.filter(Boolean).map((excerpt) => ({ excerpt }));
   doc.schema_version = SCHEMA_VERSION;
@@ -1570,6 +2264,9 @@ async function loadPlan({ dataDir = DATA_DIR, year, plan, downloaded }) {
     b: {},
     area: await rowsFor(find('PlanArea.txt'), key),
     region: await rowsFor(find('PlanRegionArea.txt'), key),
+    mrx: await one('pbp_mrx.txt', false),
+    mrxTiers: await rowsFor(find('pbp_mrx_tier.txt'), key),
+    mrxPost: await rowsFor(find('pbp_mrx_p.txt'), key),
   };
   for (const file of B_FILES) {
     const row = await one(file, false);
@@ -1747,8 +2444,8 @@ async function main(argv) {
 
 module.exports = {
   streamTsv, rowsFor, buildDocument, serialize, loadPlan, importPlan, listPlans, validateDocument, parseKey, pad3,
-  HOSPITAL_TIER_CATEGORIES, MVP_PLAN_TYPES, B_FILES, READ_FILES, CROSSWALK, GOLDEN, baseSlug, goldenSlugs, buildGolden, writeFixtures,
-  cutFile, pbpDir, DATA_DIR, EXAMPLES_DIR, FIXTURE_DIR, SCHEMA_VERSION,
+  HOSPITAL_TIER_CATEGORIES, MVP_PLAN_TYPES, B_FILES, MRX_FILES, READ_FILES, CROSSWALK, GOLDEN, baseSlug, goldenSlugs, buildGolden, writeFixtures,
+  cutFile, pbpDir, DATA_DIR, EXAMPLES_DIR, FIXTURE_DIR, SCHEMA_VERSION, PART_D_PARAMETERS,
 };
 
 if (require.main === module) main(process.argv.slice(2)).then((code) => process.exit(code));

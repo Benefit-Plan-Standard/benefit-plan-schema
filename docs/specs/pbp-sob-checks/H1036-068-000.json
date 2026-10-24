@@ -10,7 +10,7 @@
   },
   "golden": "examples/humana-humana-gold-plus-h1036-068.pbp.json",
   "spec": "docs/specs/pbp-part-d-mapping.md section 18",
-  "status": "Written 2026-10-24, before the Part D importer: the golden file has no Part D rows yet, so these checks pass only once session 2 builds them. The benefit indexes are those of docs/specs/pbp-part-d/profile/plans/H1036-068-000-benefits.md (38 medical benefits first).",
+  "status": "Written 2026-10-24, before the Part D importer; run on the golden file since the importer read the Part D files (2026-10-24), by scripts/from-pbp.test.js: 46 checks, 45 MATCH, 1 READING, 0 DIFFERENCE. The benefit indexes are those of docs/specs/pbp-part-d/profile/plans/H1036-068-000-benefits.md (38 medical benefits first).",
   "checks": [
     {
       "item": "Pharmacy (Part D) deductible and the tiers it applies to",

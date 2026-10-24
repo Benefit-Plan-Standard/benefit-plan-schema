@@ -10,7 +10,7 @@
   },
   "golden": "examples/unitedhealthcare-aarp-medicare-rx-preferred-from-uhc.pbp.json",
   "spec": "docs/specs/pbp-part-d-mapping.md section 18",
-  "status": "Written 2026-10-24, before the Part D importer: the golden file does not exist yet (the plan joins GOLDEN in session 2), so these checks pass only once session 2 builds it. The benefit indexes are those of docs/specs/pbp-part-d/profile/plans/S5921-383-000-benefits.md (a PDP has no medical benefits).",
+  "status": "Written 2026-10-24, before the Part D importer; run on the golden file since the plan joined GOLDEN (2026-10-24), by scripts/from-pbp.test.js: 43 checks, 40 MATCH, 3 READING, 0 DIFFERENCE. The benefit indexes are those of docs/specs/pbp-part-d/profile/plans/S5921-383-000-benefits.md (a PDP has no medical benefits).",
   "checks": [
     {
       "item": "Plan type",

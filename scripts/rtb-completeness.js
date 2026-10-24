@@ -240,9 +240,13 @@ function report(rows, { misses }) {
   return out.join('\n');
 }
 
+// The 10 medical examples. The 2 stand-alone Part D plans among examples/*.pbp.json
+// (plan_type "PDP", docs/specs/pbp-part-d-mapping.md section 4) have no medical benefit
+// and are outside the medical MVP.
 function exampleFiles() {
   const dir = path.join(REPO_ROOT, 'examples');
-  return fs.readdirSync(dir).filter((f) => /\.(pbp|puf)\.json$/.test(f)).sort().map((f) => path.join(dir, f));
+  return fs.readdirSync(dir).filter((f) => /\.(pbp|puf)\.json$/.test(f)).sort().map((f) => path.join(dir, f))
+    .filter((f) => JSON.parse(fs.readFileSync(f, 'utf8')).plan_type !== 'PDP');
 }
 
 function main(argv) {

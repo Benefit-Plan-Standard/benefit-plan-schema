@@ -2,7 +2,7 @@
   "resourceType": "CodeSystem",
   "id": "canonical-benefits",
   "url": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "name": "BPSCanonicalBenefits",
   "title": "BPS Canonical Benefits",
   "status": "draft",
@@ -11,7 +11,7 @@
   "description": "The Benefit Plan Standard canonical benefit identifiers (vocabularies/canonical-benefits.json), as a FHIR CodeSystem. Non-normative and extensible in BPS; generated from the vocabulary file.",
   "caseSensitive": true,
   "content": "complete",
-  "count": 118,
+  "count": 124,
   "concept": [
     {
       "code": "aba_therapy",
@@ -269,9 +269,19 @@
       "definition": "Generic prescription medications."
     },
     {
+      "code": "injectable_drugs",
+      "display": "Injectable drugs",
+      "definition": "Injectable drugs on a formulary tier of their own (the CMS Plan Benefit Package Part D tier label \"Injectable Drugs\", on 268 tier rows of Medicare Advantage plans with drug coverage and stand-alone Part D plans in contract year 2027)."
+    },
+    {
       "code": "nonpreferred_brand_drugs",
       "display": "Non-preferred brand drugs",
       "definition": "Non-preferred brand-name prescription medications."
+    },
+    {
+      "code": "nonpreferred_drugs",
+      "display": "Non-preferred drugs",
+      "definition": "Brand and generic drugs on a plan's non-preferred tier, as 1 tier (the CMS Plan Benefit Package Part D tier label \"Non-Preferred Drug\", on 5,214 tier rows of Medicare Advantage plans with drug coverage and stand-alone Part D plans in contract year 2027). Where the source's tier holds brand drugs only, use nonpreferred_brand_drugs."
     },
     {
       "code": "nonpreferred_specialty_drugs",
@@ -299,9 +309,24 @@
       "definition": "Preventive medications covered under ACA preventive care."
     },
     {
+      "code": "select_care_drugs",
+      "display": "Select care drugs",
+      "definition": "A plan-defined formulary tier of drugs for selected conditions (the CMS Plan Benefit Package Part D tier label \"Select Care Drugs\", on 846 tier rows of Medicare Advantage plans with drug coverage and stand-alone Part D plans in contract year 2027)."
+    },
+    {
+      "code": "select_diabetic_drugs",
+      "display": "Select diabetic drugs",
+      "definition": "A plan-defined formulary tier of selected diabetes drugs (the CMS Plan Benefit Package Part D tier label \"Select Diabetic Drugs\", on 24 tier rows of Medicare Advantage plans with drug coverage and stand-alone Part D plans in contract year 2027)."
+    },
+    {
       "code": "specialty_drugs",
       "display": "Specialty drugs",
       "definition": "Specialty medications typically requiring special handling."
+    },
+    {
+      "code": "supplemental_drugs",
+      "display": "Supplemental drugs",
+      "definition": "Drugs excluded from Part D that the plan covers as a supplemental benefit, on a formulary tier of their own (the CMS Plan Benefit Package Part D tier label \"Supplemental Drugs\", on 52 tier rows of Medicare Advantage plans with drug coverage and stand-alone Part D plans in contract year 2027)."
     },
     {
       "code": "tier_5_drugs",
@@ -312,6 +337,11 @@
       "code": "tier_6_drugs",
       "display": "Tier 6 drugs",
       "definition": "Tier 6 prescription medications (plan-defined highest tier)."
+    },
+    {
+      "code": "vaccine_drugs",
+      "display": "Part D vaccines",
+      "definition": "Part D vaccines on a formulary tier of their own (the CMS Plan Benefit Package Part D tier label \"Vaccines\", on 130 tier rows of Medicare Advantage plans with drug coverage and stand-alone Part D plans in contract year 2027). The medical service of giving a vaccine is immunizations."
     },
     {
       "code": "immunizations",
