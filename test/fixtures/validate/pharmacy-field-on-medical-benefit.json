@@ -1,0 +1,24 @@
+{
+  "plan_id": "FIXTURE_PHARMACY_FIELD_ON_MEDICAL",
+  "plan_name": "Fixture: a pharmacy module field on a medical benefit",
+  "carrier": "Fixture carrier",
+  "network_tiers": [
+    { "tier_id": "IN", "name": "In-Network" }
+  ],
+  "benefits": [
+    {
+      "benefit_id": "PCP_VISIT",
+      "category": "PHYSICIAN_SERVICES",
+      "service_name": "Primary care visit",
+      "canonical_key": "primary_care",
+      "day_supply": 30,
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": true,
+          "cost_shares": [
+            { "type": "copay", "sequence": 1, "amount": 25, "basis": "per_visit" }
+          ] }
+      ]
+    }
+  ],
+  "schema_version": "1.2.0"
+}

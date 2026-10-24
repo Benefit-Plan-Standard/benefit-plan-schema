@@ -116,9 +116,29 @@ The changes since version 0.2 are listed by version, 0.2.1 first. Version 0.3 se
 - A third question for the workgroup asks how an app finds a pledgee's root.
 - The 0.3.1 bullet on `--downloaded` says that both importers still accept it.
 
+## [1.2.0] – DRAFT (2026-10-24), draft 6: the pharmacy module v0.2.1 in core, `moop_ref`, and the first adopter on record
+
+The 1.2.0 schema stays a draft under the release rule in `docs/governance.md` (Releases); each published draft is a git tag, and this one is `v1.2.0-draft.6`. Every addition is optional and no existing field changes type or meaning: the 20 documents in `examples/` validate against draft 6 unchanged, and the 15 Bundles in `examples/fhir/` and the 5 in `examples/fhir-puf/` are byte-identical. The module schema file, `modules/pharmacy/v0.2.1/pharmacy.schema.json`, is unchanged, and the medical MVP specification 0.3.5 is unchanged, with both of its `--check` scripts passing.
+
+### Added
+
+- `schema/v1.2.0/benefit-plan.schema.json` (draft): the pharmacy module v0.2.1 wired into core, by copy and not by a `$ref` to a second file, so a validator needs only the core file. `pharmacy` gains `formulary_tiers` (array of `$defs/formulary_tier`), `pharmacy_networks` (array of `$defs/pharmacy_network`), `formulary_items` (array of `$defs/formulary_item`), `formulary_reference` (`$defs/formulary_reference`) and `mail_order_supply_multiplier` (number), so it has every property of the module's `pharmacy` object and validates as it does. `$defs` gains `formulary_tier`, `pharmacy_network`, `coverage_stage`, `quantity_limit_detail`, `formulary_item`, `coverage_exception`, `formulary_alternative` and `formulary_reference`, copied unchanged from the module. `benefits[]` items gain the module's benefit extension fields, for `benefit_type: "pharmacy"`: `formulary_tier_id`, `pharmacy_network_id` and `coverage_stage_id` (string), `day_supply` (integer), `drug_examples` (array of string), `step_therapy_required` (boolean or null) and `quantity_limit` (`$defs/quantity_limit_detail`). `source_plan_identifiers` stays inside `formulary_reference`, because it names the plan the formulary file was read for, which can differ from the document's own `plan_identifiers`.
+- `cost_shares[].moop_ref` (string or null, default null): which out-of-pocket maximum `applies_to_moop` refers to when the plan has more than one, with the recommended values `medical` (the out-of-pocket maximums in `accumulators`) and `pharmacy` (`pharmacy.out_of_pocket_max`, the Part D threshold); absent or null means the plan's medical maximum, the reading before draft 6. It mirrors `deductible_ref`, `applies_to_moop` is unchanged, and the gap was found by RxCare on October 23, 2026.
+- `scripts/validate.js` warns, and never fails, when a benefit extension field is on a benefit whose `benefit_type` is not `pharmacy`, and when a `formulary_tier_id`, `pharmacy_network_id` or `coverage_stage_id` names an id that the document's `pharmacy` object does not define. `test/fixtures/validate/` holds 1 document for each warning, and `scripts/validate.test.js` has 4 tests.
+- `scripts/schema.test.js`, 4 tests (7 in all): the 8 copied shapes are deep-equal to the module's; core `pharmacy` and the benefit extension fields validate as the module's; `moop_ref` behaves as `deductible_ref`, an unknown string accepted and a number rejected; and the 2 module examples validate against core and against the module. `scripts/to-insuranceplan.test.js`, 1 test (69 in all): the 2 module examples convert, and the module fields and `moop_ref` change nothing in the Bundle, because the SBC InsurancePlan profile has no formulary. `node --test scripts/*.test.js`: 170 tests, was 161.
+- `ADOPTERS.md`: what an adopter is under the release rule, how to be listed, and the first entry, RxCare, which adopted the 1.2.0 draft at draft 5 with the pharmacy module v0.2.1. `docs/governance.md` (Releases) points to it.
+
+### Changed
+
+- `schema/v1.2.0/benefit-plan.schema.json` (draft): `pharmacy.coverage_stages` items refer to `$defs/coverage_stage`, the module's shape. The inline item it replaces validated the same way; the item descriptions are now the module's wording. The `pharmacy` description no longer says that the module's other layers are not wired into core, and the root description names draft 6.
+- `modules/pharmacy/v0.2.1/examples/`: both examples drop their top-level `_comment`, which core's root does not admit, and give `schema_version` 1.2.0; the module README now says what the comments said. `humana_part_d_example.json`, a standalone prescription drug plan with no medical maximum, moves its $2,100 cap from `accumulators.individual_oop_max` to `pharmacy.out_of_pocket_max`, and its 6 cost shares carry `moop_ref: "pharmacy"`. `formulary_indication_example.json` is a commercial plan with 1 maximum and has no Part D cost share, so it carries no `moop_ref`.
+- `modules/pharmacy/v0.2.1/README.md`: Core integration says what draft 6 wired in and closes the `source_plan_identifiers` question, What this module is NOT no longer says it is not wired into core, and How to validate adds the check against core.
+- `README.md`: draft 6, `ADOPTERS.md` in the links and the tree, the validator's pharmacy warnings, and the new fixture folder.
+- This changelog: the entries of 2026-10-20 and 2026-10-21 said that the 1.2.0 schema is not tagged. Each published draft is a git tag, `v1.2.0-draft.1` of 2026-09-20 and `v1.2.0-draft.2` to `v1.2.0-draft.5` of 2026-10-21, and those 2 sentences now say so.
+
 ## [1.2.0] – DRAFT (2026-10-21), medical MVP specification 0.3; accumulator network tiers as tier ids
 
-The 1.2.0 schema stays a draft under the release rule in `docs/governance.md` (Releases) and is not tagged.
+The 1.2.0 schema stays a draft under the release rule in `docs/governance.md` (Releases); each published draft is a git tag (`v1.2.0-draft.N`).
 
 ### Added
 
@@ -134,7 +154,7 @@ The 1.2.0 schema stays a draft under the release rule in `docs/governance.md` (R
 
 ## [1.2.0] – DRAFT (2026-10-20), contacts and the provider directory link; the medical MVP gaps G1 to G8 closed
 
-The 1.2.0 schema stays a draft under the release rule in `docs/governance.md` (Releases) and is not tagged.
+The 1.2.0 schema stays a draft under the release rule in `docs/governance.md` (Releases); each published draft is a git tag (`v1.2.0-draft.N`).
 
 ### Added
 

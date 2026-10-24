@@ -1,5 +1,4 @@
 {
-  "_comment": "ILLUSTRATIVE example for the pharmacy module v0.2.1 — NOT a real plan and NOT any specific carrier's coverage policy. It demonstrates the drug-level formulary layer (pharmacy.formulary_items[]) and indication-dependent coverage (coverage_exceptions[]). Semaglutide is used because it is the public textbook case of indication-dependent coverage (covered for type 2 diabetes, excluded for weight management, conditional for cardiovascular risk reduction). All coverage values, identifiers, and restrictions here are generic illustrations authored for module review; they are not extracted from any carrier's prior-authorization bulletin. The module is structure, not data — adopters supply their own formularies.",
   "plan_id": "ILLUSTRATIVE_COMMERCIAL_RX_2026",
   "plan_name": "Illustrative Commercial Plan — Pharmacy (v0.2.1 demo)",
   "carrier": "Example Health (illustrative)",
@@ -129,5 +128,5 @@
   "source_references": [
     { "page_number": 1, "excerpt": "Illustrative example authored for BPS pharmacy module v0.2.1 review. Not a real plan." }
   ],
-  "schema_version": "1.1.0"
+  "schema_version": "1.2.0"
 }

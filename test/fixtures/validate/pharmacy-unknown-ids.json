@@ -1,0 +1,54 @@
+{
+  "plan_id": "FIXTURE_PHARMACY_UNKNOWN_IDS",
+  "plan_name": "Fixture: pharmacy ids the pharmacy object does not define",
+  "carrier": "Fixture carrier",
+  "network_tiers": [
+    { "tier_id": "IN", "name": "In-Network" }
+  ],
+  "pharmacy": {
+    "formulary_tiers": [
+      { "tier_id": "T1", "name": "Tier 1, generic" }
+    ],
+    "pharmacy_networks": [
+      { "network_id": "RETAIL", "name": "Retail" }
+    ],
+    "coverage_stages": [
+      { "stage_id": "INITIAL", "name": "Initial Coverage" }
+    ]
+  },
+  "benefits": [
+    {
+      "benefit_id": "RX_T1_RETAIL_INITIAL",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 1, retail, initial coverage",
+      "canonical_key": "generic_drugs",
+      "formulary_tier_id": "T1",
+      "pharmacy_network_id": "RETAIL",
+      "coverage_stage_id": "INITIAL",
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": true,
+          "cost_shares": [
+            { "type": "copay", "sequence": 1, "amount": 5, "basis": "per_prescription", "moop_ref": "pharmacy" }
+          ] }
+      ]
+    },
+    {
+      "benefit_id": "RX_T9_MAIL_CATASTROPHIC",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 9, mail order, catastrophic coverage",
+      "canonical_key": "specialty_drugs",
+      "formulary_tier_id": "T9",
+      "pharmacy_network_id": "MAIL",
+      "coverage_stage_id": "CATASTROPHIC",
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": true,
+          "cost_shares": [
+            { "type": "copay", "sequence": 1, "amount": 0, "basis": "per_prescription", "moop_ref": "pharmacy" }
+          ] }
+      ]
+    }
+  ],
+  "schema_version": "1.2.0"
+}

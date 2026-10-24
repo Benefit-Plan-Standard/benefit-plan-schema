@@ -27,7 +27,7 @@ But real pharmacy benefits — especially Medicare Part D and tiered commercial 
 1. An **optional top-level `pharmacy` object** defining the formulary structure, pharmacy networks, coverage stages, and pharmacy-specific accumulators.
 2. **Optional extension fields** on `benefits[]` items (when `benefit_type: "pharmacy"`) that reference into the pharmacy structure: `formulary_tier_id`, `pharmacy_network_id`, `coverage_stage_id`, `day_supply`, `step_therapy_required`, `quantity_limit`.
 
-See `examples/humana_part_d_example.json` (a Medicare Part D plan, CY2026 post-IRA design, exercising tiers, networks, the deductible / initial / catastrophic stages, a pharmacy deductible, and day-supply variation).
+See `examples/humana_part_d_example.json` (a Medicare Part D plan, CY2026 post-IRA design, exercising tiers, networks, the deductible / initial / catastrophic stages, a pharmacy deductible, and day-supply variation). It is not a real Humana plan, and its values are illustrative: the CY2026 standard maximum deductible is $615 and this plan sets $300; the $2,100 annual out-of-pocket cap is `pharmacy.out_of_pocket_max`; the member pays $0 in the catastrophic stage. Every cost share counts toward that cap and says so with `moop_ref: "pharmacy"`, a field of the Benefit Plan Standard 1.2.0 draft 6.
 
 ### Layer 2 — drug-level formulary and indication-dependent coverage *(new in v0.2.0)*
 
@@ -40,6 +40,8 @@ The structural layer says *"this plan has a Tier 3 with a $47 copay."* The drug-
 
 See `examples/formulary_indication_example.json` — a generic, illustrative plan that puts a plain generic on Tier 1 and a GLP-1 (semaglutide) on Tier 3 with three `coverage_exceptions` (covered for type 2 diabetes, excluded for weight management, conditional for cardiovascular risk reduction). The shared `quantity_limit_detail` shape is reused across the benefit extension, `formulary_item`, and `restrictions_override` so a quantity limit has one representation everywhere.
 
+The formulary example is not a real plan and not any carrier's coverage policy: its coverage values, identifiers and restrictions were written for review of the module and are not taken from any carrier's prior-authorization bulletin. It is a commercial plan whose drug cost shares count toward the plan's single out-of-pocket maximum, so they carry no `moop_ref`.
+
 All v0.2.0 additions are **backward-compatible** with BPS v1.1.0 and with v0.1.0 pharmacy documents.
 
 ## Relationship to FHIR
@@ -51,7 +53,7 @@ This module is deliberately positioned where FHIR cannot reach. FHIR DaVinci `Fo
 - **Not normative.** The schema fragment in `v0.2.1/pharmacy.schema.json` is published for community review.
 - **Not a complete drug formulary.** This module is about structure, not data. Adopters supply their own formularies.
 - **Not a replacement for NCPDP, RxNorm, or NDC.** Those identify drugs (`rxcui`/`ndc` reference them). This module models how a plan covers them.
-- **Not yet wired into the core schema.** See "Core integration" below.
+- **Not a second schema that a core document needs.** The core schema carries the module since the Benefit Plan Standard 1.2.0 draft 6; see "Core integration" below.
 
 ## Resolved in v0.2.0
 
@@ -67,11 +69,19 @@ These v0.1.0 review questions are answered by this iteration:
 - **Pharmacy networks as a separate concept from `network_tiers[]`.** Kept separate in v0.1.0/v0.2.0; still want adopter feedback on whether that's the right call.
 - **Medicare Part D discriminator.** Do we need an explicit `pharmacy.type: "medicare_part_d" | "commercial"` rather than inferring from the presence of `coverage_stages`?
 - **Compound drugs**, **mail-order-required-after-N-fills**, **vaccines** (often $0 at preferred retail), and **coupons / manufacturer assistance** (MOOP treatment) — deferred to a later iteration.
-- **`source_plan_identifiers` placement.** Pharmacy-scoped today; a future BPS minor release may graduate these to a core plan-identity field (see "Core integration").
 
-## Core integration (later — not this PR)
+## Core integration (the Benefit Plan Standard 1.2.0 draft 6)
 
-When the module graduates into core **BPS v1.2.0**, the core `benefit-plan.schema.json` will need: a `$ref` to this module (or inlined `$defs`), the plan object opened to allow the `pharmacy` object and the pharmacy benefit-extension fields, and a decision on graduating `source_plan_identifiers` to a top-level core plan-identity field. That wiring is intentionally **out of scope** for this draft.
+The core schema, `schema/v1.2.0/benefit-plan.schema.json`, took the module in the Benefit Plan Standard 1.2.0 draft 6, on October 24, 2026. It copies the module's shapes instead of referring to this file, so that a validator needs only the core file:
+
+- The core `pharmacy` object has every property of the module's: `formulary_tiers`, `pharmacy_networks`, `formulary_items`, `formulary_reference` and `mail_order_supply_multiplier` join `deductible`, `out_of_pocket_max` and `coverage_stages`. A `pharmacy` object is valid under core exactly when it is valid under the module.
+- Core `$defs` holds `formulary_tier`, `pharmacy_network`, `coverage_stage`, `quantity_limit_detail`, `formulary_item`, `coverage_exception`, `formulary_alternative` and `formulary_reference`, copied unchanged from this module. This file stays as it is at v0.2.1, and `scripts/schema.test.js` fails if a copy in core differs from it.
+- The benefit extension fields, `formulary_tier_id`, `pharmacy_network_id`, `coverage_stage_id`, `day_supply`, `drug_examples`, `step_therapy_required` and `quantity_limit`, are optional properties of core `benefits[]` items, for a benefit with `benefit_type: "pharmacy"`. `scripts/validate.js` warns, and does not fail, when one of them is on a benefit of another type, or when a `formulary_tier_id`, `pharmacy_network_id` or `coverage_stage_id` names an id that the document's `pharmacy` object does not define.
+- Core `cost_shares[]` has `moop_ref`, which says which out-of-pocket maximum `applies_to_moop` refers to, as `deductible_ref` does for the deductible: `medical` (the out-of-pocket maximums in `accumulators`) or `pharmacy` (`pharmacy.out_of_pocket_max`, the Part D threshold). Absent or null means the medical maximum.
+
+`source_plan_identifiers` stays inside `formulary_reference` and does not graduate to core, because it names the plan the formulary file was read for, which can differ from the document's own `plan_identifiers`.
+
+Both examples validate against the module and against the core draft.
 
 ## How to validate
 
@@ -81,6 +91,10 @@ ajv validate -s modules/pharmacy/v0.2.1/pharmacy.schema.json \
 
 ajv validate -s modules/pharmacy/v0.2.1/pharmacy.schema.json \
   -d modules/pharmacy/v0.2.1/examples/humana_part_d_example.json --strict=false
+
+node scripts/validate.js --schema schema/v1.2.0/benefit-plan.schema.json \
+  modules/pharmacy/v0.2.1/examples/formulary_indication_example.json \
+  modules/pharmacy/v0.2.1/examples/humana_part_d_example.json
 ```
 
 ## Provide feedback

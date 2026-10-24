@@ -27,7 +27,7 @@ The schema and supporting materials are maintained under an open governance mode
 ### Releases
 
 1. Draft versions are published for community testing and feedback.  
-2. Final releases require successful implementation and validation by at least two independent adopters.  
+2. Final releases require successful implementation and validation by at least two independent adopters. Adopters are recorded in [`ADOPTERS.md`](../ADOPTERS.md), each with its evidence and whether it is independent of the maintainer.  
 3. Release notes summarize changes and provide migration guidance.
 
 ## Contact

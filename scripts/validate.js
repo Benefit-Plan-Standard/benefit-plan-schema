@@ -8,6 +8,12 @@
  *                          vocabularies (categories, canonical benefit keys,
  *                          markets, plan types). Warnings only, because the
  *                          vocabularies are non-normative and extensible.
+ * Pharmacy references:     The pharmacy module benefit fields (v1.2.0 draft 6)
+ *                          on a benefit whose benefit_type is not "pharmacy",
+ *                          and a formulary_tier_id, pharmacy_network_id or
+ *                          coverage_stage_id that the document's pharmacy
+ *                          object does not define. Warnings only, never a
+ *                          failure, not even with --strict-vocab.
  *
  * Usage:
  *   npm install ajv ajv-formats        (one time)
@@ -110,6 +116,38 @@ function vocabWarnings(plan, v) {
   return warns;
 }
 
+// ---- pharmacy references (advisory) ------------------------------------------
+// The pharmacy module v0.2.1 benefit extension fields, in core since v1.2.0 draft 6,
+// and the pharmacy object list each id field names.
+const PHARMACY_BENEFIT_FIELDS = ['formulary_tier_id', 'pharmacy_network_id', 'coverage_stage_id',
+  'day_supply', 'drug_examples', 'step_therapy_required', 'quantity_limit'];
+const PHARMACY_ID_FIELDS = [
+  { field: 'formulary_tier_id', list: 'formulary_tiers', key: 'tier_id' },
+  { field: 'pharmacy_network_id', list: 'pharmacy_networks', key: 'network_id' },
+  { field: 'coverage_stage_id', list: 'coverage_stages', key: 'stage_id' },
+];
+
+function pharmacyWarnings(plan) {
+  const warns = [];
+  const rx = plan.pharmacy || {};
+  const ids = {};
+  for (const { list, key } of PHARMACY_ID_FIELDS) ids[list] = new Set((rx[list] || []).map((x) => x[key]));
+  (plan.benefits || []).forEach((b, i) => {
+    const type = b.benefit_type || 'medical';
+    if (type !== 'pharmacy') {
+      for (const f of PHARMACY_BENEFIT_FIELDS) {
+        if (b[f] !== undefined)
+          warns.push(`benefits[${i}].${f} is set on a benefit whose benefit_type is "${type}"${b.benefit_type ? '' : ' (the default)'}; it applies to benefit_type "pharmacy"`);
+      }
+    }
+    for (const { field, list, key } of PHARMACY_ID_FIELDS) {
+      if (typeof b[field] === 'string' && !ids[list].has(b[field]))
+        warns.push(`benefits[${i}].${field} "${b[field]}" is not a ${key} in pharmacy.${list}`);
+    }
+  });
+  return warns;
+}
+
 // ---- run -------------------------------------------------------------------
 const vocab = checkVocab ? loadVocab() : null;
 let anySchemaFailure = false;
@@ -139,6 +177,8 @@ for (const file of files) {
       console.log(`      vocabulary: all category/canonical_key/market/plan_type values are canonical`);
     }
   }
+
+  for (const w of pharmacyWarnings(plan)) console.log(`      pharmacy-warning: ${w}`);
 }
 
 process.exit(anySchemaFailure || (strictVocab && anyVocabWarning) ? 1 : 0);

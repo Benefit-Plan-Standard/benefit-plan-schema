@@ -5,8 +5,9 @@
  *
  * Fails if the converter's output drifts from the golden files in examples/fhir/,
  * if output is not deterministic, if a plan-level source reference reaches a
- * benefit, if a benefit is lost, if fhir/definitions/ is out of date, or if the
- * derived excluded-services extension lists the wrong benefits.
+ * benefit, if a benefit is lost, if fhir/definitions/ is out of date, if the
+ * derived excluded-services extension lists the wrong benefits, or if a pharmacy
+ * module field of the v1.2.0 draft 6 changes a Bundle.
  * Regenerate goldens on purpose with: node scripts/to-insuranceplan.js --write-golden
  */
 
@@ -308,4 +309,30 @@ test('rejects unsupported schema versions and unknown tiers', () => {
   const bps = readJson(path.join(EXAMPLES_DIR, examples[0]));
   bps.benefits[0].network_cost_shares[0].tier_id = 'NOPE';
   assert.throws(() => toInsurancePlanBundle(bps), /unknown tier_id/);
+});
+
+// ---- pharmacy module v0.2.1 documents (schema 1.2.0 draft 6) ---------------------
+// The SBC InsurancePlan profile has no formulary, so the converter ignores the pharmacy
+// module fields that core admits since draft 6, and cost_shares[].moop_ref with them.
+const MODULE_EXAMPLES = path.join(__dirname, '..', 'modules', 'pharmacy', 'v0.2.1', 'examples');
+const MODULE_PHARMACY_FIELDS = ['formulary_tiers', 'pharmacy_networks', 'formulary_items', 'formulary_reference', 'mail_order_supply_multiplier'];
+const MODULE_BENEFIT_FIELDS = ['formulary_tier_id', 'pharmacy_network_id', 'coverage_stage_id', 'day_supply', 'drug_examples', 'step_therapy_required', 'quantity_limit'];
+
+test('the 2 pharmacy module v0.2.1 examples convert, and the module fields and moop_ref change nothing in the Bundle', () => {
+  const files = fs.readdirSync(MODULE_EXAMPLES).filter((f) => f.endsWith('.json')).sort();
+  assert.deepStrictEqual(files, ['formulary_indication_example.json', 'humana_part_d_example.json']);
+  for (const file of files) {
+    const bps = readJson(path.join(MODULE_EXAMPLES, file));
+    const plan = toInsurancePlanBundle(bps).entry[0].resource;
+    assert.strictEqual(plan.extension.filter((e) => e.url === UNMAPPED).length, 0, `${file}: every drug tier row is placed`);
+    assert.strictEqual(plan.coverage.flatMap((c) => c.benefit).length, bps.benefits.length, file);
+    const without = JSON.parse(JSON.stringify(bps));
+    for (const k of MODULE_PHARMACY_FIELDS) delete without.pharmacy[k];
+    for (const b of without.benefits) {
+      for (const k of MODULE_BENEFIT_FIELDS) delete b[k];
+      for (const row of b.network_cost_shares) for (const cs of row.cost_shares || []) delete cs.moop_ref;
+    }
+    assert.notDeepStrictEqual(without, bps, `${file} carries module fields`);
+    assert.strictEqual(serialize(toInsurancePlanBundle(bps)), serialize(toInsurancePlanBundle(without)), file);
+  }
 });

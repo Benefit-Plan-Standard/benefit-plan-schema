@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://benefitplanstandard.org/schema/v1.2.0/benefit-plan.schema.json",
   "title": "Benefit Plan Standard Schema",
-  "description": "Canonical JSON schema for representing normalized health benefit plans across carriers. v1.2.0 (DRAFT) is a backward-compatible minor release that adds network-tier classification (tier_class, parent_tier_id, provider_set) and verbatim limit text (limits[].raw_text). Origin: reconciliation of the three InsurancePlan changes merged into the HL7 CARIN Digital Insurance Card IG in June 2026 (FHIR-57525 multi-tier cost sharing, FHIR-57526 deductible applicability, FHIR-57527 structured benefit limitation). See docs/carin-dic-reconciliation.md. The draft also adds Medicare Advantage fields (gaps G1 to G11 and G14 of docs/medicare-advantage-notes.md), motivated by two 2026 CMS Summary of Benefits documents (SCAN Classic HMO, Los Angeles; Humana Gold Plus H1036-025 HMO): plan_identifiers, service_area, premium, part_b_premium_reduction, the pharmacy accumulators object, cost-share unit ranges, caps and ranges, deductible_ref, coverage_basis, alternative_group, limit scope, shared limits and carryover, and per-benefit source_references. On 2026-10-20 the draft adds 2 optional fields for the medical MVP technical specification of the CMS Health Tech Ecosystem Real-Time Benefits workgroup (docs/specs/rtb-medical-mvp/): contacts (member services phone and website) and network_tiers[].provider_directory_url.",
+  "description": "Canonical JSON schema for representing normalized health benefit plans across carriers. v1.2.0 (DRAFT) is a backward-compatible minor release that adds network-tier classification (tier_class, parent_tier_id, provider_set) and verbatim limit text (limits[].raw_text). Origin: reconciliation of the three InsurancePlan changes merged into the HL7 CARIN Digital Insurance Card IG in June 2026 (FHIR-57525 multi-tier cost sharing, FHIR-57526 deductible applicability, FHIR-57527 structured benefit limitation). See docs/carin-dic-reconciliation.md. The draft also adds Medicare Advantage fields (gaps G1 to G11 and G14 of docs/medicare-advantage-notes.md), motivated by two 2026 CMS Summary of Benefits documents (SCAN Classic HMO, Los Angeles; Humana Gold Plus H1036-025 HMO): plan_identifiers, service_area, premium, part_b_premium_reduction, the pharmacy accumulators object, cost-share unit ranges, caps and ranges, deductible_ref, coverage_basis, alternative_group, limit scope, shared limits and carryover, and per-benefit source_references. On 2026-10-20 the draft adds 2 optional fields for the medical MVP technical specification of the CMS Health Tech Ecosystem Real-Time Benefits workgroup (docs/specs/rtb-medical-mvp/): contacts (member services phone and website) and network_tiers[].provider_directory_url. Draft 6, on 2026-10-24, wires the pharmacy module v0.2.1 into core: the rest of its pharmacy object (formulary_tiers, pharmacy_networks, formulary_items, formulary_reference, mail_order_supply_multiplier) with its shapes copied into $defs, its benefit extension fields on benefits[] items (formulary_tier_id, pharmacy_network_id, coverage_stage_id, day_supply, drug_examples, step_therapy_required, quantity_limit), and cost_shares[].moop_ref, the out-of-pocket counterpart of deductible_ref.",
   "type": "object",
   "properties": {
     "plan_id": {
@@ -245,7 +245,7 @@
     },
     "pharmacy": {
       "type": "object",
-      "description": "Pharmacy-specific accumulators and coverage stages (closes gap G4 of the Medicare Advantage notes). A Medicare Advantage plan with drug coverage runs a Part D deductible scoped to drug tiers (SCAN: 'You pay the full cost of your Tier 3 through Tier 5 drugs until you have paid $250') and a Part D out-of-pocket threshold separate from the medical maximum (both source documents: $2,100, after which the member pays $0), and neither fits the accumulators object. Shapes are inlined unchanged from the pharmacy module v0.2.1, of which this object is a strict subset; the module's other layers (formulary_tiers, pharmacy_networks, formulary_items, formulary_reference) are not yet wired into core. Typed as object only, not null, so that every pharmacy value core accepts is also valid under the module's own pharmacy object.",
+      "description": "Pharmacy-specific accumulators and coverage stages (closes gap G4 of the Medicare Advantage notes). A Medicare Advantage plan with drug coverage runs a Part D deductible scoped to drug tiers (SCAN: 'You pay the full cost of your Tier 3 through Tier 5 drugs until you have paid $250') and a Part D out-of-pocket threshold separate from the medical maximum (both source documents: $2,100, after which the member pays $0), and neither fits the accumulators object. Since v1.2.0 draft 6 (2026-10-24) the object has every property of the pharmacy module v0.2.1's pharmacy object: formulary_tiers, pharmacy_networks, formulary_items, formulary_reference and mail_order_supply_multiplier join deductible, out_of_pocket_max and coverage_stages, so a pharmacy value is valid here exactly when it is valid under the module. The shapes formulary_tier, pharmacy_network, coverage_stage, quantity_limit_detail, formulary_item, coverage_exception, formulary_alternative and formulary_reference in $defs are copied unchanged from modules/pharmacy/v0.2.1/pharmacy.schema.json, so a validator needs no second file, and scripts/schema.test.js fails if a copy differs from the module. Typed as object only, not null, so that every pharmacy value core accepts is also valid under the module's own pharmacy object.",
       "properties": {
         "deductible": {
           "type": "object",
@@ -276,34 +276,31 @@
         },
         "coverage_stages": {
           "type": "array",
-          "description": "Coverage stages, primarily for Medicare Part D plans (gap G4). Post-2025 (IRA redesign): Deductible, Initial Coverage, Catastrophic Coverage. Same item shape as pharmacy.coverage_stages in the pharmacy module v0.2.1.",
-          "items": {
-            "type": "object",
-            "properties": {
-              "stage_id": {
-                "type": "string",
-                "description": "Plan-defined identifier. Medicare Part D canonical values (post-2025 redesign): 'DEDUCTIBLE', 'INITIAL', 'CATASTROPHIC'. 'COVERAGE_GAP' remains valid for plan years before 2025."
-              },
-              "name": {
-                "type": "string",
-                "description": "Display name (e.g. 'Deductible', 'Initial Coverage', 'Catastrophic Coverage')."
-              },
-              "stage_type": {
-                "type": "string",
-                "description": "Kind of stage. Recommended Medicare Part D values (post-2025 redesign): 'deductible', 'initial', 'catastrophic'. 'coverage_gap' remains valid for plan years before 2025."
-              },
-              "applies_before_total_drug_cost": {
-                "type": ["number", "null"],
-                "description": "Total-drug-cost ceiling at which this stage ends (Medicare Part D)."
-              },
-              "applies_after_total_out_of_pocket": {
-                "type": ["number", "null"],
-                "description": "Total-OOP threshold at which this stage begins (Medicare Part D catastrophic)."
-              }
-            },
-            "required": ["stage_id", "name"],
-            "additionalProperties": false
-          }
+          "description": "Coverage stages, primarily for Medicare Part D plans (gap G4). Post-2025 (IRA redesign): Deductible, Initial Coverage, Catastrophic Coverage. Item shape: $defs/coverage_stage, copied from the pharmacy module v0.2.1 (since v1.2.0 draft 6; the inline item it replaces validated the same way). benefits[].coverage_stage_id names these stage_id values.",
+          "items": { "$ref": "#/$defs/coverage_stage" }
+        },
+        "formulary_tiers": {
+          "type": "array",
+          "description": "Drug formulary tiers (e.g., generic, preferred brand, non-preferred brand, specialty). Order is preserved. Item shape: $defs/formulary_tier, copied from the pharmacy module v0.2.1 (since v1.2.0 draft 6). benefits[].formulary_tier_id, formulary_items[].formulary_tier_id and deductible.applies_to_tiers name these tier_id values.",
+          "items": { "$ref": "#/$defs/formulary_tier" }
+        },
+        "pharmacy_networks": {
+          "type": "array",
+          "description": "Pharmacy network tiers (e.g., preferred retail, standard retail, mail order, specialty pharmacy). A separate concept from the medical `network_tiers[]`. Item shape: $defs/pharmacy_network, copied from the pharmacy module v0.2.1 (since v1.2.0 draft 6). benefits[].pharmacy_network_id names these network_id values.",
+          "items": { "$ref": "#/$defs/pharmacy_network" }
+        },
+        "formulary_items": {
+          "type": "array",
+          "description": "Optional drug-level formulary. Each entry places a drug on a formulary tier and carries utilization-management flags and optional indication-dependent coverage. Optional because many plans publish tier structure without a full drug list. This is structure for drug data; adopters supply their own formularies. Item shape: $defs/formulary_item, copied from the pharmacy module v0.2.1 (since v1.2.0 draft 6).",
+          "items": { "$ref": "#/$defs/formulary_item" }
+        },
+        "formulary_reference": {
+          "$ref": "#/$defs/formulary_reference",
+          "description": "Provenance and identity metadata for the plan's formulary data. Shape: $defs/formulary_reference, copied from the pharmacy module v0.2.1 (since v1.2.0 draft 6). Its source_plan_identifiers name the plan the formulary data was read for, which can differ from this document's own plan_identifiers, so they stay here and are not a second plan identity."
+        },
+        "mail_order_supply_multiplier": {
+          "type": "number",
+          "description": "When mail-order is a 90-day supply for the cost of N retail copays, this is N. Common values: 2.0 (90 for 2x30) or 2.5. Use day_supply on individual benefit entries for exact representations. From the pharmacy module v0.2.1 (since v1.2.0 draft 6)."
         }
       },
       "additionalProperties": false
@@ -441,6 +438,11 @@
                         "type": "boolean",
                         "default": true
                       },
+                      "moop_ref": {
+                        "type": ["string", "null"],
+                        "description": "Which out-of-pocket maximum applies_to_moop refers to, when the plan has more than one (v1.2.0 draft 6). Recommended values: 'medical' (the out-of-pocket maximums in accumulators), 'pharmacy' (the pharmacy.out_of_pocket_max, e.g. the Medicare Part D out-of-pocket threshold). Absent or null means the plan's medical maximum, which is the reading before v1.2.0 draft 6.",
+                        "default": null
+                      },
                       "notes": {
                         "type": ["string", "null"],
                         "description": "Free-text qualifier for this cost-share step (e.g. 'copay waived after day 5')."
@@ -548,6 +550,35 @@
             "type": "array",
             "description": "Citations back to the source document for this benefit (closes gap G14 of the Medicare Advantage notes). Same shape as the plan-level source_references; use this to bind an excerpt to the benefit it evidences instead of relying on the plan-level list's ordering. Motivated by the CMS Summary of Benefits documents, whose 70-plus benefit rows make a positional link fragile.",
             "items": { "$ref": "#/$defs/source_reference" }
+          },
+          "formulary_tier_id": {
+            "type": "string",
+            "description": "References `pharmacy.formulary_tiers[].tier_id`. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.1 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type, or when pharmacy.formulary_tiers defines no such tier_id."
+          },
+          "pharmacy_network_id": {
+            "type": "string",
+            "description": "References `pharmacy.pharmacy_networks[].network_id`. Useful when the same drug tier has different cost shares at different pharmacy networks. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.1 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type, or when pharmacy.pharmacy_networks defines no such network_id."
+          },
+          "coverage_stage_id": {
+            "type": "string",
+            "description": "References `pharmacy.coverage_stages[].stage_id`. For Medicare Part D plans, you typically have one benefit entry per (tier, network, stage) combination. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.1 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type, or when pharmacy.coverage_stages defines no such stage_id."
+          },
+          "day_supply": {
+            "type": "integer",
+            "description": "Day supply this cost-share applies to (e.g., 30, 90). Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.1 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
+          },
+          "drug_examples": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Optional list of example drug names commonly in this tier. For documentation only; not authoritative. For an authoritative drug list, use `pharmacy.formulary_items[]`. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.1 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
+          },
+          "step_therapy_required": {
+            "type": ["boolean", "null"],
+            "description": "Whether step therapy applies before this drug is covered. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.1 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
+          },
+          "quantity_limit": {
+            "$ref": "#/$defs/quantity_limit_detail",
+            "description": "A pharmacy quantity limit, shape $defs/quantity_limit_detail. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.1 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
           }
         },
         "required": ["benefit_id", "category", "service_name", "network_cost_shares"],
@@ -640,6 +671,185 @@
         "page_number": { "type": "integer" },
         "page_range":  { "type": "string" },
         "excerpt":     { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "formulary_tier": {
+      "type": "object",
+      "properties": {
+        "tier_id": {
+          "type": "string",
+          "description": "Plan-defined identifier (e.g., 'T1', 'tier_1', 'generic')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Tier 1 — Preferred Generic')."
+        },
+        "drug_class": {
+          "type": "string",
+          "description": "Canonical drug class. Recommended values: 'preferred_generic', 'generic', 'preferred_brand', 'nonpreferred_brand', 'preferred_specialty', 'nonpreferred_specialty', 'preventive'. See vocabularies/canonical-benefits.json pharmacy category for the cross-reference."
+        },
+        "tier_code": {
+          "type": ["string", "null"],
+          "description": "Optional canonical tier code from the FHIR DrugTierVS vocabulary (e.g. 'generic', 'preferred-brand', 'specialty'). Complements the carrier-facing `drug_class`. Adopters may populate either or both; `drug_class` stays the human/source value, `tier_code` the canonical cross-walk target."
+        },
+        "description": {
+          "type": ["string", "null"]
+        }
+      },
+      "required": ["tier_id", "name"],
+      "additionalProperties": false
+    },
+    "pharmacy_network": {
+      "type": "object",
+      "properties": {
+        "network_id": {
+          "type": "string",
+          "description": "Plan-defined identifier (e.g., 'PREFERRED_RETAIL', 'MAIL_ORDER', 'SPECIALTY_PHARMACY')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name."
+        },
+        "network_type": {
+          "type": "string",
+          "description": "Recommended values: 'preferred_retail', 'standard_retail', 'mail_order', 'specialty_pharmacy', 'long_term_care'."
+        },
+        "default_day_supply": {
+          "type": ["integer", "null"],
+          "description": "Default day supply for this network (e.g., 30 retail, 90 mail-order)."
+        }
+      },
+      "required": ["network_id", "name"],
+      "additionalProperties": false
+    },
+    "coverage_stage": {
+      "type": "object",
+      "properties": {
+        "stage_id": {
+          "type": "string",
+          "description": "Plan-defined identifier. Medicare Part D canonical values (post-2025 redesign): 'DEDUCTIBLE', 'INITIAL', 'CATASTROPHIC'. 'COVERAGE_GAP' remains valid for plan years before 2025."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Deductible', 'Initial Coverage', 'Catastrophic Coverage')."
+        },
+        "stage_type": {
+          "type": "string",
+          "description": "Recommended Medicare Part D values (post-2025 redesign): 'deductible', 'initial', 'catastrophic'. 'coverage_gap' remains valid for plan years before 2025. Commercial plans may use other values."
+        },
+        "applies_before_total_drug_cost": {
+          "type": ["number", "null"],
+          "description": "Total-drug-cost ceiling at which this stage ends (Medicare Part D)."
+        },
+        "applies_after_total_out_of_pocket": {
+          "type": ["number", "null"],
+          "description": "Total-OOP threshold at which this stage begins (Medicare Part D catastrophic)."
+        }
+      },
+      "required": ["stage_id", "name"],
+      "additionalProperties": false
+    },
+    "quantity_limit_detail": {
+      "type": "object",
+      "description": "A pharmacy quantity limit. Shared shape, referenced by the per-benefit extension, by `formulary_item`, and by an indication-level `restrictions_override`.",
+      "properties": {
+        "value":  { "type": "number" },
+        "units":  { "type": "string", "description": "e.g., 'tablets', 'capsules', 'mL', 'doses', 'pens'" },
+        "period": { "type": ["string", "null"], "description": "e.g., 'per_30_days', 'per_90_days', 'per_fill'" }
+      },
+      "required": ["value", "units"],
+      "additionalProperties": false
+    },
+    "formulary_item": {
+      "type": "object",
+      "description": "A single drug placed on a formulary tier, with utilization-management flags and optional indication-dependent coverage.",
+      "properties": {
+        "rxcui":        { "type": "string", "description": "RxNorm Concept Unique Identifier. Primary drug identifier; required when the item is populated." },
+        "drug_name":    { "type": "string", "description": "Human-readable drug name." },
+        "ndc":          { "type": ["string", "null"], "description": "11-digit NDC, secondary identifier." },
+        "brand_name":   { "type": ["string", "null"] },
+        "generic_name": { "type": ["string", "null"] },
+        "dose_form":    { "type": ["string", "null"] },
+        "formulary_tier_id": { "type": "string", "description": "References pharmacy.formulary_tiers[].tier_id." },
+        "covered":      { "type": "boolean", "description": "Default coverage status when no coverage_exception matches." },
+        "prior_authorization": { "type": ["boolean", "null"], "default": false },
+        "step_therapy":        { "type": ["boolean", "null"], "default": false },
+        "step_therapy_drugs":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "Drugs required as prior steps." },
+        "quantity_limit":      { "$ref": "#/$defs/quantity_limit_detail" },
+        "specialty_pharmacy_required": { "type": ["boolean", "null"], "default": false },
+        "coverage_exceptions": { "type": "array", "items": { "$ref": "#/$defs/coverage_exception" }, "description": "Indication-dependent overrides on the default coverage. Empty/absent = the `covered` value applies in all indications." },
+        "alternatives":        { "type": "array", "items": { "$ref": "#/$defs/formulary_alternative" } }
+      },
+      "required": ["rxcui", "drug_name", "formulary_tier_id", "covered"],
+      "additionalProperties": false
+    },
+    "coverage_exception": {
+      "type": "object",
+      "description": "An indication-specific override on a formulary item's default coverage. Models the same drug having different coverage by clinical indication (e.g. a GLP-1 covered for type 2 diabetes, excluded for weight management, covered-with-restrictions for cardiovascular risk reduction). No equivalent exists in FHIR DaVinci FormularyItem.",
+      "properties": {
+        "indication_code":        { "type": ["string", "null"], "description": "ICD-10-CM code (or other code-system value) for the indication." },
+        "indication_description": { "type": "string", "description": "Human-readable indication name." },
+        "coverage_status":        { "type": "string", "enum": ["covered", "excluded", "conditional"], "description": "Coverage for this indication." },
+        "formulary_tier_id_override": { "type": ["string", "null"], "description": "A different pharmacy.formulary_tiers[].tier_id that applies for this indication." },
+        "restrictions_override":  { "type": ["object", "null"], "description": "PA/ST/QL flags that override the item-level defaults for this indication.",
+          "properties": {
+            "prior_authorization": { "type": ["boolean", "null"] },
+            "step_therapy":        { "type": ["boolean", "null"] },
+            "quantity_limit":      { "$ref": "#/$defs/quantity_limit_detail" }
+          },
+          "additionalProperties": false
+        },
+        "conditions": { "type": ["string", "null"], "description": "Human-readable coverage conditions (e.g. 'documented ASCVD; BMI criteria may apply')." }
+      },
+      "required": ["indication_description", "coverage_status"],
+      "additionalProperties": false
+    },
+    "formulary_alternative": {
+      "type": "object",
+      "description": "A suggested alternative drug for a formulary item (e.g. a preferred therapeutic equivalent).",
+      "properties": {
+        "rxcui":     { "type": "string", "description": "RxNorm Concept Unique Identifier of the alternative drug." },
+        "drug_name": { "type": "string", "description": "Human-readable name of the alternative drug." },
+        "formulary_tier_id": { "type": ["string", "null"], "description": "References pharmacy.formulary_tiers[].tier_id, if the alternative is on this plan's formulary." }
+      },
+      "required": ["rxcui", "drug_name"],
+      "additionalProperties": false
+    },
+    "formulary_reference": {
+      "type": "object",
+      "description": "Provenance and identity metadata for the plan's formulary data.",
+      "properties": {
+        "formulary_id":   { "type": ["string", "null"] },
+        "formulary_url":  { "type": ["string", "null"], "format": "uri" },
+        "pharmacy_benefit_manager": { "type": ["string", "null"] },
+        "completeness":   { "type": "string", "enum": ["none", "tier_structure_only", "partial", "full_formulary"] },
+        "source_plan_identifiers": {
+          "type": ["object", "null"],
+          "description": "Public identifiers used to join external formulary data to this plan. Pharmacy-scoped for now; a future BPS minor release may graduate these to a core plan-identity field.",
+          "properties": {
+            "hios_id":         { "type": ["string", "null"], "description": "14-char marketplace/QHP HIOS plan ID." },
+            "cms_contract_id": { "type": ["string", "null"], "description": "Medicare Contract ID." },
+            "cms_pbp_id":      { "type": ["string", "null"], "description": "Medicare PBP ID." }
+          },
+          "additionalProperties": false
+        },
+        "data_sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source_type":      { "type": "string", "enum": ["sbc_extraction", "spd_extraction", "cms_qhp_formulary", "cms_part_d_formulary", "fhir_davinci_formulary", "carrier_formulary_document", "carrier_api", "manual_entry"], "description": "Origin of this data source. `sbc_extraction` / `spd_extraction`: extracted from the plan's SBC or SPD. `cms_qhp_formulary` / `cms_part_d_formulary`: a CMS machine-readable formulary file. `fhir_davinci_formulary`: a payer Da Vinci PDex Formulary API. `carrier_formulary_document` (v0.2.1): a carrier-published formulary document such as a medication guide, a prior-authorization program list, a program drug list, or a pharmacy policy bulletin; identify the document with `source_url` and `file_date`. `carrier_api`: a carrier or PBM API other than FHIR. `manual_entry`: keyed in by a person." },
+              "source_url":       { "type": ["string", "null"] },
+              "import_timestamp": { "type": "string" },
+              "file_date":        { "type": ["string", "null"] },
+              "extraction_stage": { "type": ["string", "null"] },
+              "notes":            { "type": ["string", "null"] }
+            },
+            "required": ["source_type", "import_timestamp"],
+            "additionalProperties": false
+          }
+        }
       },
       "additionalProperties": false
     }

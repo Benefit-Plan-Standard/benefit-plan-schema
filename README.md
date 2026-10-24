@@ -7,7 +7,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
   </a>
   <img src="https://img.shields.io/badge/Schema-v1.1.0-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Status-Stable-blueviolet?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Draft-v1.2.0%20draft%205-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Draft-v1.2.0%20draft%206-orange?style=for-the-badge" />
   <img src="https://img.shields.io/github/license/Benefit-Plan-Standard/benefit-plan-schema?style=for-the-badge" />
 </p>
 
@@ -17,7 +17,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 
 - Documentation: https://benefitplanstandard.org  
 - Canonical schema file (current): `schema/v1.1.0/benefit-plan.schema.json`  
-- Draft schema (v1.2.0, draft 5): `schema/v1.2.0/benefit-plan.schema.json`; each published draft is a git tag, `v1.2.0-draft.1` through `v1.2.0-draft.5`  
+- Draft schema (v1.2.0, draft 6): `schema/v1.2.0/benefit-plan.schema.json`; each published draft is a git tag, `v1.2.0-draft.1` through `v1.2.0-draft.6`  
 - Previous schema (v1.0.0): `schema/v1.0.0/benefit-plan.schema.json`  
 - Example plans: `examples/`, 20 plans: 10 read from plan documents, 5 imported from the CMS Marketplace public use files, 5 from the CMS Medicare Advantage PBP files  
 - Vocabularies (canonical benefits, categories, markets, plan types): `vocabularies/`  
@@ -25,7 +25,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 - FHIR InsurancePlan converter (CARIN SBC profile): `scripts/to-insuranceplan.js`, spec `docs/specs/insuranceplan-converter.md`  
 - Importer from the CMS Marketplace public use files: `scripts/from-marketplace-puf.js`, spec `docs/specs/marketplace-puf-importer.md`, 5 examples in `examples/*.puf.json` and their Bundles in `examples/fhir-puf/`  
 - Importer from the CMS Medicare Advantage Plan Benefit Package files: `scripts/from-pbp.js`, spec `docs/specs/pbp-importer.md`, 5 examples in `examples/*.pbp.json` and their Bundles in `examples/fhir/`  
-- Medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup: `docs/specs/rtb-medical-mvp/` (the specification, the data dictionary and the crosswalk to the SBC InsurancePlan profile, version 0.3.4)  
+- Medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup: `docs/specs/rtb-medical-mvp/` (the specification, the data dictionary and the crosswalk to the SBC InsurancePlan profile, version 0.3.5)  
 - Segment tool for Medicare Advantage plans (county to segment): `scripts/pbp-segment.js`  
 - Pledgee publishing, the release layout and index the specification describes: `scripts/publish-fhir.js --pledgee <root>`  
 - Completeness count against the specification: `scripts/rtb-completeness.js`  
@@ -33,6 +33,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 - CARIN Digital Insurance Card reconciliation: `docs/carin-dic-reconciliation.md`  
 - Modules: `modules/README.md`  
 - Governance: `docs/governance.md`  
+- Adopters on record: `ADOPTERS.md`  
 - Roadmap: `docs/roadmap.md`  
 - Changelog: `docs/changelog.md`  
 
@@ -75,7 +76,7 @@ schema/
   ├── v1.1.0/
   │   └── benefit-plan.schema.json   ← current
   └── v1.2.0/
-      └── benefit-plan.schema.json   ← draft (draft 5; each published draft is a git tag, v1.2.0-draft.N)
+      └── benefit-plan.schema.json   ← draft (draft 6; each published draft is a git tag, v1.2.0-draft.N)
 docs/
   ├── carin-dic-reconciliation.md
   ├── changelog.md
@@ -132,7 +133,8 @@ scripts/
 test/
   └── fixtures/
       ├── pbp/                       ← rows of the 5 PBP golden plans, for scripts/from-pbp.test.js
-      └── pbp-segment/               ← PlanArea and PlanRegionArea cuts, for scripts/pbp-segment.test.js
+      ├── pbp-segment/               ← PlanArea and PlanRegionArea cuts, for scripts/pbp-segment.test.js
+      └── validate/                  ← 1 document per pharmacy warning, for scripts/validate.test.js
 vocabularies/
   ├── canonical-benefits.json        ← v1.3.0, 118 keys
   ├── categories.json
@@ -143,7 +145,8 @@ modules/
   ├── README.md
   └── pharmacy/
       ├── v0.2.0/
-      └── v0.2.1/                    ← pharmacy module, draft, with its own README
+      └── v0.2.1/                    ← pharmacy module, draft, with its own README; in the v1.2.0 core since draft 6
+ADOPTERS.md                          ← adopters on record under the release rule
 LICENSE
 ```
 
@@ -159,7 +162,7 @@ The schema follows **semantic versioning**:
 
 Current version: **v1.1.0** (backward-compatible with v1.0.0)
 
-Draft: **v1.2.0**, draft 5, tagged `v1.2.0-draft.5`. Drafts are numbered as they are published, and each one is a git tag on this repository, so any earlier draft can be checked out by its tag. Under the release rule in `docs/governance.md`, v1.2.0 becomes final after two independent adopters implement and validate it; until then every v1.2.0 document says which draft it validates against. The two importers write v1.2.0 draft documents.
+Draft: **v1.2.0**, draft 6, tagged `v1.2.0-draft.6`. Drafts are numbered as they are published, and each one is a git tag on this repository, so any earlier draft can be checked out by its tag. Under the release rule in `docs/governance.md`, v1.2.0 becomes final after two independent adopters implement and validate it; until then every v1.2.0 document says which draft it validates against. The adopters on record are in `ADOPTERS.md`. The two importers write v1.2.0 draft documents.
 
 Validation uses:
 
@@ -244,6 +247,8 @@ Validation of a Benefit Plan Standard file has two layers:
    `canonical_key`, `market`, and `plan_type` compared against the published
    vocabularies in [`/vocabularies`](vocabularies/). Warnings, not failures,
    because the vocabularies are non-normative and extensible.
+
+Since the v1.2.0 draft 6 the script also warns, and never fails, when a pharmacy module field such as `day_supply` is on a benefit whose `benefit_type` is not `pharmacy`, or when a `formulary_tier_id`, `pharmacy_network_id` or `coverage_stage_id` names an id that the document's `pharmacy` object does not define.
 
 The included script runs both:
 
