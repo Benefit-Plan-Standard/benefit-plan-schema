@@ -20,8 +20,9 @@
  *   node scripts/publish-fhir.js --pledgee <root> [--data <dir>]
  *
  * Reads a pledgee's folder of documents written by the 2 public-file importers,
- * 1 folder per CMS release: <root>/<release>/<plan key>.json and, when present,
- * <plan key>.bundle.json. <release> is the release as the document's first
+ * 1 folder per CMS release: <root>/<release>/<plan key>.json and its Bundle,
+ * <plan key>.bundle.json, which is SHALL, so a document without one stops the
+ * script. <release> is the release as the document's first
  * source_references excerpt gives it, made file-safe: the Medicare Advantage
  * release label (PBP-Benefits-2027), or marketplace-puf-<plan year>-<download date
  * of the Plan Attributes PUF> (the Marketplace files have no release name). Writes
@@ -215,7 +216,8 @@ function releaseEntries(root, { release, files }) {
     if (release !== null && release !== r.release) throw new Error(`${shown}: the document's release is ${r.release}, so it belongs in the folder ${r.release}`);
     years.add(r.year);
     const bundleName = `${key}.bundle.json`;
-    const counts = files.includes(bundleName) ? bundleCounts(readJson(path.join(root, rel(bundleName))), rel(bundleName)) : null;
+    if (!files.includes(bundleName)) throw new Error(`${shown} has no Bundle beside it, ${rel(bundleName)}; every document has its Bundle`);
+    const counts = bundleCounts(readJson(path.join(root, rel(bundleName))), rel(bundleName));
     return {
       id: key,
       plan_name: doc.plan_name,
@@ -225,12 +227,12 @@ function releaseEntries(root, { release, files }) {
       program: PROGRAM_NAME[program],
       bps_schema_version: doc.schema_version,
       document: shown,
-      bundle: counts ? rel(bundleName) : null,
+      bundle: rel(bundleName),
       service_areas: release !== null && program === 'medicare_advantage' ? rel(SERVICE_AREAS) : null,
       release,
       data_date: r.data_date,
-      benefits_placed: counts ? counts.placed : null,
-      benefits_unmapped: counts ? counts.unmapped : null,
+      benefits_placed: counts.placed,
+      benefits_unmapped: counts.unmapped,
       label: r.label,
     };
   });

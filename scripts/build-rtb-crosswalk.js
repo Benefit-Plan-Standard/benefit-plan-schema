@@ -61,6 +61,33 @@ const upperFirst = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 const fill = (s, vars) => (s ? s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? vars[k] : m)) : s);
 const listText = (xs) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
 
+// The rows each filed change request is named on, for the preface: "FHIR-59603 on the home health row, in both
+// programs; ...", in the order of carin-mapping.json, by item within a request.
+function changeRequestRows(m, rows, items, names) {
+  const parts = [];
+  for (const t of Object.keys(m.change_requests.tickets)) {
+    const byItem = new Map();
+    for (const r of rows) {
+      const ps = r.programs.filter((p) => r.res[p].changeRequest === t);
+      if (!ps.length) continue;
+      const seen = byItem.get(r.id) || { n: 0, ps: new Set() };
+      seen.n += 1;
+      ps.forEach((p) => seen.ps.add(p));
+      byItem.set(r.id, seen);
+    }
+    if (!byItem.size) continue;
+    const onItems = [...byItem].map(([id, { n, ps }]) => {
+      const it = items.find((x) => x.id === id);
+      const name = (it.name || it[[...ps][0]].name).toLowerCase();
+      const programs = ps.size === PROGRAMS.length ? 'in both programs' : `in ${names[[...ps][0]]}`;
+      return `the ${n === 1 ? `${name} row` : `${n} ${name} rows`}, ${programs}`;
+    });
+    // Each item ends in its programs, so 2 or more items are joined with a comma before "and".
+    parts.push(`${t} on ${onItems.length < 2 ? onItems[0] : `${onItems.slice(0, -1).join(', ')}, and ${onItems[onItems.length - 1]}`}`);
+  }
+  return parts.length < 2 ? parts.join('') : `${parts.slice(0, -1).join('; ')}; and ${parts[parts.length - 1]}`;
+}
+
 // Stable JSON text, keys sorted, for comparing a cited Bundle value with the expected one.
 const stable = (v) => (Array.isArray(v) ? `[${v.map(stable).join(',')}]`
   : v && typeof v === 'object' ? `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${stable(v[k])}`).join(',')}}`
@@ -273,6 +300,7 @@ function build() {
       category,
       ballot,
       readFrom,
+      changeRequest: cr || null,
       rowSentence: (r.row_sentence || {})[p] || null,
       parts: [
         e.gap ? openGapText(names[p], e, gaps.get(e.gap)) : '',
@@ -395,7 +423,12 @@ function render(ss, m, sbc, rows, names) {
   L.push('This crosswalk is a Part B item of the workgroup\'s GA draft, "RTB Medical. What payers would be asked to supply for GA" ' +
     '(Monica Chopra, October 2026, a draft for discussion, not a workgroup decision), and Part B there means the draft\'s second part, not Medicare Part B. ' +
     'The SBC InsurancePlan profile is at ballot. ' +
-    'This crosswalk exists so a pledgee can produce that Bundle when the SBC InsurancePlan profile publishes, and nothing in the MVP SHALL list depends on it.', '');
+    'The Benefit Plan Standard document and the Bundle are both SHALL for every plan in the MVP, and this crosswalk is how a reader sees, item by item, ' +
+    'where each value of the document lands in the Bundle and where it does not. Its different rows are the items that reach the Bundle only in a ' +
+    'Benefit Plan Standard extension, as text, or with a loss, and its not covered rows the items the Bundle does not carry: these are the places where ' +
+    'the Bundle does not yet hold an MVP item as the document does, because the SBC InsurancePlan profile has no element or code for it, or because the ' +
+    'Benefit Plan Standard converter does not map it yet, and each row\'s note says which. ' +
+    `Change requests filed for some of them are named in the rows they apply to: ${changeRequestRows(m, rows, ss.items, names)}.`, '');
   L.push('The whole profile is ballot-stage. The SBC InsurancePlan profile, its extensions and the code systems it binds are draft and experimental in that package ' +
     `(${repoLink(m.converter_spec, 'converter specification')} section 2, ${IN_REPO}). ` +
     '3 changes to the SBC InsurancePlan profile were proposed from Benefit Plan Standard implementation experience and merged in June 2026: ' +

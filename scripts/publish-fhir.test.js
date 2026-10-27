@@ -52,13 +52,21 @@ function place(dir, ex, { bundle = true, name = ex.key } = {}) {
   fs.copyFileSync(path.join(REPO, ex.doc), path.join(dir, `${name}.json`));
   if (bundle) fs.copyFileSync(path.join(REPO, ex.bundle), path.join(dir, `${name}.bundle.json`));
 }
-// The UHC document as if its Plan Attributes and Benefits and Cost Sharing PUFs had been downloaded on another date.
+// The UHC document as if its Plan Attributes and Benefits and Cost Sharing PUFs had been downloaded on another date,
+// with its Bundle beside it.
 function olderMarketplace(dir, date) {
-  fs.mkdirSync(dir, { recursive: true });
+  place(dir, EXAMPLES[1]);
   const text = fs.readFileSync(path.join(REPO, EXAMPLES[1].doc), 'utf8');
   const from = 'benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05,';
   assert.ok(text.includes(from));
   fs.writeFileSync(path.join(dir, `${EXAMPLES[1].key}.json`), text.replace(from, `benefits-and-cost-sharing-puf.zip), downloaded ${date},`));
+}
+// The Humana example with its first excerpt changed, and its Bundle beside it, in a Medicare Advantage release folder.
+function humanaWith(dir, from, to) {
+  const text = fs.readFileSync(path.join(REPO, 'examples/humana-humana-gold-plus-h1036-068.pbp.json'), 'utf8');
+  assert.ok(text.includes(from));
+  fs.writeFileSync(path.join(dir, 'H1036-068-000.json'), text.replace(from, to));
+  fs.copyFileSync(path.join(REPO, 'examples/fhir/humana-gold-plus-h1036-068-hmo-h1036-068-000.json'), path.join(dir, 'H1036-068-000.bundle.json'));
 }
 
 test('a root with no release folders: 1 release with no name, entries by plan key, counts from the Bundles', () => {
@@ -89,7 +97,7 @@ test('a root with no release folders: 1 release with no name, entries by plan ke
   assert.deepStrictEqual(r.serviceAreas, [], 'a root with no release folders gets no service-areas.json');
 });
 
-test('release folders: newest release first, paths include the folder, a release with no Bundle gives nulls', () => {
+test('release folders: newest release first, paths include the folder', () => {
   const root = tmp();
   place(path.join(root, 'PBP-Benefits-2027'), EXAMPLES[0]);
   place(path.join(root, 'marketplace-puf-2026-2026-10-05'), EXAMPLES[1]);
@@ -101,7 +109,8 @@ test('release folders: newest release first, paths include the folder, a release
     ['PBP-Benefits-2027', 'H1609-028-000', '2026-10-06', 'PBP-Benefits-2027/H1609-028-000.json', 'PBP-Benefits-2027/H1609-028-000.bundle.json', 16, 89],
     ['marketplace-puf-2026-2026-10-05', '68398FL0030058-01', '2026-10-05', 'marketplace-puf-2026-2026-10-05/68398FL0030058-01.json',
       'marketplace-puf-2026-2026-10-05/68398FL0030058-01.bundle.json', 27, 25],
-    ['marketplace-puf-2026-2026-09-01', '68398FL0030058-01', '2026-09-01', 'marketplace-puf-2026-2026-09-01/68398FL0030058-01.json', null, null, null],
+    ['marketplace-puf-2026-2026-09-01', '68398FL0030058-01', '2026-09-01', 'marketplace-puf-2026-2026-09-01/68398FL0030058-01.json',
+      'marketplace-puf-2026-2026-09-01/68398FL0030058-01.bundle.json', 27, 25],
   ]);
   assert.deepStrictEqual(r.index.plans.map((e) => e.service_areas), ['PBP-Benefits-2027/service-areas.json', null, null]);
   assert.deepStrictEqual(r.serviceAreas, [{ release: 'PBP-Benefits-2027', year: 2027, data_date: '2026-10-06', keys: ['H1609-028-000'] }]);
@@ -132,6 +141,15 @@ test('the errors that stop it, each naming the file', () => {
   place(lonelyBundle, EXAMPLES[0]);
   fs.unlinkSync(path.join(lonelyBundle, 'H1609-028-000.json'));
   assert.throws(() => pledgeeIndex(lonelyBundle), /H1609-028-000\.bundle\.json has no document beside it/);
+  // The Bundle is SHALL for every plan, in a root with no release folders and in a release folder.
+  const noBundle = tmp();
+  place(noBundle, EXAMPLES[0], { bundle: false });
+  assert.throws(() => pledgeeIndex(noBundle), /^Error: H1609-028-000\.json has no Bundle beside it, H1609-028-000\.bundle\.json; every document has its Bundle$/);
+  const noBundleInRelease = tmp();
+  place(path.join(noBundleInRelease, 'PBP-Benefits-2027'), EXAMPLES[0]);
+  place(path.join(noBundleInRelease, 'marketplace-puf-2026-2026-10-05'), EXAMPLES[1], { bundle: false });
+  assert.throws(() => pledgeeIndex(noBundleInRelease),
+    /^Error: marketplace-puf-2026-2026-10-05\/68398FL0030058-01\.json has no Bundle beside it, marketplace-puf-2026-2026-10-05\/68398FL0030058-01\.bundle\.json/);
   const mixed = tmp();
   place(mixed, EXAMPLES[0]);
   place(path.join(mixed, 'marketplace-puf-2026-2026-10-05'), EXAMPLES[1]);
@@ -139,14 +157,11 @@ test('the errors that stop it, each naming the file', () => {
   // A Marketplace folder is named by its date, so only a Medicare Advantage folder can hold 2 download dates.
   const twoDates = tmp();
   place(path.join(twoDates, 'PBP-Benefits-2027'), EXAMPLES[0]);
-  const humana = fs.readFileSync(path.join(REPO, 'examples/humana-humana-gold-plus-h1036-068.pbp.json'), 'utf8');
-  assert.ok(humana.includes('), downloaded 2026-10-06.'));
-  fs.writeFileSync(path.join(twoDates, 'PBP-Benefits-2027', 'H1036-068-000.json'), humana.replace('), downloaded 2026-10-06.', '), downloaded 2026-07-01.'));
+  humanaWith(path.join(twoDates, 'PBP-Benefits-2027'), '), downloaded 2026-10-06.', '), downloaded 2026-07-01.');
   assert.throws(() => pledgeeIndex(twoDates), /PBP-Benefits-2027 holds documents downloaded on 2026-07-01 and 2026-10-06; 1 release has 1 download date/);
   const twoYears = tmp();
   place(path.join(twoYears, 'PBP-Benefits-2027'), EXAMPLES[0]);
-  assert.ok(humana.includes('Benefits, contract year 2027, release'));
-  fs.writeFileSync(path.join(twoYears, 'PBP-Benefits-2027', 'H1036-068-000.json'), humana.replace('Benefits, contract year 2027, release', 'Benefits, contract year 2028, release'));
+  humanaWith(path.join(twoYears, 'PBP-Benefits-2027'), 'Benefits, contract year 2027, release', 'Benefits, contract year 2028, release');
   assert.throws(() => pledgeeIndex(twoYears), /PBP-Benefits-2027 holds documents of the years 2027 and 2028; 1 release has 1 year/);
 });
 
@@ -196,6 +211,18 @@ test('service-areas.json cannot be written, and nothing is, when the PBP files a
   assert.match(r.errors[0], /^error: PBP-Benefits-2027\/service-areas\.json cannot be written/);
   assert.deepStrictEqual(fs.readdirSync(root), ['PBP-Benefits-2027'], 'no index.json');
   assert.deepStrictEqual(fs.readdirSync(path.join(root, 'PBP-Benefits-2027')).sort(), ['H1609-028-000.bundle.json', 'H1609-028-000.json'], 'no service-areas.json');
+});
+
+test('the CLI stops and writes no index and no service-areas.json when a document has no Bundle beside it', async () => {
+  const root = tmp();
+  place(path.join(root, 'PBP-Benefits-2027'), EXAMPLES[0]);
+  place(path.join(root, 'marketplace-puf-2026-2026-10-05'), EXAMPLES[1]);
+  fs.unlinkSync(path.join(root, 'PBP-Benefits-2027', 'H1609-028-000.bundle.json'));
+  const r = await runMain([root, '--data', FIXTURE_DIR]);
+  assert.strictEqual(r.code, 1);
+  assert.deepStrictEqual(r.errors, ['error: PBP-Benefits-2027/H1609-028-000.json has no Bundle beside it, PBP-Benefits-2027/H1609-028-000.bundle.json; every document has its Bundle']);
+  assert.deepStrictEqual(fs.readdirSync(root).sort(), ['PBP-Benefits-2027', 'marketplace-puf-2026-2026-10-05'], 'no index.json');
+  assert.deepStrictEqual(fs.readdirSync(path.join(root, 'PBP-Benefits-2027')), ['H1609-028-000.json'], 'no service-areas.json');
 });
 
 test('the CLI writes service-areas.json in the Medicare Advantage release folder, and reads it as no document on the next run', async () => {

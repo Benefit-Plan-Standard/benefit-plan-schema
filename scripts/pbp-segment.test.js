@@ -153,16 +153,19 @@ test('--all-pairs resolves every county of every pair with more than 1 segment',
 });
 
 // A service-areas.json written by the index writer from the fixture rows, for the plan keys
-// given: each plan key's document is the worked example's, with the plan key changed.
+// given: each plan key's document is the worked example's, with the plan key changed, and its
+// Bundle beside it is the worked example's Bundle.
 async function writeServiceAreas(keys) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'pbp-segment-service-areas-'));
   const folder = path.join(root, 'PBP-Benefits-2027');
   fs.mkdirSync(folder);
-  const doc = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'examples', 'aetna-medicare-aetna-medicare-select-extra.pbp.json'), 'utf8'));
+  const examples = path.join(__dirname, '..', 'examples');
+  const doc = JSON.parse(fs.readFileSync(path.join(examples, 'aetna-medicare-aetna-medicare-select-extra.pbp.json'), 'utf8'));
   for (const key of keys) {
     const id = doc.plan_identifiers.find((x) => x.system === 'cms_contract_plan_segment');
     id.value = key;
     fs.writeFileSync(path.join(folder, `${key}.json`), JSON.stringify(doc, null, 2) + '\n');
+    fs.copyFileSync(path.join(examples, 'fhir', 'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json'), path.join(folder, `${key}.bundle.json`));
   }
   const log = console.log;
   console.log = () => {};

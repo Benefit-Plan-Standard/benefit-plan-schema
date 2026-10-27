@@ -2,7 +2,7 @@
 
 Diego Orofino, the Benefit Plan Standard, dorofino@benefitplanstandard.org. A draft for the workgroup, not a workgroup decision.
 
-The [Benefit Plan Standard](https://benefitplanstandard.org) is an open JSON format for health plan benefits, published under the MIT license. Its schema, the importers that read CMS public files, the converter to FHIR and the example plans live in [one repository](https://github.com/Benefit-Plan-Standard/benefit-plan-schema). This document is the technical specification, version 0.3.5, dated October 24, 2026, 1 of 3 documents that make up the medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup. The other 2 are the [data dictionary](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/data-dictionary.md) and the [crosswalk to the SBC InsurancePlan profile](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/carin-crosswalk.md). All 3 are in the [repository folder](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/tree/main/docs/specs/rtb-medical-mvp), and the files they name are in the [repository](https://github.com/Benefit-Plan-Standard/benefit-plan-schema). This document is published as `README.md` in that folder; a Word copy with the same content is sent with the specification and is not in the repository.
+The [Benefit Plan Standard](https://benefitplanstandard.org) is an open JSON format for health plan benefits, published under the MIT license. Its schema, the importers that read CMS public files, the converter to FHIR and the example plans live in [one repository](https://github.com/Benefit-Plan-Standard/benefit-plan-schema). This document is the technical specification, version 0.3.6, dated October 27, 2026, 1 of 3 documents that make up the medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup. The other 2 are the [data dictionary](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/data-dictionary.md) and the [crosswalk to the SBC InsurancePlan profile](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/carin-crosswalk.md). All 3 are in the [repository folder](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/tree/main/docs/specs/rtb-medical-mvp), and the files they name are in the [repository](https://github.com/Benefit-Plan-Standard/benefit-plan-schema). This document is published as `README.md` in that folder; a Word copy with the same content is sent with the specification and is not in the repository.
 
 The 3 documents use these terms. RTB is the CMS Health Tech Ecosystem Real-Time Benefits workgroup. The MVP, minimum viable product, is the workgroup's first scope, and a pledgee is an organization that committed to the workgroup, in Monica Chopra's pledge proposal, to publish MVP data for its plans. GA, general availability, is the scope after the MVP, which the workgroup's GA draft describes (see What comes back). The other terms are these:
 
@@ -71,6 +71,8 @@ These items are SHALL in both programs:
 For Medicare Advantage hearing aids and eyeglasses, a plan that offers only other types in the category has no `hearing_aids` or `eyeglasses` benefit in its document, and an app reads that as "the file gives no answer for the asked type" (see the covered-or-not rows of `hearing_aids` and `eyeglasses` in the data dictionary, and Question 1 under Questions for the workgroup).
 
 For a Medicare Advantage release, the pledgee's `service-areas.json` is SHALL too: without it an app cannot find the plan key from the member's county (see Identifying the plan and What a pledgee publishes).
+
+Every plan's items are published in 2 files, the Benefit Plan Standard document and the SBC InsurancePlan Bundle made from it, and both are SHALL (see What comes back).
 
 The 16 services are the services that [`shall-should.json`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/shall-should.json) labels SHALL for each program. In Medicare Advantage they are primary care visit (`primary_care`), specialist visit (`specialist`), urgent care (`urgent_care`), emergency room (`emergency_room`), inpatient hospital stay (`inpatient_hospital`), outpatient hospital services (`outpatient_surgery`), outpatient surgery center (`outpatient_surgery_facility`), lab tests (`diagnostic_lab`), diagnostic radiology (for example MRI or CT) (`imaging_advanced`), physical therapy and speech therapy (`physical_and_speech_therapy`), mental health visit (individual session) (`mental_health_office_visit`), ambulance (ground) (`ambulance`), hospital observation (`observation_care`), skilled nursing facility (`skilled_nursing_facility`), home health (`home_health_care`) and preventive services (`preventive_care`). In Marketplace they are primary care visit (`primary_care`), specialist visit (`specialist`), urgent care (`urgent_care`), emergency room (`emergency_room`), inpatient hospital stay (`inpatient_hospital`), outpatient surgery center or facility (`outpatient_surgery_facility`), outpatient surgery, doctor's fee (`outpatient_surgery_professional`), lab tests (`diagnostic_lab`), imaging (CT, PET, MRI) (`imaging_advanced`), physical therapy and occupational therapy (`physical_and_occupational_therapy`), mental health visit (outpatient) (`mental_health_outpatient`), ambulance (`ambulance`), nurse or physician assistant visit (`other_practitioner_office_visit`), skilled nursing facility (`skilled_nursing_facility`), home health (`home_health_care`) and preventive services (`preventive_care`). For preventive services, $0 in network is the Medicare Advantage reading, from the plan's attestation in category 14a. In Marketplace the item is the tier 1 cost the file gives, read like any other service.
 
@@ -156,16 +158,16 @@ This is a file contract, not an API. It describes documents an app retrieves, no
 
 ### What comes back
 
-For each plan, the document and, where the pledgee publishes it, the Bundle:
+For each plan, the document and its Bundle:
 
 1. The Benefit Plan Standard JSON document for the plan. The 2 importers check it against the Benefit Plan Standard schema 1.2.0 before writing it. An import that fails writes nothing.
 2. The SBC InsurancePlan Bundle that the Benefit Plan Standard converter, [`scripts/to-insuranceplan.js`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/scripts/to-insuranceplan.js) in the Benefit Plan Standard repository, produces from that document: a FHIR R4 collection Bundle holding 1 InsurancePlan and the Organization it references, in the SBC InsurancePlan profile of the CARIN Digital Insurance Card implementation guide (`hl7.fhir.us.insurance-card#2.0.0-ballot`, a ballot draft). For a Marketplace document, `--excluded-services` also writes the excluded-services extension of the CARIN Digital Insurance Card implementation guide, derived from the plan's coverage flags. The Benefit Plan Standard converter spec is [`insuranceplan-converter.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/insuranceplan-converter.md), in the Benefit Plan Standard repository.
 
-The Benefit Plan Standard document is SHALL. The SBC InsurancePlan Bundle is SHOULD until the SBC InsurancePlan profile publishes, because the profile is at ballot, and the index carries `bundle` null for a plan whose Bundle the pledgee does not publish.
+Both files are SHALL for every plan. The Bundle is the one the Benefit Plan Standard converter writes from the document, with `--excluded-services` for a Marketplace document, as the commands under How to get them write it. The SBC InsurancePlan profile it follows is at ballot, in package `hl7.fhir.us.insurance-card#2.0.0-ballot`. When the profile changes and the Benefit Plan Standard converter is updated to follow it, a pledgee rewrites its Bundles by running the updated converter on the same documents, with no new import, and then runs the index writer again, because the index takes its counts from the Bundles. The Benefit Plan Standard document carries what the profile has no element or code for: the extra benefits, for example, reach the Bundle as identity only, apart from the excluded-services entry of a Marketplace Bundle, and whether a Medicare Advantage plan covers each one, and the cost shares and limits of each in both programs, are in the document only (see Status and version). That is why both are SHALL.
 
 The documents quote the CMS cells they were read from. Each tier row of a benefit quotes its cells in `notes`, except a Marketplace row that is not covered (see Follow-ups). `source_references` quotes a value with no field, and the cells behind the premium, the Part B premium reduction, the contacts and the provider directory link.
 
-The crosswalk to the SBC InsurancePlan profile in the CARIN Digital Insurance Card implementation guide, [`carin-crosswalk.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/carin-crosswalk.md), is a Part B item of the workgroup's GA draft, "RTB Medical. What payers would be asked to supply for GA" (Monica Chopra, October 2026, a draft for discussion, not a workgroup decision), and Part B there means the draft's second part, not Medicare Part B. The SBC InsurancePlan profile is at ballot. The crosswalk exists so a pledgee can produce that Bundle when the SBC InsurancePlan profile publishes, and nothing in the MVP SHALL list depends on the Bundle.
+The crosswalk to the SBC InsurancePlan profile in the CARIN Digital Insurance Card implementation guide, [`carin-crosswalk.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/carin-crosswalk.md), is a Part B item of the workgroup's GA draft, "RTB Medical. What payers would be asked to supply for GA" (Monica Chopra, October 2026, a draft for discussion, not a workgroup decision), and Part B there means the draft's second part, not Medicare Part B. The SBC InsurancePlan profile is at ballot. The crosswalk shows, item by item, where each value of the document lands in the Bundle and where it does not (see Status and version).
 
 ### How to get them
 
@@ -231,7 +233,7 @@ Every document a pledgee publishes, and every answer an app builds from it, SHAL
 - the date the files were downloaded;
 - the web addresses the CMS files give for the plan, quoted in `source_references` as the 2 importers quote them: for Marketplace the Summary of Benefits and Coverage, brochure and drug list addresses of the Plan Attributes PUF, and for Medicare Advantage the website, provider directory, drug list and pharmacy directory addresses of Section A.
 
-An answer carries these 4 as its provenance, which the app gives on request or on a details view; the SHALL does not ask that every screen print the CMS file names.
+An answer carries these 4 as its provenance, which the app gives on request or on a details view; the SHALL does not ask that every screen print the CMS file names. What an app shows beside the data, under Conformance, proposes that the plan year and the as-of date also go on the same screen as the values, with a statement about where the values come from.
 
 The 2 importers write all 4 into every document, the fourth as the addresses the CMS files give: each filled address is quoted, a blank Summary of Benefits and Coverage address of a Marketplace plan is quoted as "(blank)", and a blank Medicare Advantage website or provider directory cell is named as blank, such as "pbp_a_org_website is blank, so contacts.website is not written"; a blank cell of the other addresses is left out of the excerpt (see the paragraph on web addresses below). What they can write differs by program, because the CMS files differ.
 
@@ -251,7 +253,7 @@ The plan keeps its 3 digits and the segment is written as an unpadded integer (0
 
 A pledgee SHALL rerun the 2 importers on every new or corrected CMS release, publish 1 document version per release, and retire a plan year's documents when the plan year ends, so that no app serves a past year as current. Retirement does not make the newest release the current one: from October to December a pledgee may hold 2 contract years side by side, so an app filters the index by `program`, then by `plan_year` equal to the year of the date of service, and takes the first entry of that year, the newest release of it (see Identifying the plan). A CMS update that keeps the release label within a year, as a quarterly update of the PBP Benefits file can, has the same folder name as the release before it, so for Medicare Advantage 1 version per release is today 1 version per release label; Question 2 asks the workgroup about this layout. The index writer refuses a release folder that holds documents of 2 download dates, so today a pledgee that publishes such an update replaces the documents in that folder.
 
-Each release has its own folder, `<root>/<release>/`, which holds the document of each plan, its Bundle where the pledgee publishes it, and for Medicare Advantage `service-areas.json` (see What a pledgee publishes). The release and the folder name are these, 1 rule per program:
+Each release has its own folder, `<root>/<release>/`, which holds the document and the Bundle of each plan, and for Medicare Advantage `service-areas.json` (see What a pledgee publishes). The release and the folder name are these, 1 rule per program:
 
 - Medicare Advantage: the release is the release label, and the folder name is derived from the document's first `source_references` excerpt, the label it gives made file-safe: each run of characters other than letters, digits, `.`, `_` and `-` written as 1 `-`, and any `-` at the start or the end of the name removed, so `PBP Benefits-2027` is the folder `PBP-Benefits-2027`.
 - Marketplace: the Marketplace files have no release name, so the release is the download date of the Plan Attributes PUF, and the index writer constructs the folder name from the plan year and that date in the first excerpt, `marketplace-puf-<plan year>-<download date>`, such as `marketplace-puf-2026-2026-10-05`.
@@ -266,12 +268,12 @@ This is the minimum contract, what a pledgee publishes for each plan and what a 
 
 ### The files of each plan
 
-For each plan, a pledgee publishes the files under What comes back, the document and, where the pledgee publishes it, the Bundle, named by plan key:
+For each plan, a pledgee publishes the files under What comes back, the document and its Bundle, named by plan key:
 
 - `<plan key>.json`, the Benefit Plan Standard document, SHALL;
-- `<plan key>.bundle.json`, the SBC InsurancePlan Bundle made from it, SHOULD.
+- `<plan key>.bundle.json`, the SBC InsurancePlan Bundle made from it, SHALL.
 
-The Benefit Plan Standard document is SHALL. The SBC InsurancePlan Bundle is SHOULD until the SBC InsurancePlan profile publishes, because the profile is at ballot, and the index carries `bundle` null for a plan whose Bundle the pledgee does not publish.
+Both files are SHALL for every plan (see What comes back). The Benefit Plan Standard converter writes the Bundle from the document, and the index writer stops when a document has no Bundle beside it (see The index).
 
 The document and the Bundle sit in the folder of their CMS release, `<root>/<release>/` (see Source, date and refresh), and an index at the root lists them. Each Medicare Advantage release folder also holds `service-areas.json`, which is SHALL for a Medicare Advantage release: without it an app cannot find the plan key from the member's county (see Identifying the plan and Service areas). The 2 importers and the Benefit Plan Standard converter write the file names they are given (`--out`, `-o`), and the commands under How to get them, followed by the index writer (see The index), write this layout for the 2 examples:
 
@@ -302,17 +304,21 @@ wrote published/PBP-Benefits-2027/service-areas.json (1 plan key, 11 counties, 0
 wrote published/index.json (2 documents, 2 releases)
 ```
 
-The index writer reads every `<plan key>.json` in the release folders, and the `<plan key>.bundle.json` beside it when there is one, and changes no document or Bundle. For `service-areas.json` it reads `PlanArea.txt` and `PlanRegionArea.txt` from `data/pbp/<contract year>/`, the folder the Medicare Advantage importer reads, or from `<dir>/<contract year>/` with `--data <dir>`. The index writer stops and writes no index and no `service-areas.json` when any of these holds, and for the first 8 it names the file or the folder:
+The index writer reads every `<plan key>.json` in the release folders, and the `<plan key>.bundle.json` beside it, and changes no document or Bundle. For `service-areas.json` it reads `PlanArea.txt` and `PlanRegionArea.txt` from `data/pbp/<contract year>/`, the folder the Medicare Advantage importer reads, or from `<dir>/<contract year>/` with `--data <dir>`. The index writer stops, with exit code 1, and writes no index and no `service-areas.json` when any of these holds, and for the first 8 it names the file or the folder:
 
 1. the root is not a folder, or holds release folders and also a document or a Bundle outside them;
 2. a release folder holds no document;
-3. a Bundle has no document beside it, or is not a Bundle that holds an InsurancePlan;
+3. a document has no Bundle beside it, named `<plan key>.bundle.json`, or a `<plan key>.bundle.json` has no document beside it or is not a Bundle that holds an InsurancePlan;
 4. a document's first `source_references` excerpt does not name the PBP files or the Marketplace PUFs with the year, the release and the download date as the 2 importers write them, or gives the release label "(not recorded)";
 5. a document has no plan key in `plan_identifiers`, or is not named by its plan key;
 6. a document is not in the folder of its release;
 7. a release folder holds documents of 2 download dates, or of 2 years;
 8. for a Medicare Advantage release folder, `PlanArea.txt` or `PlanRegionArea.txt` is absent, their `download.json` does not give the folder's release label and download date, a row of either file has a `segment_id` that is not 1 to 3 digits, either file lacks a column the index writer reads, a row of a plan key of the folder gives a contract year other than the folder's, or a plan key of the folder is on no row of either file: the index writer says that `service-areas.json` cannot be written, and writes no partial one;
 9. a document, a Bundle or the `download.json` of the PBP files is not valid JSON: the index writer prints the JSON parser's message, which does not name the file.
+
+A stop removes nothing: an `index.json` or a `service-areas.json` written by an earlier run stays as it was, so a pledgee publishes the root only after a run that exits 0.
+
+The index writer reads every folder of the root, other than a hidden one, as a release folder, and every `.json` file in a release folder, other than `service-areas.json`, as a document or, named `<plan key>.bundle.json`, as a Bundle; it ignores files that do not end in `.json`. So, of the folders and `.json` files it reads, a release folder holds only the documents, their Bundles and, for Medicare Advantage, `service-areas.json`, and the root only the release folders and `index.json`: another folder in the root is read as a release folder and stops the index writer on 1 of the conditions above, such as condition 2 when it holds no document, another `.json` file in the root stops it under condition 1, and another `.json` file in a release folder is read as a document and stops it under condition 4, or 9 when it is not valid JSON.
 
 A root with documents and no release folders is read as 1 release with no name: the index writer says so, each entry's `release` is null, and no `service-areas.json` is written, so each entry's `service_areas` is null.
 
@@ -328,12 +334,12 @@ The index opens with the header fields of the site's index, `description`, `prof
 | `program` | "Medicare Advantage" or "Marketplace", from the first `source_references` excerpt, decided as `scripts/rtb-completeness.js` decides it (see Completeness). |
 | `bps_schema_version` | The document's `schema_version`. |
 | `document` | The document's path from the root, `<release>/<plan key>.json`. |
-| `bundle` | The Bundle's path from the root, `<release>/<plan key>.bundle.json`, or null when the release folder has no Bundle for the plan. |
+| `bundle` | The Bundle's path from the root, `<release>/<plan key>.bundle.json`. |
 | `service_areas` | For a Medicare Advantage entry, the path of the release folder's `service-areas.json` from the root, `<release>/service-areas.json`; null for a Marketplace entry, and null when the root has no release folders. An app takes the path from here in step 3 under Identifying the plan. |
 | `release` | The name of the release folder, or null when the root has no release folders. |
 | `data_date` | The download date of the release, from the first excerpt: for Marketplace, the date of the Plan Attributes PUF, which is the release. |
-| `benefits_placed` | The number of benefits the Bundle places in `coverage.benefit`, or null with no Bundle. |
-| `benefits_unmapped` | The number of benefits the Bundle lists in `bps-unmapped-benefit` extensions, or null with no Bundle. |
+| `benefits_placed` | The number of benefits the Bundle places in `coverage.benefit`. |
+| `benefits_unmapped` | The number of benefits the Bundle lists in `bps-unmapped-benefit` extensions. |
 | `label` | What the document was read from, such as "Medicare Advantage, imported from the CMS PBP Benefits files for contract year 2027." |
 
 The site's own index, [`fhir/index.json`](https://benefitplanstandard.org/fhir/index.json), names its files by slug, such as `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json`, because the site publishes the Benefit Plan Standard repository's examples, not a pledgee's files.
@@ -357,7 +363,7 @@ A county has `ssa_county_code`, `county`, `state`, `partial_flag` and `eghp_flag
 
 ### What counts
 
-What counts is the pledgee's rule for what it publishes. The index writer enforces only the plan key, the release and the download date of items 2, 4 and 5 below, and validates no document. A document counts toward completeness and toward inclusion in the index when it carries all 6 of these:
+What counts is the pledgee's rule for what it publishes. The index writer enforces only the plan key, the release and the download date of items 2, 4 and 5 below, and the Bundle beside each document, and validates no document against the Benefit Plan Standard schema and no Bundle against the SBC InsurancePlan profile. A document counts toward completeness and toward inclusion in the index when it carries all 6 of these:
 
 1. It passes Benefit Plan Standard schema 1.2.0. The 2 importers check this before writing, and an import that fails writes nothing.
 2. The plan key, in `plan_identifiers`: system `cms_contract_plan_segment` for Medicare Advantage, `hios_plan_id` for Marketplace.
@@ -366,9 +372,9 @@ What counts is the pledgee's rule for what it publishes. The index writer enforc
 5. The download dates, in the first excerpt.
 6. The CMS cells behind its values. Every tier row with a cost share quotes its cells in `notes`, and a value with no field is quoted in `source_references`. A Medicare Advantage row that is not covered quotes the cell that says so. A Marketplace row that is not covered carries `covered` false under a benefit whose `raw_label` is the file's exact `BenefitName`, and quotes no cell, because the Marketplace importer does not quote `IsCovered` today (see Follow-ups); a Marketplace document with such rows counts.
 
-A Medicare Advantage release counts when its folder also holds `service-areas.json`, which is SHALL.
+A plan counts when its Bundle sits beside its document, and a Medicare Advantage release counts when its folder also holds `service-areas.json`; both are SHALL.
 
-A reader may assume nothing beyond the pledgee's published files: the document of each plan and, where the pledgee publishes it, the Bundle, the index and, in each Medicare Advantage release folder, `service-areas.json`. There is no hosted service and no request for 1 service. An app retrieves the plan's document or its Bundle and reads the answer from it, and a benefit missing from a document is not an answer that the plan does not cover it (see Reading the data dictionary).
+A reader may assume nothing beyond the pledgee's published files: the document and the Bundle of each plan, the index and, in each Medicare Advantage release folder, `service-areas.json`. There is no hosted service and no request for 1 service. An app retrieves the plan's document or its Bundle and reads the answer from it. The document holds every item of the data dictionary, and the Bundle holds each item as the crosswalk says, so an app reads from the document the items whose crosswalk row says they are not carried in the Bundle, such as whether a Medicare Advantage plan covers an extra benefit; an extra benefit listed in a `bps-unmapped-benefit` extension is listed whether or not the plan covers it. A benefit missing from a document is not an answer that the plan does not cover it (see Reading the data dictionary).
 
 ## Reading the data dictionary
 
@@ -547,17 +553,17 @@ For Marketplace, the plan key is the HIOS plan id with its variant, the `PlanId`
 An app that displays values from a pledgee's MVP files SHALL show, on the same screen as the values, a statement with these 4 parts:
 
 1. The information does not come from the member's insurance company, the payer or the plan. The values are read from the CMS public files, not from the payer's records of the member's coverage, and this holds when the pledgee is the member's own payer too.
-2. The plan year and the as-of date of the release the values came from. The file contract already carries both on every answer (see Source, date and refresh): the plan year is the document's `plan_year`, and the as-of date is the release's download date, in the document's first `source_references` excerpt and in the index entry's `data_date`. For Marketplace the first excerpt also gives each CMS file's `ImportDate`, the date the file itself carries, which the statement can give beside it.
-3. A direction to check with the plan for the member's own coverage and cost.
+2. The plan year and the as-of date of the release the values came from. The file contract already carries both on every answer (see Source, date and refresh): the plan year is the document's `plan_year`, and the as-of date is the release's download date, the index entry's `data_date`, which the document's first `source_references` excerpt also gives; for Marketplace it is the download date of the Plan Attributes PUF, which is the release, even when the Network PUF was downloaded on another day. For Marketplace the first excerpt also gives each CMS file's `ImportDate`, the date the file itself carries, which the statement can give beside it.
+3. A direction to call the member's insurance company to confirm the values and the member's own coverage and cost.
 4. That a service not listed may still be covered. The MVP lists a fixed set of services, and a benefit missing from a document is not an answer that the plan does not cover it (see Reading the data dictionary).
 
 This SHALL puts the plan year and the as-of date on the screen. The CMS file names and addresses stay provenance that the app gives on request or on a details view, as under Source, date and refresh.
 
-The specification sets the 4 parts, not the sentence, and an app words the statement for its members. An example, in plain English:
+Parts 1 and 3 have a minimum wording. An app that shows a value from these files SHALL tell the member, next to the plan year and the as-of date, at least in these words or in words to the same effect: "This information is not from your insurance company. Call your insurance company to confirm it." An app words the rest of the statement for its members. For Medicare Advantage, the document's `contacts.member_services_phone` is the plan's member services number, which an app can give with part 3. The statement goes with every answer an app shows from these files, such as the 2 answers of the worked example. An example, in plain English:
 
-> Example: "This information is not from your insurance company. It comes from public plan documents for the 2027 plan year, as of [date]. Check with your plan for your own coverage and costs. If a service is not listed here, your plan may still cover it."
+> Example: "This information is not from your insurance company. Call your insurance company to confirm it. It comes from public government files for the 2027 plan year, as of [date]. If a service is not listed here, your plan may still cover it."
 
-A breakout of the workgroup agreed this statement on October 22, 2026, at the request of a payer in the workgroup, so that members do not call a payer about values the payer did not serve.
+The statement protects the member who acts on a value, by sending them to their insurance company to confirm it first, and the payer's member services line, by telling the member before the call that the value did not come from the payer.
 
 ### From SHOULD to SHALL at GA (proposal for the workgroup to set)
 
@@ -569,7 +575,7 @@ At GA, for a member who has signed in with the payer, the plan identifier comes 
 
 ## Status and version
 
-Version 0.3.5, a draft for the workgroup, dated October 24, 2026. The Benefit Plan Standard repository's [`docs/changelog.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/changelog.md) and its git history record the drafts before this one.
+Version 0.3.6, a draft for the workgroup, dated October 27, 2026. The Benefit Plan Standard repository's [`docs/changelog.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/changelog.md) and its git history record the drafts before this one.
 
 It covers the PBP files for contract year 2027 and the Marketplace PUFs for plan year 2026. The documents of both programs are written in Benefit Plan Standard schema 1.2.0, a draft (see Scope). The canonical benefit vocabulary is version 1.4.0, with 124 keys. The PBP crosswalk has 41 rows, 35 with a canonical key, and the Marketplace crosswalk maps 84 of the 273 benefit names in the plan year 2026 file.
 
@@ -583,7 +589,7 @@ The crosswalk to the SBC InsurancePlan profile, [`carin-crosswalk.md`](https://g
 | Not covered, no element | 1 | 0 |
 | Not covered, not read | 0 | 0 |
 
-Every extra benefit in the MVP reaches the Bundle as identity only, plus, on Marketplace Bundles, an entry in the CARIN excluded-services extension when the plan does not cover it on any tier; that is the strongest reason the MVP format is the Benefit Plan Standard document, with the FHIR Bundle as the Part B output. The SBC InsurancePlan profile is at ballot, and nothing in the MVP's SHALL list depends on the crosswalk. To regenerate it, run `node scripts/build-rtb-crosswalk.js`; `--check` exits 1 if the file on disk differs, and the generator stops, and names the item, when a verdict is not the one the Benefit Plan Standard converter spec and `fhir/carin-sbc-crosswalk.json` give.
+Every extra benefit in the MVP reaches the Bundle as identity only, plus, on Marketplace Bundles, an entry in the CARIN excluded-services extension when the plan does not cover it on any tier; whether a Medicare Advantage plan covers each extra benefit, and the cost shares and limits of the extra benefits in both programs, are in the Benefit Plan Standard document. The crosswalk is how a reader sees, item by item, where each value lands in the Bundle and where it does not. Its different rows are the items that reach the Bundle only in a Benefit Plan Standard extension, as text, or with a loss, and its not covered rows the items the Bundle does not carry: these are the places where the Bundle does not yet hold an MVP item as the document does, because the SBC InsurancePlan profile has no element or code for it, or because the Benefit Plan Standard converter does not map it yet, and each row's note says which. Change requests filed for some of them are named in the rows they apply to (see Follow-ups): FHIR-59603 on the home health row, in both programs; FHIR-59605 on the plan type row, in Medicare Advantage; and FHIR-59606 on the 3 hearing aids rows, in both programs, and the 3 routine hearing exam rows, in Medicare Advantage. To regenerate it, run `node scripts/build-rtb-crosswalk.js`; `--check` exits 1 if the file on disk differs, and the generator stops, and names the item, when a verdict is not the one the Benefit Plan Standard converter spec and `fhir/carin-sbc-crosswalk.json` give.
 
 ## Questions for the workgroup
 
