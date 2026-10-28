@@ -3,6 +3,26 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Summary of Benefits and SBC checks, October 27, 2026
+
+Every Medicare Advantage example imported from the PBP files and every plan year 2026 Marketplace example now has an accuracy check against the carrier's own document. 4 expectations files are added, run by `scripts/pbp-sob-check.js`, unchanged; the carrier PDFs stay out of the repository (`data/` is git-ignored), and each file records the address, the retrieval date, the SHA-256 hash and the page count of the copy checked.
+
+### Added
+
+- `docs/specs/pbp-sob-checks/H5425-140-000.json`: SCAN Costco Medicare Advantage (HMO) against the San Francisco County column of its 2027 Summary of Benefits (`Y0057_SCAN_22453_2027_M`). 46 checks: 42 match, 3 readings, 1 contradiction, the member services phone (the file gives "(800)559-3500", the document prints 1-833-981-5355). The 11 services the file answers No to copayment and No to coinsurance print as $0, which confirms decision S1 of the Medicare Advantage importer.
+- `docs/specs/pbp-sob-checks/H5533-019-000.json`: UPMC for Life PPO Rx Choice (PPO) against its 2027 Summary of Benefits (`H5533_273023_M`). 76 checks: 66 match, 7 readings, 3 differences: 2 contradictions (the inpatient amount for hospital cost-sharing tier 1, $175 a day in the file and $200 in the document, which names no tiers; the provider directory address) and 1 value the Medicare Advantage importer does not read, the $20 a quarter over-the-counter allowance, filed as a combined supplemental benefit group in Section D (`pbp_d_combo_*`), recorded in the Medicare Advantage importer spec section 8.
+- `docs/specs/puf-sbc-checks/97176LA0340010-01.json`: Blue Cross and Blue Shield of Louisiana Blue Max Copay (PCP) 50/50 $3300 against its SBC. 69 checks: 63 match, 3 readings, 3 contradictions: the file covers hearing aids and chiropractic care, which the SBC lists as not covered, and the provider directory address.
+- `docs/specs/puf-sbc-checks/40220TX0080024-01.json`: UHC Gold Standard against its SBC. 57 checks: 45 match, 12 readings, 0 contradictions.
+- `docs/specs/puf-sbc-checks/19898FL0340001-01.json`: AvMed Entrust Gold 125 (2026) against its SBC, the file's 2 in-network tiers checked against the SBC's independent and hospital-affiliated facility amounts. 64 checks: 45 match, 17 readings, 2 contradictions: blood work ($10 in the file's laboratory row, $75 in the SBC's diagnostic test row) and the provider directory address.
+- `scripts/from-pbp.test.js` and `scripts/from-marketplace-puf.test.js` pin the counts of the new files and of the UHC Bronze Essential file, and require a note on every reading and difference. 209 tests.
+
+### Changed
+
+- `docs/specs/puf-sbc-checks/68398FL0030058-01.json`: the retrieval note and date say the copy checked is the maintainer's browser download of October 27, 2026, whose SHA-256 is the one recorded, and that the host's robots.txt disallows the address's path for automated fetching. The checks and counts are unchanged.
+- `docs/specs/pbp-importer.md`: decision S1 moves from the readings to confirm to the confirmed readings (SCAN H5425-140-000); section 8 records the combined supplemental benefit groups of Section D as not read; section 13 gives the 2 new expectations files.
+
+Across the 9 plans, 556 values: 463 match, 82 are documented readings, 10 are contradictions between the CMS file and the carrier document (6 on links and contacts) and 1 is a value the Medicare Advantage importer does not read yet.
+
 ## Medical MVP technical specification, drafts of October 20 to 27, 2026
 
 From version 0.3.3, dated October 21, 2026, the 3 documents of `docs/specs/rtb-medical-mvp/` state the present only: what the 2 importers read, what the documents carry, the numbers and how to rerun them. The README no longer has a Changes section or the section "Gaps closed on October 20, 2026", and its Status and version section is 1 paragraph that points here. What the README said about its drafts, from version 0.1 to version 0.3.2, is kept below as the README gave it in version 0.3.2. `scripts/build-rtb-dictionary.js` and `scripts/build-rtb-crosswalk.js` print no gap id and no closed gap; an open gap prints in the row as a plain sentence, "The <program> importer does not read <columns> today", and the checks are unchanged. A Changes section returns to the README from the first circulated version on, starting at 0.3.3.
