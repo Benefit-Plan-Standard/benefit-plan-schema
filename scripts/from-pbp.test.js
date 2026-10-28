@@ -974,3 +974,21 @@ test('sob-check: H1036-068-000 and S5921-383-000 golden files against their Summ
   assert.strictEqual(runChecks(doc, readJson(path.join(SOB_CHECKS, 'S5921-383-000.json'))).counts.DIFFERENCE, 1,
     'the file\'s excluded-drug amount written as the catastrophic step is a difference');
 });
+
+// Each DIFFERENCE below is written in its check's note: a contradiction between the file and the
+// Summary of Benefits, or (H5533-019-000, over-the-counter allowance) a combined group the importer does not read yet.
+test('sob-check: H5425-140-000 and H5533-019-000 golden files against their Summary of Benefits, counts pinned', async () => {
+  const want = { 'H5425-140-000': { MATCH: 42, READING: 3, DIFFERENCE: 1 }, 'H5533-019-000': { MATCH: 66, READING: 7, DIFFERENCE: 3 } };
+  for (const [plan, counts] of Object.entries(want)) {
+    const x = (await built()).find((y) => y.g.plan === plan);
+    const expectations = readJson(path.join(SOB_CHECKS, `${plan}.json`));
+    assert.strictEqual(expectations.golden, `examples/${x.file}`, plan);
+    const r = runChecks(readJson(path.join(EXAMPLES_DIR, x.file)), expectations);
+    assert.deepStrictEqual(r.counts, counts, plan);
+    for (const y of r.results) if (y.status !== 'MATCH') assert.ok(y.check.note, `${plan} ${y.check.item}: a ${y.status} row needs a note`);
+  }
+  const doc = readJson(path.join(EXAMPLES_DIR, (await built()).find((y) => y.g.plan === 'H5425-140-000').file));
+  doc.benefits[0].network_cost_shares[0].cost_shares[0].amount = 10;
+  assert.strictEqual(runChecks(doc, readJson(path.join(SOB_CHECKS, 'H5425-140-000.json'))).counts.DIFFERENCE, 2,
+    'a primary care copay other than the $0 that decision S1 writes is a difference');
+});

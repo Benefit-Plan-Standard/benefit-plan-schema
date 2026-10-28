@@ -314,3 +314,27 @@ for (const g of GOLDEN) {
     assert.strictEqual(doc.benefits.length + unmapped, rows.length, 'every benefit row is emitted or listed as unmapped');
   });
 }
+
+// ---- SBC checks ----------------------------------------------------------------------------
+// docs/specs/puf-sbc-checks/ run by scripts/pbp-sob-check.js on the golden files. Counts are pinned:
+// each DIFFERENCE is a contradiction between the CMS file and the SBC, written in its check's note.
+test('sbc-check: the Marketplace golden files against their SBC, counts pinned', () => {
+  const { runChecks } = require('./pbp-sob-check.js');
+  const dir = path.join(__dirname, '..', 'docs', 'specs', 'puf-sbc-checks');
+  const want = {
+    '68398FL0030058-01': { MATCH: 39, READING: 11, DIFFERENCE: 0 },
+    '97176LA0340010-01': { MATCH: 63, READING: 3, DIFFERENCE: 3 },
+    '40220TX0080024-01': { MATCH: 45, READING: 12, DIFFERENCE: 0 },
+    '19898FL0340001-01': { MATCH: 45, READING: 17, DIFFERENCE: 2 },
+  };
+  assert.deepStrictEqual(fs.readdirSync(dir).filter((f) => f.endsWith('.json')).sort(), Object.keys(want).map((p) => `${p}.json`).sort());
+  for (const [plan, counts] of Object.entries(want)) {
+    const expectations = readJson(path.join(dir, `${plan}.json`));
+    assert.strictEqual(expectations.plan, plan);
+    const doc = readJson(path.join(__dirname, '..', expectations.golden));
+    assert.ok(doc.plan_identifiers.some((p) => p.value === plan), `${expectations.golden} is plan ${plan}`);
+    const r = runChecks(doc, expectations);
+    assert.deepStrictEqual(r.counts, counts, plan);
+    for (const y of r.results) if (y.status !== 'MATCH') assert.ok(y.check.note, `${plan} ${y.check.item}: a ${y.status} row needs a note`);
+  }
+});

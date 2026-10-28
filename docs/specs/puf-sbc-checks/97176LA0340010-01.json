@@ -1,0 +1,512 @@
+{
+  "plan": "97176LA0340010-01",
+  "document": {
+    "title": "Summary of Benefits and Coverage, coverage period 01/01/2026 - 12/31/2026, Blue Cross and Blue Shield of Louisiana: Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits, Plan Type PPO",
+    "id": "01MK5160 R01/21, Date Generated: 8/28/2025",
+    "file": "data/puf/2026/sbc/97176LA0340010-01-2026-SBC.pdf",
+    "url": "https://www.lablue.com/web/applications/sbcportal/sbcs/2026/97176LA0340010-01.pdf",
+    "url_source": "URLForSummaryofBenefitsCoverage in the plan year 2026 Plan Attributes PUF, row 97176LA0340010-01",
+    "retrieved": "2026-10-27",
+    "retrieval_note": "A plain request to the address returned the PDF, HTTP 200 with no redirect. The host's robots.txt (https://www.lablue.com/robots.txt, read 2026-10-27) disallows only /myaccount/*.",
+    "sha256": "c1d6c3f1c95811cf3571c959007a7fd2bfc20870ce9bac37321879493bc7d3aa",
+    "pages": 10,
+    "read_with": "pdftotext -layout and pdftotext -raw, both with -enc UTF-8, without which the dagger mark is lost. The SBC is printed pages 1 to 7 of 7, which are PDF pages 1 to 7; PDF page 8 is blank and pages 9 and 10 are the carrier's nondiscrimination and language notices. The -layout output interleaves the columns of the service chart on page 4, so its rows were read from the -raw output. The chart's columns are \"Network Provider (You will pay the least)\" and \"Out-of-Network Provider (You will pay the most)\"; page 2 says \"All copayment and coinsurance costs shown in this chart are after your deductible has been met, if a deductible applies.\" and \"†Deductible does not apply.\", so a value printed without the dagger is checked as applies_to_deductible true and a value printed with it as false. The prescription drug rows (page 3) are not checked, as in the UHC Bronze Essential check: the medical MVP's services are medical."
+  },
+  "golden": "examples/blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.puf.json",
+  "spec": "docs/specs/marketplace-puf-importer.md sections 4.3, 4.5, 5.4, 5.5, 6 and 9.1",
+  "checks": [
+    {
+      "item": "Overall deductible, individual, network",
+      "page": 1,
+      "printed": "For network providers $3,300 individual or $9,900 family",
+      "expected": { "amount": 3300 },
+      "path": "/accumulators/individual_deductible"
+    },
+    {
+      "item": "Overall deductible, family, network, each member meets their own deductible",
+      "page": 1,
+      "printed": "$9,900 family ... each family member must meet their own individual deductible until the total amount of deductible expenses paid by all family members meets the overall family deductible.",
+      "expected": { "amount": 9900, "embedded": true },
+      "path": "/accumulators/family_deductible"
+    },
+    {
+      "item": "Overall deductible, individual, out of network",
+      "page": 1,
+      "printed": "for out-of-network providers $9,900 individual or $29,700 family",
+      "expected": { "amount": 9900 },
+      "path": "/accumulators/oon_individual_deductible"
+    },
+    {
+      "item": "Overall deductible, family, out of network",
+      "page": 1,
+      "printed": "for out-of-network providers $9,900 individual or $29,700 family",
+      "expected": { "amount": 29700, "embedded": true },
+      "path": "/accumulators/oon_family_deductible"
+    },
+    {
+      "item": "Out-of-pocket limit, individual, network",
+      "page": 1,
+      "printed": "For network providers $9,900 individual / $19,800 family",
+      "expected": { "amount": 9900 },
+      "path": "/accumulators/individual_oop_max"
+    },
+    {
+      "item": "Out-of-pocket limit, family, network, each member meets their own limit",
+      "page": 1,
+      "printed": "$19,800 family ... they have to meet their own out-of-pocket limits until the overall family out-of-pocket limit has been met.",
+      "expected": { "amount": 19800, "embedded": true },
+      "path": "/accumulators/family_oop_max"
+    },
+    {
+      "item": "Out-of-pocket limit, individual, out of network",
+      "page": 1,
+      "printed": "for out-of-network providers $29,700 individual / $59,400 family",
+      "expected": { "amount": 29700 },
+      "path": "/accumulators/oon_individual_oop_max"
+    },
+    {
+      "item": "Out-of-pocket limit, family, out of network",
+      "page": 1,
+      "printed": "for out-of-network providers $29,700 individual / $59,400 family",
+      "expected": { "amount": 59400, "embedded": true },
+      "path": "/accumulators/oon_family_oop_max"
+    },
+    {
+      "item": "Separate prescription drug deductible",
+      "page": 1,
+      "printed": "Are there other deductibles for specific services? Yes. $500 for prescription drug coverage and $50 for pediatric dental.",
+      "expected": { "amount": 500 },
+      "path": "/pharmacy/deductible",
+      "expected_reading": { "$absent": true },
+      "note": "The file states the drug deductible, MedicalDrugDeductiblesIntegrated \"No\" and DEHBDedInnTier1Individual \"$500\", and the document quotes both cells in source_references. Schema 1.2.0 has pharmacy.deductible, which the Marketplace importer does not write yet (Marketplace importer spec section 9.1), so the document has no field for it. The $50 pediatric dental deductible is in no column of the Plan Attributes PUF and is not checked."
+    },
+    {
+      "item": "Preventive care before the deductible",
+      "page": 1,
+      "printed": "Yes. Preventive Care and Wellness are covered before you meet your deductible.",
+      "expected": false,
+      "path": "/benefits/34/network_cost_shares/0/cost_shares/0/applies_to_deductible"
+    },
+    {
+      "item": "Primary care visit to treat an injury or illness, network",
+      "page": 2,
+      "printed": "$40 Copayment †",
+      "expected": [{ "type": "copay", "amount": 40, "applies_to_deductible": false }],
+      "path": "/benefits/35/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Primary care visit to treat an injury or illness, out of network",
+      "page": 2,
+      "printed": "50% Coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/35/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Specialist visit, network",
+      "page": 2,
+      "printed": "$65 Copayment †",
+      "expected": [{ "type": "copay", "amount": 65, "applies_to_deductible": false }],
+      "path": "/benefits/45/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Specialist visit, out of network",
+      "page": 2,
+      "printed": "50% Coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/45/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Preventive care/screening/immunization, network",
+      "page": 2,
+      "printed": "No charge. †",
+      "expected": [{ "type": "copay", "amount": 0, "applies_to_deductible": false }, { "type": "coinsurance", "rate": 0, "applies_to_deductible": false }],
+      "path": "/benefits/34/network_cost_shares/0/cost_shares",
+      "note": "The file gives \"No Charge\" in both columns, CopayInnTier1 and CoinsInnTier1; spec section 6 reads each as a step of 0, so the document's 2 steps both say no charge, before the deductible, as printed."
+    },
+    {
+      "item": "Preventive care/screening/immunization, out of network",
+      "page": 2,
+      "printed": "50% Coinsurance. †",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": false }],
+      "path": "/benefits/34/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Diagnostic test (blood work), network",
+      "page": 2,
+      "printed": "Diagnostic Test (x-ray, blood work): 50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/23/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Diagnostic test (blood work), out of network",
+      "page": 2,
+      "printed": "Diagnostic Test (x-ray, blood work): 50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/23/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Diagnostic test (x-ray), network",
+      "page": 2,
+      "printed": "Diagnostic Test (x-ray, blood work): 50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/51/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Diagnostic test (x-ray), out of network",
+      "page": 2,
+      "printed": "Diagnostic Test (x-ray, blood work): 50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/51/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Imaging (CT/PET scans, MRIs), network",
+      "page": 2,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/19/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Imaging (CT/PET scans, MRIs), out of network",
+      "page": 2,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/19/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Outpatient surgery facility fee, network",
+      "page": 3,
+      "printed": "Facility fee (e.g., ambulatory surgery center): 50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/30/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient surgery facility fee, out of network",
+      "page": 3,
+      "printed": "Facility fee (e.g., ambulatory surgery center): 50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/30/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Outpatient surgery physician/surgeon fees, network",
+      "page": 3,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/32/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient surgery physician/surgeon fees, out of network",
+      "page": 3,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/32/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Emergency room care, network",
+      "page": 3,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/11/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Emergency room care, out of network",
+      "page": 3,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/11/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Emergency medical transportation, network",
+      "page": 3,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/12/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Emergency medical transportation, out of network",
+      "page": 3,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/12/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Urgent care, network",
+      "page": 3,
+      "printed": "$65 Copayment †",
+      "expected": [{ "type": "copay", "amount": 65, "applies_to_deductible": false }],
+      "path": "/benefits/49/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Urgent care, out of network",
+      "page": 3,
+      "printed": "50% Coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/49/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Hospital stay facility fee, network",
+      "page": 3,
+      "printed": "Facility fee (e.g., hospital room): 50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/21/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Hospital stay facility fee, out of network",
+      "page": 3,
+      "printed": "Facility fee (e.g., hospital room): 50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/21/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Hospital stay physician/surgeon fees, network",
+      "page": 3,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/22/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Hospital stay physician/surgeon fees, out of network",
+      "page": 3,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/22/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Mental/behavioral health outpatient services, network",
+      "page": 4,
+      "printed": "$40 Copayment † /office visit and 50% Coinsurance other outpatient services",
+      "expected": [{ "type": "copay", "amount": 40, "applies_to_deductible": false }, { "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/26/network_cost_shares/0/cost_shares",
+      "expected_reading": [{ "type": "copay", "amount": 40, "applies_to_deductible": false }],
+      "note": "The file gives the benefit 1 cost share in network, CopayInnTier1 \"$40.00\" and CoinsInnTier1 \"Not Applicable\" on the Mental/Behavioral Health Outpatient Services row; the 50% coinsurance the SBC prints for other outpatient services is in no column of the file, so the document holds the office visit copay only. A value the file does not state, not a contradiction (Marketplace importer spec sections 5.5 and 6)."
+    },
+    {
+      "item": "Mental/behavioral health outpatient services, out of network",
+      "page": 4,
+      "printed": "50% Coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/26/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Mental/behavioral health inpatient services, network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/25/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Mental/behavioral health inpatient services, out of network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/25/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Substance use disorder outpatient services, network",
+      "page": 4,
+      "printed": "$40 Copayment † /office visit and 50% Coinsurance other outpatient services",
+      "expected": [{ "type": "copay", "amount": 40, "applies_to_deductible": false }, { "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/48/network_cost_shares/0/cost_shares",
+      "expected_reading": [{ "type": "copay", "amount": 40, "applies_to_deductible": false }],
+      "note": "The file gives the benefit 1 cost share in network, CopayInnTier1 \"$40.00\" and CoinsInnTier1 \"Not Applicable\" on the Substance Abuse Disorder Outpatient Services row; the 50% coinsurance the SBC prints for other outpatient services is in no column of the file, so the document holds the office visit copay only. A value the file does not state, not a contradiction (Marketplace importer spec sections 5.5 and 6)."
+    },
+    {
+      "item": "Substance use disorder outpatient services, out of network",
+      "page": 4,
+      "printed": "50% Coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/48/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Substance use disorder inpatient services, network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/47/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Substance use disorder inpatient services, out of network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/47/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Childbirth/delivery facility services, network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/6/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Childbirth/delivery facility services, out of network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/6/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Home health care, network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/17/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Home health care, out of network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/17/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Rehabilitation services (physical and occupational therapy), network",
+      "page": 4,
+      "printed": "Rehabilitation services: 50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/38/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Rehabilitation services (physical and occupational therapy), out of network",
+      "page": 4,
+      "printed": "Rehabilitation services: 50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/38/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Habilitation services, network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/15/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Habilitation services, out of network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/15/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Skilled nursing care, network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/44/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Skilled nursing care, out of network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/44/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Durable medical equipment, network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/10/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Durable medical equipment, out of network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/10/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Hospice services, network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/18/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Hospice services, out of network",
+      "page": 4,
+      "printed": "50% Coinsurance (in both columns)",
+      "expected": [{ "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/18/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Hearing aids, not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Hearing aids",
+      "expected": false,
+      "path": "/benefits/16/network_cost_shares/0/covered",
+      "note": "A contradiction between the CMS file and the SBC, not a reading. The Benefits and Cost Sharing PUF row Hearing Aids gives IsCovered \"Covered\", CoinsInnTier1 \"50.00% Coinsurance after deductible\", CoinsOutofNet \"100.00%\" and a limit (QuantLimitOnSvc \"Yes\", LimitQty \"1.0\", LimitUnit \"Item(s) per 3 Years\"), with the Explanation \"1 hearing aid per ear every 3 years\"; the SBC lists hearing aids among the services the plan generally does not cover. The Marketplace importer follows the file, so the document says covered (spec section 5.4)."
+    },
+    {
+      "item": "Chiropractic care, not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Chiropractic care",
+      "expected": false,
+      "path": "/benefits/5/network_cost_shares/0/covered",
+      "note": "A contradiction between the CMS file and the SBC, not a reading. The Benefits and Cost Sharing PUF row Chiropractic Care gives IsCovered \"Covered\", CopayInnTier1 \"$40.00\" and CoinsOutofNet \"50.00% Coinsurance after deductible\"; the SBC lists chiropractic care among the services the plan generally does not cover. The Marketplace importer follows the file, so the document says covered (spec section 5.4)."
+    },
+    {
+      "item": "Routine eye exam (adult), not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Routine eye care (Adult)",
+      "expected": false,
+      "path": "/benefits/41/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Routine foot care, not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Routine foot care",
+      "expected": false,
+      "path": "/benefits/43/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Acupuncture, not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Acupuncture",
+      "expected": false,
+      "path": "/benefits/0/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Bariatric surgery, not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Bariatric surgery",
+      "expected": false,
+      "path": "/benefits/2/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Infertility treatment, not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Infertility treatment",
+      "expected": false,
+      "path": "/benefits/20/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Routine dental services (adult), not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Dental care (Adult)",
+      "expected": false,
+      "path": "/benefits/40/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Basic dental care (adult), not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Dental care (Adult)",
+      "expected": false,
+      "path": "/benefits/3/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Major dental care (adult), not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Dental care (Adult)",
+      "expected": false,
+      "path": "/benefits/24/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Provider directory",
+      "page": 1,
+      "printed": "Yes. See www.lablue.com or call 1-800-495-2583 for a list of network providers.",
+      "expected": "https://lablue.com",
+      "path": "/network_tiers/0/provider_directory_url",
+      "note": "A contradiction on a link, not a cost share. The Network PUF gives the plan's network, LAN001, NetworkURL \"https://lablue.com/ppo-medical-vision-dental\", which the document holds; the SBC prints the carrier's home page. Addresses are compared with the scheme, a leading \"www.\" and the case of the host ignored, so the printed address is written here in the document's form, and the 2 still differ in path. On 2026-10-27 both resolved: https://www.lablue.com answered HTTP 200 with no redirect, the carrier's home page, and the filed address answered HTTP 200 after 2 redirects at https://findcare.bcbsla.com/?network_id=11, the provider search."
+    }
+  ]
+}

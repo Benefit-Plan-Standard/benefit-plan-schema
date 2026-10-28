@@ -1,0 +1,505 @@
+{
+  "plan": "19898FL0340001-01",
+  "document": {
+    "title": "Summary of Benefits and Coverage, coverage period beginning on or after 01/01/2026, Individual AvMed Entrust Gold 125 (2026), Plan Type HMO",
+    "id": "AVIN_HG_165101_0126",
+    "file": "data/puf/2026/sbc/19898FL0340001-01-2026-SBC.pdf",
+    "url": "https://apps.avmed.com/Public/OHBRFileManager/DownloadFile.aspx?filePath=%2Fpresales%2FAvMed%2F2026%2FSBC%2FIFP%2FAVINHG16510101260625.pdf",
+    "url_source": "URLForSummaryofBenefitsCoverage in the plan year 2026 Plan Attributes PUF, row 19898FL0340001-01; the carrier's Entrust page, https://www.avmed.org/en/individuals-families/entrust, links \"Entrust Gold 125\" to the same address",
+    "retrieved": "2026-10-27",
+    "retrieval_note": "The maintainer downloaded it in a browser on 2026-10-27. The host answered HTTP 401 for its robots.txt (https://apps.avmed.com/robots.txt, read 2026-10-27), so automated fetching is not known to be allowed, and this check did not do it.",
+    "sha256": "07c67eb226d54b9dfb0fc77e0ca3416b075264005b59a88ae514ac24a3b4ba97",
+    "pages": 7,
+    "read_with": "pdftotext -layout and pdftotext -raw, both with -enc UTF-8. The SBC is printed pages 1 to 7 of 7, which are PDF pages 1 to 7. The -layout output interleaves the columns of the service chart, so its rows were read from the -raw output. The chart's columns are \"In-Network (You will pay the least)\" and \"Out-of-Network (You will pay the most)\"; the in-network column prints \"Independent facility\" and \"Hospital-affiliated facility\" amounts, which are the file's in-network tier 1 and tier 2 (MultipleInNetworkTiers \"Yes\"), the document's IN and IN2. Page 2 says \"All copayment and coinsurance costs shown in this chart are after your deductible has been met, if a deductible applies.\", and page 1 names the services covered before the deductible; a value printed \"after deductible\" is checked as applies_to_deductible true, a copay printed without it as false. The prescription drug rows (pages 2 and 3) are not checked, as in the UHC Bronze Essential check: the medical MVP's services are medical."
+  },
+  "golden": "examples/avmed-avmed-entrust-gold-125.puf.json",
+  "spec": "docs/specs/marketplace-puf-importer.md sections 4.2, 4.5, 5.4, 5.5, 5.6, 6 and 7.4",
+  "checks": [
+    {
+      "item": "Overall deductible, individual, network",
+      "page": 1,
+      "printed": "In-Network: $2,000 Individual / $4,000 Family",
+      "expected": { "amount": 2000 },
+      "path": "/accumulators/individual_deductible"
+    },
+    {
+      "item": "Overall deductible, family, each member meets their own deductible",
+      "page": 1,
+      "printed": "$4,000 Family ... each family member must meet their own individual deductible until the total amount of deductible expenses paid by all family members meets the overall family deductible.",
+      "expected": { "amount": 4000, "embedded": true },
+      "path": "/accumulators/family_deductible"
+    },
+    {
+      "item": "No out-of-network deductible",
+      "page": 1,
+      "printed": "Out-of-Network: Not Applicable",
+      "expected": { "$absent": true },
+      "path": "/accumulators/oon_individual_deductible"
+    },
+    {
+      "item": "Out-of-pocket limit, individual, network",
+      "page": 1,
+      "printed": "In-Network: $5,850 Individual / $11,700 Family",
+      "expected": { "amount": 5850 },
+      "path": "/accumulators/individual_oop_max"
+    },
+    {
+      "item": "Out-of-pocket limit, family, each member meets their own limit",
+      "page": 1,
+      "printed": "$11,700 Family ... they have to meet their own out-of-pocket limit until the overall family out-of-pocket limit has been met.",
+      "expected": { "amount": 11700, "embedded": true },
+      "path": "/accumulators/family_oop_max"
+    },
+    {
+      "item": "No out-of-network out-of-pocket limit",
+      "page": 1,
+      "printed": "Out-of-Network: Not Applicable",
+      "expected": { "$absent": true },
+      "path": "/accumulators/oon_individual_oop_max"
+    },
+    {
+      "item": "Primary care visit to treat an injury or illness, network",
+      "page": 2,
+      "printed": "$35 copay/ visit",
+      "expected": [{ "type": "copay", "amount": 35, "applies_to_deductible": false }],
+      "path": "/benefits/35/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Primary care visit to treat an injury or illness, out of network",
+      "page": 2,
+      "printed": "Not Covered",
+      "expected": { "tier_id": "OUT", "covered": false },
+      "path": "/benefits/35/network_cost_shares/2",
+      "expected_reading": { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] },
+      "note": "The file gives IsCovered \"Covered\" for the benefit and CoinsOutofNet \"100.00%\" (CopayOutofNet \"Not Applicable\"). IsCovered is benefit-level, so every tier row is covered true (spec 5.4, 7.4), and the out-of-network row is a coinsurance step at rate 1, with both strings quoted in its notes."
+    },
+    {
+      "item": "Specialist visit, network",
+      "page": 2,
+      "printed": "$70 copay/ visit",
+      "expected": [{ "type": "copay", "amount": 70, "applies_to_deductible": false }],
+      "path": "/benefits/45/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Specialist visit, out of network",
+      "page": 2,
+      "printed": "Not Covered",
+      "expected": { "tier_id": "OUT", "covered": false },
+      "path": "/benefits/45/network_cost_shares/2",
+      "expected_reading": { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] },
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Preventive care/screening/immunization, network",
+      "page": 2,
+      "printed": "No Charge",
+      "expected": [{ "type": "copay", "amount": 0, "applies_to_deductible": false }],
+      "path": "/benefits/34/network_cost_shares/0/cost_shares",
+      "note": "The file's CopayInnTier1 is \"No Charge\" (CoinsInnTier1 \"Not Applicable\"), read in the copay column as a $0 copay (spec 6)."
+    },
+    {
+      "item": "Preventive care/screening/immunization, out of network",
+      "page": 2,
+      "printed": "Not Covered",
+      "expected": { "tier_id": "OUT", "covered": false },
+      "path": "/benefits/34/network_cost_shares/2",
+      "expected_reading": { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] },
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Diagnostic test (x-ray), network tier 1 (independent facility)",
+      "page": 2,
+      "printed": "Diagnostic test (x-ray, blood work): Independent facility: $75 copay/ visit",
+      "expected": [{ "type": "copay", "amount": 75, "applies_to_deductible": false }],
+      "path": "/benefits/51/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Diagnostic test (x-ray), network tier 2 (hospital-affiliated facility)",
+      "page": 2,
+      "printed": "Diagnostic test (x-ray, blood work): Hospital-affiliated facility: $150 copay/ visit",
+      "expected": [{ "type": "copay", "amount": 150, "applies_to_deductible": false }],
+      "path": "/benefits/51/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Diagnostic test (x-ray), out of network",
+      "page": 2,
+      "printed": "Not Covered",
+      "expected": { "tier_id": "OUT", "covered": false },
+      "path": "/benefits/51/network_cost_shares/2",
+      "expected_reading": { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] },
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Diagnostic test (blood work), network tier 1 (independent facility)",
+      "page": 2,
+      "printed": "Diagnostic test (x-ray, blood work): Independent facility: $75 copay/ visit",
+      "expected": [{ "type": "copay", "amount": 75, "applies_to_deductible": false }],
+      "path": "/benefits/23/network_cost_shares/0/cost_shares",
+      "note": "A contradiction between the CMS file and the SBC, not a reading. The Benefits and Cost Sharing PUF row Laboratory Outpatient and Professional Services gives CopayInnTier1 \"$10.00\" and CopayInnTier2 \"Not Applicable\", which the document holds; the SBC prints 1 amount for x-rays and blood work, $75 at an independent facility and $150 at a hospital-affiliated one, which the file gives for X-rays and Diagnostic Imaging only."
+    },
+    {
+      "item": "Imaging (CT/PET scans, MRIs), network tier 1 (independent facility)",
+      "page": 2,
+      "printed": "Independent facility: $250 copay/ visit",
+      "expected": [{ "type": "copay", "amount": 250, "applies_to_deductible": false }],
+      "path": "/benefits/19/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Imaging (CT/PET scans, MRIs), network tier 2 (hospital-affiliated facility)",
+      "page": 2,
+      "printed": "Hospital-affiliated facility: $500 copay/ visit",
+      "expected": [{ "type": "copay", "amount": 500, "applies_to_deductible": false }],
+      "path": "/benefits/19/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Imaging (CT/PET scans, MRIs), out of network",
+      "page": 2,
+      "printed": "Not Covered",
+      "expected": { "tier_id": "OUT", "covered": false },
+      "path": "/benefits/19/network_cost_shares/2",
+      "expected_reading": { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] },
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Outpatient surgery facility fee, network tier 1 (independent facility)",
+      "page": 3,
+      "printed": "Independent facility: $650 copay/ visit after deductible",
+      "expected": [{ "type": "copay", "amount": 650, "applies_to_deductible": true }],
+      "path": "/benefits/30/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient surgery facility fee, network tier 2 (hospital-affiliated facility)",
+      "page": 3,
+      "printed": "Hospital-affiliated facility: $650 copay/ visit after deductible",
+      "expected": [{ "type": "copay", "amount": 650, "applies_to_deductible": true }],
+      "path": "/benefits/30/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Outpatient surgery facility fee, out of network",
+      "page": 3,
+      "printed": "Not Covered",
+      "expected": { "tier_id": "OUT", "covered": false },
+      "path": "/benefits/30/network_cost_shares/2",
+      "expected_reading": { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] },
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Outpatient surgery physician/surgeon fees, network",
+      "page": 3,
+      "printed": "No charge after deductible",
+      "expected": [{ "type": "copay", "amount": 0, "applies_to_deductible": true }],
+      "path": "/benefits/32/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient surgery physician/surgeon fees, out of network",
+      "page": 3,
+      "printed": "Not Covered",
+      "expected": { "tier_id": "OUT", "covered": false },
+      "path": "/benefits/32/network_cost_shares/2",
+      "expected_reading": { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] },
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Emergency room care, network",
+      "page": 3,
+      "printed": "$500 copay/ visit after deductible",
+      "expected": [{ "type": "copay", "amount": 500, "applies_to_deductible": true }],
+      "path": "/benefits/11/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Emergency room care, out of network",
+      "page": 3,
+      "printed": "$500 copay/ visit after In-Network deductible",
+      "expected": [{ "type": "copay", "amount": 500, "applies_to_deductible": true }],
+      "path": "/benefits/11/network_cost_shares/2/cost_shares"
+    },
+    {
+      "item": "Emergency medical transportation, ground, network",
+      "page": 3,
+      "printed": "Ground: $200 copay/ one way ground transport",
+      "expected": [{ "type": "copay", "amount": 200, "applies_to_deductible": false }],
+      "path": "/benefits/12/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Emergency medical transportation, ground, out of network",
+      "page": 3,
+      "printed": "Ground: $200 copay/ one way ground transport",
+      "expected": [{ "type": "copay", "amount": 200, "applies_to_deductible": false }],
+      "path": "/benefits/12/network_cost_shares/2/cost_shares"
+    },
+    {
+      "item": "Emergency medical transportation, air or water, network",
+      "page": 3,
+      "printed": "Ground: $200 copay/ one way ground transport; Air/Water: 50% coinsurance after deductible",
+      "expected": [{ "type": "copay", "amount": 200 }, { "type": "coinsurance", "rate": 0.5, "applies_to_deductible": true }],
+      "path": "/benefits/12/network_cost_shares/0/cost_shares",
+      "expected_reading": [{ "type": "copay", "amount": 200 }],
+      "note": "The file gives the benefit 1 cost share in network, CopayInnTier1 \"$200.00\" and CoinsInnTier1 \"Not Applicable\"; the 50% coinsurance the SBC prints for air and water transport is in no column of the file, so the document holds the ground copay only. A value the file does not state, not a contradiction (Marketplace importer spec sections 5.5 and 6)."
+    },
+    {
+      "item": "Urgent care, network tier 1 (independent facility)",
+      "page": 4,
+      "printed": "Independent urgent care facility: $125 copay/ visit",
+      "expected": [{ "type": "copay", "amount": 125, "applies_to_deductible": false }],
+      "path": "/benefits/49/network_cost_shares/0/cost_shares",
+      "note": "The $45 retail clinic copay the SBC also prints is in no column of the file."
+    },
+    {
+      "item": "Urgent care, network tier 2 (hospital-affiliated facility)",
+      "page": 4,
+      "printed": "Hospital-affiliated urgent care facility: $250 copay/ visit",
+      "expected": [{ "type": "copay", "amount": 250, "applies_to_deductible": false }],
+      "path": "/benefits/49/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Urgent care, out of network",
+      "page": 4,
+      "printed": "Independent urgent care facility: $125 copay/ visit; Hospital-affiliated urgent care facility: $250 copay/ visit; Retail clinic: Not Covered",
+      "expected": [{ "type": "copay", "amount_min": 125, "amount_max": 250 }],
+      "path": "/benefits/49/network_cost_shares/2/cost_shares",
+      "expected_reading": [{ "type": "copay", "amount": 250, "applies_to_deductible": false }],
+      "note": "The file has 1 out-of-network column and gives CopayOutofNet \"$250.00\", the SBC's hospital-affiliated amount; the $125 the SBC prints for an independent urgent care facility out of network is in no column of the file. A value the file does not state, not a contradiction (Marketplace importer spec section 6)."
+    },
+    {
+      "item": "Hospital stay facility fee, network",
+      "page": 4,
+      "printed": "$850 copay/ admission after deductible",
+      "expected": [{ "type": "copay", "amount": 850, "applies_to_deductible": true }],
+      "path": "/benefits/21/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Hospital stay facility fee, out of network",
+      "page": 4,
+      "printed": "Not Covered",
+      "expected": { "tier_id": "OUT", "covered": false },
+      "path": "/benefits/21/network_cost_shares/2",
+      "expected_reading": { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] },
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Hospital stay physician/surgeon fees, network",
+      "page": 4,
+      "printed": "No charge after deductible",
+      "expected": [{ "type": "copay", "amount": 0, "applies_to_deductible": true }],
+      "path": "/benefits/22/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Mental health outpatient services, network",
+      "page": 4,
+      "printed": "$35 copay/ visit (The cost sharing applies to outpatient office visits only.)",
+      "expected": [{ "type": "copay", "amount": 35, "applies_to_deductible": false }],
+      "path": "/benefits/26/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Mental health outpatient services, out of network",
+      "page": 4,
+      "printed": "Not Covered",
+      "expected": { "tier_id": "OUT", "covered": false },
+      "path": "/benefits/26/network_cost_shares/2",
+      "expected_reading": { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] },
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Mental health inpatient services, network",
+      "page": 4,
+      "printed": "$850 copay/ admission after deductible",
+      "expected": [{ "type": "copay", "amount": 850, "applies_to_deductible": true }],
+      "path": "/benefits/25/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Childbirth/delivery facility services, network",
+      "page": 4,
+      "printed": "Hospital: $850 copay/ admission after deductible",
+      "expected": [{ "type": "copay", "amount": 850, "applies_to_deductible": true }],
+      "path": "/benefits/6/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Home health care, network",
+      "page": 5,
+      "printed": "$70 copay/ visit after deductible",
+      "expected": [{ "type": "copay", "amount": 70, "applies_to_deductible": true }],
+      "path": "/benefits/17/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Home health care, 20 visits a year",
+      "page": 5,
+      "printed": "Limited to 20 skilled visits per calendar year.",
+      "expected": [{ "type": "visits", "value": 20, "period": "per_year" }],
+      "path": "/benefits/17/limits",
+      "expected_reading": [{ "type": "visits", "value": 20, "period": "per_benefit_period" }],
+      "note": "The file gives QuantLimitOnSvc \"Yes\", LimitQty \"20.0\", LimitUnit \"Visit(s) per Benefit Period\"; spec 5.6 writes the unit's period as per_benefit_period. The SBC prints the same 20 visits per calendar year: the same limit, with the file's period."
+    },
+    {
+      "item": "Rehabilitation services (physical and occupational therapy), network tier 1 (independent facility)",
+      "page": 5,
+      "printed": "Independent facility: $70 copay/ visit",
+      "expected": [{ "type": "copay", "amount": 70, "applies_to_deductible": false }],
+      "path": "/benefits/38/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Rehabilitation services (physical and occupational therapy), network tier 2 (hospital-affiliated facility)",
+      "page": 5,
+      "printed": "Hospital-affiliated facility: $70 copay/ visit after deductible",
+      "expected": [{ "type": "copay", "amount": 70, "applies_to_deductible": true }],
+      "path": "/benefits/38/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Rehabilitation services (physical and occupational therapy), out of network",
+      "page": 5,
+      "printed": "Not Covered",
+      "expected": { "tier_id": "OUT", "covered": false },
+      "path": "/benefits/38/network_cost_shares/2",
+      "expected_reading": { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] },
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Rehabilitation services, combined limit of 35 visits a year",
+      "page": 5,
+      "printed": "Limited to 35 visits per calendar year for outpatient rehabilitative PT, OT, ST, cardiac rehab, pulmonary rehab, and chiropractic services combined.",
+      "expected": [{ "type": "visits", "value": 35, "period": "per_year" }],
+      "path": "/benefits/38/limits",
+      "expected_reading": [{ "type": "visits", "value": 35, "period": "per_benefit_period" }],
+      "note": "The file gives QuantLimitOnSvc \"Yes\", LimitQty \"35.0\", LimitUnit \"Visit(s) per Benefit Period\"; spec 5.6 writes the unit's period as per_benefit_period. The SBC prints the same 35 visits per calendar year: the same limit, with the file's period."
+    },
+    {
+      "item": "Habilitation services, network tier 1 (independent facility)",
+      "page": 5,
+      "printed": "Independent facility: $70 copay/ visit",
+      "expected": [{ "type": "copay", "amount": 70, "applies_to_deductible": false }],
+      "path": "/benefits/15/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Habilitation services, network tier 2 (hospital-affiliated facility)",
+      "page": 5,
+      "printed": "Hospital-affiliated facility: $70 copay/ visit after deductible",
+      "expected": [{ "type": "copay", "amount": 70, "applies_to_deductible": true }],
+      "path": "/benefits/15/network_cost_shares/1/cost_shares"
+    },
+    {
+      "item": "Skilled nursing care, network",
+      "page": 5,
+      "printed": "Day 1 - 5: $250 copay/ day per admission after deductible; Day 6 and after: No charge after deductible",
+      "expected": [{ "type": "copay", "amount": 250, "basis": "per_day", "unit_range": { "from": 1, "to": 5 }, "applies_to_deductible": true }, { "type": "copay", "amount": 0, "unit_range": { "from": 6 }, "applies_to_deductible": true }],
+      "path": "/benefits/44/network_cost_shares/0/cost_shares",
+      "expected_reading": [{ "type": "copay", "amount": 250, "basis": "per_day", "applies_to_deductible": true }],
+      "note": "The file gives CopayInnTier1 \"$250.00 Copay per Day after deductible\", with no day range; the days 1 to 5 and the no charge from day 6 the SBC prints are in no column of the file. A value the file does not state, not a contradiction (Marketplace importer spec section 6)."
+    },
+    {
+      "item": "Skilled nursing care, 60 days a year",
+      "page": 5,
+      "printed": "Limited to 60 days post-hospitalization care per calendar year.",
+      "expected": [{ "type": "days", "value": 60, "period": "per_year" }],
+      "path": "/benefits/44/limits",
+      "expected_reading": [{ "type": "days", "value": 60, "period": "per_benefit_period" }],
+      "note": "The file gives QuantLimitOnSvc \"Yes\", LimitQty \"60.0\", LimitUnit \"Days per Benefit Period\"; spec 5.6 writes the unit's period as per_benefit_period. The SBC prints the same 60 days per calendar year: the same limit, with the file's period."
+    },
+    {
+      "item": "Durable medical equipment, network",
+      "page": 5,
+      "printed": "$100 copay/ episode of illness after deductible",
+      "expected": [{ "type": "copay", "amount": 100, "applies_to_deductible": true }],
+      "path": "/benefits/10/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Hospice services, network",
+      "page": 5,
+      "printed": "No charge after deductible",
+      "expected": [{ "type": "copay", "amount": 0, "applies_to_deductible": true }],
+      "path": "/benefits/18/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Acupuncture, not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Acupuncture",
+      "expected": false,
+      "path": "/benefits/0/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Bariatric surgery, not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Bariatric Surgery",
+      "expected": false,
+      "path": "/benefits/2/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Hearing aids, not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Hearing Aids",
+      "expected": false,
+      "path": "/benefits/16/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Infertility treatment, not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Infertility Treatment",
+      "expected": false,
+      "path": "/benefits/20/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Routine eye exam (adult), not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Routine Eye Care (Adult)",
+      "expected": false,
+      "path": "/benefits/41/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Routine foot care, not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Routine Foot Care",
+      "expected": false,
+      "path": "/benefits/43/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Routine dental services (adult), not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Dental Care (Adult)",
+      "expected": false,
+      "path": "/benefits/40/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Basic dental care (adult), not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Dental Care (Adult)",
+      "expected": false,
+      "path": "/benefits/3/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Major dental care (adult), not covered",
+      "page": 6,
+      "printed": "Services Your Plan Generally Does NOT Cover: Dental Care (Adult)",
+      "expected": false,
+      "path": "/benefits/24/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Chiropractic care, covered",
+      "page": 6,
+      "printed": "Other Covered Services: Chiropractic Care",
+      "expected": true,
+      "path": "/benefits/5/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Chiropractic care, network",
+      "page": 5,
+      "printed": "Rehabilitation services: Chiropractic services: $35 copay/ visit",
+      "expected": [{ "type": "copay", "amount": 35, "applies_to_deductible": false }],
+      "path": "/benefits/5/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Chiropractic care, combined limit of 35 visits a year",
+      "page": 5,
+      "printed": "Limited to 35 visits per calendar year for outpatient rehabilitative PT, OT, ST, cardiac rehab, pulmonary rehab, and chiropractic services combined.",
+      "expected": [{ "type": "visits", "value": 35, "period": "per_year" }],
+      "path": "/benefits/5/limits",
+      "expected_reading": [{ "type": "visits", "value": 35, "period": "per_benefit_period" }],
+      "note": "The file gives QuantLimitOnSvc \"Yes\", LimitQty \"35.0\", LimitUnit \"Visit(s) per Benefit Period\"; spec 5.6 writes the unit's period as per_benefit_period. The SBC prints the same 35 visits per calendar year: the same limit, with the file's period."
+    },
+    {
+      "item": "Provider directory",
+      "page": 1,
+      "printed": "Yes. See www.avmed.org or call 1-800-477-8768 for a list of network providers.",
+      "expected": "https://avmed.org",
+      "path": "/network_tiers/0/provider_directory_url",
+      "note": "A contradiction on a link, not a cost share. The Network PUF gives the plan's network, FLN001, NetworkURL \"https://avmed.healthsparq.com/healthsparq/public/#/one/insurerCode=AVMED_I&brandCode=AVMED\", which the document holds; the SBC prints the carrier's home page. Addresses are compared with the scheme, a leading \"www.\" and the case of the host ignored, so the printed address is written here in the document's form, and the 2 still differ in host and path. On 2026-10-27 https://www.avmed.org answered HTTP 200 after 1 redirect, the carrier's home page; the filed address's host answers automated requests with a page that turns them away, so it was not resolved."
+    }
+  ]
+}

@@ -6,8 +6,8 @@
     "file": "data/puf/2026/sbc/68398FL0030058-01-2026-SBC.pdf",
     "url": "https://www.uhc.com/ifp/sbc.68398FL0030058-01.en.2026.pdf",
     "url_source": "URLForSummaryofBenefitsCoverage in the plan year 2026 Plan Attributes PUF, row 68398FL0030058-01",
-    "retrieved": "2026-10-20",
-    "retrieval_note": "A plain request got HTTP 403 from the carrier's content delivery network. With a browser User-Agent header the address redirects to the same path without .pdf and returns the PDF.",
+    "retrieved": "2026-10-27",
+    "retrieval_note": "The maintainer downloaded it in a browser on 2026-10-27; that copy's SHA-256 is the one below, the same as the copy this check was first run on, on 2026-10-20. The host's robots.txt (https://www.uhc.com/robots.txt, read 2026-10-27) disallows /ifp/, which covers this address, for automated fetching; the copy checked here rests on the browser download.",
     "sha256": "cc0a047214740a8b84e57995c430ee1eafcdc582684ffffbfa36e2636d060413",
     "pages": 12,
     "read_with": "pdftotext -layout and pdftotext -raw. The SBC is printed pages 1 to 6 of 6, which are PDF pages 1 to 6; PDF pages 7 to 12 are the carrier's nondiscrimination and language notices. The -layout output interleaves the columns of the service chart on pages 2 and 3, so its rows were read from the -raw output. The chart's columns are \"Network Provider\" and \"Out-of-Network Provider\"; page 1 says \"All copayment and coinsurance costs shown in this chart are after your deductible has been met, if a deductible applies.\""

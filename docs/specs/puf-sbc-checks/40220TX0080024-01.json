@@ -1,0 +1,446 @@
+{
+  "plan": "40220TX0080024-01",
+  "document": {
+    "title": "Summary of Benefits and Coverage, coverage period 01/01/2026 - 12/31/2026, UHC Gold Standard, Plan Type HMO",
+    "id": "TX0018 EXTX26IF0278591_000",
+    "file": "data/puf/2026/sbc/40220TX0080024-01-2026-SBC.pdf",
+    "url": "https://www.uhc.com/ifp/sbc.40220TX0080024-01.en.2026.pdf",
+    "url_source": "URLForSummaryofBenefitsCoverage in the plan year 2026 Plan Attributes PUF, row 40220TX0080024-01",
+    "retrieved": "2026-10-27",
+    "retrieval_note": "The maintainer downloaded it in a browser on 2026-10-27. The host's robots.txt (https://www.uhc.com/robots.txt, read 2026-10-27) disallows /ifp/, which covers this address, for automated fetching, which this check did not do.",
+    "sha256": "d5ba94c11298dbb265d8131d81074c643bc91929a668804f2e56421446370ce8",
+    "pages": 12,
+    "read_with": "pdftotext -layout and pdftotext -raw, both with -enc UTF-8. The SBC is printed pages 1 to 6 of 6, which are PDF pages 1 to 6; PDF pages 7 to 12 are the carrier's nondiscrimination and language notices. The -layout output interleaves the columns of the service chart on pages 2 and 3, so its rows were read from the -raw output. The chart's columns are \"Network Provider (You will pay the least)\" and \"Out-of-Network Provider (You will pay the most)\"; page 1 says \"All copayment and coinsurance costs shown in this chart are after your deductible has been met, if a deductible applies.\", and a copay printed with \"deductible does not apply\" is checked as applies_to_deductible false, every other value as true. The prescription drug rows (page 2) are not checked, as in the UHC Bronze Essential check: the medical MVP's services are medical."
+  },
+  "golden": "examples/unitedhealthcare-uhc-gold-standard.puf.json",
+  "spec": "docs/specs/marketplace-puf-importer.md sections 4.5, 5.4, 5.5, 5.6, 6 and 7.4",
+  "checks": [
+    {
+      "item": "Overall deductible, individual, network",
+      "page": 1,
+      "printed": "Network: $2,000 Individual / $4,000 Family",
+      "expected": { "amount": 2000 },
+      "path": "/accumulators/individual_deductible"
+    },
+    {
+      "item": "Overall deductible, family, each member meets their own deductible",
+      "page": 1,
+      "printed": "$4,000 Family ... each family member must meet their own individual deductible until the total amount of deductible expenses paid by all family members meets the overall family deductible.",
+      "expected": { "amount": 4000, "embedded": true },
+      "path": "/accumulators/family_deductible"
+    },
+    {
+      "item": "Out-of-pocket limit, individual, network",
+      "page": 1,
+      "printed": "Network: $8,200 Individual / $16,400 Family",
+      "expected": { "amount": 8200 },
+      "path": "/accumulators/individual_oop_max"
+    },
+    {
+      "item": "Out-of-pocket limit, family, each member meets their own limit",
+      "page": 1,
+      "printed": "$16,400 Family ... they have to meet their own out-of-pocket limits until the overall family out-of-pocket limit has been met.",
+      "expected": { "amount": 16400, "embedded": true },
+      "path": "/accumulators/family_oop_max"
+    },
+    {
+      "item": "No out-of-network deductible",
+      "page": 1,
+      "printed": "Network: $2,000 Individual / $4,000 Family (no out-of-network amount)",
+      "expected": { "$absent": true },
+      "path": "/accumulators/oon_individual_deductible"
+    },
+    {
+      "item": "No out-of-network out-of-pocket limit",
+      "page": 1,
+      "printed": "Network: $8,200 Individual / $16,400 Family (no out-of-network amount)",
+      "expected": { "$absent": true },
+      "path": "/accumulators/oon_individual_oop_max"
+    },
+    {
+      "item": "Preventive care before the deductible",
+      "page": 1,
+      "printed": "Yes. Benefits available with no charge such as Network Preventive care services are covered before you meet your deductible.",
+      "expected": false,
+      "path": "/benefits/34/network_cost_shares/0/cost_shares/0/applies_to_deductible"
+    },
+    {
+      "item": "Primary care visit to treat an injury or illness, network",
+      "page": 2,
+      "printed": "$30 copay /visit, deductible does not apply",
+      "expected": [{ "type": "copay", "amount": 30, "applies_to_deductible": false }],
+      "path": "/benefits/35/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Primary care visit to treat an injury or illness, out of network",
+      "page": 2,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "OUT", "covered": false }],
+      "path": "/benefits/35/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }, { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] }],
+      "note": "The file gives IsCovered \"Covered\" for the benefit and CoinsOutofNet \"100.00%\" (CopayOutofNet \"Not Applicable\"). IsCovered is benefit-level, so every tier row is covered true (spec 5.4, 7.4), and the out-of-network row is a coinsurance step at rate 1, with both strings quoted in its notes."
+    },
+    {
+      "item": "Specialist visit, network",
+      "page": 2,
+      "printed": "$60 copay /visit, deductible does not apply",
+      "expected": [{ "type": "copay", "amount": 60, "applies_to_deductible": false }],
+      "path": "/benefits/45/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Specialist visit, out of network",
+      "page": 2,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "OUT", "covered": false }],
+      "path": "/benefits/45/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }, { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] }],
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Preventive care/screening/immunization, network",
+      "page": 2,
+      "printed": "No Charge",
+      "expected": [{ "type": "coinsurance", "rate": 0, "applies_to_deductible": false }],
+      "path": "/benefits/34/network_cost_shares/0/cost_shares",
+      "note": "The file's CoinsInnTier1 is \"0.00%\" (CopayInnTier1 \"Not Applicable\"), coinsurance at rate 0, which is no charge, before the deductible."
+    },
+    {
+      "item": "Preventive care/screening/immunization, out of network",
+      "page": 2,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "OUT", "covered": false }],
+      "path": "/benefits/34/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }, { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] }],
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Diagnostic test (blood work), network",
+      "page": 2,
+      "printed": "Diagnostic test (x-ray, blood work): 25% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/23/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Diagnostic test (blood work), out of network",
+      "page": 2,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "OUT", "covered": false }],
+      "path": "/benefits/23/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }, { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] }],
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Diagnostic test (x-ray), network",
+      "page": 2,
+      "printed": "Diagnostic test (x-ray, blood work): 25% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/51/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Imaging (CT/PET scans, MRIs), network",
+      "page": 2,
+      "printed": "25% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/19/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Imaging (CT/PET scans, MRIs), out of network",
+      "page": 2,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "OUT", "covered": false }],
+      "path": "/benefits/19/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }, { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] }],
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Outpatient surgery facility fee, network",
+      "page": 2,
+      "printed": "Facility fee (e.g., ambulatory surgery center): 25% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/30/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient surgery facility fee, out of network",
+      "page": 2,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "OUT", "covered": false }],
+      "path": "/benefits/30/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }, { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] }],
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Outpatient surgery physician/surgeon fees, network",
+      "page": 2,
+      "printed": "25% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/32/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient surgery physician/surgeon fees, out of network",
+      "page": 2,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "OUT", "covered": false }],
+      "path": "/benefits/32/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }, { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] }],
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Emergency room care, both networks",
+      "page": 2,
+      "printed": "25% coinsurance (in both columns)",
+      "expected": [{ "tier_id": "IN", "cost_shares": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }] }, { "tier_id": "OUT", "cost_shares": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }] }],
+      "path": "/benefits/11/network_cost_shares"
+    },
+    {
+      "item": "Emergency medical transportation, both networks",
+      "page": 2,
+      "printed": "25% coinsurance (in both columns)",
+      "expected": [{ "tier_id": "IN", "cost_shares": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }] }, { "tier_id": "OUT", "cost_shares": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }] }],
+      "path": "/benefits/12/network_cost_shares"
+    },
+    {
+      "item": "Urgent care, network",
+      "page": 3,
+      "printed": "$45 copay /visit, deductible does not apply",
+      "expected": [{ "type": "copay", "amount": 45, "applies_to_deductible": false }],
+      "path": "/benefits/49/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Urgent care, out of network",
+      "page": 3,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "OUT", "covered": false }],
+      "path": "/benefits/49/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }, { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] }],
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Hospital stay facility fee, network",
+      "page": 3,
+      "printed": "Facility fee (e.g., hospital room): 25% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/21/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Hospital stay facility fee, out of network",
+      "page": 3,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "OUT", "covered": false }],
+      "path": "/benefits/21/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }, { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] }],
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Hospital stay physician/surgeon fees, network",
+      "page": 3,
+      "printed": "25% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/22/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Mental health outpatient services, network",
+      "page": 3,
+      "printed": "Office Visit: $30 copay /visit, deductible does not apply; Intensive Outpatient: 25% coinsurance; Partial Hospitalization: 25% coinsurance; All Other Outpatient: 25% coinsurance",
+      "expected": [{ "type": "copay", "amount": 30, "applies_to_deductible": false }, { "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/26/network_cost_shares/0/cost_shares",
+      "expected_reading": [{ "type": "copay", "amount": 30, "applies_to_deductible": false }],
+      "note": "The file gives the benefit 1 cost share in network, CopayInnTier1 \"$30.00\" and CoinsInnTier1 \"Not Applicable\", with the Explanation \"Cost share applies to office visits, please see SBC for Mental Health Outpatient Services.\"; the 25% coinsurance the SBC prints for intensive outpatient, partial hospitalization and all other outpatient services is in no column of the file, so the document holds the office visit copay only. A value the file does not state, not a contradiction (Marketplace importer spec sections 5.5 and 6)."
+    },
+    {
+      "item": "Mental health outpatient services, out of network",
+      "page": 3,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "OUT", "covered": false }],
+      "path": "/benefits/26/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }, { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] }],
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Mental health inpatient services, network",
+      "page": 3,
+      "printed": "25% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/25/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Childbirth/delivery facility services, network",
+      "page": 3,
+      "printed": "25% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/6/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Home health care, network",
+      "page": 3,
+      "printed": "25% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/17/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Home health care, 60 visits a year",
+      "page": 3,
+      "printed": "Limited to 60 visits/year.",
+      "expected": [{ "type": "visits", "value": 60, "period": "per_year" }],
+      "path": "/benefits/17/limits"
+    },
+    {
+      "item": "Rehabilitation services (physical and occupational therapy), network",
+      "page": 3,
+      "printed": "Rehabilitation services: $30 copay /visit, deductible does not apply",
+      "expected": [{ "type": "copay", "amount": 30, "applies_to_deductible": false }],
+      "path": "/benefits/38/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Rehabilitation services (physical and occupational therapy), out of network",
+      "page": 3,
+      "printed": "Not Covered",
+      "expected": [{ "tier_id": "IN" }, { "tier_id": "OUT", "covered": false }],
+      "path": "/benefits/38/network_cost_shares",
+      "expected_reading": [{ "tier_id": "IN", "covered": true }, { "tier_id": "OUT", "covered": true, "cost_shares": [{ "type": "coinsurance", "rate": 1 }] }],
+      "note": "As primary care: IsCovered \"Covered\" and CoinsOutofNet \"100.00%\" give an out-of-network row that is covered, at rate 1 (spec 5.4, 7.4)."
+    },
+    {
+      "item": "Rehabilitation services, combined limit of 35 visits a year",
+      "page": 3,
+      "printed": "Limits/year: Physical, Occupational, Speech, Manipulative: combined limit 35 visits",
+      "expected": [{ "type": "visits", "value": 35, "period": "per_year" }],
+      "path": "/benefits/38/limits"
+    },
+    {
+      "item": "Habilitative services, network",
+      "page": 3,
+      "printed": "$30 copay /visit, deductible does not apply",
+      "expected": [{ "type": "copay", "amount": 30, "applies_to_deductible": false }],
+      "path": "/benefits/15/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Habilitative services, combined limit of 35 visits a year",
+      "page": 3,
+      "printed": "Limits/year: Physical, Occupational, Speech, Manipulative: combined limit 35 visits",
+      "expected": [{ "type": "visits", "value": 35, "period": "per_year" }],
+      "path": "/benefits/15/limits"
+    },
+    {
+      "item": "Skilled nursing care, network",
+      "page": 3,
+      "printed": "25% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/44/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Skilled nursing care, 25 days a year",
+      "page": 3,
+      "printed": "Limited to 25 days/year (combined with inpatient rehabilitation)",
+      "expected": [{ "type": "days", "value": 25, "period": "per_year" }],
+      "path": "/benefits/44/limits"
+    },
+    {
+      "item": "Durable medical equipment, network",
+      "page": 4,
+      "printed": "25% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/10/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Hospice services, network",
+      "page": 4,
+      "printed": "25% coinsurance",
+      "expected": [{ "type": "coinsurance", "rate": 0.25, "applies_to_deductible": true }],
+      "path": "/benefits/18/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Infertility treatment, not covered",
+      "page": 5,
+      "printed": "Services Your Plan Generally Does NOT Cover: Infertility treatment",
+      "expected": false,
+      "path": "/benefits/20/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Acupuncture, not covered",
+      "page": 5,
+      "printed": "Services Your Plan Generally Does NOT Cover: Acupuncture",
+      "expected": false,
+      "path": "/benefits/0/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Bariatric surgery, not covered",
+      "page": 5,
+      "printed": "Services Your Plan Generally Does NOT Cover: Bariatric surgery",
+      "expected": false,
+      "path": "/benefits/2/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Routine dental services (adult), not covered",
+      "page": 5,
+      "printed": "Services Your Plan Generally Does NOT Cover: Dental care (Adult)",
+      "expected": false,
+      "path": "/benefits/40/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Basic dental care (adult), not covered",
+      "page": 5,
+      "printed": "Services Your Plan Generally Does NOT Cover: Dental care (Adult)",
+      "expected": false,
+      "path": "/benefits/3/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Major dental care (adult), not covered",
+      "page": 5,
+      "printed": "Services Your Plan Generally Does NOT Cover: Dental care (Adult)",
+      "expected": false,
+      "path": "/benefits/24/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Routine eye exam (adult), not covered",
+      "page": 5,
+      "printed": "Services Your Plan Generally Does NOT Cover: Routine eye care (Adult)",
+      "expected": false,
+      "path": "/benefits/41/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Routine foot care, not covered except for certain diseases",
+      "page": 5,
+      "printed": "Services Your Plan Generally Does NOT Cover: Routine foot care - except as covered for certain diseases",
+      "expected": false,
+      "path": "/benefits/43/network_cost_shares/0/covered",
+      "note": "The file's Explanation, \"Covered when done for the prevention of complications associated with metabolic, neurologic, or peripheral vascular disease\", is in conditions[]."
+    },
+    {
+      "item": "Chiropractic care, covered",
+      "page": 5,
+      "printed": "Other Covered Services: Chiropractic (manipulative) care - 35 visits/year, combined with PT/OT/ST",
+      "expected": true,
+      "path": "/benefits/5/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Chiropractic care, 35 visits a year",
+      "page": 5,
+      "printed": "35 visits/year, combined with PT/OT/ST",
+      "expected": [{ "type": "visits", "value": 35, "period": "per_year" }],
+      "path": "/benefits/5/limits"
+    },
+    {
+      "item": "Hearing aids, covered",
+      "page": 5,
+      "printed": "Other Covered Services: Hearing aids - 1 per hearing impaired ear /3 years",
+      "expected": true,
+      "path": "/benefits/16/network_cost_shares/0/covered"
+    },
+    {
+      "item": "Hearing aids, 1 per hearing impaired ear every 3 years",
+      "page": 5,
+      "printed": "1 per hearing impaired ear /3 years",
+      "expected": [{ "type": "items", "value": 1, "period": "per_3_years" }],
+      "path": "/benefits/16/limits",
+      "note": "The file's LimitQty and LimitUnit give 1 item per 3 years; \"per hearing impaired ear\" is in the Explanation, \"Benefits are limited to a single purchase per hearing impaired ear every 3 years.\", which is in conditions[]."
+    },
+    {
+      "item": "Provider directory",
+      "page": 1,
+      "printed": "Yes. See uhc.com/xtxdocfindg2026 or call 1-866-811-2704 for a list of network providers.",
+      "expected": "https://www.uhc.com/xtxdocfindg2026",
+      "path": "/network_tiers/0/provider_directory_url",
+      "note": "NetworkURL \"https://www.uhc.com/xtxdocfindg2026\" of the plan's network, TXN011, in the Network PUF (Marketplace importer spec section 4.5). Addresses are compared with the scheme, a leading \"www.\" and the case of the host ignored, so the printed address is written here in the document's form."
+    }
+  ]
+}

@@ -1,0 +1,368 @@
+{
+  "plan": "H5425-140-000",
+  "document": {
+    "title": "Summary of Benefits 2027, SCAN Costco Medicare Advantage (HMO), Alameda, San Francisco, and San Mateo Counties",
+    "id": "Y0057_SCAN_22453_2027_M, 27C-SBH5425139140",
+    "file": "data/pbp/2027/sob/H5425-140-000-2027-SB.pdf",
+    "url": "https://scan-q-002.sitecorecontenthub.cloud/api/delivery/local-306ac262f98a455cb585f95a3a908209 (a signed address that expires; the page that links it is https://www.scanhealthplan.com/plans/2027H5425140SF)",
+    "url_source": "The \"2027 - Summary of Benefits- SCAN Costco Medicare Advantage (HMO) - Alameda, San Francisco, San Mateo - English\" download on the plan's page on www.scanhealthplan.com; the plan's page on Medicare Plan Finder links only the carrier's home page",
+    "retrieved": "2026-10-27",
+    "retrieval_note": "The maintainer downloaded it in a browser on 2026-10-27. The host's robots.txt (https://scan-q-002.sitecorecontenthub.cloud/robots.txt, read 2026-10-27) disallows every path but /api/public/ for automated fetching, which this check did not do.",
+    "sha256": "2ea0aef50455301c57f5d432ac1f5fcfea562d72316904ea2fda09081ddea643",
+    "pages": 20,
+    "read_with": "pdftotext -layout and pdftotext -raw, both with -enc UTF-8; pages counted in the PDF (the document prints no page numbers). The document covers 2 plans in 2 columns, \"Alameda and San Mateo Counties\" and \"San Francisco County\"; every value here is read from the San Francisco County column, the county pbp_a_plan_geog_name gives for H5425-140-000. The -layout output interleaves the 2 columns, so values were read from the -raw output, which prints the Alameda and San Mateo value of each row before the San Francisco one. Part D on page 9 (San Francisco County); only the Part D deductible is checked."
+  },
+  "golden": "examples/scan-health-plan-scan-costco-medicare-advantage.pbp.json",
+  "spec": "docs/specs/pbp-importer.md section 13",
+  "checks": [
+    {
+      "item": "Monthly health plan premium",
+      "page": 2,
+      "printed": "Monthly Health Plan Premium $2",
+      "expected": { "amount": 2, "currency": "USD" },
+      "path": "/premium",
+      "note": "pbp_d_mplusc_premium \"2.00\". The print says monthly; the file states no period, so premium.period is not written (spec 4.1)."
+    },
+    {
+      "item": "Plan deductible",
+      "page": 2,
+      "printed": "No deductible for medical services.",
+      "expected": { "$absent": true },
+      "path": "/accumulators/individual_deductible"
+    },
+    {
+      "item": "Maximum out-of-pocket responsibility",
+      "page": 2,
+      "printed": "$2,500 The most you pay for copays and coinsurance for Medicare-covered medical services for the year.",
+      "expected": { "amount": 2500, "network_tier": "IN" },
+      "path": "/accumulators/individual_oop_max"
+    },
+    {
+      "item": "Inpatient hospital coverage, days 1 to 4",
+      "page": 2,
+      "printed": "$250 copay per day for days 1-4",
+      "expected": { "type": "copay", "amount": 250, "basis": "per_day", "unit_range": { "from": 1, "to": 4 } },
+      "path": "/benefits/2/network_cost_shares/0/cost_shares/0"
+    },
+    {
+      "item": "Inpatient hospital coverage, days 5 and beyond",
+      "page": 2,
+      "printed": "$0 for days 5-90+",
+      "expected": { "type": "copay", "amount": 0, "basis": "per_day", "unit_range": { "from": 5, "to": { "$absent": true } } },
+      "path": "/benefits/2/network_cost_shares/0/cost_shares/1",
+      "expected_reading": { "type": "copay", "amount": 0, "basis": "per_day", "unit_range": { "from": 5, "to": 90 } },
+      "note": "The file's second interval ends at day 90 (pbp_b1a_copay_mcs_bgnd_int2_t1 \"5\", pbp_b1a_copay_mcs_endd_int2_t1 \"90\"), and pbp_b1a_copay_mcs_int_num_t1 \"3\" names a third interval whose cells are blank; the document writes the interval as filed (spec 5.5). The \"+\" and \"Unlimited days per admission\" (next check) are the Summary of Benefits' own: a value the file does not state."
+    },
+    {
+      "item": "Inpatient hospital coverage, unlimited days per admission",
+      "page": 2,
+      "printed": "Unlimited days per admission",
+      "expected": [],
+      "path": "/benefits/2/limits"
+    },
+    {
+      "item": "Ambulatory surgical center",
+      "page": 2,
+      "printed": "$125 copay per visit",
+      "expected": [{ "type": "copay", "amount": 125 }],
+      "path": "/benefits/5/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient hospital",
+      "page": 2,
+      "printed": "$175 copay per visit",
+      "expected": [{ "type": "copay", "amount": 175, "basis": "per_visit" }],
+      "path": "/benefits/3/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Observation services",
+      "page": 2,
+      "printed": "$0",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/4/network_cost_shares/0/cost_shares",
+      "note": "The file answers Yes to a copayment for 9a with \"which services\" pbp_b9a_copay_ehc \"01\", which leaves observation out, and No to coinsurance; decision S1 writes a $0 copay (spec section 7.12)."
+    },
+    {
+      "item": "Doctor visits, primary care",
+      "page": 2,
+      "printed": "$0",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/0/network_cost_shares/0/cost_shares",
+      "note": "The file answers No to copayment and No to coinsurance (pbp_b7a_copay_yn \"2\", pbp_b7a_coins_yn \"2\"); decision S1 writes a $0 copay (spec section 7.12), and the Summary of Benefits prints $0. This is the verifying plan named in spec section 7, Known readings to confirm, item 2."
+    },
+    {
+      "item": "Doctor visits, specialists",
+      "page": 2,
+      "printed": "$0",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/1/network_cost_shares/0/cost_shares",
+      "note": "The file answers No to copayment and No to coinsurance (pbp_b7d_copay_yn \"2\", pbp_b7d_coins_yn \"2\"); decision S1 writes a $0 copay (spec section 7.12), and the Summary of Benefits prints $0."
+    },
+    {
+      "item": "Doctor visits, specialists, prior authorization",
+      "page": 2,
+      "printed": "Prior authorization rules apply for specialist visits.",
+      "expected": { "type": "authorization" },
+      "path": "/benefits/1/conditions/0"
+    },
+    {
+      "item": "Preventive care",
+      "page": 2,
+      "printed": "$0",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/37/network_cost_shares/0/cost_shares",
+      "note": "pbp_b14a_mc_prevent_attest \"1\", the plan's attestation of no cost sharing for the zero dollar preventive services (spec 5.4)."
+    },
+    {
+      "item": "Emergency care",
+      "page": 2,
+      "printed": "$90 copay per visit",
+      "expected": [{ "type": "copay", "amount": 90 }],
+      "path": "/benefits/6/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Urgently needed services",
+      "page": 3,
+      "printed": "$0",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/7/network_cost_shares/0/cost_shares",
+      "note": "The file answers No to copayment and No to coinsurance (pbp_b4b_copay_yn \"2\", pbp_b4b_coins_yn \"2\"); decision S1 writes a $0 copay (spec section 7.12), and the Summary of Benefits prints $0."
+    },
+    {
+      "item": "Lab services",
+      "page": 3,
+      "printed": "$0",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/11/network_cost_shares/0/cost_shares",
+      "note": "The file answers No to copayment and No to coinsurance (pbp_b8a_copay_yn \"2\", pbp_b8a_coins_yn \"2\"); decision S1 writes a $0 copay (spec section 7.12), and the Summary of Benefits prints $0."
+    },
+    {
+      "item": "Diagnostic tests and procedures",
+      "page": 3,
+      "printed": "$0",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/10/network_cost_shares/0/cost_shares",
+      "note": "The file answers No to copayment and No to coinsurance (pbp_b8a_copay_yn \"2\", pbp_b8a_coins_yn \"2\"); decision S1 writes a $0 copay (spec section 7.12), and the Summary of Benefits prints $0."
+    },
+    {
+      "item": "Outpatient X-rays",
+      "page": 3,
+      "printed": "$0",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/14/network_cost_shares/0/cost_shares",
+      "note": "The file answers Yes to a copayment and to a coinsurance for 8b with \"which services\" pbp_b8b_copay_ehc \"010\" and pbp_b8b_coins_ehc \"001\", which leave X-rays out; decision S1 writes a $0 copay (spec section 7.12)."
+    },
+    {
+      "item": "Therapeutic radiology",
+      "page": 3,
+      "printed": "20% of the total cost",
+      "expected": [{ "type": "coinsurance", "rate": 0.2 }],
+      "path": "/benefits/13/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Diagnostic radiology (e.g., MRI, CT)",
+      "page": 3,
+      "printed": "$50",
+      "expected": [{ "type": "copay", "amount": 50 }],
+      "path": "/benefits/12/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Medicare-covered diagnostic hearing and balance exam",
+      "page": 3,
+      "printed": "$0",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/22/network_cost_shares/0/cost_shares",
+      "note": "The file answers No to copayment and No to coinsurance (pbp_b18a_copay_yn \"2\", pbp_b18a_coins_yn \"2\"); decision S1 writes a $0 copay (spec section 7.12), and the Summary of Benefits prints $0."
+    },
+    {
+      "item": "Routine hearing exam, allowance",
+      "page": 3,
+      "printed": "You are covered for up to $400 per year for routine hearing exams and hearing aids.",
+      "expected": [{ "type": "dollars", "value": 400, "period": "per_year" }],
+      "path": "/benefits/23/limits"
+    },
+    {
+      "item": "Routine hearing aids, covered",
+      "page": 3,
+      "printed": "Non-Medicare-covered (routine) hearing aids: You are covered for up to $400 per year for routine hearing exams and hearing aids.",
+      "expected": { "covered": true },
+      "path": "/benefits/26/network_cost_shares/0"
+    },
+    {
+      "item": "Routine hearing aids, allowance",
+      "page": 3,
+      "printed": "You are covered for up to $400 per year for routine hearing exams and hearing aids.",
+      "expected": [{ "type": "dollars", "value": 400, "period": "per_year" }],
+      "path": "/benefits/26/limits",
+      "note": "pbp_b18b_maxplan_type \"1\": hearing aids are covered under the 18a maximum, pbp_b18a_maxplan_amt \"400.00\" every year, which the document writes on both benefits with 1 shared_limit_id (spec 7.10)."
+    },
+    {
+      "item": "Routine dental, prophylaxis (routine cleaning)",
+      "page": 4,
+      "printed": "$0 (2 per 12 months)",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/30/network_cost_shares/0/cost_shares",
+      "note": "The file answers No to copayment and No to coinsurance (pbp_b16b_copay_pc_yn \"2\", pbp_b16b_coins_pc_yn \"2\"); decision S1 writes a $0 copay (spec section 7.12), and the Summary of Benefits prints $0."
+    },
+    {
+      "item": "Routine dental, prophylaxis, 2 per 12 months",
+      "page": 4,
+      "printed": "$0 (2 per 12 months)",
+      "expected": [{ "type": "visits", "value": 2, "period": "per_year" }],
+      "path": "/benefits/30/limits",
+      "note": "pbp_b16b_bendesc_pc_num \"2\", pbp_b16b_bendesc_pc_per \"3\" (Every year)."
+    },
+    {
+      "item": "Routine dental, restorative",
+      "page": 4,
+      "printed": "25%",
+      "expected": [{ "type": "coinsurance", "rate": 0.25 }],
+      "path": "/benefits/31/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Routine dental, comprehensive benefit maximum",
+      "page": 4,
+      "printed": "Benefit Maximum (Comprehensive): Up to $2,000 every year",
+      "expected": [{ "type": "dollars", "value": 2000, "period": "per_year" }],
+      "path": "/benefits/31/limits"
+    },
+    {
+      "item": "Medicare-covered vision exam to diagnose/treat diseases of the eye",
+      "page": 4,
+      "printed": "$0",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/24/network_cost_shares/0/cost_shares",
+      "note": "The file answers No to copayment and No to coinsurance (pbp_b17a_copay_yn \"2\", pbp_b17a_coins_yn \"2\"); decision S1 writes a $0 copay (spec section 7.12), and the Summary of Benefits prints $0."
+    },
+    {
+      "item": "Routine vision exam, allowance",
+      "page": 4,
+      "printed": "You are covered for up to $300 every year for routine eye exams and eyewear.",
+      "expected": [{ "type": "dollars", "value": 300, "period": "per_year" }],
+      "path": "/benefits/25/limits"
+    },
+    {
+      "item": "Routine eyewear, allowance",
+      "page": 4,
+      "printed": "You are covered for up to $300 every year for routine eye exams and eyewear.",
+      "expected": [{ "type": "dollars", "value": 300, "period": "per_year" }],
+      "path": "/benefits/32/limits",
+      "note": "pbp_b17b_maxplan_type \"1\": eyewear is covered under the 17a maximum, pbp_b17a_maxplan_amt \"300.00\" every year, written on both benefits with 1 shared_limit_id (spec 7.10)."
+    },
+    {
+      "item": "Mental health, outpatient individual/group therapy visit",
+      "page": 5,
+      "printed": "$10 copay per visit",
+      "expected": [{ "type": "copay", "amount": 10 }],
+      "path": "/benefits/27/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Skilled nursing facility",
+      "page": 5,
+      "printed": "$0 for days 1-20; $125 copay per day for days 21-100",
+      "expected": [{ "type": "copay", "amount": 0, "basis": "per_day", "unit_range": { "from": 1, "to": 20 } }, { "type": "copay", "amount": 125, "basis": "per_day", "unit_range": { "from": 21, "to": 100 } }],
+      "path": "/benefits/29/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Skilled nursing facility, up to 100 days per benefit period",
+      "page": 5,
+      "printed": "You are covered for up to 100 days per benefit period.",
+      "expected": [{ "type": "days", "value": 100 }],
+      "path": "/benefits/29/limits",
+      "expected_reading": [],
+      "note": "The 100 days are the Medicare-covered SNF benefit; pbp_b2_snf.txt has no column for them (only the day intervals of the cost share, which end at day 100), so no limit is written, as on H2406-013-000 and H1609-028-000."
+    },
+    {
+      "item": "Physical therapy",
+      "page": 5,
+      "printed": "$15 copay per visit",
+      "expected": [{ "type": "copay", "amount": 15 }],
+      "path": "/benefits/15/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Ambulance, ground",
+      "page": 5,
+      "printed": "Ambulance: $175 copay per one-way trip",
+      "expected": [{ "type": "copay", "amount": 175 }],
+      "path": "/benefits/8/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Ambulance, air",
+      "page": 5,
+      "printed": "Ambulance: $175 copay per one-way trip",
+      "expected": [{ "type": "copay", "amount": 175 }],
+      "path": "/benefits/9/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Transportation (non-Medicare-covered, routine)",
+      "page": 5,
+      "printed": "$0 for up to 12 one-way trips per year",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/35/network_cost_shares/0/cost_shares",
+      "note": "The file answers No to copayment and No to coinsurance (pbp_b10b_copay_yn \"2\", pbp_b10b_coins_yn \"2\"); decision S1 writes a $0 copay (spec section 7.12), and the Summary of Benefits prints $0."
+    },
+    {
+      "item": "Transportation, 12 one-way trips per year",
+      "page": 5,
+      "printed": "$0 for up to 12 one-way trips per year",
+      "expected": [{ "type": "trips", "value": 12, "period": "per_year" }],
+      "path": "/benefits/35/limits"
+    },
+    {
+      "item": "Part D deductible",
+      "page": 9,
+      "printed": "You pay the full cost of your Tier 3 through Tier 5 drugs until you have paid $450.",
+      "expected": { "amount": 450, "applies_to_tiers": ["T3", "T4", "T5"] },
+      "path": "/pharmacy/deductible"
+    },
+    {
+      "item": "Medicare-covered chiropractic care",
+      "page": 11,
+      "printed": "$0",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/17/network_cost_shares/0/cost_shares",
+      "note": "The file answers No to copayment and No to coinsurance (pbp_b7b_copay_yn \"2\", pbp_b7b_coins_yn \"2\"); decision S1 writes a $0 copay (spec section 7.12), and the Summary of Benefits prints $0."
+    },
+    {
+      "item": "FlexEssentials, over-the-counter products",
+      "page": 11,
+      "printed": "$125 per quarter for OTC products and groceries ... Unused balances will not roll over to the following quarter.",
+      "expected": [{ "type": "dollars", "value": 125, "period": "per_3_months", "carryover": "none" }],
+      "path": "/benefits/33/limits",
+      "note": "pbp_b13b_maxplan_amt \"125.00\", pbp_b13b_otc_maxplan_per \"5\" (Every three months), pbp_b13b_maxplan_prd_yn \"2\". The groceries in the same allowance are a special supplemental benefit for the chronically ill, which the medical MVP does not read."
+    },
+    {
+      "item": "Home health care (Medicare-covered)",
+      "page": 12,
+      "printed": "$0",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/28/network_cost_shares/0/cost_shares",
+      "note": "The file answers No to copayment and No to coinsurance (pbp_b6_copay_yn \"2\", pbp_b6_coins_yn \"2\"); decision S1 writes a $0 copay (spec section 7.12), and the Summary of Benefits prints $0."
+    },
+    {
+      "item": "Fitness",
+      "page": 12,
+      "printed": "$0 fitness benefit through One Pass",
+      "expected": [{ "type": "copay", "amount": 0 }],
+      "path": "/benefits/36/network_cost_shares/0/cost_shares",
+      "note": "The file answers No to copayment and No to coinsurance (pbp_b14c_copay_yn \"2\", pbp_b14c_coins_yn \"2\"); decision S1 writes a $0 copay (spec section 7.12), and the Summary of Benefits prints $0."
+    },
+    {
+      "item": "Website",
+      "page": 14,
+      "printed": "Website www.scanhealthplan.com",
+      "expected": "www.scanhealthplan.com",
+      "path": "/contacts/website",
+      "expected_reading": { "$absent": true },
+      "note": "The file's address is the printed one, pbp_a_org_website \"www.scanhealthplan.com\", but it has no scheme, so it is not a URI: the importer writes no contacts.website and quotes the cell in source_references (spec 4.1). Addresses are compared with the scheme, a leading \"www.\" and the case of the host ignored."
+    },
+    {
+      "item": "Member services phone",
+      "page": 14,
+      "printed": "Phone Number (Members) 1-833-981-5355",
+      "expected": "(833)981-5355",
+      "path": "/contacts/member_services_phone",
+      "note": "A contradiction on a contact, not a cost share. The file gives pbp_a_curmbr_phone \"(800)559-3500\", which the document holds; the Summary of Benefits prints 1-833-981-5355 for members, on page 14 and in its other contact sentences, and prints 1-800-559-3500 only in the notice on page 17, as SCAN Health Plan (California) Member Services. The number printed for non-members, 1-877-870-4867, is not the file's pbp_a_prombr_phone \"(888)315-7226\" either, and has no field. Phone numbers are compared by their digits, without the leading 1."
+    }
+  ]
+}
