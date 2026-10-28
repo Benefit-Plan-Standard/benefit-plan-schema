@@ -524,9 +524,18 @@
       "item": "Flex Spend Card, over-the-counter allowance",
       "page": 8,
       "printed": "$20 allowance per quarter for over-the-counter (OTC) and home safety products. These allowances do not roll over from quarter to quarter",
-      "expected": [{ "type": "dollars", "value": 20, "period": "per_3_months", "carryover": "none" }],
+      "expected": [{ "type": "dollars", "value": 20, "period": "per_3_months" }],
       "path": "/benefits/33/limits",
-      "note": "The file states the allowance in Section D, as a combined supplemental benefit group: pbp_d_combo_grp_name_1 \"Flex Spend Card - OTC/HSD\", pbp_d_combo_nmc_cats_1 \"13b;14c8;\", pbp_d_combo_max_plan_ben_yn_1 \"1\", pbp_d_combo_max_plan_ben_amt_1 \"20.00\", pbp_d_combo_max_plan_period_1 \"5\"; 13b itself answers pbp_b13b_maxplan_yn \"2\". The Medicare Advantage importer does not read the pbp_d_combo_ columns, so the document writes no allowance: the importer, not the file."
+      "note": "The file states the allowance in Section D, as a combined supplemental benefit group: pbp_d_combo_grp_name_1 \"Flex Spend Card - OTC/HSD\", pbp_d_combo_nmc_cats_1 \"13b;14c8;\", pbp_d_combo_max_plan_ben_yn_1 \"1\", pbp_d_combo_max_plan_ben_amt_1 \"20.00\", pbp_d_combo_max_plan_period_1 \"5\"; 13b itself answers pbp_b13b_maxplan_yn \"2\". Until 2026-10-28 the Medicare Advantage importer did not read the pbp_d_combo_ columns, and this check was a difference; since then it writes the allowance with shared_limit_id PBP_D_COMBO_1 (docs/specs/pbp-importer.md section 5.9). The sentence on rolling over is the next check."
+    },
+    {
+      "item": "Flex Spend Card, unused allowance",
+      "page": 8,
+      "printed": "These allowances do not roll over from quarter to quarter",
+      "expected": "none",
+      "path": "/benefits/33/limits/0/carryover",
+      "expected_reading": { "$absent": true },
+      "note": "Split from the allowance check on 2026-10-28. No combined supplemental benefit group column states a carryover, and 13b's own pbp_b13b_maxplan_prd_yn is blank because 13b answers pbp_b13b_maxplan_yn \"2\", so the limit has no carryover (docs/specs/pbp-importer.md section 5.9)."
     },
     {
       "item": "SilverSneakers fitness, in network",

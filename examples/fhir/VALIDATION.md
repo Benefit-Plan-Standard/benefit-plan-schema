@@ -1,7 +1,7 @@
 # Validation record
 
 **Date:** 2026-09-24; United, Ambetter and Kaiser re-validated 2026-09-25 after data fixes; the 8 SBC files re-validated 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs; Aetna PPO 1500, Aetna PPO 5000, GatorCare and United re-validated 2026-10-05 after the deductible flags on silent cells were set (no count changed)
-**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run) again on 2026-10-09 after 4 of their benefits gained canonical keys (third run), and on 2026-10-11 after the importer gained 10 service categories (fourth run), all at the end of this file: 0 errors; 15 warnings in the second and third runs, 16 in the fourth. On 2026-10-13 all 15 Bundles here were validated again, unchanged, with the 5 Marketplace Bundles of `examples/fhir-puf/` after the adult dental keys and the `excluded-services` extension (fifth run): the same counts for the 15, 0 errors for the 5. The sixth (2026-10-20) and seventh (2026-10-21) runs are described where they are. On 2026-10-24 the 5 PBP Bundles were validated after the importer began reading the Part D files (eighth run, at the end of this file): 0 errors and the same 17 warnings as the sixth run.
+**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run) again on 2026-10-09 after 4 of their benefits gained canonical keys (third run), and on 2026-10-11 after the importer gained 10 service categories (fourth run), all at the end of this file: 0 errors; 15 warnings in the second and third runs, 16 in the fourth. On 2026-10-13 all 15 Bundles here were validated again, unchanged, with the 5 Marketplace Bundles of `examples/fhir-puf/` after the adult dental keys and the `excluded-services` extension (fifth run): the same counts for the 15, 0 errors for the 5. The sixth (2026-10-20) and seventh (2026-10-21) runs are described where they are. On 2026-10-24 the 5 PBP Bundles were validated after the importer began reading the Part D files (eighth run): 0 errors and the same 17 warnings as the sixth run. On 2026-10-28 they were validated again, byte-identical, after the importer began reading the combined supplemental benefit groups (ninth run, at the end of this file): the counts of the eighth run.
 
 ## Setup
 
@@ -307,3 +307,19 @@ The 2 re-converted Bundles in this folder, against the sixth run:
 | `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 / 0 | 122 / 197 |
 
 **Warnings.** The same 17 as the sixth run: 16 text-only `cost.qualifiers` and the Aetna `plan.type`. No Part D benefit is placed, so none adds a cost entry or a qualifier. **Information.** All 941 messages are the extension slicing message, as above: 495 on `InsurancePlan`, 312 on `coverage.benefit` and 134 on `specificCost.benefit.cost`. The new ones are all on `InsurancePlan`: the `bps-unmapped-benefit` extension of each Part D benefit and the `bps-source-reference` extension of each Part D root entry. The 2 pharmacy `generalCost` entries raise no message.
+
+## Ninth run: 2026-10-28, the 5 PBP Bundles after the combined supplemental benefit groups
+
+**What changed.** `scripts/from-pbp.js` reads the combined supplemental benefit groups of Section D (`pbp_d_combo_*`; `docs/specs/pbp-importer.md` section 5.9). 3 of the 5 Medicare Advantage golden documents change: H1036-068 and H5533-019 gain a dollars limit on over-the-counter items with `shared_limit_id` `PBP_D_COMBO_1`, H5425-140's over-the-counter maximum gains `shared_limit_id` `PBP_D_COMBO_2`, and the benefits each group lists gain a `source_references` entry quoting the group. `node scripts/to-insuranceplan.js --write-golden` wrote all 15 Bundles of this folder byte-identical: over-the-counter items and transportation have no SBC benefit code and are listed by identity only, in `bps-unmapped-benefit`, so their limits and source references do not reach a Bundle. The pinned SHA-256 values are unchanged.
+
+**Result:** all 5 files pass with **0 errors**. Same validator (`validator_cli.jar` 7.0.0, Git# 37795f3f571f, built 2026-10-06T19:02:34Z), OpenJDK 17.0.19, FHIR 4.0.1, packages `hl7.fhir.us.insurance-card#2.0.0-ballot` and `fhir/definitions`, and the command of the second run.
+
+| File | Errors | Warnings, eighth run / ninth | Information, eighth run / ninth |
+|---|---|---|---|
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 / 0 | 168 / 168 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 / 0 | 172 / 172 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 13 / 13 | 201 / 201 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 / 4 | 203 / 203 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 / 0 | 197 / 197 |
+
+**Warnings and information.** The same 17 warnings and 941 information messages as the eighth run, explained there.

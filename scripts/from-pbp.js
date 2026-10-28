@@ -887,6 +887,71 @@ function sectionCInpatient(c, kind, errors) {
   return out;
 }
 
+// ---- combined supplemental benefit groups (spec 5.9) -----------------------------------------
+// Section D's pbp_d_combo_* columns: up to 5 groups of non-Medicare-covered categories,
+// listed as codes in pbp_d_combo_nmc_cats_<n> ("13b;18c;"), that share a maximum plan
+// benefit amount or a visit or trip count. A group with a shared maximum
+// (pbp_d_combo_max_plan_ben_yn_<n> 1) gives a dollars limit with shared_limit_id
+// PBP_D_COMBO_<n> to every benefit whose pbp_code the list names; each group's cells are
+// quoted in the source_references of those benefits. The 19b lists name MA UF and SSBCI
+// package benefits, which the importer does not write: they are quoted, not matched.
+const COMBO_COLS = ['grp_name', 'nmc_cats', '19b_uf_nmc_cats', '19b_ssbci_nm_cats', 'mode', 'mode_other', 'enrollee_lim_yn',
+  'max_plan_ben_yn', 'max_plan_ben_amt', 'max_plan_period', 'max_plan_prd_d', '19b_max_extnd_yn', 'share_visit_yn', 'share_visit_amt',
+  'shr_vst_period', '19b_lim_extnd_yn'];
+// pbp_d_combo_max_plan_period_<n>, verbatim from PBP_Benefits_2027_dictionary.xlsx (the codes are
+// the crosswalk's periodicity codes; the labels differ in wording).
+const COMBO_PERIOD_LABELS = { 1: 'Every 3 years', 2: 'Every 2 years', 3: 'Every year', 4: 'Every six months', 5: 'Every three months', 6: 'Other', 7: 'Every one month' };
+
+function comboGroups(d, errors) {
+  const offered = q(d, 'pbp_d_combo_supp_ben_yn');
+  if (offered === '' || offered === '2') return [];
+  if (offered !== '1') { errors.push(`pbp_d_combo_supp_ben_yn "${offered}" is not 1 or 2`); return []; }
+  const num = q(d, 'pbp_d_combo_num_grps');
+  if (!/^[1-5]$/.test(num)) { errors.push(`pbp_d_combo_supp_ben_yn "1" but ${cell(d, 'pbp_d_combo_num_grps')}`); return []; }
+  const groups = [];
+  for (let n = 1; n <= Number(num); n++) {
+    const col = (s) => `pbp_d_combo_${s}_${n}`;
+    const group = { n, codes: cats(q(d, col('nmc_cats'))), limit: null };
+    const max = q(d, col('max_plan_ben_yn'));
+    let tail = '';
+    if (max === '1') {
+      const amt = amount(d, col('max_plan_ben_amt'), errors);
+      if (amt === null) { errors.push(`${col('max_plan_ben_yn')} "1" but ${cell(d, col('max_plan_ben_amt'))}`); continue; }
+      const per = q(d, col('max_plan_period'));
+      if (!(per in CROSSWALK.periodicity)) { errors.push(`${col('max_plan_period')} "${per}" is not a periodicity code`); continue; }
+      const id = `PBP_D_COMBO_${n}`;
+      const cells = `${cellsOf(d, [col('max_plan_ben_yn'), col('max_plan_ben_amt'), col('max_plan_period'), col('max_plan_prd_d')]).join(', ')} ` +
+        `(${COMBO_PERIOD_LABELS[per]}); ${cell(d, col('grp_name'))}; 1 amount shared by ` +
+        `${cellsOf(d, [col('nmc_cats'), col('19b_uf_nmc_cats'), col('19b_ssbci_nm_cats')]).join(', ')}.`;
+      group.limit = { type: 'dollars', value: amt, period: CROSSWALK.periodicity[per], shared_limit_id: id,
+        raw_text: `Combined supplemental benefit group ${n} maximum plan benefit coverage: ${cells}` };
+      group.same = `Written once, with the shared_limit_id of combined supplemental benefit group ${n}, which states the same amount and period: ${cells}`;
+      tail = ` The shared maximum is the dollars limit with shared_limit_id ${id}.`;
+    } else if (!['', '2'].includes(max)) { errors.push(`${col('max_plan_ben_yn')} "${max}" is not 1 or 2`); continue; }
+    if (q(d, col('share_visit_yn')) === '1') tail += ' The shared visit or trip count is not written as a limit (spec section 5.9).';
+    group.excerpt = `Combined supplemental benefit group ${n} of ${num} (pbp_Section_D.txt), verbatim: ` +
+      `${cellsOf(d, ['pbp_d_combo_supp_ben_yn', 'pbp_d_combo_num_grps', ...COMBO_COLS.map(col)]).join('; ')}.${tail}`;
+    groups.push(group);
+  }
+  return groups;
+}
+
+// A benefit's limits with the maximum of each group that lists it. The group's maximum caps
+// the benefit too, so a dollars limit of the benefit's own columns with the same amount and
+// period and no shared_limit_id says nothing more: it is written once, with the group's
+// shared_limit_id and both sets of cells. Any other group maximum is a limit of its own.
+function withComboLimits(limits, groups) {
+  const out = [...limits];
+  for (const g of groups) {
+    if (!g.limit) continue;
+    const i = out.findIndex((l) => l.type === 'dollars' && !l.shared_limit_id && l.value === g.limit.value && l.period === g.limit.period);
+    if (i < 0) { out.push({ ...g.limit }); continue; }
+    const { type, value, period, ...rest } = out[i];
+    out[i] = { type, value, period, shared_limit_id: g.limit.shared_limit_id, ...rest, raw_text: `${rest.raw_text} ${g.same}` };
+  }
+  return out;
+}
+
 // ---- one benefit ------------------------------------------------------------------------------
 // Deductible steps first, then copay and coinsurance in the order read.
 function sequence(steps) {
@@ -1193,7 +1258,13 @@ function buildBenefit(b, rows, ctx, errors, warn) {
   };
   if (b.canonical_key) benefit.canonical_key = b.canonical_key;
   benefit.raw_label = b.pbp_label;
+  // The combined supplemental benefit groups that list this category (spec 5.9).
+  const combo = ctx.combo.filter((g) => g.codes.includes(b.pbp_code));
   if (!covered) {
+    if (combo.length) {
+      errors.push(`${combo.map((g) => cell(rows.d, `pbp_d_combo_nmc_cats_${g.n}`)).join(', ')} lists ${b.pbp_code}, but ${notCoveredWhy}`);
+      return null;
+    }
     benefit.network_cost_shares = networkTiers.map((t) => ({ tier_id: t, covered: false, cost_shares: [], notes: `${notCoveredWhy}.` }));
     benefit.limits = [];
     benefit.conditions = [];
@@ -1252,10 +1323,11 @@ function buildBenefit(b, rows, ctx, errors, warn) {
       `lists ${b.pbp_code}, so the cost share is written on the in-network tier only (decision 5, docs/specs/pbp-importer.md section 7.13).`;
   }
   benefit.network_cost_shares = ncs;
-  benefit.limits = limits;
+  benefit.limits = withComboLimits(limits, combo);
   benefit.conditions = buildConditions(b, row, errors);
   const quoted = cellsOf(row, b.quote || []);
   if (quoted.length) refs.push(`Values with no Benefit Plan Standard field, verbatim: ${quoted.join('; ')}.`);
+  for (const g of combo) refs.push(g.excerpt);
   benefit.source_references = [{ excerpt: `PBP service category ${b.pbp_label} (${b.file}), mapped by fhir/pbp-crosswalk.json` +
     `${b.canonical_key ? '' : '; no canonical key, carried by name (spec section 9.1)'}.` }, ...refs.map((excerpt) => ({ excerpt }))];
   return benefit;
@@ -2073,6 +2145,7 @@ function buildDocument(rows, source) {
     posGroups: groupsFor(rows.posGroups, 'POS'),
     ded: deductibleScopes(d, rows.c, planType, accumulators),
     moop: moopScopes(d, planType, accumulators),
+    combo: comboGroups(d, errors),
     skipped: [],
   };
   const benefits = buildBenefits(rows, ctx, errors, warn);

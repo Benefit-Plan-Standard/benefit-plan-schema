@@ -1974,7 +1974,15 @@
           "notes": "pbp_Section_C_OON.txt group 140 (label \"13b\", pbp_c_oon_out_nmc_bendesc_cats \"13b;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\", pbp_c_oon_outpt_maxplan_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no accumulator slot (spec section 9.1)."
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "dollars",
+          "value": 20,
+          "period": "per_3_months",
+          "shared_limit_id": "PBP_D_COMBO_1",
+          "raw_text": "Combined supplemental benefit group 1 maximum plan benefit coverage: pbp_d_combo_max_plan_ben_yn_1 \"1\", pbp_d_combo_max_plan_ben_amt_1 \"20.00\", pbp_d_combo_max_plan_period_1 \"5\" (Every three months); pbp_d_combo_grp_name_1 \"Flex Spend Card - OTC/HSD\"; 1 amount shared by pbp_d_combo_nmc_cats_1 \"13b;14c8;\"."
+        }
+      ],
       "conditions": [],
       "source_references": [
         {
@@ -1982,6 +1990,9 @@
         },
         {
           "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b13b_maxenr_yn \"2\"; pbp_b13b_nrt_yn \"1\"; pbp_b13b_nrt_attestation \"1\"; pbp_b13b_naloxone_yn \"2\"; pbp_b13b_cms_otc_list_yn \"1\"; pbp_b13b_mode \"00010\"."
+        },
+        {
+          "excerpt": "Combined supplemental benefit group 1 of 1 (pbp_Section_D.txt), verbatim: pbp_d_combo_supp_ben_yn \"1\"; pbp_d_combo_num_grps \"1\"; pbp_d_combo_grp_name_1 \"Flex Spend Card - OTC/HSD\"; pbp_d_combo_nmc_cats_1 \"13b;14c8;\"; pbp_d_combo_mode_1 \"00010\"; pbp_d_combo_enrollee_lim_yn_1 \"2\"; pbp_d_combo_max_plan_ben_yn_1 \"1\"; pbp_d_combo_max_plan_ben_amt_1 \"20.00\"; pbp_d_combo_max_plan_period_1 \"5\"; pbp_d_combo_share_visit_yn_1 \"2\". The shared maximum is the dollars limit with shared_limit_id PBP_D_COMBO_1."
         }
       ]
     },

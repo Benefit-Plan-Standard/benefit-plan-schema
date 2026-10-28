@@ -1602,8 +1602,9 @@
           "type": "dollars",
           "value": 125,
           "period": "per_3_months",
+          "shared_limit_id": "PBP_D_COMBO_2",
           "carryover": "none",
-          "raw_text": "Maximum plan benefit coverage: pbp_b13b_maxplan_yn \"1\", pbp_b13b_maxplan_amt \"125.00\", pbp_b13b_otc_maxplan_per \"5\" (Every three months); pbp_b13b_maxplan_prd_yn \"2\" (carryover none)."
+          "raw_text": "Maximum plan benefit coverage: pbp_b13b_maxplan_yn \"1\", pbp_b13b_maxplan_amt \"125.00\", pbp_b13b_otc_maxplan_per \"5\" (Every three months); pbp_b13b_maxplan_prd_yn \"2\" (carryover none). Written once, with the shared_limit_id of combined supplemental benefit group 2, which states the same amount and period: pbp_d_combo_max_plan_ben_yn_2 \"1\", pbp_d_combo_max_plan_ben_amt_2 \"125.00\", pbp_d_combo_max_plan_period_2 \"5\" (Every three months); pbp_d_combo_grp_name_2 \"Grocery-OTC\"; 1 amount shared by pbp_d_combo_nmc_cats_2 \"13b;19b3;\", pbp_d_combo_19b_ssbci_nm_cats_2 \"13i1|SSBCI|Food and Non-Medical Transportation;\"."
         }
       ],
       "conditions": [],
@@ -1613,6 +1614,9 @@
         },
         {
           "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b13b_maxenr_yn \"2\"; pbp_b13b_nrt_yn \"1\"; pbp_b13b_nrt_attestation \"1\"; pbp_b13b_naloxone_yn \"1\"; pbp_b13b_cms_otc_list_yn \"1\"; pbp_b13b_mode \"01010\"."
+        },
+        {
+          "excerpt": "Combined supplemental benefit group 2 of 2 (pbp_Section_D.txt), verbatim: pbp_d_combo_supp_ben_yn \"1\"; pbp_d_combo_num_grps \"2\"; pbp_d_combo_grp_name_2 \"Grocery-OTC\"; pbp_d_combo_nmc_cats_2 \"13b;19b3;\"; pbp_d_combo_19b_ssbci_nm_cats_2 \"13i1|SSBCI|Food and Non-Medical Transportation;\"; pbp_d_combo_mode_2 \"01010\"; pbp_d_combo_enrollee_lim_yn_2 \"2\"; pbp_d_combo_max_plan_ben_yn_2 \"1\"; pbp_d_combo_max_plan_ben_amt_2 \"125.00\"; pbp_d_combo_max_plan_period_2 \"5\"; pbp_d_combo_19b_max_extnd_yn_2 \"1\"; pbp_d_combo_share_visit_yn_2 \"2\". The shared maximum is the dollars limit with shared_limit_id PBP_D_COMBO_2."
         }
       ]
     },
@@ -1680,6 +1684,9 @@
         },
         {
           "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b10b_bendesc_trn \"1\"; pbp_b10b_bendesc_mt_pal \"011010\"; pbp_b10b_maxenr_yn \"2\"."
+        },
+        {
+          "excerpt": "Combined supplemental benefit group 1 of 2 (pbp_Section_D.txt), verbatim: pbp_d_combo_supp_ben_yn \"1\"; pbp_d_combo_num_grps \"2\"; pbp_d_combo_grp_name_1 \"Transportation\"; pbp_d_combo_nmc_cats_1 \"10b1;19b3;\"; pbp_d_combo_19b_ssbci_nm_cats_1 \"13i4|SSBCI|Food and Non-Medical Transportation;\"; pbp_d_combo_mode_1 \"00100\"; pbp_d_combo_enrollee_lim_yn_1 \"2\"; pbp_d_combo_max_plan_ben_yn_1 \"2\"; pbp_d_combo_share_visit_yn_1 \"1\"; pbp_d_combo_share_visit_amt_1 \"12\"; pbp_d_combo_shr_vst_period_1 \"3\"; pbp_d_combo_19b_lim_extnd_yn_1 \"1\". The shared visit or trip count is not written as a limit (spec section 5.9)."
         }
       ]
     },

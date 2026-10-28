@@ -10,7 +10,7 @@
   },
   "golden": "examples/humana-humana-gold-plus-h1036-068.pbp.json",
   "spec": "docs/specs/pbp-part-d-mapping.md section 18",
-  "status": "Written 2026-10-24, before the Part D importer; run on the golden file since the importer read the Part D files (2026-10-24), by scripts/from-pbp.test.js: 46 checks, 45 MATCH, 1 READING, 0 DIFFERENCE. The benefit indexes are those of docs/specs/pbp-part-d/profile/plans/H1036-068-000-benefits.md (38 medical benefits first).",
+  "status": "Written 2026-10-24, before the Part D importer; run on the golden file since the importer read the Part D files (2026-10-24), by scripts/from-pbp.test.js: 46 checks, 45 MATCH, 1 READING, 0 DIFFERENCE. On 2026-10-28, when the Medicare Advantage importer began reading the combined supplemental benefit groups, 2 checks of the over-the-counter allowance were added (page 15): 48 checks, 46 MATCH, 2 READING, 0 DIFFERENCE. The benefit indexes are those of docs/specs/pbp-part-d/profile/plans/H1036-068-000-benefits.md (38 medical benefits first).",
   "checks": [
     {
       "item": "Pharmacy (Part D) deductible and the tiers it applies to",
@@ -342,6 +342,23 @@
       "path": "/benefits/54/network_cost_shares/0/cost_shares",
       "expected_reading": [{ "type": "coinsurance", "rate": 0.09 }],
       "note": "No insulin benefit is written (docs/specs/pbp-part-d-mapping.md section 10, question Q1): the pointer is Tier 3's own retail 30-day step, and the insulin cells mrx_tier_ira_rstd_coins_1m \"9\" and mrx_tier_ira_rstd_copay_1m \"35.00\" are quoted in the root source_references entry for Tier 3."
+    },
+    {
+      "item": "Over-the-Counter (OTC) mail order, quarterly allowance",
+      "page": 15,
+      "printed": "$90 quarterly allowance to buy approved over-the-counter health and wellness products available through our OTC Mail Order provider.",
+      "expected": [{ "type": "dollars", "value": 90, "period": "per_3_months" }],
+      "path": "/benefits/33/limits",
+      "note": "Added 2026-10-28. The file states the allowance in Section D, as a combined supplemental benefit group: pbp_d_combo_grp_name_1 \"OTC Max Allowance\", pbp_d_combo_nmc_cats_1 \"13b;18c;\", pbp_d_combo_max_plan_ben_amt_1 \"90.00\", pbp_d_combo_max_plan_period_1 \"5\"; 13b itself answers pbp_b13b_maxplan_yn \"2\". The Medicare Advantage importer writes it with shared_limit_id PBP_D_COMBO_1 (docs/specs/pbp-importer.md section 5.9)."
+    },
+    {
+      "item": "Over-the-Counter (OTC) mail order, unused allowance",
+      "page": 15,
+      "printed": "Unused amount rolls over to the next quarter and expires at the end of the plan year.",
+      "expected": "within_year",
+      "path": "/benefits/33/limits/0/carryover",
+      "expected_reading": { "$absent": true },
+      "note": "Added 2026-10-28. No combined supplemental benefit group column states a carryover, and 13b's own pbp_b13b_maxplan_prd_yn is blank because 13b answers pbp_b13b_maxplan_yn \"2\", so the limit has no carryover (docs/specs/pbp-importer.md section 5.9)."
     }
   ]
 }

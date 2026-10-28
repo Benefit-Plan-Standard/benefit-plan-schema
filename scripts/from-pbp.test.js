@@ -233,6 +233,79 @@ test('decision 2: a deductible answered "No" writes no slot', async () => {
   assert.ok(doc.source_references.some((s) => s.excerpt.startsWith('In-network deductible: the plan says it has none (pbp_d_inn_deduct_yn "2",')));
 });
 
+// ---- combined supplemental benefit groups (spec 5.9) ----------------------------------------------
+const comboRefs = (b) => b.source_references.filter((s) => s.excerpt.startsWith('Combined supplemental benefit group'));
+const comboLimits = (doc) => doc.benefits.flatMap((b) => b.limits.filter((l) => (l.shared_limit_id || '').startsWith('PBP_D_COMBO_')).map(() => b.benefit_id));
+
+test('combined groups: the H5533-019 and H1036-068 over-the-counter allowances come from the group, with its shared_limit_id and its cells quoted', async () => {
+  for (const [plan, amt, name, list] of [['H5533-019-000', 20, 'Flex Spend Card - OTC/HSD', '13b;14c8;'], ['H1036-068-000', 90, 'OTC Max Allowance', '13b;18c;']]) {
+    const doc = await docFor(plan);
+    const otc = benefit(doc, 'OTC_ITEMS');
+    assert.deepStrictEqual(otc.limits.map(({ raw_text: _, ...l }) => l), [{ type: 'dollars', value: amt, period: 'per_3_months', shared_limit_id: 'PBP_D_COMBO_1' }], plan);
+    assert.strictEqual(otc.limits[0].raw_text, 'Combined supplemental benefit group 1 maximum plan benefit coverage: pbp_d_combo_max_plan_ben_yn_1 "1", ' +
+      `pbp_d_combo_max_plan_ben_amt_1 "${amt}.00", pbp_d_combo_max_plan_period_1 "5" (Every three months); pbp_d_combo_grp_name_1 "${name}"; ` +
+      `1 amount shared by pbp_d_combo_nmc_cats_1 "${list}".`);
+    const refs = comboRefs(otc);
+    assert.strictEqual(refs.length, 1, plan);
+    assert.ok(refs[0].excerpt.startsWith('Combined supplemental benefit group 1 of 1 (pbp_Section_D.txt), verbatim: pbp_d_combo_supp_ben_yn "1"; ' +
+      `pbp_d_combo_num_grps "1"; pbp_d_combo_grp_name_1 "${name}"; pbp_d_combo_nmc_cats_1 "${list}"; `), plan);
+    assert.ok(refs[0].excerpt.endsWith(`pbp_d_combo_max_plan_ben_amt_1 "${amt}.00"; pbp_d_combo_max_plan_period_1 "5"; pbp_d_combo_share_visit_yn_1 "2". ` +
+      'The shared maximum is the dollars limit with shared_limit_id PBP_D_COMBO_1.'), plan);
+    // 18c and 14c8 have no crosswalk row: OTC is the only benefit of the group the document writes.
+    assert.deepStrictEqual(comboLimits(doc), ['OTC_ITEMS'], plan);
+  }
+  for (const plan of ['H2406-013-000', 'H1609-028-000']) {
+    const doc = await docFor(plan);
+    assert.deepStrictEqual(comboLimits(doc), [], plan);
+    assert.ok(doc.benefits.every((b) => !comboRefs(b).length), plan);
+  }
+});
+
+test('combined groups: H5425-140 writes the $125 13b maximum once, with group 2\'s shared_limit_id; group 1, with no maximum, is quoted on transportation', async () => {
+  const doc = await docFor('H5425-140-000');
+  const otc = benefit(doc, 'OTC_ITEMS');
+  assert.strictEqual(otc.limits.length, 1);
+  assert.deepStrictEqual(Object.keys(otc.limits[0]), ['type', 'value', 'period', 'shared_limit_id', 'carryover', 'raw_text']);
+  assert.deepStrictEqual([otc.limits[0].value, otc.limits[0].period, otc.limits[0].shared_limit_id, otc.limits[0].carryover], [125, 'per_3_months', 'PBP_D_COMBO_2', 'none']);
+  assert.match(otc.limits[0].raw_text, /^Maximum plan benefit coverage: pbp_b13b_maxplan_yn "1", pbp_b13b_maxplan_amt "125\.00", .*\(carryover none\)\. Written once, with the shared_limit_id of combined supplemental benefit group 2, which states the same amount and period: pbp_d_combo_max_plan_ben_yn_2 "1", .*pbp_d_combo_grp_name_2 "Grocery-OTC"; 1 amount shared by pbp_d_combo_nmc_cats_2 "13b;19b3;", pbp_d_combo_19b_ssbci_nm_cats_2 "13i1\|SSBCI\|Food and Non-Medical Transportation;"\.$/);
+  assert.deepStrictEqual(comboRefs(otc).map((s) => s.excerpt.slice(0, 43)), ['Combined supplemental benefit group 2 of 2 ']);
+  const trips = benefit(doc, 'TRANSPORTATION');
+  assert.deepStrictEqual(trips.limits.map((l) => [l.type, l.value, l.shared_limit_id]), [['trips', 12, undefined]]);
+  const refs = comboRefs(trips);
+  assert.strictEqual(refs.length, 1);
+  assert.match(refs[0].excerpt, /^Combined supplemental benefit group 1 of 2 \(pbp_Section_D\.txt\), verbatim: .*pbp_d_combo_max_plan_ben_yn_1 "2"; pbp_d_combo_share_visit_yn_1 "1"; pbp_d_combo_share_visit_amt_1 "12"; .* The shared visit or trip count is not written as a limit \(spec section 5\.9\)\.$/);
+  assert.deepStrictEqual(comboLimits(doc), ['OTC_ITEMS']);
+});
+
+test('combined groups: every benefit the list names gets the limit; a different amount is a limit of its own; bad cells and a listed benefit not offered are errors', async () => {
+  const both = await alteredPart('H1036-068-000', 'd', { pbp_d_combo_nmc_cats_1: '13b;18c;10b1;' });
+  assert.deepStrictEqual(both.errors, []);
+  assert.deepStrictEqual(comboLimits(both.doc), ['OTC_ITEMS', 'TRANSPORTATION']);
+  const trips = benefit(both.doc, 'TRANSPORTATION').limits;
+  assert.deepStrictEqual(trips.map((l) => [l.type, l.value, l.period, l.shared_limit_id]), [['trips', 50, 'per_year', undefined], ['dollars', 90, 'per_3_months', 'PBP_D_COMBO_1']]);
+  assert.strictEqual(comboRefs(benefit(both.doc, 'TRANSPORTATION')).length, 1);
+  const other = await alteredPart('H5425-140-000', 'd', { pbp_d_combo_max_plan_ben_amt_2: '100.00' });
+  assert.deepStrictEqual(benefit(other.doc, 'OTC_ITEMS').limits.map((l) => [l.value, l.shared_limit_id, l.carryover]), [[125, undefined, 'none'], [100, 'PBP_D_COMBO_2', undefined]]);
+  const none = await alteredPart('H1036-068-000', 'd', { pbp_d_combo_supp_ben_yn: '2' });
+  assert.deepStrictEqual(benefit(none.doc, 'OTC_ITEMS').limits, []);
+  assert.deepStrictEqual(comboRefs(benefit(none.doc, 'OTC_ITEMS')), []);
+  for (const [changes, msg] of [
+    [{ pbp_d_combo_supp_ben_yn: '3' }, 'pbp_d_combo_supp_ben_yn "3" is not 1 or 2'],
+    [{ pbp_d_combo_num_grps: '' }, 'pbp_d_combo_supp_ben_yn "1" but pbp_d_combo_num_grps ""'],
+    [{ pbp_d_combo_max_plan_ben_yn_1: '4' }, 'pbp_d_combo_max_plan_ben_yn_1 "4" is not 1 or 2'],
+    [{ pbp_d_combo_max_plan_ben_amt_1: '' }, 'pbp_d_combo_max_plan_ben_yn_1 "1" but pbp_d_combo_max_plan_ben_amt_1 ""'],
+    [{ pbp_d_combo_max_plan_ben_amt_1: '90 dollars' }, 'pbp_d_combo_max_plan_ben_amt_1 "90 dollars" is not an amount'],
+    [{ pbp_d_combo_max_plan_period_1: '9' }, 'pbp_d_combo_max_plan_period_1 "9" is not a periodicity code'],
+  ]) {
+    const r = await alteredPart('H1036-068-000', 'd', changes);
+    assert.strictEqual(r.doc, null, msg);
+    assert.ok(r.errors.includes(msg), `${msg}: ${r.errors.join(' | ')}`);
+  }
+  const notOffered = await alteredPart('H5533-019-000', 'd', { pbp_d_combo_nmc_cats_1: '13b;14c8;13c;' });
+  assert.strictEqual(notOffered.doc, null);
+  assert.ok(notOffered.errors.some((e) => e.startsWith('pbp_d_combo_nmc_cats_1 "13b;14c8;13c;" lists 13c, but ')), notOffered.errors.join(' | '));
+});
+
 // ---- errors on altered rows -----------------------------------------------------------------------
 async function altered(plan, file, changes) {
   const { rows, source } = await loadPlan({ dataDir: FIXTURE_DIR, year: 2027, plan });
@@ -959,7 +1032,7 @@ test('sob-check: H2406-013-000 golden file against its Summary of Benefits, 0 di
 });
 
 test('sob-check: H1036-068-000 and S5921-383-000 golden files against their Summary of Benefits, 0 differences', async () => {
-  const want = { 'H1036-068-000': { MATCH: 45, READING: 1, DIFFERENCE: 0 }, 'S5921-383-000': { MATCH: 40, READING: 3, DIFFERENCE: 0 } };
+  const want = { 'H1036-068-000': { MATCH: 46, READING: 2, DIFFERENCE: 0 }, 'S5921-383-000': { MATCH: 40, READING: 3, DIFFERENCE: 0 } };
   for (const [plan, counts] of Object.entries(want)) {
     const x = (await built()).find((y) => y.g.plan === plan);
     const expectations = readJson(path.join(SOB_CHECKS, `${plan}.json`));
@@ -976,9 +1049,10 @@ test('sob-check: H1036-068-000 and S5921-383-000 golden files against their Summ
 });
 
 // Each DIFFERENCE below is written in its check's note: a contradiction between the file and the
-// Summary of Benefits, or (H5533-019-000, over-the-counter allowance) a combined group the importer does not read yet.
+// Summary of Benefits. The H5533-019-000 over-the-counter allowance, a difference until the importer read
+// the combined groups (2026-10-28), is a MATCH, and its "do not roll over" sentence a READING.
 test('sob-check: H5425-140-000 and H5533-019-000 golden files against their Summary of Benefits, counts pinned', async () => {
-  const want = { 'H5425-140-000': { MATCH: 42, READING: 3, DIFFERENCE: 1 }, 'H5533-019-000': { MATCH: 66, READING: 7, DIFFERENCE: 3 } };
+  const want = { 'H5425-140-000': { MATCH: 42, READING: 3, DIFFERENCE: 1 }, 'H5533-019-000': { MATCH: 67, READING: 8, DIFFERENCE: 2 } };
   for (const [plan, counts] of Object.entries(want)) {
     const x = (await built()).find((y) => y.g.plan === plan);
     const expectations = readJson(path.join(SOB_CHECKS, `${plan}.json`));

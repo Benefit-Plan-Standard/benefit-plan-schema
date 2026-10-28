@@ -1676,7 +1676,15 @@
           "notes": "pbp_b13_other_services.txt cells: pbp_b13b_copay_yn \"1\", pbp_b13b_copay_amt_min \"0.00\", pbp_b13b_copay_amt_max \"0.00\", pbp_b13b_coins_yn \"2\", pbp_b13b_ded_yn \"2\"."
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "dollars",
+          "value": 90,
+          "period": "per_3_months",
+          "shared_limit_id": "PBP_D_COMBO_1",
+          "raw_text": "Combined supplemental benefit group 1 maximum plan benefit coverage: pbp_d_combo_max_plan_ben_yn_1 \"1\", pbp_d_combo_max_plan_ben_amt_1 \"90.00\", pbp_d_combo_max_plan_period_1 \"5\" (Every three months); pbp_d_combo_grp_name_1 \"OTC Max Allowance\"; 1 amount shared by pbp_d_combo_nmc_cats_1 \"13b;18c;\"."
+        }
+      ],
       "conditions": [],
       "source_references": [
         {
@@ -1684,6 +1692,9 @@
         },
         {
           "excerpt": "Values with no Benefit Plan Standard field, verbatim: pbp_b13b_maxenr_yn \"2\"; pbp_b13b_nrt_yn \"1\"; pbp_b13b_nrt_attestation \"1\"; pbp_b13b_naloxone_yn \"1\"; pbp_b13b_cms_otc_list_yn \"2\"; pbp_b13b_mode \"01000\"."
+        },
+        {
+          "excerpt": "Combined supplemental benefit group 1 of 1 (pbp_Section_D.txt), verbatim: pbp_d_combo_supp_ben_yn \"1\"; pbp_d_combo_num_grps \"1\"; pbp_d_combo_grp_name_1 \"OTC Max Allowance\"; pbp_d_combo_nmc_cats_1 \"13b;18c;\"; pbp_d_combo_mode_1 \"01000\"; pbp_d_combo_enrollee_lim_yn_1 \"2\"; pbp_d_combo_max_plan_ben_yn_1 \"1\"; pbp_d_combo_max_plan_ben_amt_1 \"90.00\"; pbp_d_combo_max_plan_period_1 \"5\"; pbp_d_combo_share_visit_yn_1 \"2\". The shared maximum is the dollars limit with shared_limit_id PBP_D_COMBO_1."
         }
       ]
     },

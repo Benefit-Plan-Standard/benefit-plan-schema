@@ -8,9 +8,9 @@ The five Medicare Advantage plans here and the four Marketplace plans in [`../pu
 |---|---|---|---|---|---|---|---|
 | [H2406-013-000.json](H2406-013-000.json) | AARP Medicare Advantage from UHC FL-0021 (PPO), UnitedHealthcare | 2027 Summary of Benefits, 14 pages | [example](../../../examples/unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json) | 83 | 71 | 12 | 0 |
 | [H1609-028-000.json](H1609-028-000.json) | Aetna Medicare Select Extra (HMO-POS) | 2027 Summary of Benefits, 14 pages | [example](../../../examples/aetna-medicare-aetna-medicare-select-extra.pbp.json) | 65 | 47 | 16 | 2 |
-| [H1036-068-000.json](H1036-068-000.json) | Humana Gold Plus H1036-068 (HMO) | 2027 Summary of Benefits, 24 pages | [example](../../../examples/humana-humana-gold-plus-h1036-068.pbp.json) | 46 | 45 | 1 | 0 |
+| [H1036-068-000.json](H1036-068-000.json) | Humana Gold Plus H1036-068 (HMO) | 2027 Summary of Benefits, 24 pages | [example](../../../examples/humana-humana-gold-plus-h1036-068.pbp.json) | 48 | 46 | 2 | 0 |
 | [H5425-140-000.json](H5425-140-000.json) | SCAN Costco Medicare Advantage (HMO), San Francisco County | 2027 Summary of Benefits, 20 pages | [example](../../../examples/scan-health-plan-scan-costco-medicare-advantage.pbp.json) | 46 | 42 | 3 | 1 |
-| [H5533-019-000.json](H5533-019-000.json) | UPMC for Life PPO Rx Choice (PPO), Allegheny County | 2027 Summary of Benefits, 14 pages | [example](../../../examples/upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json) | 76 | 66 | 7 | 3 |
+| [H5533-019-000.json](H5533-019-000.json) | UPMC for Life PPO Rx Choice (PPO), Allegheny County | 2027 Summary of Benefits, 14 pages | [example](../../../examples/upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json) | 77 | 67 | 8 | 2 |
 | [S5921-383-000.json](S5921-383-000.json) | AARP Medicare Rx Preferred from UHC (PDP) | 2027 Summary of Benefits, 5 pages | [example](../../../examples/unitedhealthcare-aarp-medicare-rx-preferred-from-uhc.pbp.json) | 43 | 40 | 3 | 0 |
 
 ## What a check holds
