@@ -41,9 +41,23 @@ Every Medicare Advantage example imported from the PBP files and every plan year
 
 Across the 9 plans, 556 values: 463 match, 82 are documented readings, 10 are contradictions between the CMS file and the carrier document (6 on links and contacts) and 1 is a value the Medicare Advantage importer does not read yet.
 
-## Medical MVP technical specification, drafts of October 20 to 27, 2026
+## Medical MVP technical specification, drafts of October 20 to 29, 2026
 
 From version 0.3.3, dated October 21, 2026, the 3 documents of `docs/specs/rtb-medical-mvp/` state the present only: what the 2 importers read, what the documents carry, the numbers and how to rerun them. The README no longer has a Changes section or the section "Gaps closed on October 20, 2026", and its Status and version section is 1 paragraph that points here. What the README said about its drafts, from version 0.1 to version 0.3.2, is kept below as the README gave it in version 0.3.2. `scripts/build-rtb-dictionary.js` and `scripts/build-rtb-crosswalk.js` print no gap id and no closed gap; an open gap prints in the row as a plain sentence, "The <program> importer does not read <columns> today", and the checks are unchanged. A Changes section returns to the README from the first circulated version on, starting at 0.3.3.
+
+### In 0.3.8, October 29, 2026
+
+Version 0.3.8, dated October 29, 2026, makes 1 change to version 0.3.7 of the same day:
+
+- **The remaining display requirement is removed, at the workgroup's request, pending legal review.** Under What an app shows beside the data, the SHALL that an app shows the plan year and the as-of date on the same screen as the values is removed, with the paragraph on provenance on request and the sentence on the app's own wording. The section now says, in 2 sentences, that the files carry the plan year, the as-of date and the source references on every answer, as data (see Source, date and refresh), and that what an app shows and says beside the values is the app's own, pending the workgroup's guidance, which the workgroup may set for GA. The sentence of Source, date and refresh that points to the section and the opening of Conformance no longer describe a display requirement. The file contract is unchanged: Source, date and refresh keeps its SHALL on what every document and every answer carries.
+- The preface of the 3 documents, which `scripts/build-rtb-dictionary.js` writes, and the README's Status and version give version 0.3.8, dated October 29, 2026. No other change, and the counts are unchanged.
+
+### In 0.3.7, October 29, 2026
+
+Version 0.3.7, dated October 29, 2026, makes 1 change to version 0.3.6 of October 27, 2026:
+
+- **The consumer statement and its minimum wording are removed, at the workgroup's request, pending legal guidance.** Under What an app shows beside the data, the statement's parts on where the values come from, on calling the insurance company and on services not listed, its minimum wording, the example wording and the sentence on whom the statement protects are removed. The SHALL that an app shows the plan year and the as-of date on the same screen as the values stays, with where both come from, and the CMS file names and addresses stay provenance on request. 1 sentence is added: what an app says to its members about the source and limits of these values is the app's own wording, written with its counsel, and the workgroup may set guidance later. Source, date and refresh no longer mentions a statement.
+- The preface of the 3 documents, which `scripts/build-rtb-dictionary.js` writes, and the README's Status and version give version 0.3.7, dated October 29, 2026. No other change: the SBC InsurancePlan Bundle stays SHALL, and the counts are unchanged.
 
 ### In 0.3.6, October 27, 2026
 

@@ -40,8 +40,8 @@ const VOCABULARY = 'vocabularies/canonical-benefits.json';
 const REPO = 'https://github.com/Benefit-Plan-Standard/benefit-plan-schema';
 const IN_REPO = 'in the Benefit Plan Standard repository';
 const REPOS = 'the Benefit Plan Standard repository\'s';
-const SPEC_VERSION = '0.3.6';
-const SPEC_DATE = 'October 27, 2026';
+const SPEC_VERSION = '0.3.8';
+const SPEC_DATE = 'October 29, 2026';
 const AUTHOR = 'Diego Orofino, the Benefit Plan Standard, dorofino@benefitplanstandard.org. A draft for the workgroup, not a workgroup decision.';
 // The 3 documents of the specification: the name the preface gives each, and the term the others use for it
 // when that differs.

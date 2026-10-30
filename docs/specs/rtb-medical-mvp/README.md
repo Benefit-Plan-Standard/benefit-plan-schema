@@ -2,7 +2,7 @@
 
 Diego Orofino, the Benefit Plan Standard, dorofino@benefitplanstandard.org. A draft for the workgroup, not a workgroup decision.
 
-The [Benefit Plan Standard](https://benefitplanstandard.org) is an open JSON format for health plan benefits, published under the MIT license. Its schema, the importers that read CMS public files, the converter to FHIR and the example plans live in [one repository](https://github.com/Benefit-Plan-Standard/benefit-plan-schema). This document is the technical specification, version 0.3.6, dated October 27, 2026, 1 of 3 documents that make up the medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup. The other 2 are the [data dictionary](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/data-dictionary.md) and the [crosswalk to the SBC InsurancePlan profile](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/carin-crosswalk.md). All 3 are in the [repository folder](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/tree/main/docs/specs/rtb-medical-mvp), and the files they name are in the [repository](https://github.com/Benefit-Plan-Standard/benefit-plan-schema). This document is published as `README.md` in that folder; a Word copy with the same content is sent with the specification and is not in the repository.
+The [Benefit Plan Standard](https://benefitplanstandard.org) is an open JSON format for health plan benefits, published under the MIT license. Its schema, the importers that read CMS public files, the converter to FHIR and the example plans live in [one repository](https://github.com/Benefit-Plan-Standard/benefit-plan-schema). This document is the technical specification, version 0.3.8, dated October 29, 2026, 1 of 3 documents that make up the medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup. The other 2 are the [data dictionary](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/data-dictionary.md) and the [crosswalk to the SBC InsurancePlan profile](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/specs/rtb-medical-mvp/carin-crosswalk.md). All 3 are in the [repository folder](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/tree/main/docs/specs/rtb-medical-mvp), and the files they name are in the [repository](https://github.com/Benefit-Plan-Standard/benefit-plan-schema). This document is published as `README.md` in that folder; a Word copy with the same content is sent with the specification and is not in the repository.
 
 The 3 documents use these terms. RTB is the CMS Health Tech Ecosystem Real-Time Benefits workgroup. The MVP, minimum viable product, is the workgroup's first scope, and a pledgee is an organization that committed to the workgroup, in Monica Chopra's pledge proposal, to publish MVP data for its plans. GA, general availability, is the scope after the MVP, which the workgroup's GA draft describes (see What comes back). The other terms are these:
 
@@ -233,7 +233,7 @@ Every document a pledgee publishes, and every answer an app builds from it, SHAL
 - the date the files were downloaded;
 - the web addresses the CMS files give for the plan, quoted in `source_references` as the 2 importers quote them: for Marketplace the Summary of Benefits and Coverage, brochure and drug list addresses of the Plan Attributes PUF, and for Medicare Advantage the website, provider directory, drug list and pharmacy directory addresses of Section A.
 
-An answer carries these 4 as its provenance, which the app gives on request or on a details view; the SHALL does not ask that every screen print the CMS file names. What an app shows beside the data, under Conformance, proposes that the plan year and the as-of date also go on the same screen as the values, with a statement about where the values come from.
+An answer carries these 4 as its provenance, which the app gives on request or on a details view; the SHALL does not ask that every screen print the CMS file names. What an app shows beside the data, under Conformance, sets no requirement on what an app shows.
 
 The 2 importers write all 4 into every document, the fourth as the addresses the CMS files give: each filled address is quoted, a blank Summary of Benefits and Coverage address of a Marketplace plan is quoted as "(blank)", and a blank Medicare Advantage website or provider directory cell is named as blank, such as "pbp_a_org_website is blank, so contacts.website is not written"; a blank cell of the other addresses is left out of the excerpt (see the paragraph on web addresses below). What they can write differs by program, because the CMS files differ.
 
@@ -430,7 +430,7 @@ For the UHC plan, an app answers that the file says "No Charge after deductible"
 
 ## Conformance
 
-Everything in this section is a proposal for the workgroup to set. Each of the 3 measures has a starting number with its reason, the fourth subsection proposes what an app shows beside the data, and the last 2 propose a rule for moving SHOULD items to SHALL at GA and where the plan identifier comes from at GA. The workgroup sets the numbers and the rules and can change any of them.
+Everything in this section is a proposal for the workgroup to set. Each of the 3 measures has a starting number with its reason, the fourth subsection leaves what an app shows beside the data to the app, pending the workgroup's guidance, and the last 2 propose a rule for moving SHOULD items to SHALL at GA and where the plan identifier comes from at GA. The workgroup sets the numbers and the rules and can change any of them.
 
 ### Completeness (proposal for the workgroup to set)
 
@@ -550,20 +550,7 @@ For Marketplace, the plan key is the HIOS plan id with its variant, the `PlanId`
 
 ### What an app shows beside the data (proposal for the workgroup to set)
 
-An app that displays values from a pledgee's MVP files SHALL show, on the same screen as the values, a statement with these 4 parts:
-
-1. The information does not come from the member's insurance company, the payer or the plan. The values are read from the CMS public files, not from the payer's records of the member's coverage, and this holds when the pledgee is the member's own payer too.
-2. The plan year and the as-of date of the release the values came from. The file contract already carries both on every answer (see Source, date and refresh): the plan year is the document's `plan_year`, and the as-of date is the release's download date, the index entry's `data_date`, which the document's first `source_references` excerpt also gives; for Marketplace it is the download date of the Plan Attributes PUF, which is the release, even when the Network PUF was downloaded on another day. For Marketplace the first excerpt also gives each CMS file's `ImportDate`, the date the file itself carries, which the statement can give beside it.
-3. A direction to call the member's insurance company to confirm the values and the member's own coverage and cost.
-4. That a service not listed may still be covered. The MVP lists a fixed set of services, and a benefit missing from a document is not an answer that the plan does not cover it (see Reading the data dictionary).
-
-This SHALL puts the plan year and the as-of date on the screen. The CMS file names and addresses stay provenance that the app gives on request or on a details view, as under Source, date and refresh.
-
-Parts 1 and 3 have a minimum wording. An app that shows a value from these files SHALL tell the member, next to the plan year and the as-of date, at least in these words or in words to the same effect: "This information is not from your insurance company. Call your insurance company to confirm it." An app words the rest of the statement for its members. For Medicare Advantage, the document's `contacts.member_services_phone` is the plan's member services number, which an app can give with part 3. The statement goes with every answer an app shows from these files, such as the 2 answers of the worked example. An example, in plain English:
-
-> Example: "This information is not from your insurance company. Call your insurance company to confirm it. It comes from public government files for the 2027 plan year, as of [date]. If a service is not listed here, your plan may still cover it."
-
-The statement protects the member who acts on a value, by sending them to their insurance company to confirm it first, and the payer's member services line, by telling the member before the call that the value did not come from the payer.
+The files carry the plan year, the as-of date and the source references on every answer, as data (see Source, date and refresh). What an app shows and says beside the values is the app's own, pending the workgroup's guidance, which the workgroup may set for GA.
 
 ### From SHOULD to SHALL at GA (proposal for the workgroup to set)
 
@@ -575,7 +562,7 @@ At GA, for a member who has signed in with the payer, the plan identifier comes 
 
 ## Status and version
 
-Version 0.3.6, a draft for the workgroup, dated October 27, 2026. The Benefit Plan Standard repository's [`docs/changelog.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/changelog.md) and its git history record the drafts before this one.
+Version 0.3.8, a draft for the workgroup, dated October 29, 2026. The Benefit Plan Standard repository's [`docs/changelog.md`](https://github.com/Benefit-Plan-Standard/benefit-plan-schema/blob/main/docs/changelog.md) and its git history record the drafts before this one.
 
 It covers the PBP files for contract year 2027 and the Marketplace PUFs for plan year 2026. The documents of both programs are written in Benefit Plan Standard schema 1.2.0, a draft (see Scope). The canonical benefit vocabulary is version 1.4.0, with 124 keys. The PBP crosswalk has 41 rows, 35 with a canonical key, and the Marketplace crosswalk maps 84 of the 273 benefit names in the plan year 2026 file.
 
