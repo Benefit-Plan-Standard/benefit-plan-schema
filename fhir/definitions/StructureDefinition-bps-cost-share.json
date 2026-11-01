@@ -218,6 +218,35 @@
         ]
       },
       {
+        "id": "Extension.extension:moopRef",
+        "path": "Extension.extension",
+        "sliceName": "moopRef",
+        "short": "BPS cost_shares[].moop_ref (v1.2.0).",
+        "definition": "BPS cost_shares[].moop_ref (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:moopRef.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:moopRef.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "moopRef"
+      },
+      {
+        "id": "Extension.extension:moopRef.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
         "id": "Extension.extension:amountMin",
         "path": "Extension.extension",
         "sliceName": "amountMin",
@@ -334,6 +363,64 @@
         ]
       },
       {
+        "id": "Extension.extension:minAmount",
+        "path": "Extension.extension",
+        "sliceName": "minAmount",
+        "short": "BPS min_amount (v1.2.0).",
+        "definition": "BPS min_amount (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:minAmount.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:minAmount.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "minAmount"
+      },
+      {
+        "id": "Extension.extension:minAmount.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "decimal"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:minBasis",
+        "path": "Extension.extension",
+        "sliceName": "minBasis",
+        "short": "BPS min_basis (v1.2.0).",
+        "definition": "BPS min_basis (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:minBasis.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:minBasis.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "minBasis"
+      },
+      {
+        "id": "Extension.extension:minBasis.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
         "id": "Extension.extension:maxAmount",
         "path": "Extension.extension",
         "sliceName": "maxAmount",
@@ -446,6 +533,64 @@
         "type": [
           {
             "code": "integer"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:coveredUnder",
+        "path": "Extension.extension",
+        "sliceName": "coveredUnder",
+        "short": "BPS network_cost_shares[].covered_under (v1.2.0), on a Not covered entry: the other benefit the document points to, not a statement that it pays.",
+        "definition": "BPS network_cost_shares[].covered_under (v1.2.0), on a Not covered entry: the other benefit the document points to, not a statement that it pays.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:coveredUnder.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:coveredUnder.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "coveredUnder"
+      },
+      {
+        "id": "Extension.extension:coveredUnder.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:notCoveredReason",
+        "path": "Extension.extension",
+        "sliceName": "notCoveredReason",
+        "short": "BPS network_cost_shares[].not_covered_reason (v1.2.0), on a Not covered entry.",
+        "definition": "BPS network_cost_shares[].not_covered_reason (v1.2.0), on a Not covered entry.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:notCoveredReason.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:notCoveredReason.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "notCoveredReason"
+      },
+      {
+        "id": "Extension.extension:notCoveredReason.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
           }
         ]
       },

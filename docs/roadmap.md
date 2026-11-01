@@ -50,7 +50,7 @@ evidence for why BPS models cost sharing the way it does:
   is produced by Florida Blue as plan administrator: the document titles itself
   "BlueOptions 03768 - Prime EPO Plan" under Florida Blue branding, while the plan
   sponsor (GatorCare) appears nowhere in the header. A single `carrier` field cannot
-  say both things, and name-based grouping would file this self-funded plan under its
+  say both things, and name-based grouping would file this plan under its
   administrator, next to Florida Blue's own BlueOptions products. FHIR R4
   `InsurancePlan` models this as `ownedBy` (sponsor) vs `administeredBy`; BPS should
   consider `plan_sponsor` / `administered_by` fields in a future minor version so ASO

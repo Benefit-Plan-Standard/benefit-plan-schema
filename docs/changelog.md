@@ -3,6 +3,36 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] – DRAFT (2026-10-31), draft 7: a family pharmacy deductible, a floor under a coinsurance, where a not-covered row points, and which document a citation is in
+
+The 1.2.0 schema stays a draft under the release rule in `docs/governance.md` (Releases); each published draft is a git tag, and this one is `v1.2.0-draft.7`. Every addition is optional and no existing field changes type or meaning. 21 of the 22 documents in `examples/` are untouched and validate against draft 7; `examples/gatorcare_example.json` changes on purpose and validates too. 19 of the 20 Bundles in `examples/fhir/` and `examples/fhir-puf/` are byte-identical; the GatorCare Bundle changes with its document. The motivating document is the GatorCare Prime EPO 2026 pharmacy SBC, `examples/sources/gatorcare_pharmacy_sbc_2026.pdf`: it prints 3 things the draft had no field for, and carrying it beside the plan's medical SBC showed a fourth, that a citation could not say which of 2 PDFs it was in.
+
+### Added
+
+- `schema/v1.2.0/benefit-plan.schema.json` (draft), 6 optional properties:
+  - `pharmacy.deductible.family_amount` (number or null, default null): the family pharmacy deductible, when the plan prints one beside the individual amount. The pharmacy SBC, page 1: "$125 Individual/$500 Family Pharmacy Calendar Year Deductible". Absent or null means the document states no family amount.
+  - `cost_shares[].min_amount` (number or null) and `min_basis` (string or null): the dollar floor under a cost-share step, the mirror of `max_amount` and `max_basis`. The pharmacy SBC, page 2, Tier 1: "25% Coinsurance with $10 Min. to $20 Max." Absent or null means the document states no floor.
+  - `network_cost_shares[].covered_under` (string or null, recommended values `medical`, `pharmacy`, `dental`, `vision`, `behavioral_health`): the other benefit the document points to when `covered` is false. It records where the document sends the member, not a statement that the other benefit pays: the pharmacy SBC says insulin pumps "are covered under the medical benefit" (page 4), IUD devices "refer to medical plan for coverage" and other vaccines "may be covered under the medical benefit" (page 5). Absent or null means the document names no other benefit.
+  - `network_cost_shares[].not_covered_reason` (string or null, recommended values `excluded`, `not_filed`, `covered_under_other_benefit`, `not_stated`): why `covered` is false, when the source says. Proposed in `docs/specs/pbp-importer.md` section 9.1. Absent or null means no reason is recorded.
+  - `source_references[].document` (string or null), at plan level and on a benefit: which source document a citation is in, when the plan was read from more than 1. GatorCare has 2 PDFs, each with its own page 4. Absent or null means the plan's 1 source document.
+- `modules/pharmacy/v0.2.2/`: the pharmacy module with `deductible.family_amount`, in a new folder as v0.2.1 was, because `modules/pharmacy/v0.2.1/README.md` says that file stays as it is and v0.2.1 is served at its versioned address. Every v0.2.1 document validates against v0.2.2. Core now copies v0.2.2. 2 descriptions change in the module and the core copy, with no effect on validation: the display-name example on `formulary_tier.name` loses its em dash, and `source_plan_identifiers` no longer says a future release may graduate them to core. The other 5 properties are core only, because the module has no cost shares or citations of its own.
+- `scripts/to-insuranceplan.js` and `scripts/build-fhir-definitions.js`: `bps-cost-share` gains `moopRef`, `minAmount`, `minBasis`, `coveredUnder` and `notCoveredReason`; `bps-benefit` gains `formularyTierId` and `daySupply`; `bps-source-reference` gains `document`. A family pharmacy deductible is a second `generalCost` entry, "Pharmacy deductible, family". `coveredUnder` and `notCoveredReason` sit on the `Not covered` entry and are not a text qualifier, because `qualifiers` is bound to the Cost Tier value set. The `moop_ref` follow-up in `docs/specs/insuranceplan-converter.md` section 7 is closed. `fhir/definitions/` is regenerated, at version 0.1.0.
+- `fhir/carin-sbc-crosswalk.json`: 3 keys, 41 in all. `preferred_specialty_drugs` and `nonpreferred_specialty_drugs` under `specialty-drugs`, and `prenatal_office_visits` under `pregnancy`. No other document carries them on a placed benefit, so no other Bundle moves.
+- `test/fixtures/validate/draft-7-fields.json`, a made-up plan with every new property. `scripts/schema.test.js`, 7 tests (14 in all): v0.2.2 validates as v0.2.1 plus `family_amount`, each new property's shape, `min_amount` and `min_basis` mirror the cap, none is required, and the GatorCare example carries them with a named PDF on every citation. `scripts/validate.test.js`, 1 test (5 in all). `scripts/to-insuranceplan.test.js`, 5 tests (75 in all). `node --test scripts/*.test.js`: 225 tests, was 212.
+
+### Changed
+
+- `examples/gatorcare_example.json` moves from schema 1.1.0 to 1.2.0 and gains its pharmacy side: the `pharmacy` object (the $125 and $500 deductible on tiers T2 to T5, tiers T0 to T5, no separate out-of-pocket maximum, because the pharmacy SBC combines it with the medical one); 1 benefit per tier at a 34-day retail supply; 4 at a 90-day supply, as printed (the SBC prints no 90-day row for T3 or T5); and 5 rows that hand a service to another benefit or to none. The basis of each floor and cap is `per_34_day_supply` or `per_90_day_supply`, because page 2 prints "Maximum Dollar Amount per Prescription: No Maximum". The specialty prior authorization on page 9 names no tier, so it is 1 plan-level citation and is not on T3 or T5.
+- In the same file: the 4 medical SBC drug rows move to `benefit_type` `medical` with `covered_under` `pharmacy`. 3 rows the medical SBC prints and the example never carried are added: emergency medical transportation (page 3), pregnancy office visits (page 4) and durable medical equipment (page 5). `market` moves from `self_funded`, which neither PDF prints, to `large_group`. The 4 accumulators' `network_tier` becomes `IN`, as in every 1.2.0 document. The 22 existing citations are rewritten verbatim and each names its PDF; 6 of them carried sentences the PDFs do not print, and those remarks moved to row `notes` or were dropped. It has 47 benefits (was 29), 33 plan-level citations (was 22) and 15 benefit-level citations (was 0).
+- `examples/fhir/gatorcare-prime-epo.json` is regenerated and re-pinned: 36 benefits placed (was 25), 11 listed (was 4). The HL7 validator's tenth run, on all 20 Bundles: 0 errors; GatorCare keeps its 1 warning.
+- `schema/v1.2.0/benefit-plan.schema.json` (draft): the root description names draft 7, and the descriptions that say what core copies name the pharmacy module v0.2.2.
+- The medical MVP specification goes to version 0.3.9 (below), because `docs/specs/rtb-medical-mvp/carin-crosswalk.md` prints the crosswalk's key count.
+- Docs: `README.md`, `modules/README.md`, `examples/README.md`, `examples/sources/README.md`, `examples/fhir/README.md`, `examples/fhir/VALIDATION.md`, `docs/fhir-alignment.md`, `docs/roadmap.md`, `docs/specs/insuranceplan-converter.md` (sections 3, 5.1, 6.4, 6.5, 6.6, 6.7, 7, 8.2, 8.3, 8.4, 9, 10.2, 12), `docs/specs/pbp-importer.md` (section 9.1: `not_covered_reason` is in the schema, and the importer does not write it yet), `test/fixtures/validate/README.md`.
+
+### Not changed
+
+`modules/pharmacy/v0.2.1/`, the vocabularies (`canonical-benefits.json` 1.4.0 and `markets.json`), the 2 importers, `ADOPTERS.md`, `docs/governance.md`, and the 21 other documents in `examples/` and their Bundles.
+
 ## Medicare Advantage importer: combined supplemental benefit groups, October 28, 2026
 
 The Medicare Advantage importer reads the combined supplemental benefit groups of PBP Section D (`pbp_d_combo_*`), which the UPMC H5533-019 check of October 27 found unread. No schema, vocabulary, crosswalk or converter change.
@@ -41,9 +71,16 @@ Every Medicare Advantage example imported from the PBP files and every plan year
 
 Across the 9 plans, 556 values: 463 match, 82 are documented readings, 10 are contradictions between the CMS file and the carrier document (6 on links and contacts) and 1 is a value the Medicare Advantage importer does not read yet.
 
-## Medical MVP technical specification, drafts of October 20 to 29, 2026
+## Medical MVP technical specification, drafts of October 20 to 31, 2026
 
 From version 0.3.3, dated October 21, 2026, the 3 documents of `docs/specs/rtb-medical-mvp/` state the present only: what the 2 importers read, what the documents carry, the numbers and how to rerun them. The README no longer has a Changes section or the section "Gaps closed on October 20, 2026", and its Status and version section is 1 paragraph that points here. What the README said about its drafts, from version 0.1 to version 0.3.2, is kept below as the README gave it in version 0.3.2. `scripts/build-rtb-dictionary.js` and `scripts/build-rtb-crosswalk.js` print no gap id and no closed gap; an open gap prints in the row as a plain sentence, "The <program> importer does not read <columns> today", and the checks are unchanged. A Changes section returns to the README from the first circulated version on, starting at 0.3.3.
+
+### In 0.3.9, October 31, 2026
+
+Version 0.3.9, dated October 31, 2026, makes 1 change to version 0.3.8 of October 29, 2026:
+
+- **The crosswalk key count goes from 38 to 41**, after the Benefit Plan Standard 1.2.0 draft 7 added 3 keys to `fhir/carin-sbc-crosswalk.json` (`preferred_specialty_drugs`, `nonpreferred_specialty_drugs` and `prenatal_office_visits`). No requirement changes, and no verdict.
+- The preface of the 3 documents, which `scripts/build-rtb-dictionary.js` writes, and the README's Status and version give version 0.3.9, dated October 31, 2026. No other change.
 
 ### In 0.3.8, October 29, 2026
 

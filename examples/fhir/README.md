@@ -23,7 +23,7 @@ Validation record: [`VALIDATION.md`](VALIDATION.md).
 | `ambetter-ca-silver-94-hmo.json` | `ambetter_example.json` | 1.1.0 | 27 | 3 | 2 |
 | `cigna-oap-bowdoin.json` | `cigna_example.json` | 1.1.0 | 26 | 4 | 0 |
 | `flblue-blueoptions-505.json` | `bluecross_example.json` | 1.1.0 | 27 | 4 | 0 |
-| `gatorcare-prime-epo.json` | `gatorcare_example.json` | 1.1.0 | 25 | 4 | 1 |
+| `gatorcare-prime-epo.json` | `gatorcare_example.json` | 1.2.0 | 36 | 11 | 9 |
 | `humana-gold-plus-h1036-025-hmo.json` | `humana_example.json` | 1.2.0 | 26 | 46 | 9 |
 | `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | `humana-humana-gold-plus-h1036-068.pbp.json` | 1.2.0 | 16 | 64 (22 and 42 Part D) | 14 |
 | `kaiser-ca-gold-80-hmo.json` | `kaiser_example.json` | 1.1.0 | 28 | 3 | 0 |
@@ -73,5 +73,5 @@ The 16 qualifier warnings are because the Cost Tier value set has only `value-ch
 - **Kaiser.** The Kaiser BPS file (`kaiser_example.json`) carries both SBC columns: `Plan Provider` (in-network) and `Non-Plan Provider` (out-of-network). Out of network, emergency room care ($350 / visit) and emergency medical transportation ($250 / trip) are covered at the same amounts as in network; every other chart row is not covered. Acupuncture, which the SBC lists only under "Other Covered Services", has no out-of-network row because the document prints no value for it.
 - **Ambetter.** The SBC prints one out-of-network cell, "Covered at In-Network cost-share for emergencies only", across emergency room care, emergency medical transportation and urgent care. The Ambetter BPS file carries it for emergency room care only, so ambulance and urgent care each have an out-of-network `Not stated in the BPS document` entry.
 - **Kaiser surgeon fee.** Kaiser's `OUTPATIENT_SURGERY_SURGEON` benefit is the hospital-stay "Physician/surgeon fee" row on page 2 of the SBC, so it is placed under `hospital-inpatient` through an override in `fhir/carin-sbc-crosswalk.json`.
-- **Source references.** The 8 SBC files carry page references at the plan level only, on the `InsurancePlan`. The 2 Medicare Advantage files also carry per-benefit page references on each placed benefit.
+- **Source references.** 7 of the 8 SBC files carry page references at the plan level only, on the `InsurancePlan`. GatorCare also carries them on its 8 placed pharmacy benefits, and each of its references names its PDF in the `document` part. The 2 Medicare Advantage files also carry per-benefit page references on each placed benefit.
 - **Not covered.** A BPS `covered: false` row becomes a `cost` entry with type text `Not covered` and a `data-absent-reason` of `not-applicable` on the value, not `value: 0`.

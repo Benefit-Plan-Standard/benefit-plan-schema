@@ -276,6 +276,64 @@
         ]
       },
       {
+        "id": "Extension.extension:formularyTierId",
+        "path": "Extension.extension",
+        "sliceName": "formularyTierId",
+        "short": "BPS benefits[].formulary_tier_id (v1.2.0).",
+        "definition": "BPS benefits[].formulary_tier_id (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:formularyTierId.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:formularyTierId.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "formularyTierId"
+      },
+      {
+        "id": "Extension.extension:formularyTierId.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "Extension.extension:daySupply",
+        "path": "Extension.extension",
+        "sliceName": "daySupply",
+        "short": "BPS benefits[].day_supply (v1.2.0).",
+        "definition": "BPS benefits[].day_supply (v1.2.0).",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:daySupply.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:daySupply.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "daySupply"
+      },
+      {
+        "id": "Extension.extension:daySupply.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "integer"
+          }
+        ]
+      },
+      {
         "id": "Extension.url",
         "path": "Extension.url",
         "fixedUri": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"

@@ -10,12 +10,12 @@
     "start_date": "2026-01-01",
     "end_date": "2026-12-31"
   },
-  "market": "self_funded",
+  "market": "large_group",
   "network_tiers": [
     {
       "tier_id": "IN",
       "name": "GatorCare Tier 1 In-Network",
-      "description": "GatorCare Tier 1 providers (the document also prices a BlueOptions Tier 2 in-network column, which this file does not carry; see source_references)"
+      "description": "GatorCare Tier 1 providers (the document also prices a BlueOptions Tier 2 in-network column, which this file does not carry; see source_references). On a pharmacy benefit this tier means the Participating Pharmacies of the pharmacy SBC, which prints no out-of-network column."
     },
     {
       "tier_id": "OUT",
@@ -28,26 +28,71 @@
       "amount": 350,
       "currency": "USD",
       "period": "per_year",
-      "network_tier": "in-network"
+      "network_tier": "IN"
     },
     "family_deductible": {
       "amount": 700,
       "currency": "USD",
       "period": "per_year",
-      "network_tier": "in-network"
+      "network_tier": "IN"
     },
     "individual_oop_max": {
       "amount": 2700,
       "currency": "USD",
       "period": "per_year",
-      "network_tier": "in-network"
+      "network_tier": "IN"
     },
     "family_oop_max": {
       "amount": 5400,
       "currency": "USD",
       "period": "per_year",
-      "network_tier": "in-network"
+      "network_tier": "IN"
     }
+  },
+  "pharmacy": {
+    "deductible": {
+      "amount": 125,
+      "family_amount": 500,
+      "currency": "USD",
+      "period": "per_calendar_year",
+      "applies_to_tiers": [
+        "T2",
+        "T3",
+        "T4",
+        "T5"
+      ]
+    },
+    "formulary_tiers": [
+      {
+        "tier_id": "T0",
+        "name": "Tier 0/Value Based"
+      },
+      {
+        "tier_id": "T1",
+        "name": "Tier 1/Generic Medications",
+        "drug_class": "generic"
+      },
+      {
+        "tier_id": "T2",
+        "name": "Tier 2/Preferred Brand Medications",
+        "drug_class": "preferred_brand"
+      },
+      {
+        "tier_id": "T3",
+        "name": "Tier 3/Preferred Specialty Medications",
+        "drug_class": "preferred_specialty"
+      },
+      {
+        "tier_id": "T4",
+        "name": "Tier 4/Non-Preferred Brands Medications",
+        "drug_class": "nonpreferred_brand"
+      },
+      {
+        "tier_id": "T5",
+        "name": "Tier 5/Non-Preferred Specialty",
+        "drug_class": "nonpreferred_specialty"
+      }
+    ]
   },
   "benefits": [
     {
@@ -184,7 +229,8 @@
               "applies_to_deductible": false,
               "applies_to_moop": true
             }
-          ]
+          ],
+          "notes": "The document prices 2 settings (see source_references); this row carries the Physician Office value."
         },
         {
           "tier_id": "OUT",
@@ -198,7 +244,7 @@
     },
     {
       "benefit_id": "GENERIC_DRUGS",
-      "benefit_type": "pharmacy",
+      "benefit_type": "medical",
       "category": "PHARMACY",
       "service_name": "Generic drugs",
       "canonical_key": "generic_drugs",
@@ -207,12 +253,18 @@
         {
           "tier_id": "IN",
           "covered": false,
-          "cost_shares": []
+          "covered_under": "pharmacy",
+          "not_covered_reason": "covered_under_other_benefit",
+          "cost_shares": [],
+          "notes": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
         },
         {
           "tier_id": "OUT",
           "covered": false,
-          "cost_shares": []
+          "covered_under": "pharmacy",
+          "not_covered_reason": "covered_under_other_benefit",
+          "cost_shares": [],
+          "notes": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
         }
       ],
       "limits": [],
@@ -221,7 +273,7 @@
     },
     {
       "benefit_id": "PREFERRED_BRAND_DRUGS",
-      "benefit_type": "pharmacy",
+      "benefit_type": "medical",
       "category": "PHARMACY",
       "service_name": "Preferred brand drugs",
       "canonical_key": "preferred_brand_drugs",
@@ -230,12 +282,18 @@
         {
           "tier_id": "IN",
           "covered": false,
-          "cost_shares": []
+          "covered_under": "pharmacy",
+          "not_covered_reason": "covered_under_other_benefit",
+          "cost_shares": [],
+          "notes": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
         },
         {
           "tier_id": "OUT",
           "covered": false,
-          "cost_shares": []
+          "covered_under": "pharmacy",
+          "not_covered_reason": "covered_under_other_benefit",
+          "cost_shares": [],
+          "notes": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
         }
       ],
       "limits": [],
@@ -244,7 +302,7 @@
     },
     {
       "benefit_id": "NONPREFERRED_BRAND_DRUGS",
-      "benefit_type": "pharmacy",
+      "benefit_type": "medical",
       "category": "PHARMACY",
       "service_name": "Non-preferred brand drugs",
       "canonical_key": "nonpreferred_brand_drugs",
@@ -253,12 +311,18 @@
         {
           "tier_id": "IN",
           "covered": false,
-          "cost_shares": []
+          "covered_under": "pharmacy",
+          "not_covered_reason": "covered_under_other_benefit",
+          "cost_shares": [],
+          "notes": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
         },
         {
           "tier_id": "OUT",
           "covered": false,
-          "cost_shares": []
+          "covered_under": "pharmacy",
+          "not_covered_reason": "covered_under_other_benefit",
+          "cost_shares": [],
+          "notes": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
         }
       ],
       "limits": [],
@@ -267,7 +331,7 @@
     },
     {
       "benefit_id": "SPECIALTY_DRUGS",
-      "benefit_type": "pharmacy",
+      "benefit_type": "medical",
       "category": "PHARMACY",
       "service_name": "Specialty drugs",
       "canonical_key": "specialty_drugs",
@@ -276,12 +340,18 @@
         {
           "tier_id": "IN",
           "covered": false,
-          "cost_shares": []
+          "covered_under": "pharmacy",
+          "not_covered_reason": "covered_under_other_benefit",
+          "cost_shares": [],
+          "notes": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
         },
         {
           "tier_id": "OUT",
           "covered": false,
-          "cost_shares": []
+          "covered_under": "pharmacy",
+          "not_covered_reason": "covered_under_other_benefit",
+          "cost_shares": [],
+          "notes": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
         }
       ],
       "limits": [],
@@ -369,12 +439,56 @@
         {
           "tier_id": "IN",
           "covered": true,
-          "cost_shares": []
+          "cost_shares": [],
+          "notes": "The document prints the amounts quoted in source_references; this file marks the service covered and carries none of them."
         },
         {
           "tier_id": "OUT",
           "covered": true,
-          "cost_shares": []
+          "cost_shares": [],
+          "notes": "The document prints the amounts quoted in source_references; this file marks the service covered and carries none of them."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "AMBULANCE",
+      "benefit_type": "medical",
+      "category": "EMERGENCY_CARE",
+      "service_name": "Ambulance services",
+      "canonical_key": "ambulance",
+      "raw_label": "Emergency medical transportation",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ],
+          "notes": "The document prints Tier 1 Deductible + 20% Coinsurance in this column."
         }
       ],
       "limits": [],
@@ -401,7 +515,8 @@
               "applies_to_deductible": false,
               "applies_to_moop": true
             }
-          ]
+          ],
+          "notes": "The document prices Tier 1 at $35 UF Health owned/ affiliated and $50 Non UF Health owned/ affiliated; this row carries the UF Health value."
         },
         {
           "tier_id": "OUT",
@@ -500,6 +615,38 @@
               "rate": 0.1,
               "basis": "allowed_amount",
               "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "PRENATAL_OFFICE_VISITS",
+      "benefit_type": "medical",
+      "category": "MATERNITY_CARE",
+      "service_name": "Prenatal office visits",
+      "canonical_key": "prenatal_office_visits",
+      "raw_label": "Office visits",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 15,
+              "basis": "per_visit",
+              "applies_to_deductible": false,
               "applies_to_moop": true
             }
           ]
@@ -717,6 +864,38 @@
       "moop_applicability": "plan_default"
     },
     {
+      "benefit_id": "DURABLE_MEDICAL_EQUIPMENT",
+      "benefit_type": "medical",
+      "category": "DURABLE_MEDICAL_EQUIPMENT",
+      "service_name": "Durable medical equipment",
+      "canonical_key": "durable_medical_equipment",
+      "raw_label": "Durable medical equipment",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.2,
+              "basis": "allowed_amount",
+              "applies_to_deductible": true,
+              "applies_to_moop": true
+            }
+          ]
+        },
+        {
+          "tier_id": "OUT",
+          "covered": false,
+          "cost_shares": []
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default"
+    },
+    {
       "benefit_id": "HOSPICE_CARE",
       "benefit_type": "medical",
       "category": "HOME_HEALTH",
@@ -863,97 +1042,712 @@
       "limits": [],
       "conditions": [],
       "moop_applicability": "plan_default"
+    },
+    {
+      "benefit_id": "RX_T0_RETAIL_34",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 0/Value Based, retail 34-day supply",
+      "raw_label": "Tier 0/Value Based",
+      "formulary_tier_id": "T0",
+      "day_supply": 34,
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "moop_ref": "medical"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 2,
+          "excerpt": "Retail Copay/Coinsurance (34 Days Supply) | Tier 0/Value Based: 0% Coinsurance – Includes Healthcare Reform Medications covered at no cost to member (no Rx CYD applies)"
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_T1_RETAIL_34",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 1/Generic Medications, retail 34-day supply",
+      "canonical_key": "generic_drugs",
+      "raw_label": "Tier 1/Generic Medications",
+      "formulary_tier_id": "T1",
+      "day_supply": 34,
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.25,
+              "min_amount": 10,
+              "min_basis": "per_34_day_supply",
+              "max_amount": 20,
+              "max_basis": "per_34_day_supply",
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "moop_ref": "medical"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 2,
+          "excerpt": "Retail Copay/Coinsurance (34 Days Supply) | Tier 1/Generic Medications: 25% Coinsurance with $10 Min. to $20 Max. (no Rx CYD applies)"
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_T2_RETAIL_34",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 2/Preferred Brand Medications, retail 34-day supply",
+      "canonical_key": "preferred_brand_drugs",
+      "raw_label": "Tier 2/Preferred Brand Medications",
+      "formulary_tier_id": "T2",
+      "day_supply": 34,
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.25,
+              "min_amount": 25,
+              "min_basis": "per_34_day_supply",
+              "max_amount": 50,
+              "max_basis": "per_34_day_supply",
+              "applies_to_deductible": true,
+              "deductible_ref": "pharmacy",
+              "applies_to_moop": true,
+              "moop_ref": "medical"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 2,
+          "excerpt": "Retail Copay/Coinsurance (34 Days Supply) | Tier 2/Preferred Brand Medications: 25% Coinsurance with $25 Min. to $50 Max. (after Rx CYD)"
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_T3_RETAIL_34",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 3/Preferred Specialty Medications, retail 34-day supply",
+      "canonical_key": "preferred_specialty_drugs",
+      "raw_label": "Tier 3/Preferred Specialty Medications",
+      "formulary_tier_id": "T3",
+      "day_supply": 34,
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.25,
+              "min_amount": 50,
+              "min_basis": "per_34_day_supply",
+              "max_amount": 100,
+              "max_basis": "per_34_day_supply",
+              "applies_to_deductible": true,
+              "deductible_ref": "pharmacy",
+              "applies_to_moop": true,
+              "moop_ref": "medical"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 2,
+          "excerpt": "Retail Copay/Coinsurance (34 Days Supply) | Tier 3/Preferred Specialty Medications: 25% Coinsurance with $50 Min. to $100 Max. (after Rx CYD)"
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_T4_RETAIL_34",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 4/Non-Preferred Brands Medications, retail 34-day supply",
+      "canonical_key": "nonpreferred_brand_drugs",
+      "raw_label": "Tier 4/Non-Preferred Brands Medications",
+      "formulary_tier_id": "T4",
+      "day_supply": 34,
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.4,
+              "min_amount": 70,
+              "min_basis": "per_34_day_supply",
+              "max_amount": 240,
+              "max_basis": "per_34_day_supply",
+              "applies_to_deductible": true,
+              "deductible_ref": "pharmacy",
+              "applies_to_moop": true,
+              "moop_ref": "medical"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 3,
+          "excerpt": "Tier 4/Non-Preferred Brands Medications: 40% Coinsurance with $70 Min. to $240 Max. (after Rx CYD)"
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_T5_RETAIL_34",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 5/Non-Preferred Specialty, retail 34-day supply",
+      "canonical_key": "nonpreferred_specialty_drugs",
+      "raw_label": "Tier 5/Non-Preferred Specialty",
+      "formulary_tier_id": "T5",
+      "day_supply": 34,
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.4,
+              "min_amount": 70,
+              "min_basis": "per_34_day_supply",
+              "max_amount": 240,
+              "max_basis": "per_34_day_supply",
+              "applies_to_deductible": true,
+              "deductible_ref": "pharmacy",
+              "applies_to_moop": true,
+              "moop_ref": "medical"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 3,
+          "excerpt": "Tier 5/Non-Preferred Specialty: 40% Coinsurance with $70 Min. to $240 Max. (after Rx CYD)"
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_T0_EXTENDED_90",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 0/Value Based, retail or mail order 90-day supply",
+      "raw_label": "Tier 0/Value Based",
+      "formulary_tier_id": "T0",
+      "day_supply": 90,
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "moop_ref": "medical"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 3,
+          "excerpt": "Extended Supply at Retail or Mail Order Copay/Coinsurance (90 Days Supply) | Tier 0/Value Based: 0% Coinsurance – Includes Healthcare Reform Medications covered at no cost to member (no Rx CYD applies)"
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_T1_EXTENDED_90",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 1/Generic Medications, retail or mail order 90-day supply",
+      "canonical_key": "generic_drugs",
+      "raw_label": "Tier 1/Generic Medications",
+      "formulary_tier_id": "T1",
+      "day_supply": 90,
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.25,
+              "min_amount": 25,
+              "min_basis": "per_90_day_supply",
+              "max_amount": 50,
+              "max_basis": "per_90_day_supply",
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "moop_ref": "medical"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 3,
+          "excerpt": "Extended Supply at Retail or Mail Order Copay/Coinsurance (90 Days Supply) | Tier 1/Generic Medications: 25% Coinsurance with $25 Min. to $50 Max. (no Rx CYD applies)"
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_T2_EXTENDED_90",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 2/Preferred Brand Medications, retail or mail order 90-day supply",
+      "canonical_key": "preferred_brand_drugs",
+      "raw_label": "Tier 2/Preferred Brand Medications",
+      "formulary_tier_id": "T2",
+      "day_supply": 90,
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.25,
+              "min_amount": 62.5,
+              "min_basis": "per_90_day_supply",
+              "max_amount": 125,
+              "max_basis": "per_90_day_supply",
+              "applies_to_deductible": true,
+              "deductible_ref": "pharmacy",
+              "applies_to_moop": true,
+              "moop_ref": "medical"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 3,
+          "excerpt": "Extended Supply at Retail or Mail Order Copay/Coinsurance (90 Days Supply) | Tier 2/Preferred Brand Medications: 25% Coinsurance with $62.50 Min. to $125 Max. (after Rx CYD)"
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_T4_EXTENDED_90",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 4/Non-Preferred Brands Medications, retail or mail order 90-day supply",
+      "canonical_key": "nonpreferred_brand_drugs",
+      "raw_label": "Tier 4/Non-Preferred Brands Medications",
+      "formulary_tier_id": "T4",
+      "day_supply": 90,
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "coinsurance",
+              "sequence": 1,
+              "rate": 0.4,
+              "min_amount": 175,
+              "min_basis": "per_90_day_supply",
+              "max_amount": 600,
+              "max_basis": "per_90_day_supply",
+              "applies_to_deductible": true,
+              "deductible_ref": "pharmacy",
+              "applies_to_moop": true,
+              "moop_ref": "medical"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 3,
+          "excerpt": "Extended Supply at Retail or Mail Order Copay/Coinsurance (90 Days Supply) | Tier 4/Non-Preferred Brands Medications: 40% Coinsurance with $175 Min. to $600 Max. (after Rx CYD)"
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_PHYSICIAN_ADMINISTERED",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Physician administered drugs",
+      "raw_label": "Physician Administered drugs",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "not_covered_reason": "excluded",
+          "covered_under": null,
+          "cost_shares": [],
+          "notes": "Pharmacy SBC wording: not covered under the prescription drug benefit. It names no other benefit for these drugs, and the medical SBC has no row for them."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 4,
+          "excerpt": "Self-Administered Products | Specialty drugs: Covered | Non-Specialty drugs: Covered | Exceptions/Limitations: | Physician Administered drugs in the office or by a home health care provider are not covered under the prescription drug benefit."
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_INSULIN_PUMPS",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Insulin pumps and related supplies",
+      "raw_label": "Insulin pumps and related supplies",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "covered_under": "medical",
+          "not_covered_reason": "covered_under_other_benefit",
+          "cost_shares": [],
+          "notes": "Pharmacy SBC wording: are covered under the medical benefit and must be purchased through a DME supplier. Medical Coverage Guidelines apply."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 4,
+          "excerpt": "Diabetic Supplies | Exceptions/Limitations: | Insulin pumps and related supplies are covered under the medical benefit and must be purchased through a DME supplier. Medical Coverage Guidelines apply."
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_IUD_DEVICES",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "IUD devices",
+      "raw_label": "IUD devices",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "covered_under": "medical",
+          "not_covered_reason": "covered_under_other_benefit",
+          "cost_shares": [],
+          "notes": "Pharmacy SBC wording: refer to medical plan for coverage."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 5,
+          "excerpt": "Contraceptive Products | Exceptions/Limitations: | IUD devices are not covered under the prescription drug benefit – refer to medical plan for coverage."
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_VACCINES_PHARMACIST",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Adult vaccines administered by a pharmacist",
+      "canonical_key": "immunizations",
+      "raw_label": "Vaccines (Adults)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": true,
+          "cost_shares": [
+            {
+              "type": "copay",
+              "sequence": 1,
+              "amount": 0,
+              "applies_to_deductible": false,
+              "applies_to_moop": true,
+              "moop_ref": "medical"
+            }
+          ]
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 5,
+          "excerpt": "Vaccines (Adults) | Covered at $0 copay | COVID-19, Influenza, Haemophilus Influenza Type B, Hepatitis A and B, Human Papilloma Virus, Meningococcal, Measles/Mumps/Rubella, Pneumococcal, Td booster, Tdap, Varicella and Zoster | Note: Only vaccines administered by a pharmacist are covered under the pharmacy benefit."
+        }
+      ]
+    },
+    {
+      "benefit_id": "RX_VACCINES_OTHER_METHODS",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Adult vaccines, all other methods",
+      "raw_label": "Vaccines (Adults)",
+      "network_cost_shares": [
+        {
+          "tier_id": "IN",
+          "covered": false,
+          "covered_under": "medical",
+          "not_covered_reason": "covered_under_other_benefit",
+          "cost_shares": [],
+          "notes": "Pharmacy SBC wording: All other methods may be covered under the medical benefit."
+        }
+      ],
+      "limits": [],
+      "conditions": [],
+      "moop_applicability": "plan_default",
+      "source_references": [
+        {
+          "document": "gatorcare_pharmacy_sbc_2026.pdf",
+          "page_number": 5,
+          "excerpt": "Vaccines (Adults) | Note: Only vaccines administered by a pharmacist are covered under the pharmacy benefit. All other methods may be covered under the medical benefit."
+        }
+      ]
     }
   ],
   "source_references": [
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 1,
-      "excerpt": "BlueOptions 03768 - Coverage Period: 01/01/2026 - 12/31/2026 | Prime EPO Plan | Coverage for: Individual and/or Family | Plan Type: PPO. (GatorCare self-funded plan administered by Florida Blue; the document carries the administrator's branding and group number.)"
+      "excerpt": "BlueOptions 03768 – Prime EPO Plan | Coverage Period: 01/01/2026 - 12/31/2026 | Summary of Benefits and Coverage: What this Plan Covers & What You Pay For Covered Services | Coverage for: Individual and/or Family | Plan Type: PPO"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 1,
-      "excerpt": "What is the overall deductible? In-Network: GatorCare: Tier 1 $350 Per Person/$700 Family. BlueOptions Tier 2 $700 Per Person/$1,400 Family."
+      "excerpt": "What is the overall deductible? | In-Network: GatorCare: Tier 1 $350 Per Person/$700 Family. BlueOptions Tier 2 $700 Per Person/$1,400 Family."
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 1,
-      "excerpt": "What is the out-of-pocket limit for this plan? Yes. In-Network: GatorCare Tier 1: $2,700 Per Person/$5,400 Family /BlueOptions Tier 2: $3,500 Per Person/$7,000 Family. (This example carries the Tier 1 accumulators; Tier 2 is stated here.)"
+      "excerpt": "What is the out-of-pocket limit for this plan? | Yes. In-Network: GatorCare Tier 1: $2,700 Per Person/$5,400 Family /BlueOptions Tier 2: $3,500 Per Person/$7,000 Family"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 1,
-      "excerpt": "Are there other deductibles for specific services? Yes. BlueOptions Tier 2 $750 Per Admission Hospital. GatorCare Tier 1: $150. BlueOptions Tier 2 / Tier 3 $250 Per ER Visit."
+      "excerpt": "Are there other deductibles for specific services? | Yes. BlueOptions Tier 2 $750 Per Admission Hospital. GatorCare Tier 1: $150. BlueOptions Tier 2 / Tier 3 $250 Per ER Visit. There are no other specific deductibles."
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 2,
-      "excerpt": "Primary care visit to treat an injury or illness: $15 Copay per Visit (Tier 1); Tier 2/Tier 3: Not Covered"
+      "excerpt": "Primary care visit to treat an injury or illness | $15 Copay per Visit | Not Covered | Not Covered"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 2,
-      "excerpt": "Specialist visit: $35 Copay per Visit (Tier 1)"
+      "excerpt": "Specialist visit | $35 Copay per Visit | Not Covered | Not Covered"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 2,
-      "excerpt": "Preventive care/screening/immunization: No Charge, Deductible does not apply (Tier 1)"
+      "excerpt": "Preventive care/screening/immunization | No Charge, Deductible does not apply | Not Covered | Not Covered"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 2,
-      "excerpt": "Diagnostic test (x-ray, blood work): 10% Coinsurance (Tier 1)"
+      "excerpt": "Diagnostic test (x-ray, blood work) | 10% Coinsurance | Not Covered | Not Covered"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 2,
-      "excerpt": "Imaging (CT/PET scans, MRIs): Physician Office: $35 Copay per Visit/ Independent Diagnostic Testing Center: 10% Coinsurance. (The example carries the physician-office value.)"
+      "excerpt": "Imaging (CT/PET scans, MRIs) | Physician Office: $35 Copay per Visit/ Independent Diagnostic Testing Center: 10% Coinsurance | Not Covered | Not Covered"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 2,
-      "excerpt": "Generic drugs / Preferred brand drugs / Non-preferred brand drugs / Specialty drugs: Not Covered. (Prescription drugs are covered under GatorCare's separate pharmacy benefit, documented in its own pharmacy SBC.)"
+      "excerpt": "If you need drugs to treat your illness or condition | More information about prescription drug coverage is available at gatorcare.magellanrx.com | Generic drugs | Not Covered | Not Covered | Not Covered | Not Covered | Preferred brand drugs | Not Covered | Not Covered | Not Covered | Not Covered | Non-preferred brand drugs | Not Covered | Not Covered | Not Covered | Not Covered | Specialty drugs | Not Covered | Not Covered | Not Covered | Not Covered"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 3,
-      "excerpt": "Outpatient surgery - Facility fee: Ambulatory Surgical Center: 10% Coinsurance/ Hospital: Deductible + 10% Coinsurance. Physician/surgeon fees: Deductible + 10% Coinsurance"
+      "excerpt": "If you have outpatient surgery | Facility fee (e.g., ambulatory surgery center) | Ambulatory Surgical Center: 10% Coinsurance/ Hospital: Deductible + 10% Coinsurance | Not Covered | Not Covered | Physician/surgeon fees | Deductible + 10% Coinsurance | Not Covered | Not Covered"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 3,
-      "excerpt": "Emergency room care: $150 Per Visit Deductible + Tier 1 Deductible + 10% Coinsurance (Tier 1); $250 Per Visit Deductible + Tier 2 Deductible + 10% Coinsurance (Tier 2/Tier 3). (This file marks emergency room care as covered in both columns and carries none of these amounts.)"
+      "excerpt": "Emergency room care | $150 Per Visit Deductible + Tier 1 Deductible + 10% Coinsurance | $250 Per Visit Deductible + Tier 2 Deductible + 10% Coinsurance | $250 Per Visit Deductible + Tier 2 Deductible + 10% Coinsurance"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 3,
-      "excerpt": "Urgent care: $35 Copay per Visit, Tier 1 UF Health owned/affiliated; $50 Copay per Visit, Tier 1 Non UF Health owned/affiliated. (The example carries the UF Health-affiliated value.)"
+      "excerpt": "Urgent care | $35 Copay per Visit, Tier 1 UF Health owned/ affiliated. | $50 Copay per Visit, Tier 1 Non UF Health owned/ affiliated | $50 Copay per Visit | Not Covered"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 3,
-      "excerpt": "Hospital stay - Facility fee: Deductible + 10% Coinsurance. Physician/surgeon fees: Deductible + 10% Coinsurance"
+      "excerpt": "If you have a hospital stay | Facility fee (e.g., hospital room) | Deductible + 10% Coinsurance | PAD, + Deductible + 10% Coinsurance | Inpatient stay admitted through Emergency Room | Not Covered | Inpatient Rehab Services limited to 21 days. | Physician/surgeon fees | Deductible + 10% Coinsurance | PAD, + Deductible + 10% Coinsurance | Not Covered"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 4,
-      "excerpt": "Mental health outpatient services: Physician Office: $35 Copay per Visit / Hospital: Deductible + 10% Coinsurance. Inpatient services: Deductible + 10% Coinsurance"
+      "excerpt": "If you need mental health, behavioral health, or substance abuse services | Outpatient services | Physician Office: $35 Copay per Visit / Hospital: Deductible + 10% Coinsurance | Not Covered | Not Covered | Inpatient services | Deductible + 10% Coinsurance | PAD, + Deductible + 10% Coinsurance | Inpatient stay admitted through Emergency Room | Not Covered"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 4,
-      "excerpt": "Childbirth/delivery professional services: Deductible + 10% Coinsurance. Childbirth/delivery facility services: Hospital: Deductible + 10% Coinsurance"
+      "excerpt": "Childbirth/delivery professional services | Deductible + 10% Coinsurance | Not Covered | Not Covered | Childbirth/delivery facility services | Hospital: Deductible + 10% Coinsurance | PAD, + Deductible + 10% Coinsurance | Inpatient stay admitted through Emergency Room | Not Covered"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 4,
-      "excerpt": "Home health care: 10% Coinsurance. Coverage limited to 30 visits."
+      "excerpt": "Home health care | 10% Coinsurance | Not Covered | Not Covered | Coverage limited to 30 visits."
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 4,
-      "excerpt": "Rehabilitation services: Physician Office: $35 Copay per Visit/ Outpatient Rehab Center: 10% Coinsurance. Coverage limited to 75 visits including 26 manipulations."
+      "excerpt": "Rehabilitation services | Physician Office: $35 Copay per Visit/ Outpatient Rehab Center: 10% Coinsurance | Not Covered | Not Covered | Coverage limited to 75 visits including 26 manipulations."
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 5,
-      "excerpt": "Habilitation services: Not Covered. Skilled nursing care: Deductible + 10% Coinsurance, limited to 60 days. Hospice services: Deductible + 10% Coinsurance."
+      "excerpt": "Habilitation services | Not Covered | Not Covered | Not Covered | Not Covered | Skilled nursing care | Deductible + 10% Coinsurance | Not Covered | Not Covered | Coverage limited to 60 days. | Hospice services | Deductible + 10% Coinsurance | Not Covered | Not Covered"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 5,
-      "excerpt": "Children's eye exam: Not Covered. Children's glasses: Not Covered. Children's dental check-up: Not Covered."
+      "excerpt": "Children’s eye exam | Not Covered | Not Covered | Not Covered | Not Covered | Children’s glasses | Not Covered | Not Covered | Not Covered | Not Covered | Children’s dental check-up | Not Covered | Not Covered | Not Covered | Not Covered"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 5,
-      "excerpt": "Services Your Plan Generally Does NOT Cover: Acupuncture, Generic drugs, Preferred brand drugs, Non-preferred brand drugs, Habilitation services, Pediatric dental check-up, Pediatric eye exam, Pediatric glasses"
+      "excerpt": "Services Your Plan Generally Does NOT Cover (Check your policy or plan document for more information and a list of any other excluded services.) | Acupuncture | Cosmetic surgery | Dental care (Adult) | Generic drugs | Habilitation services | Hearing Aid | Long-term care | Non-preferred brand drugs | Pediatric dental check-up | Pediatric eye exam | Pediatric glasses | Preferred brand drugs | Private-duty nursing | Routine eye care (Adult) | Routine foot care unless for treatment of diabetes | Weight loss programs"
     },
     {
+      "document": "gatorcare_prime_2026_sbc.pdf",
       "page_number": 6,
-      "excerpt": "Other Covered Services: Bariatric surgery, Chiropractic care, Infertility Services"
+      "excerpt": "Other Covered Services (Limitations may apply to these services. This isn’t a complete list. Please see your plan document.) | Bariatric surgery | Chiropractic care | Infertility Services | Most coverage provided outside the United States. See Flbluegroupbenefits.com"
+    },
+    {
+      "document": "gatorcare_pharmacy_sbc_2026.pdf",
+      "page_number": 1,
+      "excerpt": "Coverage Period: 01/01/2026 – 12/31/2026 | Coverage for: Individual and/or Family | Plans: Premium, Prime, Prime Plus, GatorCare Out-of-Area | GatorCare 2025 | Page 1"
+    },
+    {
+      "document": "gatorcare_pharmacy_sbc_2026.pdf",
+      "page_number": 1,
+      "excerpt": "This plan provides Prescription Drug benefits for Prescription Drugs and Related Supplies provided by Participating Pharmacies. To receive Prescription Drug Benefits, you and your Dependents may be required to pay a portion of the Covered Expenses for Prescription Drugs and Related Supplies for each 34-day supply at a retail pharmacy or each 90-day supply at a retail or mail order pharmacy. That portion is the Copayment or Coinsurance."
+    },
+    {
+      "document": "gatorcare_pharmacy_sbc_2026.pdf",
+      "page_number": 1,
+      "excerpt": "Deductible | $125 Individual/$500 Family Pharmacy Calendar Year Deductible (CYD) must be satisfied for brand products for tiers 2 through 5. Pharmacy CYD is waived for Tier 0 and 1 medications."
+    },
+    {
+      "document": "gatorcare_pharmacy_sbc_2026.pdf",
+      "page_number": 1,
+      "excerpt": "Pharmacy deductible does not apply to Medical CYD but counts towards Medical Maximum Out-Of-Pocket (MOOP)."
+    },
+    {
+      "document": "gatorcare_pharmacy_sbc_2026.pdf",
+      "page_number": 1,
+      "excerpt": "Out-of-Pocket Maximum | Pharmacy Out-of-Pocket Maximum accumulations are combined with Medical CYD, Coinsurance, Copays, and Per-Visit Deductibles. The values cross accumulate between all tiers."
+    },
+    {
+      "document": "gatorcare_pharmacy_sbc_2026.pdf",
+      "page_number": 2,
+      "excerpt": "Maximum Dollar Amount per Prescription | No Maximum"
+    },
+    {
+      "document": "gatorcare_pharmacy_sbc_2026.pdf",
+      "page_number": 3,
+      "excerpt": "Maintenance 90-day claims filled at UF Health pharmacies will receive a reduced copay (2x copay) vs claims filled at retail (3x Copay)"
+    },
+    {
+      "document": "gatorcare_pharmacy_sbc_2026.pdf",
+      "page_number": 9,
+      "excerpt": "Specialty Pharmacy | Get your specialty prescription drugs filled with best-in-class specialty pharmacy services including comprehensive programs to optimize patient treatment outcomes and your cost savings. The majority of specialty medications will now require prior authorization."
+    },
+    {
+      "document": "gatorcare_prime_2026_sbc.pdf",
+      "page_number": 3,
+      "excerpt": "Emergency medical transportation | Deductible + 20% Coinsurance | Tier 1 Deductible + 20% Coinsurance | Tier 1 Deductible + 20% Coinsurance"
+    },
+    {
+      "document": "gatorcare_prime_2026_sbc.pdf",
+      "page_number": 4,
+      "excerpt": "If you are pregnant | Office visits | $15 Copay per Visit | Not Covered | Not Covered"
+    },
+    {
+      "document": "gatorcare_prime_2026_sbc.pdf",
+      "page_number": 5,
+      "excerpt": "Durable medical equipment | Deductible + 20% Coinsurance | Not Covered | Not Covered"
     }
   ],
-  "schema_version": "1.1.0"
+  "schema_version": "1.2.0"
 }

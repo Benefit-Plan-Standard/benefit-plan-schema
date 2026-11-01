@@ -117,7 +117,7 @@ function vocabWarnings(plan, v) {
 }
 
 // ---- pharmacy references (advisory) ------------------------------------------
-// The pharmacy module v0.2.1 benefit extension fields, in core since v1.2.0 draft 6,
+// The pharmacy module v0.2.2 benefit extension fields, in core since v1.2.0 draft 6,
 // and the pharmacy object list each id field names.
 const PHARMACY_BENEFIT_FIELDS = ['formulary_tier_id', 'pharmacy_network_id', 'coverage_stage_id',
   'day_supply', 'drug_examples', 'step_therapy_required', 'quantity_limit'];

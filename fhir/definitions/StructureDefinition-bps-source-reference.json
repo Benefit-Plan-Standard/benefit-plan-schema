@@ -48,6 +48,35 @@
         "min": 1
       },
       {
+        "id": "Extension.extension:document",
+        "path": "Extension.extension",
+        "sliceName": "document",
+        "short": "BPS source_references[].document (v1.2.0): which source document the citation is in, when the plan was read from more than 1.",
+        "definition": "BPS source_references[].document (v1.2.0): which source document the citation is in, when the plan was read from more than 1.",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Extension.extension:document.extension",
+        "path": "Extension.extension.extension",
+        "max": "0"
+      },
+      {
+        "id": "Extension.extension:document.url",
+        "path": "Extension.extension.url",
+        "fixedUri": "document"
+      },
+      {
+        "id": "Extension.extension:document.value[x]",
+        "path": "Extension.extension.value[x]",
+        "min": 1,
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
         "id": "Extension.extension:pageNumber",
         "path": "Extension.extension",
         "sliceName": "pageNumber",
