@@ -9,7 +9,7 @@
  * Draft 6 (2026-10-24): fails if a pharmacy module v0.2.1 shape copied into core
  * differs from the module's, if the 2 module examples stop validating against
  * core or the module, or if cost_shares[].moop_ref stops matching deductible_ref.
- * Draft 7 (2026-10-31): core copies the module v0.2.2, so the checks above read that
+ * Draft 7 (2026-11-01): core copies the module v0.2.2, so the checks above read that
  * version; fails if v0.2.2 differs from v0.2.1 by anything but
  * pharmacy.deductible.family_amount, if cost_shares[].min_amount and min_basis stop
  * mirroring max_amount and max_basis, or if network_cost_shares[].covered_under,
@@ -269,7 +269,7 @@ test('v1.2.0 draft 7: examples/gatorcare_example.json carries the new fields, an
   const doc = readJson(path.join(EXAMPLES_DIR, 'gatorcare_example.json'));
   const benefit = (id) => doc.benefits.find((b) => b.benefit_id === id);
   assert.strictEqual(doc.schema_version, '1.2.0');
-  assert.strictEqual(doc.market, 'large_group', 'neither PDF prints self-funded');
+  assert.strictEqual(doc.market, undefined, 'neither SBC states the market');
   for (const id of ['AMBULANCE', 'PRENATAL_OFFICE_VISITS', 'DURABLE_MEDICAL_EQUIPMENT']) assert.strictEqual(benefit(id).benefit_type, 'medical', id);
   assert.deepStrictEqual(doc.pharmacy.deductible, { amount: 125, family_amount: 500, currency: 'USD', period: 'per_calendar_year', applies_to_tiers: ['T2', 'T3', 'T4', 'T5'] });
   assert.strictEqual(doc.pharmacy.out_of_pocket_max, undefined, 'the pharmacy SBC combines the maximum with the medical one');

@@ -123,7 +123,7 @@ const GOLDEN_SHA256 = {
   'ambetter-ca-silver-94-hmo.json': 'c121fbb145f060a0230e91837ed4f526a1c3bc16bc7fd7aea8fd3d39a57fcfae',
   'cigna-oap-bowdoin.json': 'e82c810f43f5e3f66425a3d28f87de55d8f18fabd19a66bbf53a5338b5609d04',
   'flblue-blueoptions-505.json': '579b1dd83c482d759cae849a629f0ccf10ff3de44ffc106ad62b2a08a61cb4af',
-  'gatorcare-prime-epo.json': '2fe845c8fcf68807ed123f29b2980bb830f5b71e521d940e07e5f811f43ed404',
+  'gatorcare-prime-epo.json': 'b7108f52072d99619f3fd3d32e427013df17640c29da65a1fd275597ae5ddd0e',
   'humana-gold-plus-h1036-025-hmo.json': 'b6d1e3e225495a45ba8c5ab4d19d3dd8de9401cde7ba8eea852dddacb5e16dfd',
   'kaiser-ca-gold-80-hmo.json': 'a4af8116c546c33f39e65c08a4c3dc06a78dfed61346f8a4294b94bd45227b36',
   'scan-classic-hmo-los-angeles.json': '1eb465cabd0e156c66fff87ba86c99f0cb1081ea2ff047d29bd71555d963a078',

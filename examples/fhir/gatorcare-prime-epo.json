@@ -27,10 +27,6 @@
               {
                 "url": "planYear",
                 "valueInteger": 2026
-              },
-              {
-                "url": "market",
-                "valueString": "large_group"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-plan-metadata"

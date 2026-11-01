@@ -74,7 +74,7 @@ These v0.1.0 review questions are answered by this iteration:
 
 ## Core integration (the Benefit Plan Standard 1.2.0, drafts 6 and 7)
 
-The core schema, `schema/v1.2.0/benefit-plan.schema.json`, took the module in the Benefit Plan Standard 1.2.0 draft 6, on October 24, 2026, and has copied v0.2.2 since draft 7, on October 31, 2026. It copies the module's shapes instead of referring to this file, so that a validator needs only the core file:
+The core schema, `schema/v1.2.0/benefit-plan.schema.json`, took the module in the Benefit Plan Standard 1.2.0 draft 6, on October 24, 2026, and has copied v0.2.2 since draft 7, on November 1, 2026. It copies the module's shapes instead of referring to this file, so that a validator needs only the core file:
 
 - The core `pharmacy` object has every property of the module's: `formulary_tiers`, `pharmacy_networks`, `formulary_items`, `formulary_reference` and `mail_order_supply_multiplier` join `deductible`, `out_of_pocket_max` and `coverage_stages`. A `pharmacy` object is valid under core exactly when it is valid under the module.
 - Core `$defs` holds `formulary_tier`, `pharmacy_network`, `coverage_stage`, `quantity_limit_detail`, `formulary_item`, `coverage_exception`, `formulary_alternative` and `formulary_reference`, copied unchanged from this module. `scripts/schema.test.js` fails if a copy in core differs from this file, and if this file differs from v0.2.1 by anything but `family_amount`. The v0.2.1 file stays as it is.

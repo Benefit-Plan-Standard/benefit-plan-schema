@@ -1,7 +1,7 @@
 # Validation record
 
-**Date:** 2026-09-24; United, Ambetter and Kaiser re-validated 2026-09-25 after data fixes; the 8 SBC files re-validated 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs; Aetna PPO 1500, Aetna PPO 5000, GatorCare and United re-validated 2026-10-05 after the deductible flags on silent cells were set (no count changed); GatorCare re-validated 2026-10-31 (tenth run, below)
-**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run) again on 2026-10-09 after 4 of their benefits gained canonical keys (third run), and on 2026-10-11 after the importer gained 10 service categories (fourth run), all at the end of this file: 0 errors; 15 warnings in the second and third runs, 16 in the fourth. On 2026-10-13 all 15 Bundles here were validated again, unchanged, with the 5 Marketplace Bundles of `examples/fhir-puf/` after the adult dental keys and the `excluded-services` extension (fifth run): the same counts for the 15, 0 errors for the 5. The sixth (2026-10-20) and seventh (2026-10-21) runs are described where they are. On 2026-10-24 the 5 PBP Bundles were validated after the importer began reading the Part D files (eighth run): 0 errors and the same 17 warnings as the sixth run. On 2026-10-28 they were validated again, byte-identical, after the importer began reading the combined supplemental benefit groups (ninth run): the counts of the eighth run. On 2026-10-31 all 20 Bundles were validated after the 1.2.0 draft 7 (tenth run, at the end of this file): 0 errors.
+**Date:** 2026-09-24; United, Ambetter and Kaiser re-validated 2026-09-25 after data fixes; the 8 SBC files re-validated 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs; Aetna PPO 1500, Aetna PPO 5000, GatorCare and United re-validated 2026-10-05 after the deductible flags on silent cells were set (no count changed); GatorCare re-validated 2026-10-31 (tenth run, below) and 2026-11-01 (eleventh run, below)
+**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run) again on 2026-10-09 after 4 of their benefits gained canonical keys (third run), and on 2026-10-11 after the importer gained 10 service categories (fourth run), all at the end of this file: 0 errors; 15 warnings in the second and third runs, 16 in the fourth. On 2026-10-13 all 15 Bundles here were validated again, unchanged, with the 5 Marketplace Bundles of `examples/fhir-puf/` after the adult dental keys and the `excluded-services` extension (fifth run): the same counts for the 15, 0 errors for the 5. The sixth (2026-10-20) and seventh (2026-10-21) runs are described where they are. On 2026-10-24 the 5 PBP Bundles were validated after the importer began reading the Part D files (eighth run): 0 errors and the same 17 warnings as the sixth run. On 2026-10-28 they were validated again, byte-identical, after the importer began reading the combined supplemental benefit groups (ninth run): the counts of the eighth run. On 2026-10-31 all 20 Bundles were validated after the 1.2.0 draft 7 (tenth run, below): 0 errors. On 2026-11-01 they were validated again after GatorCare's `market` came out (eleventh run, at the end of this file): the counts of the tenth run.
 
 ## Setup
 
@@ -344,3 +344,15 @@ java -Dfile.encoding=UTF-8 -jar validator_cli.jar -version 4.0.1 \
 The other 19 give the counts of their last run: the 5 Marketplace Bundles those of the seventh run, the 5 PBP Bundles those of the ninth, and the other 9 those of the Results table above.
 
 **Warnings and information.** GatorCare's 1 warning is the one it always had, the text-only `manipulations` limit type on rehabilitation. All 2,906 information messages across the 20 are the extension slicing message, as above; GatorCare's new ones are on the `bps-*` extensions of its new benefits and citations. Its 8 cost entries with a floor and a cap carry them as `bps-cost-share` parts, so they add no text-only qualifier and no warning.
+
+## Eleventh run: 2026-11-01, all 20 Bundles after GatorCare's market came out
+
+**What changed.** `examples/gatorcare_example.json` no longer has `market`, because neither SBC states it, so the GatorCare Bundle's `bps-plan-metadata` has no `market` part. The other 19 Bundles and `fhir/definitions/` are byte-identical.
+
+**Result:** all 20 files pass with **0 errors**. Same validator, Java, FHIR version, packages and command as the tenth run.
+
+| File | Errors | Warnings | Information |
+|---|---|---|---|
+| `gatorcare-prime-epo.json` | 0 | 1 | 154 |
+
+**Warnings and information.** Every count is the tenth run's, file by file: 183 warnings and 2,906 information messages across the 20. The `market` part was a string inside an extension that stays, so its removal takes no message away.
