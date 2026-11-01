@@ -233,7 +233,7 @@ Every document a pledgee publishes, and every answer an app builds from it, SHAL
 - the date the files were downloaded;
 - the web addresses the CMS files give for the plan, quoted in `source_references` as the 2 importers quote them: for Marketplace the Summary of Benefits and Coverage, brochure and drug list addresses of the Plan Attributes PUF, and for Medicare Advantage the website, provider directory, drug list and pharmacy directory addresses of Section A.
 
-An answer carries these 4 as its provenance, which the app gives on request or on a details view; the SHALL does not ask that every screen print the CMS file names. What an app shows beside the data, under Conformance, sets no requirement on what an app shows.
+An answer carries these 4 as its provenance, as data. What an app shows beside the data, under Conformance, sets no requirement on what an app shows.
 
 The 2 importers write all 4 into every document, the fourth as the addresses the CMS files give: each filled address is quoted, a blank Summary of Benefits and Coverage address of a Marketplace plan is quoted as "(blank)", and a blank Medicare Advantage website or provider directory cell is named as blank, such as "pbp_a_org_website is blank, so contacts.website is not written"; a blank cell of the other addresses is left out of the excerpt (see the paragraph on web addresses below). What they can write differs by program, because the CMS files differ.
 
