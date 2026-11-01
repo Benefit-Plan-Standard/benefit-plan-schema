@@ -15,22 +15,18 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Florida Blue BlueOptions 03768 - Prime EPO Plan</b></p><p>Carrier: GatorCare. Plan type: EPO. Period: 2026-01-01 to 2026-12-31.</p><p>25 benefits are placed in CARIN SBC benefit categories. 4 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document GATORCARE_PRIME_EPO (schema version 1.1.0).</p></div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Florida Blue BlueOptions 03768 - Prime EPO Plan</b></p><p>Carrier: GatorCare. Plan type: EPO. Period: 2026-01-01 to 2026-12-31.</p><p>36 benefits are placed in CARIN SBC benefit categories. 11 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document GATORCARE_PRIME_EPO (schema version 1.2.0).</p></div>"
         },
         "extension": [
           {
             "extension": [
               {
                 "url": "schemaVersion",
-                "valueString": "1.1.0"
+                "valueString": "1.2.0"
               },
               {
                 "url": "planYear",
                 "valueInteger": 2026
-              },
-              {
-                "url": "market",
-                "valueString": "self_funded"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-plan-metadata"
@@ -38,285 +34,560 @@
           {
             "extension": [
               {
-                "url": "pageNumber",
-                "valueInteger": 1
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
               },
-              {
-                "url": "excerpt",
-                "valueString": "BlueOptions 03768 - Coverage Period: 01/01/2026 - 12/31/2026 | Prime EPO Plan | Coverage for: Individual and/or Family | Plan Type: PPO. (GatorCare self-funded plan administered by Florida Blue; the document carries the administrator's branding and group number.)"
-              }
-            ],
-            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
-          },
-          {
-            "extension": [
               {
                 "url": "pageNumber",
                 "valueInteger": 1
               },
               {
                 "url": "excerpt",
-                "valueString": "What is the overall deductible? In-Network: GatorCare: Tier 1 $350 Per Person/$700 Family. BlueOptions Tier 2 $700 Per Person/$1,400 Family."
+                "valueString": "BlueOptions 03768 – Prime EPO Plan | Coverage Period: 01/01/2026 - 12/31/2026 | Summary of Benefits and Coverage: What this Plan Covers & What You Pay For Covered Services | Coverage for: Individual and/or Family | Plan Type: PPO"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 1
               },
               {
                 "url": "excerpt",
-                "valueString": "What is the out-of-pocket limit for this plan? Yes. In-Network: GatorCare Tier 1: $2,700 Per Person/$5,400 Family /BlueOptions Tier 2: $3,500 Per Person/$7,000 Family. (This example carries the Tier 1 accumulators; Tier 2 is stated here.)"
+                "valueString": "What is the overall deductible? | In-Network: GatorCare: Tier 1 $350 Per Person/$700 Family. BlueOptions Tier 2 $700 Per Person/$1,400 Family."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 1
               },
               {
                 "url": "excerpt",
-                "valueString": "Are there other deductibles for specific services? Yes. BlueOptions Tier 2 $750 Per Admission Hospital. GatorCare Tier 1: $150. BlueOptions Tier 2 / Tier 3 $250 Per ER Visit."
+                "valueString": "What is the out-of-pocket limit for this plan? | Yes. In-Network: GatorCare Tier 1: $2,700 Per Person/$5,400 Family /BlueOptions Tier 2: $3,500 Per Person/$7,000 Family"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
+              {
+                "url": "pageNumber",
+                "valueInteger": 1
+              },
+              {
+                "url": "excerpt",
+                "valueString": "Are there other deductibles for specific services? | Yes. BlueOptions Tier 2 $750 Per Admission Hospital. GatorCare Tier 1: $150. BlueOptions Tier 2 / Tier 3 $250 Per ER Visit. There are no other specific deductibles."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 2
               },
               {
                 "url": "excerpt",
-                "valueString": "Primary care visit to treat an injury or illness: $15 Copay per Visit (Tier 1); Tier 2/Tier 3: Not Covered"
+                "valueString": "Primary care visit to treat an injury or illness | $15 Copay per Visit | Not Covered | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 2
               },
               {
                 "url": "excerpt",
-                "valueString": "Specialist visit: $35 Copay per Visit (Tier 1)"
+                "valueString": "Specialist visit | $35 Copay per Visit | Not Covered | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 2
               },
               {
                 "url": "excerpt",
-                "valueString": "Preventive care/screening/immunization: No Charge, Deductible does not apply (Tier 1)"
+                "valueString": "Preventive care/screening/immunization | No Charge, Deductible does not apply | Not Covered | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 2
               },
               {
                 "url": "excerpt",
-                "valueString": "Diagnostic test (x-ray, blood work): 10% Coinsurance (Tier 1)"
+                "valueString": "Diagnostic test (x-ray, blood work) | 10% Coinsurance | Not Covered | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 2
               },
               {
                 "url": "excerpt",
-                "valueString": "Imaging (CT/PET scans, MRIs): Physician Office: $35 Copay per Visit/ Independent Diagnostic Testing Center: 10% Coinsurance. (The example carries the physician-office value.)"
+                "valueString": "Imaging (CT/PET scans, MRIs) | Physician Office: $35 Copay per Visit/ Independent Diagnostic Testing Center: 10% Coinsurance | Not Covered | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 2
               },
               {
                 "url": "excerpt",
-                "valueString": "Generic drugs / Preferred brand drugs / Non-preferred brand drugs / Specialty drugs: Not Covered. (Prescription drugs are covered under GatorCare's separate pharmacy benefit, documented in its own pharmacy SBC.)"
+                "valueString": "If you need drugs to treat your illness or condition | More information about prescription drug coverage is available at gatorcare.magellanrx.com | Generic drugs | Not Covered | Not Covered | Not Covered | Not Covered | Preferred brand drugs | Not Covered | Not Covered | Not Covered | Not Covered | Non-preferred brand drugs | Not Covered | Not Covered | Not Covered | Not Covered | Specialty drugs | Not Covered | Not Covered | Not Covered | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 3
               },
               {
                 "url": "excerpt",
-                "valueString": "Outpatient surgery - Facility fee: Ambulatory Surgical Center: 10% Coinsurance/ Hospital: Deductible + 10% Coinsurance. Physician/surgeon fees: Deductible + 10% Coinsurance"
+                "valueString": "If you have outpatient surgery | Facility fee (e.g., ambulatory surgery center) | Ambulatory Surgical Center: 10% Coinsurance/ Hospital: Deductible + 10% Coinsurance | Not Covered | Not Covered | Physician/surgeon fees | Deductible + 10% Coinsurance | Not Covered | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 3
               },
               {
                 "url": "excerpt",
-                "valueString": "Emergency room care: $150 Per Visit Deductible + Tier 1 Deductible + 10% Coinsurance (Tier 1); $250 Per Visit Deductible + Tier 2 Deductible + 10% Coinsurance (Tier 2/Tier 3). (This file marks emergency room care as covered in both columns and carries none of these amounts.)"
+                "valueString": "Emergency room care | $150 Per Visit Deductible + Tier 1 Deductible + 10% Coinsurance | $250 Per Visit Deductible + Tier 2 Deductible + 10% Coinsurance | $250 Per Visit Deductible + Tier 2 Deductible + 10% Coinsurance"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 3
               },
               {
                 "url": "excerpt",
-                "valueString": "Urgent care: $35 Copay per Visit, Tier 1 UF Health owned/affiliated; $50 Copay per Visit, Tier 1 Non UF Health owned/affiliated. (The example carries the UF Health-affiliated value.)"
+                "valueString": "Urgent care | $35 Copay per Visit, Tier 1 UF Health owned/ affiliated. | $50 Copay per Visit, Tier 1 Non UF Health owned/ affiliated | $50 Copay per Visit | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 3
               },
               {
                 "url": "excerpt",
-                "valueString": "Hospital stay - Facility fee: Deductible + 10% Coinsurance. Physician/surgeon fees: Deductible + 10% Coinsurance"
+                "valueString": "If you have a hospital stay | Facility fee (e.g., hospital room) | Deductible + 10% Coinsurance | PAD, + Deductible + 10% Coinsurance | Inpatient stay admitted through Emergency Room | Not Covered | Inpatient Rehab Services limited to 21 days. | Physician/surgeon fees | Deductible + 10% Coinsurance | PAD, + Deductible + 10% Coinsurance | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 4
               },
               {
                 "url": "excerpt",
-                "valueString": "Mental health outpatient services: Physician Office: $35 Copay per Visit / Hospital: Deductible + 10% Coinsurance. Inpatient services: Deductible + 10% Coinsurance"
+                "valueString": "If you need mental health, behavioral health, or substance abuse services | Outpatient services | Physician Office: $35 Copay per Visit / Hospital: Deductible + 10% Coinsurance | Not Covered | Not Covered | Inpatient services | Deductible + 10% Coinsurance | PAD, + Deductible + 10% Coinsurance | Inpatient stay admitted through Emergency Room | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 4
               },
               {
                 "url": "excerpt",
-                "valueString": "Childbirth/delivery professional services: Deductible + 10% Coinsurance. Childbirth/delivery facility services: Hospital: Deductible + 10% Coinsurance"
+                "valueString": "Childbirth/delivery professional services | Deductible + 10% Coinsurance | Not Covered | Not Covered | Childbirth/delivery facility services | Hospital: Deductible + 10% Coinsurance | PAD, + Deductible + 10% Coinsurance | Inpatient stay admitted through Emergency Room | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 4
               },
               {
                 "url": "excerpt",
-                "valueString": "Home health care: 10% Coinsurance. Coverage limited to 30 visits."
+                "valueString": "Home health care | 10% Coinsurance | Not Covered | Not Covered | Coverage limited to 30 visits."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 4
               },
               {
                 "url": "excerpt",
-                "valueString": "Rehabilitation services: Physician Office: $35 Copay per Visit/ Outpatient Rehab Center: 10% Coinsurance. Coverage limited to 75 visits including 26 manipulations."
+                "valueString": "Rehabilitation services | Physician Office: $35 Copay per Visit/ Outpatient Rehab Center: 10% Coinsurance | Not Covered | Not Covered | Coverage limited to 75 visits including 26 manipulations."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 5
               },
               {
                 "url": "excerpt",
-                "valueString": "Habilitation services: Not Covered. Skilled nursing care: Deductible + 10% Coinsurance, limited to 60 days. Hospice services: Deductible + 10% Coinsurance."
+                "valueString": "Habilitation services | Not Covered | Not Covered | Not Covered | Not Covered | Skilled nursing care | Deductible + 10% Coinsurance | Not Covered | Not Covered | Coverage limited to 60 days. | Hospice services | Deductible + 10% Coinsurance | Not Covered | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 5
               },
               {
                 "url": "excerpt",
-                "valueString": "Children's eye exam: Not Covered. Children's glasses: Not Covered. Children's dental check-up: Not Covered."
+                "valueString": "Children’s eye exam | Not Covered | Not Covered | Not Covered | Not Covered | Children’s glasses | Not Covered | Not Covered | Not Covered | Not Covered | Children’s dental check-up | Not Covered | Not Covered | Not Covered | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 5
               },
               {
                 "url": "excerpt",
-                "valueString": "Services Your Plan Generally Does NOT Cover: Acupuncture, Generic drugs, Preferred brand drugs, Non-preferred brand drugs, Habilitation services, Pediatric dental check-up, Pediatric eye exam, Pediatric glasses"
+                "valueString": "Services Your Plan Generally Does NOT Cover (Check your policy or plan document for more information and a list of any other excluded services.) | Acupuncture | Cosmetic surgery | Dental care (Adult) | Generic drugs | Habilitation services | Hearing Aid | Long-term care | Non-preferred brand drugs | Pediatric dental check-up | Pediatric eye exam | Pediatric glasses | Preferred brand drugs | Private-duty nursing | Routine eye care (Adult) | Routine foot care unless for treatment of diabetes | Weight loss programs"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
           },
           {
             "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
               {
                 "url": "pageNumber",
                 "valueInteger": 6
               },
               {
                 "url": "excerpt",
-                "valueString": "Other Covered Services: Bariatric surgery, Chiropractic care, Infertility Services"
+                "valueString": "Other Covered Services (Limitations may apply to these services. This isn’t a complete list. Please see your plan document.) | Bariatric surgery | Chiropractic care | Infertility Services | Most coverage provided outside the United States. See Flbluegroupbenefits.com"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+              },
+              {
+                "url": "pageNumber",
+                "valueInteger": 1
+              },
+              {
+                "url": "excerpt",
+                "valueString": "Coverage Period: 01/01/2026 – 12/31/2026 | Coverage for: Individual and/or Family | Plans: Premium, Prime, Prime Plus, GatorCare Out-of-Area | GatorCare 2025 | Page 1"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+              },
+              {
+                "url": "pageNumber",
+                "valueInteger": 1
+              },
+              {
+                "url": "excerpt",
+                "valueString": "This plan provides Prescription Drug benefits for Prescription Drugs and Related Supplies provided by Participating Pharmacies. To receive Prescription Drug Benefits, you and your Dependents may be required to pay a portion of the Covered Expenses for Prescription Drugs and Related Supplies for each 34-day supply at a retail pharmacy or each 90-day supply at a retail or mail order pharmacy. That portion is the Copayment or Coinsurance."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+              },
+              {
+                "url": "pageNumber",
+                "valueInteger": 1
+              },
+              {
+                "url": "excerpt",
+                "valueString": "Deductible | $125 Individual/$500 Family Pharmacy Calendar Year Deductible (CYD) must be satisfied for brand products for tiers 2 through 5. Pharmacy CYD is waived for Tier 0 and 1 medications."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+              },
+              {
+                "url": "pageNumber",
+                "valueInteger": 1
+              },
+              {
+                "url": "excerpt",
+                "valueString": "Pharmacy deductible does not apply to Medical CYD but counts towards Medical Maximum Out-Of-Pocket (MOOP)."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+              },
+              {
+                "url": "pageNumber",
+                "valueInteger": 1
+              },
+              {
+                "url": "excerpt",
+                "valueString": "Out-of-Pocket Maximum | Pharmacy Out-of-Pocket Maximum accumulations are combined with Medical CYD, Coinsurance, Copays, and Per-Visit Deductibles. The values cross accumulate between all tiers."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+              },
+              {
+                "url": "pageNumber",
+                "valueInteger": 2
+              },
+              {
+                "url": "excerpt",
+                "valueString": "Maximum Dollar Amount per Prescription | No Maximum"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+              },
+              {
+                "url": "pageNumber",
+                "valueInteger": 3
+              },
+              {
+                "url": "excerpt",
+                "valueString": "Maintenance 90-day claims filled at UF Health pharmacies will receive a reduced copay (2x copay) vs claims filled at retail (3x Copay)"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+              },
+              {
+                "url": "pageNumber",
+                "valueInteger": 9
+              },
+              {
+                "url": "excerpt",
+                "valueString": "Specialty Pharmacy | Get your specialty prescription drugs filled with best-in-class specialty pharmacy services including comprehensive programs to optimize patient treatment outcomes and your cost savings. The majority of specialty medications will now require prior authorization."
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
+              {
+                "url": "pageNumber",
+                "valueInteger": 3
+              },
+              {
+                "url": "excerpt",
+                "valueString": "Emergency medical transportation | Deductible + 20% Coinsurance | Tier 1 Deductible + 20% Coinsurance | Tier 1 Deductible + 20% Coinsurance"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
+              {
+                "url": "pageNumber",
+                "valueInteger": 4
+              },
+              {
+                "url": "excerpt",
+                "valueString": "If you are pregnant | Office visits | $15 Copay per Visit | Not Covered | Not Covered"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+          },
+          {
+            "extension": [
+              {
+                "url": "document",
+                "valueString": "gatorcare_prime_2026_sbc.pdf"
+              },
+              {
+                "url": "pageNumber",
+                "valueInteger": 5
+              },
+              {
+                "url": "excerpt",
+                "valueString": "Durable medical equipment | Deductible + 20% Coinsurance | Not Covered | Not Covered"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -401,6 +672,129 @@
               {
                 "url": "category",
                 "valueString": "CHIROPRACTIC"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T0_RETAIL_34"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 0/Value Based, retail 34-day supply"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_T0_EXTENDED_90"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Tier 0/Value Based, retail or mail order 90-day supply"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_PHYSICIAN_ADMINISTERED"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Physician administered drugs"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_INSULIN_PUMPS"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Insulin pumps and related supplies"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_IUD_DEVICES"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "IUD devices"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_VACCINES_PHARMACIST"
+              },
+              {
+                "url": "canonicalKey",
+                "valueString": "immunizations"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Adult vaccines administered by a pharmacist"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
+              }
+            ],
+            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
+          },
+          {
+            "extension": [
+              {
+                "url": "benefitId",
+                "valueString": "RX_VACCINES_OTHER_METHODS"
+              },
+              {
+                "url": "serviceName",
+                "valueString": "Adult vaccines, all other methods"
+              },
+              {
+                "url": "category",
+                "valueString": "PHARMACY"
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-unmapped-benefit"
@@ -759,7 +1153,7 @@
                       },
                       {
                         "url": "benefitType",
-                        "valueString": "pharmacy"
+                        "valueString": "medical"
                       },
                       {
                         "url": "category",
@@ -792,6 +1186,144 @@
                   ],
                   "text": "Generic drugs"
                 }
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "RX_T1_RETAIL_34"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "pharmacy"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "PHARMACY"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "Tier 1/Generic Medications"
+                      },
+                      {
+                        "url": "moopApplicability",
+                        "valueString": "plan_default"
+                      },
+                      {
+                        "url": "formularyTierId",
+                        "valueString": "T1"
+                      },
+                      {
+                        "url": "daySupply",
+                        "valueInteger": 34
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "document",
+                        "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+                      },
+                      {
+                        "url": "pageNumber",
+                        "valueInteger": 2
+                      },
+                      {
+                        "url": "excerpt",
+                        "valueString": "Retail Copay/Coinsurance (34 Days Supply) | Tier 1/Generic Medications: 25% Coinsurance with $10 Min. to $20 Max. (no Rx CYD applies)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "generic-drugs",
+                      "display": "Generic Drugs"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "generic_drugs",
+                      "display": "Generic drugs"
+                    }
+                  ],
+                  "text": "Tier 1/Generic Medications, retail 34-day supply"
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "RX_T1_EXTENDED_90"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "pharmacy"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "PHARMACY"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "Tier 1/Generic Medications"
+                      },
+                      {
+                        "url": "moopApplicability",
+                        "valueString": "plan_default"
+                      },
+                      {
+                        "url": "formularyTierId",
+                        "valueString": "T1"
+                      },
+                      {
+                        "url": "daySupply",
+                        "valueInteger": 90
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "document",
+                        "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+                      },
+                      {
+                        "url": "pageNumber",
+                        "valueInteger": 3
+                      },
+                      {
+                        "url": "excerpt",
+                        "valueString": "Extended Supply at Retail or Mail Order Copay/Coinsurance (90 Days Supply) | Tier 1/Generic Medications: 25% Coinsurance with $25 Min. to $50 Max. (no Rx CYD applies)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "generic-drugs",
+                      "display": "Generic Drugs"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "generic_drugs",
+                      "display": "Generic drugs"
+                    }
+                  ],
+                  "text": "Tier 1/Generic Medications, retail or mail order 90-day supply"
+                }
               }
             ]
           },
@@ -816,7 +1348,7 @@
                       },
                       {
                         "url": "benefitType",
-                        "valueString": "pharmacy"
+                        "valueString": "medical"
                       },
                       {
                         "url": "category",
@@ -849,6 +1381,144 @@
                   ],
                   "text": "Preferred brand drugs"
                 }
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "RX_T2_RETAIL_34"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "pharmacy"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "PHARMACY"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "Tier 2/Preferred Brand Medications"
+                      },
+                      {
+                        "url": "moopApplicability",
+                        "valueString": "plan_default"
+                      },
+                      {
+                        "url": "formularyTierId",
+                        "valueString": "T2"
+                      },
+                      {
+                        "url": "daySupply",
+                        "valueInteger": 34
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "document",
+                        "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+                      },
+                      {
+                        "url": "pageNumber",
+                        "valueInteger": 2
+                      },
+                      {
+                        "url": "excerpt",
+                        "valueString": "Retail Copay/Coinsurance (34 Days Supply) | Tier 2/Preferred Brand Medications: 25% Coinsurance with $25 Min. to $50 Max. (after Rx CYD)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "preferred-brand-drugs",
+                      "display": "Preferred Brand Drugs"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "preferred_brand_drugs",
+                      "display": "Preferred brand drugs"
+                    }
+                  ],
+                  "text": "Tier 2/Preferred Brand Medications, retail 34-day supply"
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "RX_T2_EXTENDED_90"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "pharmacy"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "PHARMACY"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "Tier 2/Preferred Brand Medications"
+                      },
+                      {
+                        "url": "moopApplicability",
+                        "valueString": "plan_default"
+                      },
+                      {
+                        "url": "formularyTierId",
+                        "valueString": "T2"
+                      },
+                      {
+                        "url": "daySupply",
+                        "valueInteger": 90
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "document",
+                        "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+                      },
+                      {
+                        "url": "pageNumber",
+                        "valueInteger": 3
+                      },
+                      {
+                        "url": "excerpt",
+                        "valueString": "Extended Supply at Retail or Mail Order Copay/Coinsurance (90 Days Supply) | Tier 2/Preferred Brand Medications: 25% Coinsurance with $62.50 Min. to $125 Max. (after Rx CYD)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "preferred-brand-drugs",
+                      "display": "Preferred Brand Drugs"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "preferred_brand_drugs",
+                      "display": "Preferred brand drugs"
+                    }
+                  ],
+                  "text": "Tier 2/Preferred Brand Medications, retail or mail order 90-day supply"
+                }
               }
             ]
           },
@@ -873,7 +1543,7 @@
                       },
                       {
                         "url": "benefitType",
-                        "valueString": "pharmacy"
+                        "valueString": "medical"
                       },
                       {
                         "url": "category",
@@ -906,6 +1576,144 @@
                   ],
                   "text": "Non-preferred brand drugs"
                 }
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "RX_T4_RETAIL_34"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "pharmacy"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "PHARMACY"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "Tier 4/Non-Preferred Brands Medications"
+                      },
+                      {
+                        "url": "moopApplicability",
+                        "valueString": "plan_default"
+                      },
+                      {
+                        "url": "formularyTierId",
+                        "valueString": "T4"
+                      },
+                      {
+                        "url": "daySupply",
+                        "valueInteger": 34
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "document",
+                        "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+                      },
+                      {
+                        "url": "pageNumber",
+                        "valueInteger": 3
+                      },
+                      {
+                        "url": "excerpt",
+                        "valueString": "Tier 4/Non-Preferred Brands Medications: 40% Coinsurance with $70 Min. to $240 Max. (after Rx CYD)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "non-preferred-brand-drugs",
+                      "display": "Non-Preferred Brand Drugs"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "nonpreferred_brand_drugs",
+                      "display": "Non-preferred brand drugs"
+                    }
+                  ],
+                  "text": "Tier 4/Non-Preferred Brands Medications, retail 34-day supply"
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "RX_T4_EXTENDED_90"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "pharmacy"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "PHARMACY"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "Tier 4/Non-Preferred Brands Medications"
+                      },
+                      {
+                        "url": "moopApplicability",
+                        "valueString": "plan_default"
+                      },
+                      {
+                        "url": "formularyTierId",
+                        "valueString": "T4"
+                      },
+                      {
+                        "url": "daySupply",
+                        "valueInteger": 90
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "document",
+                        "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+                      },
+                      {
+                        "url": "pageNumber",
+                        "valueInteger": 3
+                      },
+                      {
+                        "url": "excerpt",
+                        "valueString": "Extended Supply at Retail or Mail Order Copay/Coinsurance (90 Days Supply) | Tier 4/Non-Preferred Brands Medications: 40% Coinsurance with $175 Min. to $600 Max. (after Rx CYD)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "non-preferred-brand-drugs",
+                      "display": "Non-Preferred Brand Drugs"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "nonpreferred_brand_drugs",
+                      "display": "Non-preferred brand drugs"
+                    }
+                  ],
+                  "text": "Tier 4/Non-Preferred Brands Medications, retail or mail order 90-day supply"
+                }
               }
             ]
           },
@@ -930,7 +1738,7 @@
                       },
                       {
                         "url": "benefitType",
-                        "valueString": "pharmacy"
+                        "valueString": "medical"
                       },
                       {
                         "url": "category",
@@ -962,6 +1770,144 @@
                     }
                   ],
                   "text": "Specialty drugs"
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "RX_T3_RETAIL_34"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "pharmacy"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "PHARMACY"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "Tier 3/Preferred Specialty Medications"
+                      },
+                      {
+                        "url": "moopApplicability",
+                        "valueString": "plan_default"
+                      },
+                      {
+                        "url": "formularyTierId",
+                        "valueString": "T3"
+                      },
+                      {
+                        "url": "daySupply",
+                        "valueInteger": 34
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "document",
+                        "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+                      },
+                      {
+                        "url": "pageNumber",
+                        "valueInteger": 2
+                      },
+                      {
+                        "url": "excerpt",
+                        "valueString": "Retail Copay/Coinsurance (34 Days Supply) | Tier 3/Preferred Specialty Medications: 25% Coinsurance with $50 Min. to $100 Max. (after Rx CYD)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "specialty-drugs",
+                      "display": "Specialty Drugs"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "preferred_specialty_drugs",
+                      "display": "Preferred specialty drugs"
+                    }
+                  ],
+                  "text": "Tier 3/Preferred Specialty Medications, retail 34-day supply"
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "RX_T5_RETAIL_34"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "pharmacy"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "PHARMACY"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "Tier 5/Non-Preferred Specialty"
+                      },
+                      {
+                        "url": "moopApplicability",
+                        "valueString": "plan_default"
+                      },
+                      {
+                        "url": "formularyTierId",
+                        "valueString": "T5"
+                      },
+                      {
+                        "url": "daySupply",
+                        "valueInteger": 34
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "document",
+                        "valueString": "gatorcare_pharmacy_sbc_2026.pdf"
+                      },
+                      {
+                        "url": "pageNumber",
+                        "valueInteger": 3
+                      },
+                      {
+                        "url": "excerpt",
+                        "valueString": "Tier 5/Non-Preferred Specialty: 40% Coinsurance with $70 Min. to $240 Max. (after Rx CYD)"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "specialty-drugs",
+                      "display": "Specialty Drugs"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "nonpreferred_specialty_drugs",
+                      "display": "Non-preferred specialty drugs"
+                    }
+                  ],
+                  "text": "Tier 5/Non-Preferred Specialty, retail 34-day supply"
                 }
               }
             ]
@@ -1134,6 +2080,63 @@
                     }
                   ],
                   "text": "Emergency room"
+                }
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "emergency-medical-transport",
+                  "display": "Emergency Medical Transportation"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "AMBULANCE"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "EMERGENCY_CARE"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "Emergency medical transportation"
+                      },
+                      {
+                        "url": "moopApplicability",
+                        "valueString": "plan_default"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "emergency-medical-transport",
+                      "display": "Emergency Medical Transportation"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "ambulance",
+                      "display": "Ambulance services"
+                    }
+                  ],
+                  "text": "Ambulance services"
                 }
               }
             ]
@@ -1391,6 +2394,50 @@
               ]
             },
             "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "PRENATAL_OFFICE_VISITS"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "MATERNITY_CARE"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "Office visits"
+                      },
+                      {
+                        "url": "moopApplicability",
+                        "valueString": "plan_default"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "pregnancy",
+                      "display": "Pregnancy Services"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "prenatal_office_visits",
+                      "display": "Prenatal office visits"
+                    }
+                  ],
+                  "text": "Prenatal office visits"
+                }
+              },
               {
                 "extension": [
                   {
@@ -1723,6 +2770,63 @@
               "coding": [
                 {
                   "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                  "code": "durable-medical-equipment",
+                  "display": "Durable Medical Equipment"
+                }
+              ]
+            },
+            "benefit": [
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "benefitId",
+                        "valueString": "DURABLE_MEDICAL_EQUIPMENT"
+                      },
+                      {
+                        "url": "benefitType",
+                        "valueString": "medical"
+                      },
+                      {
+                        "url": "category",
+                        "valueString": "DURABLE_MEDICAL_EQUIPMENT"
+                      },
+                      {
+                        "url": "rawLabel",
+                        "valueString": "Durable medical equipment"
+                      },
+                      {
+                        "url": "moopApplicability",
+                        "valueString": "plan_default"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-benefit"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "durable-medical-equipment",
+                      "display": "Durable Medical Equipment"
+                    },
+                    {
+                      "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                      "code": "durable_medical_equipment",
+                      "display": "Durable medical equipment"
+                    }
+                  ],
+                  "text": "Durable medical equipment"
+                }
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
                   "code": "hospice",
                   "display": "Hospice Services"
                 }
@@ -1969,7 +3073,7 @@
                       },
                       {
                         "url": "networkTier",
-                        "valueString": "in-network"
+                        "valueString": "IN"
                       },
                       {
                         "url": "period",
@@ -1987,13 +3091,13 @@
                       "display": "Deductible"
                     }
                   ],
-                  "text": "Individual deductible, in-network"
+                  "text": "Individual deductible, IN"
                 },
                 "cost": {
                   "value": 350,
                   "currency": "USD"
                 },
-                "comment": "in-network; per_year"
+                "comment": "IN; per_year"
               },
               {
                 "extension": [
@@ -2005,7 +3109,7 @@
                       },
                       {
                         "url": "networkTier",
-                        "valueString": "in-network"
+                        "valueString": "IN"
                       },
                       {
                         "url": "period",
@@ -2023,13 +3127,13 @@
                       "display": "Deductible"
                     }
                   ],
-                  "text": "Family deductible, in-network"
+                  "text": "Family deductible, IN"
                 },
                 "cost": {
                   "value": 700,
                   "currency": "USD"
                 },
-                "comment": "in-network; per_year"
+                "comment": "IN; per_year"
               },
               {
                 "extension": [
@@ -2041,7 +3145,7 @@
                       },
                       {
                         "url": "networkTier",
-                        "valueString": "in-network"
+                        "valueString": "IN"
                       },
                       {
                         "url": "period",
@@ -2059,13 +3163,13 @@
                       "display": "Maximum out of pocket"
                     }
                   ],
-                  "text": "Individual out-of-pocket maximum, in-network"
+                  "text": "Individual out-of-pocket maximum, IN"
                 },
                 "cost": {
                   "value": 2700,
                   "currency": "USD"
                 },
-                "comment": "in-network; per_year"
+                "comment": "IN; per_year"
               },
               {
                 "extension": [
@@ -2077,7 +3181,7 @@
                       },
                       {
                         "url": "networkTier",
-                        "valueString": "in-network"
+                        "valueString": "IN"
                       },
                       {
                         "url": "period",
@@ -2095,13 +3199,109 @@
                       "display": "Maximum out of pocket"
                     }
                   ],
-                  "text": "Family out-of-pocket maximum, in-network"
+                  "text": "Family out-of-pocket maximum, IN"
                 },
                 "cost": {
                   "value": 5400,
                   "currency": "USD"
                 },
-                "comment": "in-network; per_year"
+                "comment": "IN; per_year"
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "slot",
+                        "valueString": "pharmacy.deductible"
+                      },
+                      {
+                        "url": "period",
+                        "valueString": "per_calendar_year"
+                      },
+                      {
+                        "url": "appliesToTier",
+                        "valueString": "T2"
+                      },
+                      {
+                        "url": "appliesToTier",
+                        "valueString": "T3"
+                      },
+                      {
+                        "url": "appliesToTier",
+                        "valueString": "T4"
+                      },
+                      {
+                        "url": "appliesToTier",
+                        "valueString": "T5"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-accumulator"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                      "code": "deductible",
+                      "display": "Deductible"
+                    }
+                  ],
+                  "text": "Pharmacy deductible, individual"
+                },
+                "cost": {
+                  "value": 125,
+                  "currency": "USD"
+                },
+                "comment": "per_calendar_year; applies to T2, T3, T4, T5"
+              },
+              {
+                "extension": [
+                  {
+                    "extension": [
+                      {
+                        "url": "slot",
+                        "valueString": "pharmacy.deductible.family_amount"
+                      },
+                      {
+                        "url": "period",
+                        "valueString": "per_calendar_year"
+                      },
+                      {
+                        "url": "appliesToTier",
+                        "valueString": "T2"
+                      },
+                      {
+                        "url": "appliesToTier",
+                        "valueString": "T3"
+                      },
+                      {
+                        "url": "appliesToTier",
+                        "valueString": "T4"
+                      },
+                      {
+                        "url": "appliesToTier",
+                        "valueString": "T5"
+                      }
+                    ],
+                    "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-accumulator"
+                  }
+                ],
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                      "code": "deductible",
+                      "display": "Deductible"
+                    }
+                  ],
+                  "text": "Pharmacy deductible, family"
+                },
+                "cost": {
+                  "value": 500,
+                  "currency": "USD"
+                },
+                "comment": "per_calendar_year; applies to T2, T3, T4, T5"
               }
             ],
             "specificCost": [
@@ -2597,6 +3797,10 @@
                               {
                                 "url": "appliesToMoop",
                                 "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "The document prices 2 settings (see source_references); this row carries the Physician Office value."
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
@@ -2699,6 +3903,18 @@
                               {
                                 "url": "tierId",
                                 "valueString": "IN"
+                              },
+                              {
+                                "url": "coveredUnder",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "notCoveredReason",
+                                "valueString": "covered_under_other_benefit"
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
@@ -2732,6 +3948,18 @@
                               {
                                 "url": "tierId",
                                 "valueString": "OUT"
+                              },
+                              {
+                                "url": "coveredUnder",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "notCoveredReason",
+                                "valueString": "covered_under_other_benefit"
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
@@ -2754,6 +3982,226 @@
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
                               "valueCode": "not-applicable"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "generic-drugs",
+                          "display": "Generic Drugs"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "generic_drugs",
+                          "display": "Generic drugs"
+                        }
+                      ],
+                      "text": "Tier 1/Generic Medications, retail 34-day supply"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "moopRef",
+                                "valueString": "medical"
+                              },
+                              {
+                                "url": "minAmount",
+                                "valueDecimal": 10
+                              },
+                              {
+                                "url": "minBasis",
+                                "valueString": "per_34_day_supply"
+                              },
+                              {
+                                "url": "maxAmount",
+                                "valueDecimal": 20
+                              },
+                              {
+                                "url": "maxBasis",
+                                "valueString": "per_34_day_supply"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copaypct",
+                              "display": "Copay Percentage"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 25,
+                          "unit": "%",
+                          "system": "http://unitsofmeasure.org",
+                          "code": "%"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "generic-drugs",
+                          "display": "Generic Drugs"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "generic_drugs",
+                          "display": "Generic drugs"
+                        }
+                      ],
+                      "text": "Tier 1/Generic Medications, retail or mail order 90-day supply"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "moopRef",
+                                "valueString": "medical"
+                              },
+                              {
+                                "url": "minAmount",
+                                "valueDecimal": 25
+                              },
+                              {
+                                "url": "minBasis",
+                                "valueString": "per_90_day_supply"
+                              },
+                              {
+                                "url": "maxAmount",
+                                "valueDecimal": 50
+                              },
+                              {
+                                "url": "maxBasis",
+                                "valueString": "per_90_day_supply"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copaypct",
+                              "display": "Copay Percentage"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 25,
+                          "unit": "%",
+                          "system": "http://unitsofmeasure.org",
+                          "code": "%"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
                             }
                           ]
                         }
@@ -2797,6 +4245,18 @@
                               {
                                 "url": "tierId",
                                 "valueString": "IN"
+                              },
+                              {
+                                "url": "coveredUnder",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "notCoveredReason",
+                                "valueString": "covered_under_other_benefit"
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
@@ -2830,6 +4290,18 @@
                               {
                                 "url": "tierId",
                                 "valueString": "OUT"
+                              },
+                              {
+                                "url": "coveredUnder",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "notCoveredReason",
+                                "valueString": "covered_under_other_benefit"
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
@@ -2852,6 +4324,234 @@
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
                               "valueCode": "not-applicable"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "preferred-brand-drugs",
+                          "display": "Preferred Brand Drugs"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "preferred_brand_drugs",
+                          "display": "Preferred brand drugs"
+                        }
+                      ],
+                      "text": "Tier 2/Preferred Brand Medications, retail 34-day supply"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToDeductible",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "deductibleRef",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "moopRef",
+                                "valueString": "medical"
+                              },
+                              {
+                                "url": "minAmount",
+                                "valueDecimal": 25
+                              },
+                              {
+                                "url": "minBasis",
+                                "valueString": "per_34_day_supply"
+                              },
+                              {
+                                "url": "maxAmount",
+                                "valueDecimal": 50
+                              },
+                              {
+                                "url": "maxBasis",
+                                "valueString": "per_34_day_supply"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copaypct",
+                              "display": "Copay Percentage"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 25,
+                          "unit": "%",
+                          "system": "http://unitsofmeasure.org",
+                          "code": "%"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "preferred-brand-drugs",
+                          "display": "Preferred Brand Drugs"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "preferred_brand_drugs",
+                          "display": "Preferred brand drugs"
+                        }
+                      ],
+                      "text": "Tier 2/Preferred Brand Medications, retail or mail order 90-day supply"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToDeductible",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "deductibleRef",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "moopRef",
+                                "valueString": "medical"
+                              },
+                              {
+                                "url": "minAmount",
+                                "valueDecimal": 62.5
+                              },
+                              {
+                                "url": "minBasis",
+                                "valueString": "per_90_day_supply"
+                              },
+                              {
+                                "url": "maxAmount",
+                                "valueDecimal": 125
+                              },
+                              {
+                                "url": "maxBasis",
+                                "valueString": "per_90_day_supply"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copaypct",
+                              "display": "Copay Percentage"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 25,
+                          "unit": "%",
+                          "system": "http://unitsofmeasure.org",
+                          "code": "%"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
                             }
                           ]
                         }
@@ -2895,6 +4595,18 @@
                               {
                                 "url": "tierId",
                                 "valueString": "IN"
+                              },
+                              {
+                                "url": "coveredUnder",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "notCoveredReason",
+                                "valueString": "covered_under_other_benefit"
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
@@ -2928,6 +4640,18 @@
                               {
                                 "url": "tierId",
                                 "valueString": "OUT"
+                              },
+                              {
+                                "url": "coveredUnder",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "notCoveredReason",
+                                "valueString": "covered_under_other_benefit"
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
@@ -2950,6 +4674,234 @@
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
                               "valueCode": "not-applicable"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "non-preferred-brand-drugs",
+                          "display": "Non-Preferred Brand Drugs"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "nonpreferred_brand_drugs",
+                          "display": "Non-preferred brand drugs"
+                        }
+                      ],
+                      "text": "Tier 4/Non-Preferred Brands Medications, retail 34-day supply"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToDeductible",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "deductibleRef",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "moopRef",
+                                "valueString": "medical"
+                              },
+                              {
+                                "url": "minAmount",
+                                "valueDecimal": 70
+                              },
+                              {
+                                "url": "minBasis",
+                                "valueString": "per_34_day_supply"
+                              },
+                              {
+                                "url": "maxAmount",
+                                "valueDecimal": 240
+                              },
+                              {
+                                "url": "maxBasis",
+                                "valueString": "per_34_day_supply"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copaypct",
+                              "display": "Copay Percentage"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 40,
+                          "unit": "%",
+                          "system": "http://unitsofmeasure.org",
+                          "code": "%"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "non-preferred-brand-drugs",
+                          "display": "Non-Preferred Brand Drugs"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "nonpreferred_brand_drugs",
+                          "display": "Non-preferred brand drugs"
+                        }
+                      ],
+                      "text": "Tier 4/Non-Preferred Brands Medications, retail or mail order 90-day supply"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToDeductible",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "deductibleRef",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "moopRef",
+                                "valueString": "medical"
+                              },
+                              {
+                                "url": "minAmount",
+                                "valueDecimal": 175
+                              },
+                              {
+                                "url": "minBasis",
+                                "valueString": "per_90_day_supply"
+                              },
+                              {
+                                "url": "maxAmount",
+                                "valueDecimal": 600
+                              },
+                              {
+                                "url": "maxBasis",
+                                "valueString": "per_90_day_supply"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copaypct",
+                              "display": "Copay Percentage"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 40,
+                          "unit": "%",
+                          "system": "http://unitsofmeasure.org",
+                          "code": "%"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
                             }
                           ]
                         }
@@ -2993,6 +4945,18 @@
                               {
                                 "url": "tierId",
                                 "valueString": "IN"
+                              },
+                              {
+                                "url": "coveredUnder",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "notCoveredReason",
+                                "valueString": "covered_under_other_benefit"
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
@@ -3026,6 +4990,18 @@
                               {
                                 "url": "tierId",
                                 "valueString": "OUT"
+                              },
+                              {
+                                "url": "coveredUnder",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "notCoveredReason",
+                                "valueString": "covered_under_other_benefit"
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "Medical SBC wording: More information about prescription drug coverage is available at gatorcare.magellanrx.com"
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
@@ -3048,6 +5024,234 @@
                             {
                               "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
                               "valueCode": "not-applicable"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "specialty-drugs",
+                          "display": "Specialty Drugs"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "preferred_specialty_drugs",
+                          "display": "Preferred specialty drugs"
+                        }
+                      ],
+                      "text": "Tier 3/Preferred Specialty Medications, retail 34-day supply"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToDeductible",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "deductibleRef",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "moopRef",
+                                "valueString": "medical"
+                              },
+                              {
+                                "url": "minAmount",
+                                "valueDecimal": 50
+                              },
+                              {
+                                "url": "minBasis",
+                                "valueString": "per_34_day_supply"
+                              },
+                              {
+                                "url": "maxAmount",
+                                "valueDecimal": 100
+                              },
+                              {
+                                "url": "maxBasis",
+                                "valueString": "per_34_day_supply"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copaypct",
+                              "display": "Copay Percentage"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 25,
+                          "unit": "%",
+                          "system": "http://unitsofmeasure.org",
+                          "code": "%"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "specialty-drugs",
+                          "display": "Specialty Drugs"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "nonpreferred_specialty_drugs",
+                          "display": "Non-preferred specialty drugs"
+                        }
+                      ],
+                      "text": "Tier 5/Non-Preferred Specialty, retail 34-day supply"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "appliesToDeductible",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "deductibleRef",
+                                "valueString": "pharmacy"
+                              },
+                              {
+                                "url": "moopRef",
+                                "valueString": "medical"
+                              },
+                              {
+                                "url": "minAmount",
+                                "valueDecimal": 70
+                              },
+                              {
+                                "url": "minBasis",
+                                "valueString": "per_34_day_supply"
+                              },
+                              {
+                                "url": "maxAmount",
+                                "valueDecimal": 240
+                              },
+                              {
+                                "url": "maxBasis",
+                                "valueString": "per_34_day_supply"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copaypct",
+                              "display": "Copay Percentage"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 40,
+                          "unit": "%",
+                          "system": "http://unitsofmeasure.org",
+                          "code": "%"
+                        }
+                      },
+                      {
+                        "type": {
+                          "text": "Not stated in the BPS document"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "unknown"
                             }
                           ]
                         }
@@ -3318,6 +5522,10 @@
                               {
                                 "url": "tierId",
                                 "valueString": "IN"
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "The document prints the amounts quoted in source_references; this file marks the service covered and carries none of them."
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
@@ -3351,6 +5559,10 @@
                               {
                                 "url": "tierId",
                                 "valueString": "OUT"
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "The document prints the amounts quoted in source_references; this file marks the service covered and carries none of them."
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
@@ -3375,6 +5587,148 @@
                               "valueCode": "unknown"
                             }
                           ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "emergency-medical-transport",
+                      "display": "Emergency Medical Transportation"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "emergency-medical-transport",
+                          "display": "Emergency Medical Transportation"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "ambulance",
+                          "display": "Ambulance services"
+                        }
+                      ],
+                      "text": "Ambulance services"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": true
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "basis",
+                                "valueString": "allowed_amount"
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copaypct",
+                              "display": "Copay Percentage"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 20,
+                          "unit": "%",
+                          "system": "http://unitsofmeasure.org",
+                          "code": "%"
+                        }
+                      },
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": true
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "basis",
+                                "valueString": "allowed_amount"
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "The document prints Tier 1 Deductible + 20% Coinsurance in this column."
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copaypct",
+                              "display": "Copay Percentage"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 20,
+                          "unit": "%",
+                          "system": "http://unitsofmeasure.org",
+                          "code": "%"
                         }
                       }
                     ]
@@ -3432,6 +5786,10 @@
                               {
                                 "url": "appliesToMoop",
                                 "valueBoolean": true
+                              },
+                              {
+                                "url": "note",
+                                "valueString": "The document prices Tier 1 at $35 UF Health owned/ affiliated and $50 Non UF Health owned/ affiliated; this row carries the UF Health value."
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
@@ -3864,6 +6222,111 @@
                   ]
                 },
                 "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "pregnancy",
+                          "display": "Pregnancy Services"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "prenatal_office_visits",
+                          "display": "Prenatal office visits"
+                        }
+                      ],
+                      "text": "Prenatal office visits"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": false
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "basis",
+                                "valueString": "per_visit"
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copay",
+                              "display": "Copay Amount"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 15,
+                          "unit": "USD",
+                          "system": "urn:iso:std:iso:4217",
+                          "code": "USD"
+                        }
+                      },
+                      {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "text": "Not covered"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "not-applicable"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
                   {
                     "type": {
                       "coding": [
@@ -4368,6 +6831,124 @@
                         },
                         "value": {
                           "value": 10,
+                          "unit": "%",
+                          "system": "http://unitsofmeasure.org",
+                          "code": "%"
+                        }
+                      },
+                      {
+                        "extension": [
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "OUT"
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "text": "Not covered"
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "out-of-network",
+                              "display": "Out of Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                              "valueCode": "not-applicable"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                      "code": "durable-medical-equipment",
+                      "display": "Durable Medical Equipment"
+                    }
+                  ]
+                },
+                "benefit": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/us/insurance-card/CodeSystem/sbc-benefit-category",
+                          "code": "durable-medical-equipment",
+                          "display": "Durable Medical Equipment"
+                        },
+                        {
+                          "system": "https://benefitplanstandard.org/fhir/CodeSystem/canonical-benefits",
+                          "code": "durable_medical_equipment",
+                          "display": "Durable medical equipment"
+                        }
+                      ],
+                      "text": "Durable medical equipment"
+                    },
+                    "cost": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/deductible-applies",
+                            "valueBoolean": true
+                          },
+                          {
+                            "extension": [
+                              {
+                                "url": "tierId",
+                                "valueString": "IN"
+                              },
+                              {
+                                "url": "sequence",
+                                "valueInteger": 1
+                              },
+                              {
+                                "url": "basis",
+                                "valueString": "allowed_amount"
+                              },
+                              {
+                                "url": "appliesToMoop",
+                                "valueBoolean": true
+                              }
+                            ],
+                            "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"
+                          }
+                        ],
+                        "type": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/coverage-copay-type",
+                              "code": "copaypct",
+                              "display": "Copay Percentage"
+                            }
+                          ]
+                        },
+                        "applicability": {
+                          "coding": [
+                            {
+                              "system": "http://terminology.hl7.org/CodeSystem/applicability",
+                              "code": "in-network",
+                              "display": "In Network"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "value": 20,
                           "unit": "%",
                           "system": "http://unitsofmeasure.org",
                           "code": "%"

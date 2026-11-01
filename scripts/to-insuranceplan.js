@@ -270,6 +270,7 @@ function benefitType(benefit, row) {
 
 function sourceReferenceExt(ref) {
   return complexExt(bpsExt('bps-source-reference'), [
+    sub('document', 'String', ref.document),
     sub('pageNumber', 'Integer', ref.page_number),
     sub('pageRange', 'String', ref.page_range),
     sub('excerpt', 'String', ref.excerpt),
@@ -310,6 +311,8 @@ function benefitDetailExt(b) {
     sub('moopApplicability', 'String', b.moop_applicability),
     sub('coverageBasis', 'String', b.coverage_basis),
     sub('alternativeGroup', 'String', b.alternative_group),
+    sub('formularyTierId', 'String', b.formulary_tier_id),
+    sub('daySupply', 'Integer', b.day_supply),
   ]);
 }
 
@@ -336,7 +339,9 @@ function coverageBenefit(b, row) {
   return out;
 }
 
-function costShareExt(tierId, cs, rowNotes) {
+// row: the network_cost_shares row of a Not covered entry; covered_under and not_covered_reason
+// say nothing on a covered row, and it has its own entries for the steps.
+function costShareExt(tierId, cs, rowNotes, row = {}) {
   return complexExt(bpsExt('bps-cost-share'), [
     sub('tierId', 'String', tierId),
     sub('sequence', 'Integer', cs.sequence),
@@ -345,14 +350,19 @@ function costShareExt(tierId, cs, rowNotes) {
     sub('appliesToDeductible', 'Boolean', cs.deductible_ref === 'pharmacy' ? cs.applies_to_deductible : null),
     sub('appliesToMoop', 'Boolean', cs.applies_to_moop),
     sub('deductibleRef', 'String', cs.deductible_ref),
+    sub('moopRef', 'String', cs.moop_ref),
     sub('amountMin', 'Decimal', cs.amount_min),
     sub('amountMax', 'Decimal', cs.amount_max),
     sub('rateMin', 'Decimal', has(cs.rate_min) ? percent(cs.rate_min) : null),
     sub('rateMax', 'Decimal', has(cs.rate_max) ? percent(cs.rate_max) : null),
+    sub('minAmount', 'Decimal', cs.min_amount),
+    sub('minBasis', 'String', cs.min_basis),
     sub('maxAmount', 'Decimal', cs.max_amount),
     sub('maxBasis', 'String', cs.max_basis),
     sub('unitRangeFrom', 'Integer', cs.unit_range ? cs.unit_range.from : null),
     sub('unitRangeTo', 'Integer', cs.unit_range ? cs.unit_range.to : null),
+    sub('coveredUnder', 'String', row.covered_under),
+    sub('notCoveredReason', 'String', row.not_covered_reason),
     sub('note', 'String', cs.notes),
     sub('note', 'String', rowNotes),
   ]);
@@ -391,7 +401,7 @@ function benefitCosts(b, tiers) {
     const steps = row.cost_shares || [];
     if (!row.covered) {
       cost.push(costEntry({
-        extension: [costShareExt(row.tier_id, {}, row.notes)],
+        extension: [costShareExt(row.tier_id, {}, row.notes, row)],
         type: { text: TEXT_NOT_COVERED }, app, qualifier, value: dataAbsent('not-applicable'),
       }));
     } else if (steps.length === 0) {
@@ -468,7 +478,13 @@ function generalCosts(bps) {
   }
   const rx = bps.pharmacy || {};
   if (rx.deductible) {
-    out.push(accumulatorCost('pharmacy.deductible', rx.deductible, 'Pharmacy deductible', 'deductible', 'Deductible'));
+    const family = has(rx.deductible.family_amount);
+    out.push(accumulatorCost('pharmacy.deductible', rx.deductible,
+      family ? 'Pharmacy deductible, individual' : 'Pharmacy deductible', 'deductible', 'Deductible'));
+    if (family) {
+      out.push(accumulatorCost('pharmacy.deductible.family_amount', { ...rx.deductible, amount: rx.deductible.family_amount },
+        'Pharmacy deductible, family', 'deductible', 'Deductible'));
+    }
   }
   if (rx.out_of_pocket_max) {
     out.push(accumulatorCost('pharmacy.out_of_pocket_max', rx.out_of_pocket_max,

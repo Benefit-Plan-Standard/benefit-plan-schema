@@ -47,8 +47,8 @@
         "id": "Extension.extension:slot",
         "path": "Extension.extension",
         "sliceName": "slot",
-        "short": "BPS accumulator slot name (e.g. oon_individual_deductible, pharmacy.deductible).",
-        "definition": "BPS accumulator slot name (e.g. oon_individual_deductible, pharmacy.deductible).",
+        "short": "BPS accumulator slot name (e.g. oon_individual_deductible, pharmacy.deductible, pharmacy.deductible.family_amount).",
+        "definition": "BPS accumulator slot name (e.g. oon_individual_deductible, pharmacy.deductible, pharmacy.deductible.family_amount).",
         "min": 0,
         "max": "1"
       },

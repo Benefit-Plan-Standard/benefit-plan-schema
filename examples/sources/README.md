@@ -15,8 +15,8 @@ its layout. File names end in `_sbc` or `_summary_of_benefits` so the two are ne
 | `aetna_ppo_5000_80_50_2026_sbc.pdf` | Aetna FL PPO 5000 80/50 (employer PPO, 2026) | `../aetna_ppo5000_example.json` |
 | `bluecross_blueoptions_505_2023_sbc.pdf` | Florida Blue BlueOptions 505 (individual PPO, contract year 07/2023-06/2024) | `../bluecross_example.json` |
 | `cigna_open_access_plus_2026_sbc.pdf` | Cigna Open Access Plus, Bowdoin College group (employer OAP, 2026) | `../cigna_example.json` |
-| `gatorcare_prime_2026_sbc.pdf` | GatorCare Prime EPO (self-funded employer, administered by Florida Blue, 2026) | `../gatorcare_example.json` |
-| `gatorcare_pharmacy_sbc_2026.pdf` | GatorCare pharmacy SBC, shared across the main plans (companion document; prescription drugs are 'Not Covered' on the medical SBC because they live here) | (pharmacy module, future) |
+| `gatorcare_prime_2026_sbc.pdf` | GatorCare Prime EPO (on a Florida Blue BlueOptions document, 2026) | `../gatorcare_example.json` |
+| `gatorcare_pharmacy_sbc_2026.pdf` | GatorCare pharmacy SBC, shared by the Premium, Prime, Prime Plus and GatorCare Out-of-Area plans (companion document; prescription drugs are 'Not Covered' on the medical SBC because they live here) | `../gatorcare_example.json` |
 | `uhc_choice_plus_hsa_gold_2026_sbc.pdf` | UHC Choice Plus HSA Gold 1700-4, DC SHOP (HDHP/HSA, 2026) | `../united_example.json` |
 | `kaiser_ca_hmo_2026_sbc.pdf` | Kaiser Permanente CA individual/family HMO (2026) | `../kaiser_example.json` |
 | `ambetter_silver_94_hmo_2026_sbc.pdf` | Ambetter Silver 94 HMO, California marketplace (CSR silver, 2026) | `../ambetter_example.json` |
@@ -29,7 +29,8 @@ its source PDF: `aetna_example.json`, `aetna_ppo5000_example.json`, `cigna_examp
 `gatorcare_example.json`, `united_example.json`. The JSON, the page references, and the
 source line up exactly. Where a document prints a value an example does not carry, the
 value is omitted rather than filled in, and the example's `source_references` quote the
-passage that prints it.
+passage that prints it. `gatorcare_example.json` reads 2 documents here, so each of its
+references names its PDF in `document`.
 
 The two Medicare Advantage examples, `scan_example.json` and `humana_example.json`, were
 read from their Summary of Benefits and checked value by value in a separate pass.

@@ -1,0 +1,66 @@
+{
+  "plan_id": "FIXTURE_DRAFT_7_FIELDS",
+  "plan_name": "Fixture: the fields of draft 7",
+  "carrier": "Fixture carrier",
+  "network_tiers": [
+    { "tier_id": "IN", "name": "In-Network" }
+  ],
+  "pharmacy": {
+    "deductible": {
+      "amount": 100,
+      "family_amount": 300,
+      "period": "per_calendar_year",
+      "applies_to_tiers": ["T1"]
+    },
+    "formulary_tiers": [
+      { "tier_id": "T1", "name": "Tier 1, generic" }
+    ]
+  },
+  "benefits": [
+    {
+      "benefit_id": "RX_T1_RETAIL",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "Tier 1, retail",
+      "canonical_key": "generic_drugs",
+      "formulary_tier_id": "T1",
+      "day_supply": 30,
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": true,
+          "cost_shares": [
+            { "type": "coinsurance", "sequence": 1, "rate": 0.25,
+              "min_amount": 5, "min_basis": "per_30_day_supply",
+              "max_amount": 15, "max_basis": "per_30_day_supply",
+              "applies_to_deductible": true, "deductible_ref": "pharmacy" }
+          ] }
+      ],
+      "source_references": [
+        { "document": "fixture_pharmacy_document.pdf", "page_number": 2, "excerpt": "Tier 1: 25% with a $5 minimum and a $15 maximum." }
+      ]
+    },
+    {
+      "benefit_id": "RX_HANDOFF_MEDICAL",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "A device the pharmacy benefit does not cover",
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": false, "not_covered_reason": "covered_under_other_benefit", "covered_under": "medical" }
+      ]
+    },
+    {
+      "benefit_id": "RX_EXCLUDED",
+      "benefit_type": "pharmacy",
+      "category": "PHARMACY",
+      "service_name": "A service excluded with no other benefit named",
+      "network_cost_shares": [
+        { "tier_id": "IN", "covered": false, "not_covered_reason": "excluded", "covered_under": null }
+      ]
+    }
+  ],
+  "source_references": [
+    { "document": "fixture_medical_document.pdf", "page_number": 2, "excerpt": "A plan-level citation in the second source document." },
+    { "document": null, "page_number": 1, "excerpt": "A citation with a null document reads as the plan's 1 source document." },
+    { "page_number": 1, "excerpt": "A citation with no document reads the same way." }
+  ],
+  "schema_version": "1.2.0"
+}

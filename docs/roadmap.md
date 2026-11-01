@@ -22,6 +22,11 @@ Dates are indicative and subject to change based on community feedback and imple
 5. **Medicare Advantage worked examples.** First two delivered on 2026-09-20, ahead of the 2026 open enrollment period, and committed publicly to the CMS Real-Time Benefits workgroup on 2026-08-31. `examples/scan_example.json` (SCAN Classic HMO, Los Angeles County) and `examples/humana_example.json` (Humana Gold Plus H1036-025 HMO) are keyed from their CMS Summary of Benefits documents, with both source PDFs in `examples/sources/`, and validate against the v1.2.0 draft, which gained the twelve fields they needed. Analysis and verification record: `docs/medicare-advantage-notes.md`. Still open: more plans and plan types, the two deferred gaps (optional supplemental packages and population-specific cost sharing), and the v1.2.0 release itself.
 6. **HealthPlanAPI reference-implementation alignment** — Bring the HealthPlanAPI BIME output into full BPS v1.1.0 conformance (snake_case, top-level fields, `cost_shares[]` array structure, ISO 8601 dates).
 
+### v1.2.0 list
+
+1. **A plan-identity value needs a source.** The validator flags a plan-identity field that has a value and no source reference.
+2. **Market comes from a dataset with provenance.** CMS Plan Attributes for Marketplace plans, PBP for Medicare Advantage and Form 5500 Schedule A for employer plans, never a web page read by hand.
+
 ## Evidence from implementation (2026-08)
 
 Verifying a seven-carrier SBC corpus through the reference implementation
@@ -50,7 +55,7 @@ evidence for why BPS models cost sharing the way it does:
   is produced by Florida Blue as plan administrator: the document titles itself
   "BlueOptions 03768 - Prime EPO Plan" under Florida Blue branding, while the plan
   sponsor (GatorCare) appears nowhere in the header. A single `carrier` field cannot
-  say both things, and name-based grouping would file this self-funded plan under its
+  say both things, and name-based grouping would file this plan under its
   administrator, next to Florida Blue's own BlueOptions products. FHIR R4
   `InsurancePlan` models this as `ownedBy` (sponsor) vs `administeredBy`; BPS should
   consider `plan_sponsor` / `administered_by` fields in a future minor version so ASO

@@ -406,7 +406,7 @@ These are areas where BPS preserves carrier-document fidelity that FHIR R4 canno
 | `benefits[].canonical_key`                   | Encode as a `Coding`             | Use the BPS canonical-benefits CodeSystem URL     |
 | `benefits[].raw_label`                       | No native element                | Extension on `coverage.benefit` (`bps-benefit`)   |
 | `benefits[].conditions[]` (structured)       | Free-text `requirement`          | `requirement` plus the structured form in an extension (`bps-condition`) |
-| `source_references[]` (page, range, excerpt) | No native element                | Extension (`bps-source-reference`), at the level BPS records it; required if your use case is provenance/depositional |
+| `source_references[]` (document, page, range, excerpt) | No native element                | Extension (`bps-source-reference`), at the level BPS records it; required if your use case is provenance/depositional |
 | Benefits with no `sbc-benefit-category` code | Cannot be placed under the CARIN SBC profile (required binding) | Listed by identity in an extension (`bps-unmapped-benefit`); cost sharing not carried |
 
 The DaVinci PDex Plan Net IG closes some of these gaps for U.S. payer use cases, but not all. We recommend keeping the BPS document alongside the FHIR resource (e.g., as an `Attachment` or out-of-band reference) when full fidelity is required.

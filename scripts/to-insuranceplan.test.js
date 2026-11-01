@@ -76,14 +76,16 @@ for (const file of examples) {
   });
 }
 
-test('the 8 SBC examples carry no benefit-level source references', () => {
+test('the 7 SBC examples other than GatorCare carry no benefit-level source references; GatorCare has them on its placed pharmacy benefits', () => {
+  const benefitRefs = (bps) => toInsurancePlanBundle(bps).entry[0].resource.coverage.flatMap((c) => c.benefit)
+    .flatMap((b) => (b.extension || []).filter((e) => e.url === SOURCE_REF));
   const sbc = examples.map((f) => readJson(path.join(EXAMPLES_DIR, f))).filter((p) => p.market !== 'medicare_advantage');
   assert.strictEqual(sbc.length, 8);
-  for (const bps of sbc) {
-    const plan = toInsurancePlanBundle(bps).entry[0].resource;
-    const refs = plan.coverage.flatMap((c) => c.benefit).flatMap((b) => (b.extension || []).filter((e) => e.url === SOURCE_REF));
-    assert.strictEqual(refs.length, 0, `${bps.plan_id} has benefit-level source references`);
+  for (const bps of sbc.filter((p) => p.plan_id !== 'GATORCARE_PRIME_EPO')) {
+    assert.strictEqual(benefitRefs(bps).length, 0, `${bps.plan_id} has benefit-level source references`);
   }
+  // T1 to T5 at 34 days, and T1, T2 and T4 at 90. T0 and the 5 hand-off rows have no SBC benefit code.
+  assert.strictEqual(benefitRefs(sbc.find((p) => p.plan_id === 'GATORCARE_PRIME_EPO')).length, 8);
 });
 
 test('no stray golden files', () => {
@@ -113,14 +115,15 @@ test('crosswalk codes and displays match the CARIN code system', () => {
 // and 4 of them again the same day after the deductible flags on silent cells were set. The 2
 // Medicare Advantage files read from Summaries of Benefits (Humana H1036-025, SCAN Classic) were
 // re-pinned on 2026-10-21 when their accumulators moved to the tier id IN (schema 1.2.0 draft text).
-// A change to any of them must be deliberate.
+// GatorCare was re-pinned on 2026-10-31 when its document moved to schema 1.2.0 and gained its pharmacy
+// side from the pharmacy SBC (draft 7). A change to any of them must be deliberate.
 const GOLDEN_SHA256 = {
   'aetna-ppo-1500-80-50.json': '5b71acace40107ffd7783f7f2dfebb2abc6dc46a48a4b21bb5a384dde58ca69b',
   'aetna-ppo-5000-80-50.json': '03e16565b6de68a075cfecbe1341b3e8fb5ed3601bf0e64c45986366efddbab1',
   'ambetter-ca-silver-94-hmo.json': 'c121fbb145f060a0230e91837ed4f526a1c3bc16bc7fd7aea8fd3d39a57fcfae',
   'cigna-oap-bowdoin.json': 'e82c810f43f5e3f66425a3d28f87de55d8f18fabd19a66bbf53a5338b5609d04',
   'flblue-blueoptions-505.json': '579b1dd83c482d759cae849a629f0ccf10ff3de44ffc106ad62b2a08a61cb4af',
-  'gatorcare-prime-epo.json': '3ea3d74c082269a1cfded8461d0fa35362c3b7019c86b2c002a50b7a078e9487',
+  'gatorcare-prime-epo.json': 'b7108f52072d99619f3fd3d32e427013df17640c29da65a1fd275597ae5ddd0e',
   'humana-gold-plus-h1036-025-hmo.json': 'b6d1e3e225495a45ba8c5ab4d19d3dd8de9401cde7ba8eea852dddacb5e16dfd',
   'kaiser-ca-gold-80-hmo.json': 'a4af8116c546c33f39e65c08a4c3dc06a78dfed61346f8a4294b94bd45227b36',
   'scan-classic-hmo-los-angeles.json': '1eb465cabd0e156c66fff87ba86c99f0cb1081ea2ff047d29bd71555d963a078',
@@ -316,17 +319,18 @@ test('rejects unsupported schema versions and unknown tiers', () => {
   assert.throws(() => toInsurancePlanBundle(bps), /unknown tier_id/);
 });
 
-// ---- pharmacy module v0.2.1 documents (schema 1.2.0 draft 6) ---------------------
+// ---- pharmacy module documents (schema 1.2.0 draft 6; module v0.2.2 since draft 7) ---
 // The SBC InsurancePlan profile has no formulary, so the converter ignores the pharmacy
-// module fields that core admits since draft 6, and cost_shares[].moop_ref with them.
+// module fields that core admits since draft 6, except that since draft 7 it carries
+// formulary_tier_id and day_supply in bps-benefit, and cost_shares[].moop_ref in bps-cost-share.
 // A benefit with a coverage stage (a Medicare Part D benefit) and a PDP document are
 // the exceptions (docs/specs/pbp-part-d-mapping.md section 14, Question Q7).
-const MODULE_EXAMPLES = path.join(__dirname, '..', 'modules', 'pharmacy', 'v0.2.1', 'examples');
+const MODULE_EXAMPLES = path.join(__dirname, '..', 'modules', 'pharmacy', 'v0.2.2', 'examples');
 const MODULE_PHARMACY_FIELDS = ['formulary_tiers', 'pharmacy_networks', 'formulary_items', 'formulary_reference', 'mail_order_supply_multiplier'];
-const MODULE_BENEFIT_FIELDS = ['formulary_tier_id', 'pharmacy_network_id', 'day_supply', 'drug_examples', 'step_therapy_required', 'quantity_limit'];
+const MODULE_BENEFIT_FIELDS = ['pharmacy_network_id', 'drug_examples', 'step_therapy_required', 'quantity_limit'];
 const PDP_REFUSAL = /plan_type "PDP": a stand-alone Medicare Part D plan has no medical benefits, and the CARIN SBC InsurancePlan profile describes a medical plan/;
 
-test('the commercial pharmacy module v0.2.1 example converts, and the module fields and moop_ref change nothing in the Bundle; the Part D one is a PDP and is refused', () => {
+test('the commercial pharmacy module example converts, formulary_tier_id and day_supply reach bps-benefit, and the other module fields change nothing in the Bundle; the Part D one is a PDP and is refused', () => {
   const files = fs.readdirSync(MODULE_EXAMPLES).filter((f) => f.endsWith('.json')).sort();
   assert.deepStrictEqual(files, ['formulary_indication_example.json', 'humana_part_d_example.json']);
   assert.throws(() => toInsurancePlanBundle(readJson(path.join(MODULE_EXAMPLES, 'humana_part_d_example.json'))), PDP_REFUSAL);
@@ -339,11 +343,108 @@ test('the commercial pharmacy module v0.2.1 example converts, and the module fie
     for (const k of MODULE_PHARMACY_FIELDS) delete without.pharmacy[k];
     for (const b of without.benefits) {
       for (const k of MODULE_BENEFIT_FIELDS) delete b[k];
-      for (const row of b.network_cost_shares) for (const cs of row.cost_shares || []) delete cs.moop_ref;
     }
     assert.notDeepStrictEqual(without, bps, `${file} carries module fields`);
     assert.strictEqual(serialize(toInsurancePlanBundle(bps)), serialize(toInsurancePlanBundle(without)), file);
+    const details = plan.coverage.flatMap((c) => c.benefit).map((b) => b.extension.find((e) => e.url === BENEFIT));
+    assert.deepStrictEqual(details.map((d) => subValue(d, 'formularyTierId')), bps.benefits.map((b) => b.formulary_tier_id), file);
+    assert.ok(details.every((d) => Number.isInteger(d.extension.find((e) => e.url === 'daySupply').valueInteger)), file);
   }
+});
+
+// ---- schema 1.2.0 draft 7 fields, in the GatorCare Bundle ---------------------------
+const COST_SHARE = 'https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share';
+const part = (ext, url) => {
+  const e = ext.extension.find((x) => x.url === url);
+  return e && Object.entries(e).find(([k]) => k.startsWith('value'))[1];
+};
+const gatorcare = (edit = () => {}) => {
+  const bps = readJson(path.join(EXAMPLES_DIR, 'gatorcare_example.json'));
+  edit(bps);
+  return toInsurancePlanBundle(bps).entry[0].resource;
+};
+const specific = (plan, text) => plan.plan[0].specificCost.flatMap((s) => s.benefit).find((b) => b.type.text === text);
+const costShare = (cost) => cost.extension.find((e) => e.url === COST_SHARE);
+
+test('draft 7: a coinsurance step carries its floor, its cap and moop_ref in bps-cost-share, and the value stays the rate', () => {
+  const plan = gatorcare();
+  const t1 = specific(plan, 'Tier 1/Generic Medications, retail 34-day supply').cost;
+  assert.strictEqual(t1[0].value.value, 25);
+  assert.deepStrictEqual(['minAmount', 'minBasis', 'maxAmount', 'maxBasis', 'moopRef', 'appliesToMoop'].map((u) => part(costShare(t1[0]), u)),
+    [10, 'per_34_day_supply', 20, 'per_34_day_supply', 'medical', true]);
+  assert.strictEqual(part(costShare(t1[0]), 'deductibleRef'), undefined);
+  assert.ok(t1[0].extension.some((e) => e.url.endsWith('/deductible-applies') && e.valueBoolean === false), 'no Rx CYD applies');
+  assert.strictEqual(t1[1].type.text, 'Not stated in the BPS document', 'the pharmacy SBC prints no out-of-network column');
+  const t2 = specific(plan, 'Tier 2/Preferred Brand Medications, retail or mail order 90-day supply').cost[0];
+  assert.deepStrictEqual(['minAmount', 'maxAmount', 'maxBasis', 'deductibleRef', 'appliesToDeductible'].map((u) => part(costShare(t2), u)),
+    [62.5, 125, 'per_90_day_supply', 'pharmacy', true]);
+  assert.ok(!t2.extension.some((e) => e.url.endsWith('/deductible-applies')), 'the CARIN extension means the medical deductible');
+});
+
+test('draft 7: covered_under and not_covered_reason are on the Not covered entry, and null is left out', () => {
+  const plan = gatorcare();
+  const generic = specific(plan, 'Generic drugs').cost;
+  assert.deepStrictEqual(generic.map((c) => c.type.text), ['Not covered', 'Not covered']);
+  for (const c of generic) {
+    assert.deepStrictEqual(['coveredUnder', 'notCoveredReason'].map((u) => part(costShare(c), u)), ['pharmacy', 'covered_under_other_benefit']);
+    assert.match(part(costShare(c), 'note'), /gatorcare\.magellanrx\.com/);
+    assert.strictEqual(c.qualifiers, undefined, 'no text-only qualifier');
+  }
+  const edited = gatorcare((bps) => {
+    const row = bps.benefits.find((b) => b.benefit_id === 'GENERIC_DRUGS').network_cost_shares[0];
+    row.covered_under = null;
+    row.not_covered_reason = 'excluded';
+  });
+  const first = costShare(specific(edited, 'Generic drugs').cost[0]);
+  assert.strictEqual(part(first, 'coveredUnder'), undefined);
+  assert.strictEqual(part(first, 'notCoveredReason'), 'excluded');
+  // On a covered row the 2 fields say nothing, and they are not carried.
+  const covered = gatorcare((bps) => {
+    bps.benefits.find((b) => b.benefit_id === 'PRIMARY_CARE').network_cost_shares[0].covered_under = 'pharmacy';
+  });
+  assert.strictEqual(part(costShare(specific(covered, 'Primary care visit').cost[0]), 'coveredUnder'), undefined);
+});
+
+test('draft 7: the family pharmacy deductible is a second generalCost entry; with no family amount the entry is as before', () => {
+  const costs = (plan) => plan.plan[0].generalCost.filter((g) => /^Pharmacy/.test(g.type.text));
+  const both = costs(gatorcare());
+  assert.deepStrictEqual(both.map((g) => [g.type.text, g.cost.value, g.comment]), [
+    ['Pharmacy deductible, individual', 125, 'per_calendar_year; applies to T2, T3, T4, T5'],
+    ['Pharmacy deductible, family', 500, 'per_calendar_year; applies to T2, T3, T4, T5'],
+  ]);
+  assert.deepStrictEqual(both.map((g) => part(g.extension[0], 'slot')), ['pharmacy.deductible', 'pharmacy.deductible.family_amount']);
+  for (const value of [null, undefined]) {
+    const one = costs(gatorcare((bps) => { bps.pharmacy.deductible.family_amount = value; }));
+    assert.deepStrictEqual(one.map((g) => [g.type.text, g.cost.value]), [['Pharmacy deductible', 125]]);
+  }
+});
+
+test('draft 7: every citation names its document, at plan level and on a placed benefit', () => {
+  const plan = gatorcare();
+  const bps = readJson(path.join(EXAMPLES_DIR, 'gatorcare_example.json'));
+  const planRefs = plan.extension.filter((e) => e.url === SOURCE_REF);
+  assert.deepStrictEqual(planRefs.map((e) => subValue(e, 'document')), bps.source_references.map((r) => r.document));
+  assert.deepStrictEqual(planRefs.map((e) => subValue(e, 'excerpt')), bps.source_references.map((r) => r.excerpt));
+  const t1 = plan.coverage.flatMap((c) => c.benefit).find((b) => b.type.text === 'Tier 1/Generic Medications, retail 34-day supply');
+  const ref = t1.extension.find((e) => e.url === SOURCE_REF);
+  assert.deepStrictEqual(ref.extension.map((e) => e.url), ['document', 'pageNumber', 'excerpt']);
+  assert.strictEqual(subValue(ref, 'document'), 'gatorcare_pharmacy_sbc_2026.pdf');
+  // The tier and the day supply tell the 2 rows of a tier apart.
+  assert.deepStrictEqual(['formularyTierId', 'daySupply'].map((u) => part(t1.extension.find((e) => e.url === BENEFIT), u)), ['T1', 34]);
+});
+
+test('draft 7: T3, T5 and the 3 medical rows are placed; T0 and the hand-off rows are listed by identity only', () => {
+  const plan = gatorcare();
+  const rows = (code) => plan.coverage.find((c) => c.type.coding[0].code === code).benefit.map((b) => b.type.text);
+  assert.deepStrictEqual(rows('specialty-drugs'), ['Specialty drugs', 'Tier 3/Preferred Specialty Medications, retail 34-day supply', 'Tier 5/Non-Preferred Specialty, retail 34-day supply']);
+  assert.deepStrictEqual(rows('emergency-medical-transport'), ['Ambulance services']);
+  assert.deepStrictEqual(rows('pregnancy'), ['Prenatal office visits', 'Delivery professional', 'Delivery facility']);
+  assert.deepStrictEqual(rows('durable-medical-equipment'), ['Durable medical equipment']);
+  assert.deepStrictEqual(plan.extension.filter((e) => e.url === UNMAPPED).map((e) => subValue(e, 'benefitId')), [
+    'HOME_HEALTH_CARE', 'ACUPUNCTURE', 'BARIATRIC_SURGERY', 'CHIROPRACTIC_CARE',
+    'RX_T0_RETAIL_34', 'RX_T0_EXTENDED_90',
+    'RX_PHYSICIAN_ADMINISTERED', 'RX_INSULIN_PUMPS', 'RX_IUD_DEVICES', 'RX_VACCINES_PHARMACIST', 'RX_VACCINES_OTHER_METHODS',
+  ]);
 });
 
 // ---- Medicare Part D benefits and PDP documents (docs/specs/pbp-part-d-mapping.md section 14) ----

@@ -7,7 +7,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
   </a>
   <img src="https://img.shields.io/badge/Schema-v1.1.0-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Status-Stable-blueviolet?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Draft-v1.2.0%20draft%206-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Draft-v1.2.0%20draft%207-orange?style=for-the-badge" />
   <img src="https://img.shields.io/github/license/Benefit-Plan-Standard/benefit-plan-schema?style=for-the-badge" />
 </p>
 
@@ -17,7 +17,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 
 - Documentation: https://benefitplanstandard.org  
 - Canonical schema file (current): `schema/v1.1.0/benefit-plan.schema.json`  
-- Draft schema (v1.2.0, draft 6): `schema/v1.2.0/benefit-plan.schema.json`; each published draft is a git tag, `v1.2.0-draft.1` through `v1.2.0-draft.6`  
+- Draft schema (v1.2.0, draft 7): `schema/v1.2.0/benefit-plan.schema.json`; each published draft is a git tag, `v1.2.0-draft.1` through `v1.2.0-draft.7`  
 - Previous schema (v1.0.0): `schema/v1.0.0/benefit-plan.schema.json`  
 - Example plans: `examples/`, 22 plans: 10 read from plan documents, 5 imported from the CMS Marketplace public use files, 7 from the CMS PBP files (5 Medicare Advantage plans with drug coverage and 2 stand-alone Part D plans)  
 - Vocabularies (canonical benefits, categories, markets, plan types): `vocabularies/`  
@@ -25,7 +25,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 - FHIR InsurancePlan converter (CARIN SBC profile): `scripts/to-insuranceplan.js`, spec `docs/specs/insuranceplan-converter.md`  
 - Importer from the CMS Marketplace public use files: `scripts/from-marketplace-puf.js`, spec `docs/specs/marketplace-puf-importer.md`, 5 examples in `examples/*.puf.json` and their Bundles in `examples/fhir-puf/`  
 - Importer from the CMS Medicare Advantage Plan Benefit Package files: `scripts/from-pbp.js`, spec `docs/specs/pbp-importer.md`, with the Part D sections and stand-alone Part D plans in `docs/specs/pbp-part-d-mapping.md`; 7 examples in `examples/*.pbp.json` and the Bundles of the 5 Medicare Advantage ones in `examples/fhir/`  
-- Medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup: `docs/specs/rtb-medical-mvp/` (the specification, the data dictionary and the crosswalk to the SBC InsurancePlan profile, version 0.3.5)  
+- Medical MVP technical specification for the CMS Health Tech Ecosystem Real-Time Benefits workgroup: `docs/specs/rtb-medical-mvp/` (the specification, the data dictionary and the crosswalk to the SBC InsurancePlan profile, version 0.3.9)  
 - Segment tool for Medicare Advantage plans (county to segment): `scripts/pbp-segment.js`  
 - Pledgee publishing, the release layout and index the specification describes: `scripts/publish-fhir.js --pledgee <root>`  
 - Completeness count against the specification: `scripts/rtb-completeness.js`  
@@ -76,7 +76,7 @@ schema/
   ├── v1.1.0/
   │   └── benefit-plan.schema.json   ← current
   └── v1.2.0/
-      └── benefit-plan.schema.json   ← draft (draft 6; each published draft is a git tag, v1.2.0-draft.N)
+      └── benefit-plan.schema.json   ← draft (draft 7; each published draft is a git tag, v1.2.0-draft.N)
 docs/
   ├── carin-dic-reconciliation.md
   ├── changelog.md
@@ -147,7 +147,8 @@ modules/
   ├── README.md
   └── pharmacy/
       ├── v0.2.0/
-      └── v0.2.1/                    ← pharmacy module, draft, with its own README; in the v1.2.0 core since draft 6
+      ├── v0.2.1/
+      └── v0.2.2/                    ← pharmacy module, draft, with its own README; in the v1.2.0 core since draft 6, v0.2.2 since draft 7
 ADOPTERS.md                          ← adopters on record under the release rule
 LICENSE
 ```
@@ -164,7 +165,7 @@ The schema follows **semantic versioning**:
 
 Current version: **v1.1.0** (backward-compatible with v1.0.0)
 
-Draft: **v1.2.0**, draft 6, tagged `v1.2.0-draft.6`. Drafts are numbered as they are published, and each one is a git tag on this repository, so any earlier draft can be checked out by its tag. Under the release rule in `docs/governance.md`, v1.2.0 becomes final after two independent adopters implement and validate it; until then every v1.2.0 document says which draft it validates against. The adopters on record are in `ADOPTERS.md`. The two importers write v1.2.0 draft documents.
+Draft: **v1.2.0**, draft 7, tagged `v1.2.0-draft.7`. Drafts are numbered as they are published, and each one is a git tag on this repository, so any earlier draft can be checked out by its tag. Under the release rule in `docs/governance.md`, v1.2.0 becomes final after two independent adopters implement and validate it; until then every v1.2.0 document says which draft it validates against. The adopters on record are in `ADOPTERS.md`. The two importers write v1.2.0 draft documents.
 
 Validation uses:
 
@@ -185,7 +186,7 @@ Example normalized files are provided in:
 
 These examples demonstrate how real-world plan documents (the SBC and the CMS Summary of Benefits) map into the standardized model. See [`examples/README.md`](examples/README.md).
 
-The eight SBC examples (`aetna`, `aetna_ppo5000`, `ambetter`, `bluecross`, `cigna`, `gatorcare`, `kaiser`, `united`) are generated from the source Summary of Benefits and Coverage documents and verified value by value against them. The two Medicare Advantage examples (`scan_example.json` and `humana_example.json`) are different: they are read from their CMS Summary of Benefits documents, verified value by value against the cited pages, and they use fields added in the v1.2.0 draft, so they validate against that draft only. See `docs/medicare-advantage-notes.md`.
+The eight SBC examples (`aetna`, `aetna_ppo5000`, `ambetter`, `bluecross`, `cigna`, `gatorcare`, `kaiser`, `united`) are generated from the source Summary of Benefits and Coverage documents and verified value by value against them. `gatorcare_example.json` also carries its pharmacy SBC, with fields of the v1.2.0 draft, so it validates against that draft only. The two Medicare Advantage examples (`scan_example.json` and `humana_example.json`) are different: they are read from their CMS Summary of Benefits documents, verified value by value against the cited pages, and they use fields added in the v1.2.0 draft, so they validate against that draft only. See `docs/medicare-advantage-notes.md`.
 
 The Marketplace public-file example set is 5 files (`*.puf.json`), written by `scripts/from-marketplace-puf.js` from the CMS Marketplace Plan Attributes and Benefits and Cost Sharing files, with no PDF read; the plans and their FHIR Bundles in `examples/fhir-puf/` are listed in [`examples/README.md`](examples/README.md).
 

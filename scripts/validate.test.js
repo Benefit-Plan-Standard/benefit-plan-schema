@@ -6,7 +6,8 @@
  * Fails if the pharmacy warnings of the v1.2.0 draft 6 (a pharmacy module field on a
  * benefit whose benefit_type is not "pharmacy", and a formulary_tier_id,
  * pharmacy_network_id or coverage_stage_id that the document's pharmacy object does
- * not define) stop printing, change their text, or make the validator fail.
+ * not define) stop printing, change their text, or make the validator fail, or if a
+ * document with the fields of draft 7 stops passing with no warning.
  * Fixtures: test/fixtures/validate/. Needs a local copy of Ajv (npm install ajv ajv-formats).
  */
 
@@ -48,20 +49,27 @@ test('a formulary tier, pharmacy network or coverage stage id the pharmacy objec
   ]);
 });
 
+test('a document with the fields of draft 7 passes, with no vocabulary or pharmacy warning', () => {
+  const { status, lines } = run('--strict-vocab', '--schema', V120, path.join(FIXTURES, 'draft-7-fields.json'));
+  assert.strictEqual(status, 0);
+  assert.ok(lines[0].startsWith('PASS'), lines[0]);
+  assert.deepStrictEqual(warnings(lines), []);
+});
+
 test('pharmacy warnings never fail the run, with --strict-vocab or --no-vocab', () => {
-  const both = fs.readdirSync(path.join(REPO, FIXTURES)).filter((f) => f.endsWith('.json')).map((f) => path.join(FIXTURES, f));
-  assert.strictEqual(both.length, 2);
+  const all = fs.readdirSync(path.join(REPO, FIXTURES)).filter((f) => f.endsWith('.json')).map((f) => path.join(FIXTURES, f));
+  assert.strictEqual(all.length, 3);
   for (const flag of ['--strict-vocab', '--no-vocab']) {
-    const { status, lines } = run(flag, '--schema', V120, ...both);
+    const { status, lines } = run(flag, '--schema', V120, ...all);
     assert.strictEqual(status, 0, flag);
     assert.strictEqual(warnings(lines).length, 4, flag);
   }
 });
 
-test('no document in examples/ and no pharmacy module v0.2.1 example gets a pharmacy warning', () => {
+test('no document in examples/ and no pharmacy module example of v0.2.1 or v0.2.2 gets a pharmacy warning', () => {
   const list = (dir) => fs.readdirSync(path.join(REPO, dir)).filter((f) => f.endsWith('.json')).map((f) => path.join(dir, f));
-  const files = [...list('examples'), ...list(path.join('modules', 'pharmacy', 'v0.2.1', 'examples'))];
-  assert.ok(files.length >= 22);
+  const files = [...list('examples'), ...list(path.join('modules', 'pharmacy', 'v0.2.1', 'examples')), ...list(path.join('modules', 'pharmacy', 'v0.2.2', 'examples'))];
+  assert.ok(files.length >= 26);
   const { status, lines } = run('--no-vocab', '--schema', V120, ...files);
   assert.strictEqual(status, 0);
   assert.deepStrictEqual(warnings(lines), []);

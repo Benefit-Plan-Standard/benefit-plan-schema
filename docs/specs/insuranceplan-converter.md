@@ -32,7 +32,7 @@ This spec defines a converter from a Benefit Plan Standard (BPS) document to a F
 - BPS documents declaring `schema_version` `1.1.0` or `1.2.0`. Any other value is an error.
 - The CLI checks the input against the schema its `schema_version` names (`schema/v1.1.0` or `schema/v1.2.0`), using the same local Ajv setup as `scripts/validate.js`. A document that fails the schema is rejected. Nothing is converted.
 - Absent v1.2.0 fields take their v1.1.0 meaning. For example, a tier with no `tier_class` is a `network` tier.
-- The 10 `examples/*_example.json` files are the original test corpus. The 8 SBC examples declare v1.1.0 and the 2 Medicare Advantage examples (`humana_example.json`, `scan_example.json`) declare v1.2.0.
+- The 10 `examples/*_example.json` files are the original test corpus. 7 of the 8 SBC examples declare v1.1.0. GatorCare, since it gained its pharmacy side on 2026-10-31, and the 2 Medicare Advantage examples (`humana_example.json`, `scan_example.json`) declare v1.2.0.
 - The PBP importer's 5 Medicare Advantage golden files (`examples/*.pbp.json`, v1.2.0) are converted too, since 2026-10-06; their Bundles sit in `examples/fhir/` beside the 10 (section 12) and are published with them since 2026-10-15 (section 13). Since 2026-10-24 the importer also writes 2 stand-alone Part D plans (`plan_type` `PDP`) among its golden files; they are not converted (section 8.4).
 
 ## 4. Outputs
@@ -91,7 +91,7 @@ A BPS benefit becomes one `cost[]` entry per cost-share step, grouped by tier in
 | BPS situation | `cost[]` entry |
 |---|---|
 | `covered: true` with one or more `cost_shares` | One entry per step, with `value` set to the amount (USD) or the rate (%). |
-| `covered: false` | One entry: `type.text` `Not covered`, and a `value` Quantity whose only content is `data-absent-reason` `not-applicable`. It does **not** use `value: 0`, which a reader could take to mean "free". The IG's own example uses `0`; this spec does not. With `--excluded-services`, a benefit `covered: false` on every tier is also listed in `excluded-services` (10.1); its cost entries are unchanged. |
+| `covered: false` | One entry: `type.text` `Not covered`, and a `value` Quantity whose only content is `data-absent-reason` `not-applicable`. It does **not** use `value: 0`, which a reader could take to mean "free". The IG's own example uses `0`; this spec does not. With `--excluded-services`, a benefit `covered: false` on every tier is also listed in `excluded-services` (10.1); its cost entries are unchanged. `covered_under` and `not_covered_reason` (v1.2.0 draft 7) go on this entry, as `coveredUnder` and `notCoveredReason` in `bps-cost-share`; a null is left out. They are not a text qualifier, because `qualifiers` is bound to the Cost Tier value set and the validator warns on each text-only qualifier. |
 | `covered: true`, `cost_shares` empty (for example GatorCare in-network preventive care, Kaiser surgeon fees, MA allowances) | One entry: `type.text` `Covered; amount not stated in the BPS document`, `value` data-absent-reason `unknown`, with the row `notes` in the BPS cost-share extension. |
 | Amount range or rate range (`amount_min`/`amount_max`, `rate_min`/`rate_max`; MA only) | `value` data-absent-reason `unsupported`, because a Quantity cannot hold a range. The bounds go in the BPS cost-share extension. |
 | **Fewer than 2 entries after the rows above** (a benefit with a single network column, or an MA benefit priced only at one site of service) | Entries from a second in-network tier (6.2) count like any other. A benefit with `IN`, `IN2` and `OUT` rows has at least 3 entries and never gets a placeholder; a benefit with `IN` and `IN2` rows only has 2 in-network entries and gets none either. Otherwise, append one placeholder for the network the benefit does not mention: `out-of-network` if no out-of-network row exists, otherwise `in-network`. The placeholder has `type.text` `Not stated in the BPS document` and `value` data-absent-reason `unknown`. It never says "not covered", because the BPS document does not say that for the benefit. |
@@ -168,6 +168,7 @@ The PBP importer's check of this document is in `docs/specs/pbp-sob-checks/H1609
 | `network_tier`, `period` | `comment` (readable, for example "out-of-network; per_year") and `bps-accumulator` **[BPS ext]** |
 | `embedded`, `applies_to`, slot name | `bps-accumulator` **[BPS ext]** |
 | `pharmacy.deductible`, `pharmacy.out_of_pocket_max` (v1.2.0) | `generalCost[]` with the same `type` codes, `text` "Pharmacy deductible" or "Pharmacy out-of-pocket maximum"; `applies_to_tiers` goes in `bps-accumulator` |
+| `pharmacy.deductible.family_amount` (v1.2.0 draft 7) | A second `generalCost[]` entry with the same `type` code and `comment`, `text` "Pharmacy deductible, family", slot `pharmacy.deductible.family_amount`. The entry for `amount` then reads "Pharmacy deductible, individual"; with no family amount it reads "Pharmacy deductible", as before |
 | `pharmacy.coverage_stages` (v1.2.0) | Not carried (7) |
 
 Order: slots in BPS object order, then premium, then pharmacy.
@@ -185,17 +186,17 @@ For each BPS benefit whose `canonical_key` is in the crosswalk (section 8) and t
 | `conditions[].description` | `requirement`: descriptions joined with `"; "` in input order | |
 | `conditions[]` (structured) | `bps-condition` **[BPS ext]** (`type`, `code`, `description`), one per condition | |
 | `limits[]` | `BenefitLimitation` **[ballot]**, one per limit (6.6) | |
-| `source_references[]` (per benefit; MA only) | `bps-source-reference` **[BPS ext]** | |
-| `benefit_id`, `benefit_type`, `category`, `raw_label`, `place_of_service[]`, `moop_applicability`, `coverage_basis`, `alternative_group` | `bps-benefit` **[BPS ext]** | |
+| `source_references[]` (per benefit; the MA examples and GatorCare's pharmacy benefits) | `bps-source-reference` **[BPS ext]** | |
+| `benefit_id`, `benefit_type`, `category`, `raw_label`, `place_of_service[]`, `moop_applicability`, `coverage_basis`, `alternative_group`, `formulary_tier_id`, `day_supply` | `bps-benefit` **[BPS ext]** | |
 | `network_cost_shares[]` | | `cost[]` (5.1, 6.2, 6.3, 6.7) |
 
-Two BPS benefits that share an SBC row code (for example `diagnostic_lab`, `imaging_standard` and `diagnostic_test`, all in "Diagnostic Test") become separate `benefit[]` entries under the same category. The second coding (the BPS canonical key) and `text` tell them apart.
+Two BPS benefits that share an SBC row code (for example `diagnostic_lab`, `imaging_standard` and `diagnostic_test`, all in "Diagnostic Test") become separate `benefit[]` entries under the same category. The second coding (the BPS canonical key) and `text` tell them apart. GatorCare's `generic_drugs` benefits (the medical SBC row, Tier 1 at 34 days and Tier 1 at 90 days) share a key as well: `text`, and `formularyTierId` and `daySupply` in `bps-benefit`, tell them apart.
 
 ### 6.6 Limits to `BenefitLimitation` [ballot]
 
 | BPS | Sub-extension | Rule |
 |---|---|---|
-| `raw_text` (v1.2.0) | `limitText` | Verbatim. Omitted when absent (the limits in the 8 SBC examples, which are v1.1.0 documents, have no `raw_text`). |
+| `raw_text` (v1.2.0) | `limitText` | Verbatim. Omitted when absent (the limits in the 8 SBC examples have no `raw_text`). |
 | `type` | `limitType` (extensible `limit-type`) | `visits`, `days` and `dollars` map directly. Other types (`hearing_aids`, `meals`, `hours`, `miles`, `one_way_trips`, `occurrences`, `pairs_of_eyeglasses`) are text only. |
 | `value` | `limitValue` (Quantity) | `unit` from `type`. `dollars` uses currency USD. |
 | `period` | `limitPeriod` (extensible `limit-period`) | `per_plan_year` to `plan-year`, `per_calendar_year` to `calendar-year`, `per_benefit_period` and `per_episode` to `benefit-period` (as in `carin-dic-reconciliation.md` 3.3), `per_lifetime` to `lifetime`. **`per_year` becomes text only**: it is ambiguous between plan year and calendar year (`carin-dic-reconciliation.md` 3.3), and the converter does not choose. `per_12_months`, `per_quarter` and `per_discharge` are also text only. |
@@ -211,24 +212,27 @@ Two BPS benefits that share an SBC row code (for example `diagnostic_lab`, `imag
 | `amount` | `value` = `{value, unit: "USD", system: "urn:iso:std:iso:4217", code: "USD"}` |
 | `rate` | `value` = `{value: rate x 100, unit: "%", system: "http://unitsofmeasure.org", code: "%"}` |
 | `applies_to_deductible` | `DeductibleApplies` **[ballot]**, one-to-one. **Exception:** when `deductible_ref` is `pharmacy`, `DeductibleApplies` is omitted. It means "accrues to the plan deductible", and emitting it would misstate a Part D deductible. The flag and the reference go in `bps-cost-share`. |
-| `sequence`, `basis`, `applies_to_moop`, `amount_min`/`amount_max`, `rate_min`/`rate_max`, `max_amount`/`max_basis`, `unit_range`, `deductible_ref`, `notes`, row-level `notes`, `tier_id` | `bps-cost-share` **[BPS ext]** |
+| `sequence`, `basis`, `applies_to_moop`, `moop_ref`, `amount_min`/`amount_max`, `rate_min`/`rate_max`, `min_amount`/`min_basis`, `max_amount`/`max_basis`, `unit_range`, `deductible_ref`, `notes`, row-level `notes`, `tier_id` | `bps-cost-share` **[BPS ext]** |
+
+A floor or a cap does not change `value`, which stays the rate: GatorCare Tier 1 at 34 days is `value` 25% with `minAmount` 10 and `maxAmount` 20. `minAmount` and `minBasis` render as `maxAmount` and `maxBasis` do.
 
 ## 7. Lossy mappings and how each is carried
 
 | BPS content | Where it goes | Round-trips? |
 |---|---|---|
 | Benefits outside the 29 SBC codes | `bps-unmapped-benefit` (identity only; section 8.3) | Identity only. Cost shares, limits and conditions for these benefits are **not** in the FHIR output. |
-| `source_references` | `bps-source-reference`, at the level where BPS has them | Yes |
+| `source_references` | `bps-source-reference`, at the level where BPS has them, with `document` when BPS has it | Yes |
 | `conditions[]` | `requirement` (text) plus `bps-condition` (structured) | Yes |
-| `applies_to_moop`, `basis`, `sequence`, caps, ranges, unit ranges | `bps-cost-share` | Yes |
+| `applies_to_moop`, `moop_ref`, `basis`, `sequence`, floors, caps, ranges, unit ranges | `bps-cost-share` | Yes |
 | `embedded`, accumulator `period` and `network_tier` | `bps-accumulator` (plus `comment`) | Yes |
-| `raw_label`, `benefit_type`, `place_of_service`, `coverage_basis`, `alternative_group`, `moop_applicability` | `bps-benefit` | Yes |
+| `raw_label`, `benefit_type`, `place_of_service`, `coverage_basis`, `alternative_group`, `moop_applicability`, `formulary_tier_id`, `day_supply` | `bps-benefit` | Yes |
+| `network_cost_shares[].covered_under`, `not_covered_reason` (v1.2.0 draft 7) | `bps-cost-share` on the `Not covered` entry of a placed benefit. On a benefit outside the 29 codes they are not carried (8.3) | Yes on a placed benefit, no otherwise |
+| `pharmacy.deductible.family_amount` (v1.2.0 draft 7) | A second `generalCost[]` entry (6.4) | Yes |
 | `market`, `plan_year`, `schema_version`, `service_area` | `bps-plan-metadata` | Yes |
 | Limit `per_year` and non-CARIN limit types | Text-only CodeableConcept | Text only |
 | Limit `scope`, `shared_limit_id`, `carryover` | Not carried (only in `limitText` when the source prints it) | No |
 | `pharmacy.coverage_stages` | Not carried | No |
 | Medicare Part D benefits (a `coverage_stage_id`), with `formulary_tier_id`, `pharmacy_network_id` and `day_supply` | `bps-unmapped-benefit` (identity only; section 8.4) | Identity only. Their cost shares are **not** in the FHIR output. |
-| `cost_shares[].moop_ref` (v1.2.0 draft 6) | Not carried. Follow-up: a `moopRef` part of `bps-cost-share`, as `deductibleRef` carries `deductible_ref`, for a benefit the converter places; today every step with `moop_ref` is on a Part D benefit, which is unmapped (8.4) | No |
 | A document with `plan_type` `PDP` | Not converted (8.4) | No |
 | `network_tiers[].description` | Not carried (only `name` goes into qualifier text) | No |
 | Second in-network tier (`IN2`) | `in-network` plus a qualifier: `value-choice` only when the tier name says "Value Choice", otherwise text only. The Cost Tier value set has no code for "tier 2", so the tier order is not coded; tier 1 entries carry no qualifier, and the validator warns on each text-only qualifier. The `tier_id` is kept in `bps-cost-share` (`tierId`) | Yes, through `tierId` and the qualifier text |
@@ -254,7 +258,7 @@ The docs page tells readers to keep the BPS document when they need full fidelit
 | `generic_drugs`, `preferred_generic_drugs` | `generic-drugs` | `generic-drugs` |
 | `preferred_brand_drugs` | `preferred-brand-drugs` | `preferred-brand-drugs` |
 | `nonpreferred_brand_drugs` | `non-preferred-brand-drugs` | `non-preferred-brand-drugs` |
-| `specialty_drugs` | `specialty-drugs` | `specialty-drugs` |
+| `specialty_drugs`, `preferred_specialty_drugs`, `nonpreferred_specialty_drugs` | `specialty-drugs` | `specialty-drugs` |
 | `outpatient_surgery`, `outpatient_surgery_facility` | `hospital-outpatient` | `facility-fee` |
 | `surgery_professional`, `outpatient_surgery_surgeon` | `hospital-outpatient` | `physician-surgeon-fee` |
 | `inpatient_hospital` | `hospital-inpatient` | `facility-fee` |
@@ -263,7 +267,7 @@ The docs page tells readers to keep the BPS document when they need full fidelit
 | `urgent_care` | `urgent-care` | `urgent-care` |
 | `mental_health_outpatient`, `substance_use_outpatient` | `mental-health-outpatient` | `mental-health-outpatient` |
 | `mental_health_inpatient` | `mental-health-inpatient` | `mental-health-inpatient` |
-| `prenatal_care` | `pregnancy` | `pregnancy` |
+| `prenatal_care`, `prenatal_office_visits` | `pregnancy` | `pregnancy` |
 | `delivery_professional` | `pregnancy` | `pregnancy-delivery` |
 | `delivery_facility` | `pregnancy` | `facility-fee` |
 | `rehabilitation_services`, `physical_therapy`, `occupational_therapy`, `speech_therapy` | `rehabilitation` | `rehabilitation` |
@@ -290,7 +294,7 @@ A benefit with no `canonical_key`, or with a key not in 8.2, **is not placed in 
 | ambetter | 30 | 27 | 3: home_health_care, chiropractic_care, acupuncture |
 | bluecross | 31 | 27 | 4: home_health_care, acupuncture, bariatric_surgery, chiropractic_care |
 | cigna | 30 | 26 | 4: home_health_care, acupuncture, bariatric_surgery, chiropractic_care |
-| gatorcare | 29 | 25 | 4: home_health_care, acupuncture, bariatric_surgery, chiropractic_care |
+| gatorcare | 47 | 36 | 11: home_health_care, acupuncture, bariatric_surgery, chiropractic_care, the 2 Tier 0 rows, which have no key, and the 5 hand-off rows (1 with `immunizations`, which is not in 8.2) |
 | kaiser | 31 | 28 | 3: home_health_care, chiropractic_care, acupuncture |
 | united | 29 | 26 | 3: home_health_care, bariatric_surgery, infertility_treatment |
 | humana (MA) | 72 | 26 | 46 |
@@ -305,9 +309,10 @@ Two consequences of the code system as balloted:
 
 Since 2026-10-24 the PBP importer writes the Part D benefit of a Medicare Advantage plan with drug coverage and of a stand-alone Medicare Prescription Drug Plan (`docs/specs/pbp-part-d-mapping.md`, Question Q7):
 
-- **A benefit with a `coverage_stage_id` is not placed**, whatever its `canonical_key`. It is listed in `bps-unmapped-benefit`, in input order, like a benefit outside the 29 codes. The crosswalk places `generic_drugs`, `preferred_generic_drugs`, `preferred_brand_drugs`, `nonpreferred_brand_drugs` and `specialty_drugs`, but the SBC profile has no coverage stage, pharmacy network or day supply, so a Part D tier's dozens of rows (1 per pharmacy network, supply and stage) would sit under 1 SBC row with nothing to tell them apart. The narrative counts them apart from the benefits with no SBC code: "... benefits have no code in the SBC benefit category code system and N Part D benefits (benefits with a coverage stage, which the SBC profile has no place for) are listed, by identity only, in the bps-unmapped-benefit extension." A document with no such benefit has the narrative of before.
+- **A benefit with a `coverage_stage_id` is not placed**, whatever its `canonical_key`. It is listed in `bps-unmapped-benefit`, in input order, like a benefit outside the 29 codes. The crosswalk places `generic_drugs`, `preferred_generic_drugs`, `preferred_brand_drugs`, `nonpreferred_brand_drugs`, `specialty_drugs`, `preferred_specialty_drugs` and `nonpreferred_specialty_drugs`, but the SBC profile has no coverage stage, pharmacy network or day supply, so a Part D tier's dozens of rows (1 per pharmacy network, supply and stage) would sit under 1 SBC row with nothing to tell them apart. The narrative counts them apart from the benefits with no SBC code: "... benefits have no code in the SBC benefit category code system and N Part D benefits (benefits with a coverage stage, which the SBC profile has no place for) are listed, by identity only, in the bps-unmapped-benefit extension." A document with no such benefit has the narrative of before.
+- **A commercial drug benefit, with no `coverage_stage_id`, is placed by its key** like any other benefit (GatorCare, since 2026-10-31; 6.5).
 - **`pharmacy.deductible` and `pharmacy.out_of_pocket_max` stay `generalCost` entries** (6.4).
-- **A document whose `plan_type` is `PDP` is not converted.** `toInsurancePlanBundle` throws `plan_type "PDP": a stand-alone Medicare Part D plan has no medical benefits, and the CARIN SBC InsurancePlan profile describes a medical plan, so the converter does not convert it (docs/specs/insuranceplan-converter.md section 8.4)`, and the CLI prints it as its error. `pbpExampleFiles()` leaves the PDP golden files out, and `--write-golden` prints 1 "not converted" line for each. The pharmacy module v0.2.1 example `humana_part_d_example.json` is a PDP and is refused the same way.
+- **A document whose `plan_type` is `PDP` is not converted.** `toInsurancePlanBundle` throws `plan_type "PDP": a stand-alone Medicare Part D plan has no medical benefits, and the CARIN SBC InsurancePlan profile describes a medical plan, so the converter does not convert it (docs/specs/insuranceplan-converter.md section 8.4)`, and the CLI prints it as its error. `pbpExampleFiles()` leaves the PDP golden files out, and `--write-golden` prints 1 "not converted" line for each. The pharmacy module example `humana_part_d_example.json` is a PDP and is refused the same way.
 
 The 5 PBP Bundles each place their 16 medical benefits and list 22 medical benefits plus their Part D benefits (H2406-013 33, H1036-068 42, H1609-028, H5533-019 and H5425-140 67 each); the 10 Bundles read from plan documents have no Part D benefit and are byte-identical. HL7 validator, eighth run in `examples/fhir/VALIDATION.md`: 0 errors, the same 17 warnings.
 
@@ -315,7 +320,8 @@ The 5 PBP Bundles each place their 16 medical benefits and list 22 medical benef
 
 - Plan-level `source_references[]` go only to `InsurancePlan.extension:bps-source-reference`.
 - Per-benefit `source_references[]` go only to `coverage.benefit.extension:bps-source-reference`.
-- **The 8 SBC examples have plan-level references only.** No benefit in them has `source_references`. Some plan-level excerpts mention a service by name (for example Aetna page 2, "Primary care visit ..."), but the converter **never** attaches a plan-level reference to a benefit, even when the text matches. A test asserts that the SBC outputs contain no benefit-level `bps-source-reference`.
+- **7 of the 8 SBC examples have plan-level references only.** No benefit in them has `source_references`. Some plan-level excerpts mention a service by name (for example Aetna page 2, "Primary care visit ..."), but the converter **never** attaches a plan-level reference to a benefit, even when the text matches. A test asserts that those 7 outputs contain no benefit-level `bps-source-reference`.
+- GatorCare, the eighth, also has references on its 15 pharmacy benefits (since 2026-10-31), and the 8 of them the converter places carry them. Every GatorCare reference names 1 of the plan's 2 PDFs in `document` (v1.2.0 draft 7), which goes in the `document` part wherever the reference goes.
 - The 2 MA examples have per-benefit references on every benefit (72 of 72 and 71 of 71), and those are carried per benefit. For benefits outside the 29 codes, the benefit-level references are not carried (the unmapped-benefit entry holds identity only). The docs page says so.
 - The docs page describes SBC citations as "page references for the plan document", never as per-benefit citations.
 
@@ -349,12 +355,12 @@ Canonical base: `https://benefitplanstandard.org/fhir/`. All are `status: draft`
 
 | Resource | Canonical (under base) | Context | Content |
 |---|---|---|---|
-| StructureDefinition | `StructureDefinition/bps-source-reference` | `InsurancePlan`, `InsurancePlan.coverage.benefit` | `pageNumber` (integer), `pageRange` (string), `excerpt` (string) |
+| StructureDefinition | `StructureDefinition/bps-source-reference` | `InsurancePlan`, `InsurancePlan.coverage.benefit` | `document` (string), `pageNumber` (integer), `pageRange` (string), `excerpt` (string) |
 | StructureDefinition | `StructureDefinition/bps-plan-metadata` | `InsurancePlan` | `schemaVersion`, `planYear`, `market`, `serviceAreaState`, `serviceAreaCounty` (0..*) |
 | StructureDefinition | `StructureDefinition/bps-identifier-source` | `Identifier` | string |
-| StructureDefinition | `StructureDefinition/bps-benefit` | `InsurancePlan.coverage.benefit` | `benefitId`, `benefitType`, `category`, `rawLabel`, `placeOfService` (0..*), `moopApplicability`, `coverageBasis`, `alternativeGroup` |
+| StructureDefinition | `StructureDefinition/bps-benefit` | `InsurancePlan.coverage.benefit` | `benefitId`, `benefitType`, `category`, `rawLabel`, `placeOfService` (0..*), `moopApplicability`, `coverageBasis`, `alternativeGroup`, `formularyTierId`, `daySupply` (integer) |
 | StructureDefinition | `StructureDefinition/bps-condition` | `InsurancePlan.coverage.benefit` | `type`, `code`, `description` |
-| StructureDefinition | `StructureDefinition/bps-cost-share` | `InsurancePlan.plan.specificCost.benefit.cost` | `tierId`, `sequence`, `basis`, `appliesToDeductible`, `appliesToMoop`, `deductibleRef`, `amountMin`, `amountMax`, `rateMin`, `rateMax`, `maxAmount`, `maxBasis`, `unitRangeFrom`, `unitRangeTo`, `note` (0..*) |
+| StructureDefinition | `StructureDefinition/bps-cost-share` | `InsurancePlan.plan.specificCost.benefit.cost` | `tierId`, `sequence`, `basis`, `appliesToDeductible`, `appliesToMoop`, `deductibleRef`, `moopRef`, `amountMin`, `amountMax`, `rateMin`, `rateMax`, `minAmount`, `minBasis`, `maxAmount`, `maxBasis`, `unitRangeFrom`, `unitRangeTo`, `coveredUnder`, `notCoveredReason`, `note` (0..*) |
 | StructureDefinition | `StructureDefinition/bps-accumulator` | `InsurancePlan.plan.generalCost` | `slot`, `networkTier`, `period`, `embedded`, `appliesTo`, `appliesToTier` (0..*) |
 | StructureDefinition | `StructureDefinition/bps-unmapped-benefit` | `InsurancePlan` | `benefitId`, `canonicalKey`, `serviceName`, `category` |
 | CodeSystem | `CodeSystem/canonical-benefits` | | Generated from `vocabularies/canonical-benefits.json` |
@@ -385,7 +391,7 @@ Canonical base: `https://benefitplanstandard.org/fhir/`. All are `status: draft`
 - `scripts/to-insuranceplan.test.js`, run with `node --test scripts/to-insuranceplan.test.js` (Node built-in test runner, no dependencies). The test:
   - converts each of the 10 examples and compares the output with the golden file byte for byte (after CRLF normalization, so a Windows checkout does not fail), and fails on any difference;
   - converts each example twice and asserts identical output (determinism);
-  - asserts that no SBC output has a benefit-level `bps-source-reference`;
+  - asserts that no SBC output other than GatorCare's has a benefit-level `bps-source-reference`;
   - asserts that every benefit shows up either placed or unmapped (none lost silently);
   - asserts that `fhir/definitions/` matches what the definitions script generates;
   - pins the SHA-256 of each of the 10 golden files (LF line endings) and asserts the files and the converter output still hash to those values;
@@ -393,9 +399,10 @@ Canonical base: `https://benefitplanstandard.org/fhir/`. All are `status: draft`
   - converts the 5 Medicare Advantage PBP golden files (`examples/*.pbp.json` less the 2 PDPs) and compares each with its Bundle in `examples/fhir/` byte for byte, twice, against a pinned SHA-256; the directory must hold exactly the 10 and the 5;
   - checks the point-of-service tier (6.3) on the Aetna H1609-028 golden file: `POS` entries are `out-of-network` with the `Point-of-service option` qualifier (10 entries), the specialist's $70 copay keeps `DeductibleApplies` true, a benefit priced in network and at the POS option has no placeholder, and a network tier named "Point-of-Service" under another `tier_id` still fails;
   - checks `excluded-services` (10.1): a benefit not covered on any tier gets an entry with the vocabulary label and the fixed description, a benefit not covered out of network only gets none; without the option no Bundle carries it; on each of the 5 Marketplace golden files it lists exactly the benefits not covered on any tier, in input order, the 3 adult dental classes among them; the option is refused for the 10 examples and the 5 PBP files, and for a key with no label;
-  - checks Medicare Part D (8.4) on the Humana H1036-068 golden file: its 42 Part D benefits are unmapped, in input order, none placed, and the 2 pharmacy `generalCost` entries are kept; a PDP golden file is refused, by the function and by the CLI, and `pbpExampleFiles()` leaves it out; the pharmacy module's PDP example is refused, and its commercial example converts unchanged by the module fields.
+  - checks Medicare Part D (8.4) on the Humana H1036-068 golden file: its 42 Part D benefits are unmapped, in input order, none placed, and the 2 pharmacy `generalCost` entries are kept; a PDP golden file is refused, by the function and by the CLI, and `pbpExampleFiles()` leaves it out; the pharmacy module's PDP example is refused, and its commercial example converts, `formulary_tier_id` and `day_supply` reach `bps-benefit`, and the other module fields change nothing;
+  - checks the fields of the v1.2.0 draft 7 on the GatorCare Bundle: the floor, the cap and `moopRef` in `bps-cost-share` with `value` still the rate, `coveredUnder` and `notCoveredReason` on the `Not covered` entry with a null left out, the second pharmacy deductible entry, `document` on every citation, and which benefits are placed and which are listed.
 
-  70 tests on 2026-10-24 (68 on 2026-10-13, 65 on 2026-10-06, 62 before the POS tier).
+  75 tests on 2026-10-31 (70 on 2026-10-24, 68 on 2026-10-13, 65 on 2026-10-06, 62 before the POS tier).
 - Goldens are refreshed only on purpose, with `node scripts/to-insuranceplan.js --write-golden`, which writes the 10 and the 5 PBP Bundles and names the 2 PDP golden files it does not convert.
 
 The golden files double as fixtures for ports to other languages.
