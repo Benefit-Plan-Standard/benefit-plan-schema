@@ -22,6 +22,11 @@
  *     and each is covered with at least 1 cost share, or not covered. The benefit is found by benefit_id
  *     (Medicare Advantage, pbp_benefit_id) or by raw_label (Marketplace, the exact BenefitName).
  *   - An extra benefit: its benefit has in-network tier rows, each with covered true or false.
+ *   - The limits row of an extra benefit, which is SHOULD and so not counted here; limitsAnswered() below is
+ *     its rule, for a reader that checks it: the benefit has at least 1 limits entry, either a limit with a
+ *     value or, since schema 1.2.0 draft 8, a no-limit entry (unlimited true, value null), which says the
+ *     CMS file states no limit of that type and counts as answered. A blank answer in the CMS file writes
+ *     no entry, so the row stays unanswered.
  *   - Any other item: 1 of its field paths holds a value, or 1 of the columns it reads is quoted with
  *     its value in the document (a column is quoted as name "value"). The quoted cell is the answer when
  *     the plan files none, such as a deductible of "Not Applicable". The 4 columns in SELECTORS only say
@@ -137,6 +142,10 @@ function hasSecondTier(doc, text) {
 function isQuotedValue(text, col, value) {
   return new RegExp(`(?<![A-Za-z0-9_])${escapeRe(col)} "${escapeRe(value)}"`).test(text);
 }
+
+// The limits row of an extra benefit (SHOULD; count() does not count it): answered by a limit with a value or by a
+// no-limit entry, unlimited true with value null (schema 1.2.0 draft 8).
+const limitsAnswered = (benefit) => ((benefit && benefit.limits) || []).some((l) => l.unlimited === true || typeof l.value === 'number');
 
 // A tier row answers a cost question when it is not covered, or covered with at least 1 cost share.
 const answersCost = (row) => !!row && (row.covered === false || (row.covered === true && (row.cost_shares || []).length > 0));
@@ -272,6 +281,6 @@ function main(argv) {
   return 0;
 }
 
-module.exports = { count, resolvePath, isQuoted, programOf, planKey, PROGRAM_NAME };
+module.exports = { count, limitsAnswered, resolvePath, isQuoted, programOf, planKey, PROGRAM_NAME };
 
 if (require.main === module) process.exit(main(process.argv.slice(2)));

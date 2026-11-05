@@ -109,8 +109,9 @@
       "item": "Inpatient hospital care, unlimited days",
       "page": 2,
       "printed": "Our plan covers an unlimited number of days for an inpatient hospital stay.",
-      "expected": [],
-      "path": "/benefits/2/limits"
+      "expected": [{ "type": "days", "value": null, "unlimited": true }],
+      "path": "/benefits/2/limits",
+      "note": "Since schema 1.2.0 draft 8 the document writes the file's answer, pbp_b1a_bendesc_lim_ad \"1\" (unlimited additional days), as a limits entry with unlimited true; before draft 8 limits was empty."
     },
     {
       "item": "Inpatient hospital care, out of network",
@@ -355,8 +356,9 @@
       "item": "Routine eye exam, each year",
       "page": 5,
       "printed": "each year",
-      "expected": [{ "type": "visits", "value": 1, "period": "per_year" }],
-      "path": "/benefits/25/limits"
+      "expected": { "type": "visits", "value": 1, "period": "per_year" },
+      "path": "/benefits/25/limits/0",
+      "note": "Since schema 1.2.0 draft 8 limits also holds a no-limit entry, dollars (pbp_b17a_maxplan_yn \"2\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Routine eye exam, prior authorization",
@@ -461,8 +463,9 @@
       "item": "Routine foot care, 6 visits per year",
       "page": 9,
       "printed": "6 visits per year",
-      "expected": [{ "type": "visits", "value": 6, "period": "per_year" }],
-      "path": "/benefits/20/limits"
+      "expected": { "type": "visits", "value": 6, "period": "per_year" },
+      "path": "/benefits/20/limits/0",
+      "note": "Since schema 1.2.0 draft 8 limits also holds a no-limit entry, dollars (pbp_b7f_maxplan_yn \"2\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Routine foot care, prior authorization",
