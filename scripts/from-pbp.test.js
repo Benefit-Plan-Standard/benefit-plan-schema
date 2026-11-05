@@ -7,7 +7,9 @@
  * if output is not deterministic, if the reader or a mapping rule changes
  * behavior (the Part D rules of docs/specs/pbp-part-d-mapping.md included), if
  * the crosswalk names a column the files do not have, or if a Summary of Benefits
- * check (H2406-013-000, H1036-068-000, S5921-383-000) finds a difference. The golden plans
+ * check (H2406-013-000, H1036-068-000, S5921-383-000) finds a difference. Since schema
+ * 1.2.0 draft 8 it also fails if a "no maximum" or "unlimited" answer stops being a
+ * no-limit limits entry, or if a blank answer starts writing one. The golden plans
  * are built from the rows committed in test/fixtures/pbp/2027/, so the test runs
  * without the full PBP files; when data/pbp/2027/ is present the golden plans are
  * also built from the full files. Regenerate on purpose with:
@@ -30,6 +32,7 @@ const {
   GOLDEN, CROSSWALK, READ_FILES, EXAMPLES_DIR, FIXTURE_DIR, DATA_DIR, PART_D_PARAMETERS,
 } = require('./from-pbp.js');
 const { runChecks, matches, resolvePointer, ABSENT } = require('./pbp-sob-check.js');
+const { limitsAnswered } = require('./rtb-completeness.js');
 
 const REPO = path.join(__dirname, '..');
 const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
@@ -270,7 +273,8 @@ test('combined groups: H5425-140 writes the $125 13b maximum once, with group 2\
   assert.match(otc.limits[0].raw_text, /^Maximum plan benefit coverage: pbp_b13b_maxplan_yn "1", pbp_b13b_maxplan_amt "125\.00", .*\(carryover none\)\. Written once, with the shared_limit_id of combined supplemental benefit group 2, which states the same amount and period: pbp_d_combo_max_plan_ben_yn_2 "1", .*pbp_d_combo_grp_name_2 "Grocery-OTC"; 1 amount shared by pbp_d_combo_nmc_cats_2 "13b;19b3;", pbp_d_combo_19b_ssbci_nm_cats_2 "13i1\|SSBCI\|Food and Non-Medical Transportation;"\.$/);
   assert.deepStrictEqual(comboRefs(otc).map((s) => s.excerpt.slice(0, 43)), ['Combined supplemental benefit group 2 of 2 ']);
   const trips = benefit(doc, 'TRANSPORTATION');
-  assert.deepStrictEqual(trips.limits.map((l) => [l.type, l.value, l.shared_limit_id]), [['trips', 12, undefined]]);
+  // Group 1 has no maximum, so the category's own "no maximum" (pbp_b10b_maxplan_yn "2") is written (draft 8).
+  assert.deepStrictEqual(trips.limits.map((l) => [l.type, l.value, l.shared_limit_id]), [['trips', 12, undefined], ['dollars', null, undefined]]);
   const refs = comboRefs(trips);
   assert.strictEqual(refs.length, 1);
   assert.match(refs[0].excerpt, /^Combined supplemental benefit group 1 of 2 \(pbp_Section_D\.txt\), verbatim: .*pbp_d_combo_max_plan_ben_yn_1 "2"; pbp_d_combo_share_visit_yn_1 "1"; pbp_d_combo_share_visit_amt_1 "12"; .* The shared visit or trip count is not written as a limit \(spec section 5\.9\)\.$/);
@@ -282,12 +286,15 @@ test('combined groups: every benefit the list names gets the limit; a different 
   assert.deepStrictEqual(both.errors, []);
   assert.deepStrictEqual(comboLimits(both.doc), ['OTC_ITEMS', 'TRANSPORTATION']);
   const trips = benefit(both.doc, 'TRANSPORTATION').limits;
+  // The group's $90 caps transportation, so its own "no maximum" (pbp_b10b_maxplan_yn "2") is not written (draft 8).
   assert.deepStrictEqual(trips.map((l) => [l.type, l.value, l.period, l.shared_limit_id]), [['trips', 50, 'per_year', undefined], ['dollars', 90, 'per_3_months', 'PBP_D_COMBO_1']]);
   assert.strictEqual(comboRefs(benefit(both.doc, 'TRANSPORTATION')).length, 1);
   const other = await alteredPart('H5425-140-000', 'd', { pbp_d_combo_max_plan_ben_amt_2: '100.00' });
   assert.deepStrictEqual(benefit(other.doc, 'OTC_ITEMS').limits.map((l) => [l.value, l.shared_limit_id, l.carryover]), [[125, undefined, 'none'], [100, 'PBP_D_COMBO_2', undefined]]);
+  // With no group, the allowance's own answer is the limits entry: pbp_b13b_maxplan_yn "2", no maximum (draft 8).
   const none = await alteredPart('H1036-068-000', 'd', { pbp_d_combo_supp_ben_yn: '2' });
-  assert.deepStrictEqual(benefit(none.doc, 'OTC_ITEMS').limits, []);
+  assert.deepStrictEqual(benefit(none.doc, 'OTC_ITEMS').limits, [
+    { type: 'dollars', value: null, unlimited: true, raw_text: 'Maximum plan benefit coverage: pbp_b13b_maxplan_yn "2" (no maximum).' }]);
   assert.deepStrictEqual(comboRefs(benefit(none.doc, 'OTC_ITEMS')), []);
   for (const [changes, msg] of [
     [{ pbp_d_combo_supp_ben_yn: '3' }, 'pbp_d_combo_supp_ben_yn "3" is not 1 or 2'],
@@ -304,6 +311,104 @@ test('combined groups: every benefit the list names gets the limit; a different 
   const notOffered = await alteredPart('H5533-019-000', 'd', { pbp_d_combo_nmc_cats_1: '13b;14c8;13c;' });
   assert.strictEqual(notOffered.doc, null);
   assert.ok(notOffered.errors.some((e) => e.startsWith('pbp_d_combo_nmc_cats_1 "13b;14c8;13c;" lists 13c, but ')), notOffered.errors.join(' | '));
+});
+
+// ---- no-limit entries (schema 1.2.0 draft 8, spec 5.6) ------------------------------------------
+const MAX_NO = (col) => ({ type: 'dollars', value: null, unlimited: true, raw_text: `Maximum plan benefit coverage: ${col} "2" (no maximum).` });
+
+test('draft 8, meals: pbp_b13c_maxplan_yn "2" is a no-limit dollars entry that quotes the cell; blank writes nothing; another answer is an error', async () => {
+  const meals = benefit(await docFor('H1036-068-000'), 'MEALS');
+  assert.deepStrictEqual(meals.limits, [MAX_NO('pbp_b13c_maxplan_yn')]);
+  assert.strictEqual(limitsAnswered(meals), true, 'the medical MVP limits row counts the no-limit entry as answered');
+  const blank = await altered('H1036-068-000', 'pbp_b13_other_services.txt', { pbp_b13c_maxplan_yn: '' });
+  assert.deepStrictEqual(blank.errors, []);
+  assert.deepStrictEqual(benefit(blank.doc, 'MEALS').limits, [], 'a plan that files nothing writes nothing');
+  assert.strictEqual(limitsAnswered(benefit(blank.doc, 'MEALS')), false);
+  const bad = await altered('H1036-068-000', 'pbp_b13_other_services.txt', { pbp_b13c_maxplan_yn: '3' });
+  assert.strictEqual(bad.doc, null);
+  assert.ok(bad.errors.includes('pbp_b13c_maxplan_yn "3" is not 1 or 2'), bad.errors.join(' | '));
+});
+
+const LIST_NO = (list) => ({ type: 'dollars', value: null, unlimited: true,
+  raw_text: `Maximum plan benefit coverage: pbp_b14c_maxplan_yn "1", pbp_b14c_maxplan_ehc "${list}" (no maximum: the list does not name 14c4).` });
+
+test('draft 8, fitness: pbp_b14c_maxplan_yn "2", or "1" with a maximum list that does not name 14c4, is a no-limit dollars entry that quotes both cells', async () => {
+  for (const plan of ['H2406-013-000', 'H1036-068-000', 'H5425-140-000', 'H5533-019-000']) {
+    assert.deepStrictEqual(benefit(await docFor(plan), 'FITNESS').limits, [MAX_NO('pbp_b14c_maxplan_yn')], plan);
+  }
+  // H1609-028 files a 14c maximum for wigs (14c15) only, so fitness has none.
+  assert.deepStrictEqual(benefit(await docFor('H1609-028-000'), 'FITNESS').limits, [LIST_NO('14c15;')]);
+  const other = await altered('H1036-068-000', 'pbp_b14_preventive.txt', { pbp_b14c_maxplan_yn: '1', pbp_b14c_maxplan_ehc: '14c21;' });
+  assert.deepStrictEqual(other.errors, []);
+  assert.deepStrictEqual(benefit(other.doc, 'FITNESS').limits, [LIST_NO('14c21;')]);
+  // A list that names 14c4 is the amount, as before.
+  const listed = await altered('H1036-068-000', 'pbp_b14_preventive.txt', {
+    pbp_b14c_maxplan_yn: '1', pbp_b14c_maxplan_ehc: '14c4;14c21;', pbp_b14c_maxplan_amt_mhc: '150.00', pbp_b14c_maxplan_per_mhc: '3' });
+  assert.deepStrictEqual(listed.errors, []);
+  assert.deepStrictEqual(benefit(listed.doc, 'FITNESS').limits.map((l) => [l.type, l.value, l.period, l.unlimited]), [['dollars', 150, 'per_year', undefined]]);
+  // A Yes with no list says nothing about fitness: an error that quotes both cells (0 plans in CY 2027).
+  const bad = await altered('H1036-068-000', 'pbp_b14_preventive.txt', { pbp_b14c_maxplan_yn: '1', pbp_b14c_maxplan_ehc: '' });
+  assert.strictEqual(bad.doc, null);
+  assert.ok(bad.errors.includes('pbp_b14c_maxplan_yn "1" but pbp_b14c_maxplan_ehc ""'), bad.errors.join(' | '));
+});
+
+test('draft 8, transportation: pbp_b10b_bendesc_lim_pal or _lim_al "1" is a no-limit trips entry with the location type and the trip type quoted', async () => {
+  assert.deepStrictEqual(benefit(await docFor('H1036-068-000'), 'TRANSPORTATION').limits.map((l) => [l.type, l.value, l.period, l.unlimited]),
+    [['trips', 50, 'per_year', undefined], ['dollars', null, undefined, true]], 'lim_pal "2" is the count, as before');
+  const pal = await altered('H1036-068-000', 'pbp_b10_amb_trans.txt', { pbp_b10b_bendesc_lim_pal: '1', pbp_b10b_bendesc_amt_pal: '', pbp_b10b_bendesc_per_pal: '' });
+  assert.deepStrictEqual(pal.errors, []);
+  assert.deepStrictEqual(benefit(pal.doc, 'TRANSPORTATION').limits, [
+    { type: 'trips', value: null, unlimited: true, raw_text: 'Plan Approved Health-related Location: pbp_b10b_bendesc_lim_pal "1" (unlimited); pbp_b10b_bendesc_tt_pal "1" (One-way).' },
+    MAX_NO('pbp_b10b_maxplan_yn'),
+  ]);
+  const al = await altered('H1036-068-000', 'pbp_b10_amb_trans.txt', {
+    pbp_b10b_bendesc_trn: '2', pbp_b10b_bendesc_amo_al: '2', pbp_b10b_bendesc_lim_al: '1', pbp_b10b_bendesc_tt_al: '2',
+    pbp_b10b_bendesc_amo_pal: '', pbp_b10b_bendesc_lim_pal: '', pbp_b10b_bendesc_amt_pal: '', pbp_b10b_bendesc_per_pal: '', pbp_b10b_bendesc_tt_pal: '',
+  });
+  assert.deepStrictEqual(al.errors, []);
+  assert.deepStrictEqual(benefit(al.doc, 'TRANSPORTATION').limits[0],
+    { type: 'trips', value: null, unlimited: true, raw_text: 'Any Health-related Location: pbp_b10b_bendesc_lim_al "1" (unlimited); pbp_b10b_bendesc_tt_al "2" (Round Trip).' });
+  const bad = await altered('H1036-068-000', 'pbp_b10_amb_trans.txt', { pbp_b10b_bendesc_lim_pal: '0' });
+  assert.ok(bad.errors.includes('pbp_b10b_bendesc_lim_pal "0" is not 1 or 2'), bad.errors.join(' | '));
+});
+
+test('draft 8: inpatient additional days with pbp_b1a_bendesc_lim_ad "1" are a no-limit days entry; "2" is the count, as before', async () => {
+  for (const x of await maBuilt()) {
+    assert.deepStrictEqual(benefit(x.result.doc, 'INPATIENT_HOSPITAL').limits,
+      [{ type: 'days', value: null, unlimited: true, raw_text: 'Additional days (1a1): pbp_b1a_bendesc_lim_ad "1" (unlimited).' }], x.g.plan);
+  }
+  const limited = await altered('H2406-013-000', 'pbp_b1a_inpat_hosp.txt', { pbp_b1a_bendesc_lim_ad: '2', pbp_b1a_bendesc_amt_ad: '60' });
+  assert.deepStrictEqual(benefit(limited.doc, 'INPATIENT_HOSPITAL').limits.map((l) => [l.type, l.value, l.period, l.unlimited]), [['days', 60, 'per_benefit_period', undefined]]);
+});
+
+test('draft 8: a combined group\'s shared count keeps the category\'s own unlimited count out, and a group maximum its own no maximum', async () => {
+  // H5425-140 group 1 lists 10b1 and shares 12 trips a year, with no maximum of its own.
+  const counted = await altered('H5425-140-000', 'pbp_b10_amb_trans.txt', { pbp_b10b_bendesc_lim_pal: '1', pbp_b10b_bendesc_amt_pal: '', pbp_b10b_bendesc_per_pal: '' });
+  assert.deepStrictEqual(counted.errors, []);
+  assert.deepStrictEqual(benefit(counted.doc, 'TRANSPORTATION').limits, [MAX_NO('pbp_b10b_maxplan_yn')]);
+  // H5533-019 and H1036-068 answer No to the 13b maximum, and their group's maximum is the allowance.
+  for (const plan of ['H5533-019-000', 'H1036-068-000']) {
+    const { rows } = await loadPlan({ dataDir: FIXTURE_DIR, year: 2027, plan });
+    assert.strictEqual(rows.b['pbp_b13_other_services.txt'].pbp_b13b_maxplan_yn, '2', plan);
+    assert.deepStrictEqual(benefit(await docFor(plan), 'OTC_ITEMS').limits.map((l) => [l.type, l.unlimited, l.shared_limit_id]), [['dollars', undefined, 'PBP_D_COMBO_1']], plan);
+  }
+});
+
+test('draft 8: every no-limit entry in the golden files has value null and no period, scope, shared_limit_id or carryover, and quotes its answer', async () => {
+  let n = 0;
+  for (const x of await maBuilt()) {
+    for (const b of x.result.doc.benefits) {
+      for (const l of b.limits.filter((e) => e.unlimited === true)) {
+        n++;
+        assert.deepStrictEqual(Object.keys(l), ['type', 'value', 'unlimited', 'raw_text'], `${x.g.plan} ${b.benefit_id}`);
+        assert.strictEqual(l.value, null);
+        assert.match(l.raw_text, l.type === 'dollars' ? /_maxplan(_\w+)?_yn "2" \(no maximum\)|pbp_b14c_maxplan_yn "1", pbp_b14c_maxplan_ehc "[^"]+" \(no maximum: the list does not name 14c4\)/
+          : /_lim(_\w+)? "1" \(unlimited\)/, `${x.g.plan} ${b.benefit_id}`);
+      }
+      assert.ok(b.limits.every((l) => l.unlimited === true || typeof l.value === 'number'), `${x.g.plan} ${b.benefit_id}`);
+    }
+  }
+  assert.strictEqual(n, 38);
 });
 
 // ---- errors on altered rows -----------------------------------------------------------------------

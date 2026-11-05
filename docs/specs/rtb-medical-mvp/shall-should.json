@@ -25,7 +25,7 @@
           "note": "The included-or-optional column sets coverage_basis (2 mandatory, 3 optional; 4, both, is written null with a note). Authorization and referral answers go to conditions[]."
         },
         "limits": {
-          "note": "A quantity limit reads the unlimited-or-limited answer (1 unlimited, 2 limited), the number and the period. A dollar maximum reads the maximum plan benefit columns; a maximum shared with another category carries a shared_limit_id."
+          "note": "A quantity limit reads the unlimited-or-limited answer (1 unlimited, 2 limited), the number and the period. A dollar maximum reads the maximum plan benefit columns; a maximum shared with another category carries a shared_limit_id. An unlimited count (1), a No to the maximum question (2), or for fitness a 14c maximum list (pbp_b14c_maxplan_ehc) that does not name 14c4, is a limits entry with unlimited true and value null, and it answers the row as a limit with a value does (schema 1.2.0 draft 8), unless a combined supplemental benefit group that lists the category shares a count or states a maximum. A blank answer writes no entry and leaves the row unanswered."
         }
       }
     },

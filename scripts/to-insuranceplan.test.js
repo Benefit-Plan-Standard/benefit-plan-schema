@@ -136,13 +136,16 @@ const GOLDEN_SHA256 = {
 // 2026-10-20 when the importer began reading 14a, the premium and the Section A
 // contacts, and 7i gained a canonical key (medical MVP gaps G1 to G5), and 2026-10-24
 // when the importer began reading the Part D files: each Bundle lists its Part D
-// benefits as unmapped and gains the 2 pharmacy generalCost entries.
+// benefits as unmapped and gains the 2 pharmacy generalCost entries; and 2026-11-04
+// when the importer began writing no-limit entries (schema 1.2.0 draft 8): each
+// Bundle's inpatient hospital benefit gains 1 BenefitLimitation for the unlimited
+// additional days, with limitText and limitType and no limitValue.
 const PBP_BUNDLE_SHA256 = {
-  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': 'e7a545a724deb336266cd0420e9f0d69b76ee471417a9ad0f526114a3b738c3f',
-  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': 'd2a347778338aadd3f7b502eb1ae4bc29c96101e334474d5fdfe4518998a2f9d',
-  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': 'a8c617a24120239fa58b905f6cb75f01717230424e22c524ca79617479586d5a',
-  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': '803f3e7337a756167b1348b5820fe130061b036cf9968449359df06c19355aed',
-  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': '9b8438a4f220e0645a133aee8fb7a672c673cdc79cfb69bf74957229a6b86313',
+  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': '0020173885a80d77311c4d83b0833b318e599eae8fdb3fffb8ce1238080e6025',
+  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': 'eedcf299212dd8b826a465618054eb7bd4c448f01d0b6182c4844ddb6859bf07',
+  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '0604ccae3d08271c522dbe4d278a2a8b347ab9efb2fc69e2b24ea8cb635a5fca',
+  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': '31b244e97c3647af30e86abba6133dd6dcf2d4fec7c1b74d46455b86b00afbc1',
+  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': '953342171f2fef81d120fb1a91ec3b9f61555ad65eb8ab1348e072edb6ba79fd',
 };
 
 test('the 10 golden files are byte-identical to the pinned versions, and the converter reproduces them', () => {
@@ -444,6 +447,28 @@ test('draft 7: T3, T5 and the 3 medical rows are placed; T0 and the hand-off row
     'HOME_HEALTH_CARE', 'ACUPUNCTURE', 'BARIATRIC_SURGERY', 'CHIROPRACTIC_CARE',
     'RX_T0_RETAIL_34', 'RX_T0_EXTENDED_90',
     'RX_PHYSICIAN_ADMINISTERED', 'RX_INSULIN_PUMPS', 'RX_IUD_DEVICES', 'RX_VACCINES_PHARMACIST', 'RX_VACCINES_OTHER_METHODS',
+  ]);
+});
+
+// ---- schema 1.2.0 draft 8: a no-limit entry, in the PBP Bundles (spec 6.6) ---------
+const LIMITATION = 'http://hl7.org/fhir/us/insurance-card/StructureDefinition/benefit-limitation';
+
+test('draft 8: a no-limit entry is a BenefitLimitation with limitText and limitType, and no limitValue or limitPeriod', () => {
+  const limitationsOf = (bps, id) => toInsurancePlanBundle(bps).entry[0].resource.coverage.flatMap((c) => c.benefit)
+    .find((b) => subValue(b.extension.find((e) => e.url === BENEFIT), 'benefitId') === id).extension.filter((e) => e.url === LIMITATION);
+  const bps = readJson(path.join(EXAMPLES_DIR, 'humana-humana-gold-plus-h1036-068.pbp.json'));
+  const inpatient = bps.benefits.find((b) => b.benefit_id === 'INPATIENT_HOSPITAL');
+  assert.deepStrictEqual(inpatient.limits.map((l) => [l.type, l.value, l.unlimited]), [['days', null, true]]);
+  const [days] = limitationsOf(bps, 'INPATIENT_HOSPITAL');
+  assert.deepStrictEqual(days.extension.map((e) => e.url), ['limitText', 'limitType']);
+  assert.strictEqual(part(days, 'limitText'), 'Additional days (1a1): pbp_b1a_bendesc_lim_ad "1" (unlimited).');
+  assert.deepStrictEqual(part(days, 'limitType').coding.map((c) => c.code), ['days']);
+  // A dollars entry the same way: the type is coded, and no amount is invented.
+  inpatient.limits = [{ type: 'dollars', value: null, unlimited: true, raw_text: 'No maximum.' }];
+  const [dollars] = limitationsOf(bps, 'INPATIENT_HOSPITAL');
+  assert.deepStrictEqual(dollars.extension.map((e) => [e.url, Object.values(e)[1]]), [
+    ['limitText', 'No maximum.'],
+    ['limitType', { coding: [{ system: 'http://hl7.org/fhir/us/insurance-card/CodeSystem/limit-type', code: 'dollars', display: 'Dollars' }] }],
   ]);
 });
 

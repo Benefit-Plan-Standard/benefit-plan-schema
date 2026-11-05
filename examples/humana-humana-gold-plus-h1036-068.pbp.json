@@ -315,7 +315,14 @@
           "notes": "pbp_b1a_inpat_hosp.txt cells: pbp_b1a_copay_yn \"1\", pbp_b1a_copay_mcs_amt_t1 \"0.00\", pbp_b1a_copay_mcs_int_num_t1 \"3\", pbp_b1a_copay_mcs_amt_int1_t1 \"125.00\", pbp_b1a_copay_mcs_bgnd_int1_t1 \"1\", pbp_b1a_copay_mcs_endd_int1_t1 \"5\", pbp_b1a_copay_mcs_amt_int2_t1 \"0.00\", pbp_b1a_copay_mcs_bgnd_int2_t1 \"6\", pbp_b1a_copay_mcs_endd_int2_t1 \"90\", pbp_b1a_copay_ad_intrvl_num_t1 \"2\", pbp_b1a_copay_ad_amt_int1_t1 \"0.00\", pbp_b1a_copay_ad_bgnd_int1_t1 \"91\", pbp_b1a_copay_ad_endd_int1_t1 \"999\"."
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "days",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "Additional days (1a1): pbp_b1a_bendesc_lim_ad \"1\" (unlimited)."
+        }
+      ],
       "conditions": [
         {
           "type": "authorization",
@@ -1062,7 +1069,20 @@
           "notes": "pbp_b7_health_prof.txt cells: pbp_b7f_copay_yn \"1\", pbp_b7f_copay_ehc \"11\", pbp_b7f_copay_rf_amt_min \"10.00\", pbp_b7f_copay_rf_amt_max \"10.00\", pbp_b7f_coins_yn \"2\", pbp_b7f_ded_yn \"2\"."
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "visits",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "pbp_b7f_bendesc_lim_rf \"1\" (unlimited)."
+        },
+        {
+          "type": "dollars",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "Maximum plan benefit coverage: pbp_b7f_maxplan_yn \"2\" (no maximum)."
+        }
+      ],
       "conditions": [
         {
           "type": "authorization",
@@ -1105,6 +1125,12 @@
           "value": 12,
           "period": "per_year",
           "raw_text": "pbp_b13a_bendesc_lim \"2\", pbp_b13a_bendesc_numv \"12\", pbp_b13a_bendesc_per \"3\" (Every year)."
+        },
+        {
+          "type": "dollars",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "Maximum plan benefit coverage: pbp_b13a_maxplan_yn \"2\" (no maximum)."
         }
       ],
       "conditions": [
@@ -1195,6 +1221,12 @@
           "value": 1,
           "period": "per_year",
           "raw_text": "pbp_b18a_bendesc_lim_rht \"2\", pbp_b18a_bendesc_numv_cl \"1\", pbp_b18a_bendesc_per_rht \"3\" (Every year)."
+        },
+        {
+          "type": "dollars",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "Maximum plan benefit coverage: pbp_b18a_maxplan_yn \"2\" (no maximum); the answer covers 18a supplemental benefits."
         }
       ],
       "conditions": [
@@ -1287,6 +1319,12 @@
           "value": 1,
           "period": "per_year",
           "raw_text": "pbp_b17a_bendesc_lim_rex \"2\", pbp_b17a_bendesc_num_rex \"1\", pbp_b17a_bendesc_per_rex \"3\" (Every year)."
+        },
+        {
+          "type": "dollars",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "Maximum plan benefit coverage: pbp_b17a_maxplan_yn \"2\" (no maximum); the answer covers 17a supplemental benefits."
         }
       ],
       "conditions": [
@@ -1337,6 +1375,12 @@
           "value": 2,
           "period": "per_year",
           "raw_text": "pbp_b18b_bendesc_lim_at \"2\", pbp_b18b_bendesc_numv_at \"2\", pbp_b18b_bendesc_per_at \"3\" (Every year)."
+        },
+        {
+          "type": "dollars",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "Maximum plan benefit coverage: pbp_b18b_maxplan_yn \"2\" (no maximum); the answer covers 18b (all hearing aid types)."
         }
       ],
       "conditions": [],
@@ -1627,6 +1671,12 @@
       ],
       "limits": [
         {
+          "type": "pairs_of_eyeglasses",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "pbp_b17b_bendesc_lim_egs \"1\" (unlimited)."
+        },
+        {
           "type": "dollars",
           "value": 300,
           "period": "per_year",
@@ -1722,7 +1772,14 @@
           "notes": "pbp_b13_other_services.txt cells: pbp_b13c_copay_yn \"1\", pbp_b13c_copay_amt_min \"0.00\", pbp_b13c_copay_amt_max \"0.00\", pbp_b13c_coins_yn \"2\", pbp_b13c_ded_yn \"2\"."
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "dollars",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "Maximum plan benefit coverage: pbp_b13c_maxplan_yn \"2\" (no maximum)."
+        }
+      ],
       "conditions": [
         {
           "type": "authorization",
@@ -1768,6 +1825,12 @@
           "value": 50,
           "period": "per_year",
           "raw_text": "Plan Approved Health-related Location: pbp_b10b_bendesc_lim_pal \"2\", pbp_b10b_bendesc_amt_pal \"50\", pbp_b10b_bendesc_per_pal \"3\" (Every year); pbp_b10b_bendesc_tt_pal \"1\" (One-way)."
+        },
+        {
+          "type": "dollars",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "Maximum plan benefit coverage: pbp_b10b_maxplan_yn \"2\" (no maximum)."
         }
       ],
       "conditions": [
@@ -1809,7 +1872,14 @@
           "notes": "pbp_b14_preventive.txt cells: pbp_b14c_copay_yn \"1\", pbp_b14c_copay_ehc \"14c4;14c21;\", pbp_b14c_copay_mhc_min_amt \"0.00\", pbp_b14c_copay_mhc_max_amt \"0.00\", pbp_b14c_coins_yn \"2\", pbp_b14c_ded_yn \"2\"."
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "dollars",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "Maximum plan benefit coverage: pbp_b14c_maxplan_yn \"2\" (no maximum)."
+        }
+      ],
       "conditions": [
         {
           "type": "authorization",

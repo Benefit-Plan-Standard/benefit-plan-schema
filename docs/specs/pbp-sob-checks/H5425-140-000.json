@@ -57,8 +57,9 @@
       "item": "Inpatient hospital coverage, unlimited days per admission",
       "page": 2,
       "printed": "Unlimited days per admission",
-      "expected": [],
-      "path": "/benefits/2/limits"
+      "expected": [{ "type": "days", "value": null, "unlimited": true }],
+      "path": "/benefits/2/limits",
+      "note": "Since schema 1.2.0 draft 8 the document writes the file's answer, pbp_b1a_bendesc_lim_ad \"1\" (unlimited additional days), as a limits entry with unlimited true; before draft 8 limits was empty."
     },
     {
       "item": "Ambulatory surgical center",
@@ -178,8 +179,9 @@
       "item": "Routine hearing exam, allowance",
       "page": 3,
       "printed": "You are covered for up to $400 per year for routine hearing exams and hearing aids.",
-      "expected": [{ "type": "dollars", "value": 400, "period": "per_year" }],
-      "path": "/benefits/23/limits"
+      "expected": { "type": "dollars", "value": 400, "period": "per_year" },
+      "path": "/benefits/23/limits/1",
+      "note": "Since schema 1.2.0 draft 8 limits also holds a no-limit entry, visits (pbp_b18a_bendesc_lim_rht \"1\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Routine hearing aids, covered",
@@ -192,9 +194,9 @@
       "item": "Routine hearing aids, allowance",
       "page": 3,
       "printed": "You are covered for up to $400 per year for routine hearing exams and hearing aids.",
-      "expected": [{ "type": "dollars", "value": 400, "period": "per_year" }],
-      "path": "/benefits/26/limits",
-      "note": "pbp_b18b_maxplan_type \"1\": hearing aids are covered under the 18a maximum, pbp_b18a_maxplan_amt \"400.00\" every year, which the document writes on both benefits with 1 shared_limit_id (spec 7.10)."
+      "expected": { "type": "dollars", "value": 400, "period": "per_year" },
+      "path": "/benefits/26/limits/1",
+      "note": "pbp_b18b_maxplan_type \"1\": hearing aids are covered under the 18a maximum, pbp_b18a_maxplan_amt \"400.00\" every year, which the document writes on both benefits with 1 shared_limit_id (spec 7.10). Since schema 1.2.0 draft 8 limits also holds a no-limit entry, hearing_aids (pbp_b18b_bendesc_lim_at \"1\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Routine dental, prophylaxis (routine cleaning)",
@@ -208,9 +210,9 @@
       "item": "Routine dental, prophylaxis, 2 per 12 months",
       "page": 4,
       "printed": "$0 (2 per 12 months)",
-      "expected": [{ "type": "visits", "value": 2, "period": "per_year" }],
-      "path": "/benefits/30/limits",
-      "note": "pbp_b16b_bendesc_pc_num \"2\", pbp_b16b_bendesc_pc_per \"3\" (Every year)."
+      "expected": { "type": "visits", "value": 2, "period": "per_year" },
+      "path": "/benefits/30/limits/0",
+      "note": "pbp_b16b_bendesc_pc_num \"2\", pbp_b16b_bendesc_pc_per \"3\" (Every year). Since schema 1.2.0 draft 8 limits also holds a no-limit entry, dollars (pbp_b16b_maxplan_pv_yn \"2\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Routine dental, restorative",
@@ -223,8 +225,9 @@
       "item": "Routine dental, comprehensive benefit maximum",
       "page": 4,
       "printed": "Benefit Maximum (Comprehensive): Up to $2,000 every year",
-      "expected": [{ "type": "dollars", "value": 2000, "period": "per_year" }],
-      "path": "/benefits/31/limits"
+      "expected": { "type": "dollars", "value": 2000, "period": "per_year" },
+      "path": "/benefits/31/limits/1",
+      "note": "Since schema 1.2.0 draft 8 limits also holds a no-limit entry, visits (pbp_b16c_bendesc_rs_lim \"1\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Medicare-covered vision exam to diagnose/treat diseases of the eye",
@@ -238,16 +241,17 @@
       "item": "Routine vision exam, allowance",
       "page": 4,
       "printed": "You are covered for up to $300 every year for routine eye exams and eyewear.",
-      "expected": [{ "type": "dollars", "value": 300, "period": "per_year" }],
-      "path": "/benefits/25/limits"
+      "expected": { "type": "dollars", "value": 300, "period": "per_year" },
+      "path": "/benefits/25/limits/1",
+      "note": "Since schema 1.2.0 draft 8 limits also holds a no-limit entry, visits (pbp_b17a_bendesc_lim_rex \"1\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Routine eyewear, allowance",
       "page": 4,
       "printed": "You are covered for up to $300 every year for routine eye exams and eyewear.",
-      "expected": [{ "type": "dollars", "value": 300, "period": "per_year" }],
-      "path": "/benefits/32/limits",
-      "note": "pbp_b17b_maxplan_type \"1\": eyewear is covered under the 17a maximum, pbp_b17a_maxplan_amt \"300.00\" every year, written on both benefits with 1 shared_limit_id (spec 7.10)."
+      "expected": { "type": "dollars", "value": 300, "period": "per_year" },
+      "path": "/benefits/32/limits/1",
+      "note": "pbp_b17b_maxplan_type \"1\": eyewear is covered under the 17a maximum, pbp_b17a_maxplan_amt \"300.00\" every year, written on both benefits with 1 shared_limit_id (spec 7.10). Since schema 1.2.0 draft 8 limits also holds a no-limit entry, pairs_of_eyeglasses (pbp_b17b_bendesc_lim_egs \"1\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Mental health, outpatient individual/group therapy visit",
@@ -305,8 +309,9 @@
       "item": "Transportation, 12 one-way trips per year",
       "page": 5,
       "printed": "$0 for up to 12 one-way trips per year",
-      "expected": [{ "type": "trips", "value": 12, "period": "per_year" }],
-      "path": "/benefits/35/limits"
+      "expected": { "type": "trips", "value": 12, "period": "per_year" },
+      "path": "/benefits/35/limits/0",
+      "note": "Since schema 1.2.0 draft 8 limits also holds a no-limit entry, dollars (pbp_b10b_maxplan_yn \"2\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Part D deductible",

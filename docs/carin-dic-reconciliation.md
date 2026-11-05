@@ -96,6 +96,7 @@ The merged `BenefitLimitation` complex extension carries `limitText` (string), `
 | `limits[].value` (number) | `BenefitLimitation.limitValue.value` | Set the Quantity `unit` from the type. |
 | `limits[].period` | `BenefitLimitation.limitPeriod` | `per_plan_year` ↔ `plan-year`, `per_calendar_year` ↔ `calendar-year`, `per_benefit_period` / `per_episode` ↔ `benefit-period`, `per_lifetime` ↔ `lifetime`. The legacy BPS value `per_year` is ambiguous between plan year and calendar year, so it is carried as text, not coded; prefer the specific values when the source document distinguishes them (v1.2.0 updates the recommended values accordingly). Other periods (e.g. `per_12_months`, `per_quarter`) are also carried as text. |
 | `limits[].raw_text` (new in v1.2.0 draft) | `BenefitLimitation.limitText` | Verbatim limitation text as displayed in the source document. Before v1.2.0 the closest home was the benefit-level `raw_label` or cost-share `notes`, neither of which is per-limit. |
+| `limits[].unlimited` (new in v1.2.0 draft 8, 2026-11-04) | No element; `limitText` and `limitType` only | `unlimited` true with `value` null says the source states no limit of this type (the 2027 Medicare PBP files answer "no maximum" or "unlimited" for many extra benefits). `BenefitLimitation` cannot say so in structure: the converter writes `limitText` and `limitType` and no `limitValue` (converter spec 6.6), so a reader tells it from a limit with no stated amount by the text. See open items. |
 
 BPS has typed limits since v1.0.0; the IG change brings the CARIN profile up to the same structure. The only BPS addition is the verbatim-text companion, which preserves the display fidelity the SBC requires.
 
@@ -122,6 +123,7 @@ Backward compatibility, per the v1.x governance rules:
 ## 5. Open items
 
 - **Limit scope.** Neither the merged IG change nor BPS types the population scope of a limit (individual vs family) or its network scope (whether a visit limit counts in-network only). Revisit if real documents demand it.
+- **No limit.** Since v1.2.0 draft 8 a BPS limits entry can say that the source states no limit of its type (`limits[].unlimited`). `BenefitLimitation` has no element for it; a code in `limit-type` or a boolean part would carry it. Candidate for a future CARIN proposal.
 - **`applies_to_moop`.** BPS tracks out-of-pocket-maximum applicability per cost-share step; the IG has no counterpart. Candidate for a future CARIN proposal.
 - **Tier vocabulary.** The IG's Cost Tier code system starts with `value-choice` / `standard` / `virtual`. If adopters accumulate more designations, a `vocabularies/tier-classes.json` (and/or recommended tier codes) file may be worth adding on the BPS side.
 - **Ballot dependency.** The whole SBC InsurancePlan profile is ballot-stage: `sbc-insurance-plan`, the three extensions above and the code systems it binds exist only in `hl7.fhir.us.insurance-card#2.0.0-ballot`, all draft and experimental. The converter (`scripts/to-insuranceplan.js`) is validated against that package. If ballot reconciliation reshapes the profile, refresh §3 and the converter to match before finalizing v1.2.0.

@@ -14,6 +14,9 @@
  * pharmacy.deductible.family_amount, if cost_shares[].min_amount and min_basis stop
  * mirroring max_amount and max_basis, or if network_cost_shares[].covered_under,
  * not_covered_reason or source_references[].document change shape or become required.
+ * Draft 8 (2026-11-04): fails if limits[].unlimited stops pairing with a null value
+ * (true takes null and null takes true), if type or value stops being required, or if
+ * v1.1.0's limits change.
  * Needs a local copy of Ajv (npm install ajv ajv-formats).
  */
 
@@ -311,4 +314,39 @@ test('v1.2.0 draft 7: every new property is optional', () => {
   assert.deepStrictEqual(STEP.required, ['type', 'sequence']);
   assert.deepStrictEqual(ROW.required, ['tier_id', 'covered']);
   assert.strictEqual(CORE.$defs.source_reference.required, undefined);
+});
+
+// ---- v1.2.0 draft 8: a limit that the source states as "no limit" -----------------------
+const LIMIT = CORE.properties.benefits.items.properties.limits.items;
+const V110_LIMIT = readJson(path.join(REPO, 'schema', 'v1.1.0', 'benefit-plan.schema.json')).properties.benefits.items.properties.limits.items;
+
+test('v1.2.0 draft 8: limits[].unlimited true takes value null, and value null takes unlimited true', () => {
+  const plan = (l) => minimal({
+    benefits: [{ benefit_id: 'MEALS', category: 'MEALS', service_name: 'Meal benefit', network_cost_shares: [{ tier_id: 'IN', covered: true }], limits: [l] }],
+  });
+  const at = '/benefits/0/limits/0';
+  assert.deepStrictEqual(errorsOf(plan({ type: 'dollars', value: null, unlimited: true, raw_text: 'Maximum plan benefit coverage: pbp_b13c_maxplan_yn "2" (no maximum).' })), [], 'no maximum');
+  assert.deepStrictEqual(errorsOf(plan({ type: 'trips', value: null, unlimited: true })), [], 'unlimited trips, no raw_text');
+  for (const u of [{}, { unlimited: false }, { unlimited: null }]) {
+    assert.deepStrictEqual(errorsOf(plan({ type: 'dollars', value: 200, period: 'per_year', ...u })), [], `a limit with a value, ${JSON.stringify(u)}`);
+    assert.ok(errorsOf(plan({ type: 'dollars', value: null, ...u })).includes(`${at}/value must be number`), `value null needs unlimited true, ${JSON.stringify(u)}`);
+  }
+  assert.ok(errorsOf(plan({ type: 'dollars', value: 200, unlimited: true })).includes(`${at}/value must be null`), 'unlimited true takes no number');
+  assert.ok(errorsOf(plan({ type: 'dollars', unlimited: true })).includes(`${at} must have required property 'value'`), 'value stays required');
+  assert.ok(errorsOf(plan({ value: null, unlimited: true })).includes(`${at} must have required property 'type'`), 'type stays required');
+  assert.ok(errorsOf(plan({ type: 'dollars', value: null, unlimited: 'yes' })).includes(`${at}/unlimited must be boolean,null`));
+  assert.deepStrictEqual(LIMIT.required, ['type', 'value']);
+  assert.deepStrictEqual(shape(LIMIT.properties.unlimited), { type: ['boolean', 'null'] });
+  assert.ok(LIMIT.properties.unlimited.description.includes('pbp_b13c_maxplan_yn'));
+  assert.ok(LIMIT.properties.unlimited.description.includes('Absent, null or false means the entry is a limit with a numeric value'));
+});
+
+test('v1.2.0 draft 8: v1.1.0 is untouched, and every other limits property is as in draft 7', () => {
+  assert.deepStrictEqual(shape(V110_LIMIT.properties.value), { type: 'number' });
+  assert.ok(!('unlimited' in V110_LIMIT.properties));
+  assert.strictEqual(V110_LIMIT.if, undefined);
+  const { value, unlimited, ...rest } = shape(LIMIT).properties;
+  assert.deepStrictEqual(Object.keys(rest), ['type', 'period', 'scope', 'shared_limit_id', 'carryover', 'raw_text']);
+  assert.deepStrictEqual(value, { type: ['number', 'null'] });
+  assert.ok(CORE.description.includes('Draft 8, on 2026-11-04, adds 1 optional property, limits[].unlimited'));
 });
