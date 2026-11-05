@@ -7,7 +7,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
   </a>
   <img src="https://img.shields.io/badge/Schema-v1.1.0-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Status-Stable-blueviolet?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Draft-v1.2.0%20draft%207-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Draft-v1.2.0%20draft%208-orange?style=for-the-badge" />
   <img src="https://img.shields.io/github/license/Benefit-Plan-Standard/benefit-plan-schema?style=for-the-badge" />
 </p>
 
