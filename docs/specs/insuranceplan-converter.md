@@ -198,9 +198,10 @@ Two BPS benefits that share an SBC row code (for example `diagnostic_lab`, `imag
 |---|---|---|
 | `raw_text` (v1.2.0) | `limitText` | Verbatim. Omitted when absent (the limits in the 8 SBC examples have no `raw_text`). |
 | `type` | `limitType` (extensible `limit-type`) | `visits`, `days` and `dollars` map directly. Other types (`hearing_aids`, `meals`, `hours`, `miles`, `one_way_trips`, `occurrences`, `pairs_of_eyeglasses`) are text only. |
-| `value` | `limitValue` (Quantity) | `unit` from `type`. `dollars` uses currency USD. |
+| `value` | `limitValue` (Quantity) | `unit` from `type`. `dollars` uses currency USD. Null only on a no-limit entry (below), and then omitted. |
 | `period` | `limitPeriod` (extensible `limit-period`) | `per_plan_year` to `plan-year`, `per_calendar_year` to `calendar-year`, `per_benefit_period` and `per_episode` to `benefit-period` (as in `carin-dic-reconciliation.md` 3.3), `per_lifetime` to `lifetime`. **`per_year` becomes text only**: it is ambiguous between plan year and calendar year (`carin-dic-reconciliation.md` 3.3), and the converter does not choose. `per_12_months`, `per_quarter` and `per_discharge` are also text only. |
 | `scope`, `shared_limit_id`, `carryover` (v1.2.0) | Not carried as structure (7) | The `limitText` verbatim text usually states them. |
+| `unlimited` (v1.2.0 draft 8) | Not carried as structure (7) | A no-limit entry, `unlimited` true with `value` null, the source stating no limit of its `type`, is a `BenefitLimitation` with `limitText` and `limitType` only: no `limitValue`, because there is no amount, and no `limitPeriod`. `BenefitLimitation` has no element for "no limit", so `limitText` carries it (for a PBP document, "Additional days (1a1): pbp_b1a_bendesc_lim_ad "1" (unlimited)."). The 5 PBP Bundles each carry 1, on inpatient hospital, since 2026-11-04; no SBC example has one. |
 
 ### 6.7 Cost-share steps to `cost[]`
 
@@ -231,6 +232,7 @@ A floor or a cap does not change `value`, which stays the rate: GatorCare Tier 1
 | `market`, `plan_year`, `schema_version`, `service_area` | `bps-plan-metadata` | Yes |
 | Limit `per_year` and non-CARIN limit types | Text-only CodeableConcept | Text only |
 | Limit `scope`, `shared_limit_id`, `carryover` | Not carried (only in `limitText` when the source prints it) | No |
+| Limit `unlimited` (v1.2.0 draft 8) | A `BenefitLimitation` with `limitText` and `limitType` and no `limitValue` (6.6) | Text only: a reader tells a no-limit entry from a limit with no stated amount by `limitText` alone |
 | `pharmacy.coverage_stages` | Not carried | No |
 | Medicare Part D benefits (a `coverage_stage_id`), with `formulary_tier_id`, `pharmacy_network_id` and `day_supply` | `bps-unmapped-benefit` (identity only; section 8.4) | Identity only. Their cost shares are **not** in the FHIR output. |
 | A document with `plan_type` `PDP` | Not converted (8.4) | No |
@@ -400,9 +402,10 @@ Canonical base: `https://benefitplanstandard.org/fhir/`. All are `status: draft`
   - checks the point-of-service tier (6.3) on the Aetna H1609-028 golden file: `POS` entries are `out-of-network` with the `Point-of-service option` qualifier (10 entries), the specialist's $70 copay keeps `DeductibleApplies` true, a benefit priced in network and at the POS option has no placeholder, and a network tier named "Point-of-Service" under another `tier_id` still fails;
   - checks `excluded-services` (10.1): a benefit not covered on any tier gets an entry with the vocabulary label and the fixed description, a benefit not covered out of network only gets none; without the option no Bundle carries it; on each of the 5 Marketplace golden files it lists exactly the benefits not covered on any tier, in input order, the 3 adult dental classes among them; the option is refused for the 10 examples and the 5 PBP files, and for a key with no label;
   - checks Medicare Part D (8.4) on the Humana H1036-068 golden file: its 42 Part D benefits are unmapped, in input order, none placed, and the 2 pharmacy `generalCost` entries are kept; a PDP golden file is refused, by the function and by the CLI, and `pbpExampleFiles()` leaves it out; the pharmacy module's PDP example is refused, and its commercial example converts, `formulary_tier_id` and `day_supply` reach `bps-benefit`, and the other module fields change nothing;
-  - checks the fields of the v1.2.0 draft 7 on the GatorCare Bundle: the floor, the cap and `moopRef` in `bps-cost-share` with `value` still the rate, `coveredUnder` and `notCoveredReason` on the `Not covered` entry with a null left out, the second pharmacy deductible entry, `document` on every citation, and which benefits are placed and which are listed.
+  - checks the fields of the v1.2.0 draft 7 on the GatorCare Bundle: the floor, the cap and `moopRef` in `bps-cost-share` with `value` still the rate, `coveredUnder` and `notCoveredReason` on the `Not covered` entry with a null left out, the second pharmacy deductible entry, `document` on every citation, and which benefits are placed and which are listed;
+  - checks the no-limit entry of the v1.2.0 draft 8 (6.6) on the Humana H1036-068 golden file: the inpatient hospital entry, `days` with `unlimited` true, is a `BenefitLimitation` with `limitText` and `limitType` only, and a `dollars` one is the same with `limitType` `dollars`.
 
-  75 tests on 2026-10-31 (70 on 2026-10-24, 68 on 2026-10-13, 65 on 2026-10-06, 62 before the POS tier).
+  76 tests on 2026-11-04 (75 on 2026-10-31, 70 on 2026-10-24, 68 on 2026-10-13, 65 on 2026-10-06, 62 before the POS tier). The 5 PBP Bundles were re-pinned on 2026-11-04 for the no-limit entries; the 10 SBC Bundles are byte-identical.
 - Goldens are refreshed only on purpose, with `node scripts/to-insuranceplan.js --write-golden`, which writes the 10 and the 5 PBP Bundles and names the 2 PDP golden files it does not convert.
 
 The golden files double as fixtures for ports to other languages.

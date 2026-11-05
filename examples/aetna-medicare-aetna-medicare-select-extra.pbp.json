@@ -345,7 +345,14 @@
           "notes": "pbp_Section_C (pbp_c_pos_mc_bendesc_subcats lists 1a): pbp_c_pos_coins_ihs_yn \"1\", pbp_c_pos_coins_ihs_ben_type \"11\", pbp_c_pos_coins_iha_pct \"50\", pbp_c_pos_coins_iha_intrvl_num \"1\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"10100.00\"), which has no accumulator slot (spec section 9.1)."
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "days",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "Additional days (1a1): pbp_b1a_bendesc_lim_ad \"1\" (unlimited)."
+        }
+      ],
       "conditions": [
         {
           "type": "authorization",
@@ -1301,6 +1308,12 @@
           "value": 1,
           "period": "per_year",
           "raw_text": "pbp_b18a_bendesc_lim_rht \"2\", pbp_b18a_bendesc_numv_cl \"1\", pbp_b18a_bendesc_per_rht \"3\" (Every year)."
+        },
+        {
+          "type": "dollars",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "Maximum plan benefit coverage: pbp_b18a_maxplan_yn \"2\" (no maximum); the answer covers 18a supplemental benefits."
         }
       ],
       "conditions": [],
@@ -1374,6 +1387,12 @@
           "value": 1,
           "period": "per_year",
           "raw_text": "pbp_b17a_bendesc_lim_rex \"2\", pbp_b17a_bendesc_num_rex \"1\", pbp_b17a_bendesc_per_rex \"3\" (Every year)."
+        },
+        {
+          "type": "dollars",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "Maximum plan benefit coverage: pbp_b17a_maxplan_yn \"2\" (no maximum); the answer covers 17a supplemental benefits."
         }
       ],
       "conditions": [],
@@ -1877,7 +1896,14 @@
           "notes": "pbp_b14_preventive.txt cells: pbp_b14c_copay_yn \"1\", pbp_b14c_copay_ehc \"14c1;14c3;14c4;14c7;14c15;\", pbp_b14c_copay_mhc_min_amt \"0.00\", pbp_b14c_copay_mhc_max_amt \"0.00\", pbp_b14c_coins_yn \"2\", pbp_b14c_ded_yn \"2\"."
         }
       ],
-      "limits": [],
+      "limits": [
+        {
+          "type": "dollars",
+          "value": null,
+          "unlimited": true,
+          "raw_text": "Maximum plan benefit coverage: pbp_b14c_maxplan_yn \"1\", pbp_b14c_maxplan_ehc \"14c15;\" (no maximum: the list does not name 14c4)."
+        }
+      ],
       "conditions": [],
       "source_references": [
         {

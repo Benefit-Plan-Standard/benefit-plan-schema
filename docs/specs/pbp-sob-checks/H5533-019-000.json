@@ -277,8 +277,9 @@
       "item": "Routine hearing exam, 1 per year",
       "page": 5,
       "printed": "1 routine hearing exam per year",
-      "expected": [{ "type": "visits", "value": 1, "period": "per_year" }],
-      "path": "/benefits/23/limits"
+      "expected": { "type": "visits", "value": 1, "period": "per_year" },
+      "path": "/benefits/23/limits/0",
+      "note": "Since schema 1.2.0 draft 8 limits also holds a no-limit entry, dollars (pbp_b18a_maxplan_yn \"2\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Hearing aids, in network",
@@ -298,9 +299,9 @@
       "item": "Hearing aids, one per ear per year",
       "page": 5,
       "printed": "one per ear per year",
-      "expected": [{ "type": "hearing_aids", "value": 2, "period": "per_year" }],
-      "path": "/benefits/26/limits",
-      "note": "pbp_b18b_bendesc_numv_at \"2\", pbp_b18b_bendesc_per_at \"3\" (Every year): 2 hearing aids a year, which is one per ear."
+      "expected": { "type": "hearing_aids", "value": 2, "period": "per_year" },
+      "path": "/benefits/26/limits/0",
+      "note": "pbp_b18b_bendesc_numv_at \"2\", pbp_b18b_bendesc_per_at \"3\" (Every year): 2 hearing aids a year, which is one per ear. Since schema 1.2.0 draft 8 limits also holds a no-limit entry, dollars (pbp_b18b_maxplan_yn \"2\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Routine dental, cleanings, in network",
@@ -320,8 +321,9 @@
       "item": "Routine dental, 2 cleanings per year",
       "page": 6,
       "printed": "2 cleaning(s) per year",
-      "expected": [{ "type": "visits", "value": 2, "period": "per_year" }],
-      "path": "/benefits/30/limits"
+      "expected": { "type": "visits", "value": 2, "period": "per_year" },
+      "path": "/benefits/30/limits/0",
+      "note": "Since schema 1.2.0 draft 8 limits also holds a no-limit entry, dollars (pbp_b16b_maxplan_pv_yn \"2\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Comprehensive dental (fillings and other services), in network",
@@ -341,8 +343,9 @@
       "item": "Comprehensive dental, $6,000 yearly allowance",
       "page": 6,
       "printed": "IN/OUT: $6,000 yearly allowance",
-      "expected": [{ "type": "dollars", "value": 6000, "period": "per_year" }],
-      "path": "/benefits/31/limits"
+      "expected": { "type": "dollars", "value": 6000, "period": "per_year" },
+      "path": "/benefits/31/limits/1",
+      "note": "Since schema 1.2.0 draft 8 limits also holds a no-limit entry, visits (pbp_b16c_bendesc_rs_lim \"1\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Medicare-covered vision services, in network",
@@ -376,8 +379,9 @@
       "item": "Routine vision exam, 1 per year",
       "page": 6,
       "printed": "1 routine vision exam ... per year",
-      "expected": [{ "type": "visits", "value": 1, "period": "per_year" }],
-      "path": "/benefits/25/limits"
+      "expected": { "type": "visits", "value": 1, "period": "per_year" },
+      "path": "/benefits/25/limits/0",
+      "note": "Since schema 1.2.0 draft 8 limits also holds a no-limit entry, dollars (pbp_b17a_maxplan_yn \"2\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Routine eyewear, $175 allowance per year",
@@ -517,8 +521,9 @@
       "item": "Routine podiatry, 4 visits per year",
       "page": 7,
       "printed": "Routine (4 visits per year)",
-      "expected": [{ "type": "visits", "value": 4, "period": "per_year" }],
-      "path": "/benefits/20/limits"
+      "expected": { "type": "visits", "value": 4, "period": "per_year" },
+      "path": "/benefits/20/limits/0",
+      "note": "Since schema 1.2.0 draft 8 limits also holds a no-limit entry, dollars (pbp_b7f_maxplan_yn \"2\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Flex Spend Card, over-the-counter allowance",

@@ -226,8 +226,9 @@
       "item": "Routine hearing exam, 1 every year",
       "page": 4,
       "printed": "You get one routine hearing exam every year",
-      "expected": [{ "type": "visits", "value": 1, "period": "per_year" }],
-      "path": "/benefits/23/limits"
+      "expected": { "type": "visits", "value": 1, "period": "per_year" },
+      "path": "/benefits/23/limits/0",
+      "note": "Since schema 1.2.0 draft 8 limits also holds a no-limit entry, dollars (pbp_b18a_maxplan_yn \"2\"), which this line does not print, so the check points at the entry it prints."
     },
     {
       "item": "Routine hearing exam, out of network",

@@ -26,6 +26,7 @@ Dates are indicative and subject to change based on community feedback and imple
 
 1. **A plan-identity value needs a source.** The validator flags a plan-identity field that has a value and no source reference.
 2. **Market comes from a dataset with provenance.** CMS Plan Attributes for Marketplace plans, PBP for Medicare Advantage and Form 5500 Schedule A for employer plans, never a web page read by hand.
+3. **No limit, said as such.** Draft 8 (2026-11-04) adds `limits[].unlimited`: an entry with `unlimited` true and `value` null says the source states no limit of its type, and the Medicare Advantage importer writes one for every unlimited or no-maximum answer on a covered benefit, and for fitness when the 14c maximum list does not name it. Still open: the Marketplace importer does not write one (`QuantLimitOnSvc` is not carried); and the SBC InsurancePlan profile's `benefit-limitation` has no element for no limit, so a Bundle carries it as `limitText` and `limitType` only.
 
 ## Evidence from implementation (2026-08)
 

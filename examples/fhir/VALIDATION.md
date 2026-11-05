@@ -1,7 +1,7 @@
 # Validation record
 
-**Date:** 2026-09-24; United, Ambetter and Kaiser re-validated 2026-09-25 after data fixes; the 8 SBC files re-validated 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs; Aetna PPO 1500, Aetna PPO 5000, GatorCare and United re-validated 2026-10-05 after the deductible flags on silent cells were set (no count changed); GatorCare re-validated 2026-10-31 (tenth run, below) and 2026-11-01 (eleventh run, below)
-**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run) again on 2026-10-09 after 4 of their benefits gained canonical keys (third run), and on 2026-10-11 after the importer gained 10 service categories (fourth run), all at the end of this file: 0 errors; 15 warnings in the second and third runs, 16 in the fourth. On 2026-10-13 all 15 Bundles here were validated again, unchanged, with the 5 Marketplace Bundles of `examples/fhir-puf/` after the adult dental keys and the `excluded-services` extension (fifth run): the same counts for the 15, 0 errors for the 5. The sixth (2026-10-20) and seventh (2026-10-21) runs are described where they are. On 2026-10-24 the 5 PBP Bundles were validated after the importer began reading the Part D files (eighth run): 0 errors and the same 17 warnings as the sixth run. On 2026-10-28 they were validated again, byte-identical, after the importer began reading the combined supplemental benefit groups (ninth run): the counts of the eighth run. On 2026-10-31 all 20 Bundles were validated after the 1.2.0 draft 7 (tenth run, below): 0 errors. On 2026-11-01 they were validated again after GatorCare's `market` came out (eleventh run, at the end of this file): the counts of the tenth run.
+**Date:** 2026-09-24; United, Ambetter and Kaiser re-validated 2026-09-25 after data fixes; the 8 SBC files re-validated 2026-10-05 after limits, deductible flags and conditions were read from the source PDFs; Aetna PPO 1500, Aetna PPO 5000, GatorCare and United re-validated 2026-10-05 after the deductible flags on silent cells were set (no count changed); GatorCare re-validated 2026-10-31 (tenth run, below) and 2026-11-01 (eleventh run, below); all 20 re-validated 2026-11-04 (twelfth run, below)
+**Result:** all 10 files pass with **0 errors**. 75 warnings, all explained below. The 5 Medicare Advantage Bundles from the PBP importer were validated on 2026-10-06 (second run) again on 2026-10-09 after 4 of their benefits gained canonical keys (third run), and on 2026-10-11 after the importer gained 10 service categories (fourth run), all at the end of this file: 0 errors; 15 warnings in the second and third runs, 16 in the fourth. On 2026-10-13 all 15 Bundles here were validated again, unchanged, with the 5 Marketplace Bundles of `examples/fhir-puf/` after the adult dental keys and the `excluded-services` extension (fifth run): the same counts for the 15, 0 errors for the 5. The sixth (2026-10-20) and seventh (2026-10-21) runs are described where they are. On 2026-10-24 the 5 PBP Bundles were validated after the importer began reading the Part D files (eighth run): 0 errors and the same 17 warnings as the sixth run. On 2026-10-28 they were validated again, byte-identical, after the importer began reading the combined supplemental benefit groups (ninth run): the counts of the eighth run. On 2026-10-31 all 20 Bundles were validated after the 1.2.0 draft 7 (tenth run, below): 0 errors. On 2026-11-01 they were validated again after GatorCare's `market` came out (eleventh run): the counts of the tenth run. On 2026-11-04 they were validated again after the 1.2.0 draft 8 (twelfth run, at the end of this file): the counts of the eleventh run.
 
 ## Setup
 
@@ -356,3 +356,19 @@ The other 19 give the counts of their last run: the 5 Marketplace Bundles those 
 | `gatorcare-prime-epo.json` | 0 | 1 | 154 |
 
 **Warnings and information.** Every count is the tenth run's, file by file: 183 warnings and 2,906 information messages across the 20. The `market` part was a string inside an extension that stays, so its removal takes no message away.
+
+## Twelfth run: 2026-11-04, all 20 Bundles after the 1.2.0 draft 8
+
+**What changed.** The 1.2.0 draft 8 adds `limits[].unlimited`, a limits entry that says the source states no limit of its type, and the Medicare Advantage importer writes one for every unlimited or no-maximum answer (`docs/changelog.md`). The 5 PBP golden documents gain 38 such entries. Only inpatient hospital, among the benefits that gained one, is placed in a Bundle, so each of the 5 PBP Bundles gains 1 `BenefitLimitation` on its inpatient hospital benefit, with `limitText` ("Additional days (1a1): pbp_b1a_bendesc_lim_ad "1" (unlimited).") and `limitType` `days`, and no `limitValue` or `limitPeriod` (`docs/specs/insuranceplan-converter.md` section 6.6). The 10 SBC Bundles, the 5 Marketplace Bundles of `examples/fhir-puf/` and `fhir/definitions/` are byte-identical.
+
+**Result:** all 20 files pass with **0 errors**. Same validator, Java, FHIR version, packages and command as the tenth run.
+
+| File | Errors | Warnings | Information |
+|---|---|---|---|
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 | 168 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 | 172 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 13 | 201 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 | 203 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 197 |
+
+**Warnings and information.** Every count is the eleventh run's, file by file: 183 warnings and 2,906 information messages across the 20. A `BenefitLimitation` with no `limitValue` raises no message: its 4 parts are optional in the ballot package, and `days` is a code of `limit-type`.

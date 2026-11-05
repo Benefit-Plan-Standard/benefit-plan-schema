@@ -17,7 +17,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 
 - Documentation: https://benefitplanstandard.org  
 - Canonical schema file (current): `schema/v1.1.0/benefit-plan.schema.json`  
-- Draft schema (v1.2.0, draft 7): `schema/v1.2.0/benefit-plan.schema.json`; each published draft is a git tag, `v1.2.0-draft.1` through `v1.2.0-draft.7`  
+- Draft schema (v1.2.0, draft 8): `schema/v1.2.0/benefit-plan.schema.json`; each published draft is a git tag, `v1.2.0-draft.1` through `v1.2.0-draft.8`  
 - Previous schema (v1.0.0): `schema/v1.0.0/benefit-plan.schema.json`  
 - Example plans: `examples/`, 22 plans: 10 read from plan documents, 5 imported from the CMS Marketplace public use files, 7 from the CMS PBP files (5 Medicare Advantage plans with drug coverage and 2 stand-alone Part D plans)  
 - Vocabularies (canonical benefits, categories, markets, plan types): `vocabularies/`  
@@ -76,7 +76,7 @@ schema/
   ├── v1.1.0/
   │   └── benefit-plan.schema.json   ← current
   └── v1.2.0/
-      └── benefit-plan.schema.json   ← draft (draft 7; each published draft is a git tag, v1.2.0-draft.N)
+      └── benefit-plan.schema.json   ← draft (draft 8; each published draft is a git tag, v1.2.0-draft.N)
 docs/
   ├── carin-dic-reconciliation.md
   ├── changelog.md
@@ -165,7 +165,7 @@ The schema follows **semantic versioning**:
 
 Current version: **v1.1.0** (backward-compatible with v1.0.0)
 
-Draft: **v1.2.0**, draft 7, tagged `v1.2.0-draft.7`. Drafts are numbered as they are published, and each one is a git tag on this repository, so any earlier draft can be checked out by its tag. Under the release rule in `docs/governance.md`, v1.2.0 becomes final after two independent adopters implement and validate it; until then every v1.2.0 document says which draft it validates against. The adopters on record are in `ADOPTERS.md`. The two importers write v1.2.0 draft documents.
+Draft: **v1.2.0**, draft 8, tagged `v1.2.0-draft.8`. Drafts are numbered as they are published, and each one is a git tag on this repository, so any earlier draft can be checked out by its tag. Under the release rule in `docs/governance.md`, v1.2.0 becomes final after two independent adopters implement and validate it; until then every v1.2.0 document says which draft it validates against. The adopters on record are in `ADOPTERS.md`. The two importers write v1.2.0 draft documents.
 
 Validation uses:
 

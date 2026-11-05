@@ -928,7 +928,8 @@ function comboGroups(d, errors) {
       group.same = `Written once, with the shared_limit_id of combined supplemental benefit group ${n}, which states the same amount and period: ${cells}`;
       tail = ` The shared maximum is the dollars limit with shared_limit_id ${id}.`;
     } else if (!['', '2'].includes(max)) { errors.push(`${col('max_plan_ben_yn')} "${max}" is not 1 or 2`); continue; }
-    if (q(d, col('share_visit_yn')) === '1') tail += ' The shared visit or trip count is not written as a limit (spec section 5.9).';
+    group.sharesCount = q(d, col('share_visit_yn')) === '1';
+    if (group.sharesCount) tail += ' The shared visit or trip count is not written as a limit (spec section 5.9).';
     group.excerpt = `Combined supplemental benefit group ${n} of ${num} (pbp_Section_D.txt), verbatim: ` +
       `${cellsOf(d, ['pbp_d_combo_supp_ben_yn', 'pbp_d_combo_num_grps', ...COMBO_COLS.map(col)]).join('; ')}.${tail}`;
     groups.push(group);
@@ -940,8 +941,13 @@ function comboGroups(d, errors) {
 // the benefit too, so a dollars limit of the benefit's own columns with the same amount and
 // period and no shared_limit_id says nothing more: it is written once, with the group's
 // shared_limit_id and both sets of cells. Any other group maximum is a limit of its own.
+// A group's maximum also caps a category whose own columns state no maximum, and a group's
+// shared visit or trip count limits a category whose own count is unlimited, so neither
+// no-limit entry of the category's own columns is written then (v1.2.0 draft 8).
 function withComboLimits(limits, groups) {
-  const out = [...limits];
+  const capped = groups.some((g) => g.limit);
+  const counted = groups.some((g) => g.sharesCount);
+  const out = limits.filter((l) => !(l.unlimited && (l.type === 'dollars' ? capped : counted)));
   for (const g of groups) {
     if (!g.limit) continue;
     const i = out.findIndex((l) => l.type === 'dollars' && !l.shared_limit_id && l.value === g.limit.value && l.period === g.limit.period);
@@ -1003,27 +1009,44 @@ function periodOf(row, perCol, perDCol, errors) {
   return { ok: true, period: CROSSWALK.periodicity[v], label: CROSSWALK.periodicity_labels[v], desc: perDCol ? q(row, perDCol) : '' };
 }
 
+// A limits entry that says the file states no limit of its type (v1.2.0 draft 8, spec
+// section 5.6): value null, unlimited true, and the cells quoted in raw_text.
+const noLimit = (type, rawText) => ({ type, value: null, unlimited: true, raw_text: rawText });
+
 function buildLimits(b, row, errors) {
   const limits = [];
   for (const l of b.limits || []) {
     if (l.kind === 'quantity') {
+      // "Is this benefit unlimited ...?": 1 Yes (unlimited), 2 No (limited), blank not filed.
       const lim = q(row, l.lim);
-      if (lim === '' || lim === '1') continue;
-      if (lim !== '2') { errors.push(`${l.lim} "${lim}" is not 1 or 2`); continue; }
-      const n = q(row, l.num);
-      if (!/^\d+$/.test(n)) { errors.push(`${l.lim} "2" but ${cell(row, l.num)}`); continue; }
-      const p = periodOf(row, l.per, l.per_d, errors);
-      if (!p.ok) continue;
+      if (lim === '') continue;
+      if (lim !== '1' && lim !== '2') { errors.push(`${l.lim} "${lim}" is not 1 or 2`); continue; }
       // label: what the count is of (10b: the location type); with: code columns
       // quoted after it with their dictionary labels (10b: the trip type).
       const withText = (l.with || []).filter((w) => q(row, w.col) !== '')
         .map((w) => `${cell(row, w.col)}${w.codes ? ` (${w.codes[q(row, w.col)] || 'not a dictionary code'})` : ''}`);
+      if (lim === '1') {
+        limits.push(noLimit(l.type, `${l.label ? `${l.label}: ` : ''}${cellsOf(row, [l.lim, l.num, l.per, l.per_d]).join(', ')} (unlimited)` +
+          `${withText.length ? '; ' + withText.join(', ') : ''}.`));
+        continue;
+      }
+      const n = q(row, l.num);
+      if (!/^\d+$/.test(n)) { errors.push(`${l.lim} "2" but ${cell(row, l.num)}`); continue; }
+      const p = periodOf(row, l.per, l.per_d, errors);
+      if (!p.ok) continue;
       limits.push({ type: l.type, value: Number(n), period: p.period,
         raw_text: `${l.label ? `${l.label}: ` : ''}${cellsOf(row, [l.lim, l.num, l.per, l.per_d]).join(', ')} (${p.label})` +
           `${withText.length ? '; ' + withText.join(', ') : ''}.` });
     } else if (l.kind === 'dollars') {
+      // "Is there a maximum plan benefit coverage amount?": 1 Yes, 2 No, blank not filed.
       const v = q(row, l.yn);
-      if (v !== '1') { if (!['', '2'].includes(v)) errors.push(`${l.yn} "${v}" is not 1 or 2`); continue; }
+      if (v === '2') {
+        const inOon = l.in_oon && q(row, l.in_oon) !== '' ? `; ${cell(row, l.in_oon)} (${IN_OON_LABELS[q(row, l.in_oon)] || 'not a dictionary code'})` : '';
+        limits.push(noLimit('dollars', `Maximum plan benefit coverage: ${cellsOf(row, [l.yn, l.amt, l.per, l.per_d, l.type_col]).join(', ')} (no maximum)` +
+          `${inOon}${l.shared ? `; the answer covers ${l.shared}` : ''}.`));
+        continue;
+      }
+      if (v !== '1') { if (v !== '') errors.push(`${l.yn} "${v}" is not 1 or 2`); continue; }
       // A maximum that the file says is the one of another category (hearing
       // aids "Covered under Hearing Exams Category (18a)"): that category's
       // amount, with a shared_limit_id (v1.2.0) on both benefits.
@@ -1032,7 +1055,21 @@ function buildLimits(b, row, errors) {
       // columns (17b eyewear: a combined maximum for all eyewear, or one per
       // eyewear type chosen in a position string), the first whose condition holds.
       const option = !via && l.options ? l.options.find((o) => (o.ehc ? inEhc(row, o) : q(row, o.yn) === '1')) : null;
-      if (!via && l.options && !option) continue;
+      if (!via && l.options && !option) {
+        // A code list of the categories that have a maximum (14c, pbp_b14c_maxplan_ehc, "Which Other
+        // Defined Supplemental Benefits have a Maximum Plan Benefit Coverage amount") that does not name
+        // this category: the file states no maximum for it (v1.2.0 draft 8, spec section 5.6). The
+        // dictionary gives each listed category its own amount columns, and an unlisted one has none.
+        // The 17b position-string options are not read this way.
+        const lists = l.options.filter((o) => o.ehc && o.code);
+        if (lists.length && lists.length === l.options.length) {
+          const blank = lists.find((o) => q(row, o.ehc) === '');
+          if (blank) { errors.push(`${cell(row, l.yn)} but ${cell(row, blank.ehc)}`); continue; }
+          limits.push(noLimit('dollars', `Maximum plan benefit coverage: ${cellsOf(row, [l.yn, ...lists.map((o) => o.ehc)]).join(', ')} ` +
+            `(no maximum: the list does not name ${lists.map((o) => o.code).join(' or ')}).`));
+        }
+        continue;
+      }
       const src = via || (option ? { ...option, yn: option.yn || option.ehc } : l);
       if (via && q(row, via.yn) !== '1') { errors.push(`${cell(row, l.type_col)} but ${cell(row, via.yn)}`); continue; }
       const amt = amount(row, src.amt, errors);
@@ -1159,7 +1196,10 @@ function inpatientInNetwork(b, row, ctx, errors) {
     rows.push(r);
   }
   const limits = [];
-  if (addDays && q(row, ic.ad.lim) === '2') {
+  // "Is this benefit unlimited for Additional Days?" 1 Yes: no limit on the days (v1.2.0 draft 8).
+  if (addDays && q(row, ic.ad.lim) === '1') {
+    limits.push(noLimit('days', `Additional days (${ic.ad.code}): ${cellsOf(row, [ic.ad.lim, ic.ad.num]).join(', ')} (unlimited).`));
+  } else if (addDays && q(row, ic.ad.lim) === '2') {
     const n2 = q(row, ic.ad.num);
     if (!/^\d+$/.test(n2)) errors.push(`${ic.ad.lim} "2" but ${cell(row, ic.ad.num)}`);
     else limits.push({ type: 'days', value: Number(n2), period: 'per_benefit_period',
