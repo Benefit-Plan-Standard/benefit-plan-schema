@@ -38,3 +38,22 @@ The script prints one line per check and a total, and exits 1 when any check is 
 - **DIFFERENCE**: the two do not agree. The note says which kind: the CMS file and the carrier document say different things (the importer follows the CMS file, so these are recorded, not changed), or the importer does not read the value yet. Most differences here are a phone number or a web address.
 
 The importer's rules for what it reads are in [`../pbp-importer.md`](../pbp-importer.md); section 13 describes these checks.
+
+## 10 UnitedHealthcare and AARP plans, contract year 2027 (2026-11-11)
+
+5 UnitedHealthcare Medicare Advantage plans in Florida and 5 AARP stand-alone drug plans in Florida, Texas and California, each checked against its 2027 Summary of Benefits. The document checked is the Medicare Advantage importer's document for the plan with its Part D drug list and premium parts added (`node scripts/from-partd-formulary.js --release 2027_20261008 --plan <plan>`); it is not committed, because a plan's drug list makes it 2 MB. H2406-013 and S5921-383 are checked with their October files above; the other 8 files were written on 2026-11-11 from each Summary of Benefits, item by item, with the pointers and shapes of the October files.
+
+| File | Plan | Carrier document | Checks | Match | Reading | Difference |
+|---|---|---|---|---|---|---|
+| [H2406-013-000.json](H2406-013-000.json) | AARP Medicare Advantage from UHC FL-0021 (PPO) | 2027 Summary of Benefits, 14 pages | 83 | 71 | 12 | 0 |
+| [H1045-026-000.json](H1045-026-000.json) | AARP Medicare Advantage from UHC FL-0005 (HMO-POS) | 2027 Summary of Benefits, 10 pages | 51 | 47 | 4 | 0 |
+| [H1045-001-000.json](H1045-001-000.json) | UHC Preferred Medicare Advantage FL-0001 (HMO) | 2027 Summary of Benefits, 10 pages | 52 | 49 | 3 | 0 |
+| [H5420-001-000.json](H5420-001-000.json) | UHC MedicareMax Medicare Advantage FL-0028 (HMO) | 2027 Summary of Benefits, 10 pages | 56 | 52 | 4 | 0 |
+| [H1045-059-000.json](H1045-059-000.json) | AARP Medicare Advantage CareFlex from UHC FL-34 (HMO-POS) | 2027 Summary of Benefits, 11 pages | 56 | 51 | 4 | 1 |
+| [S5921-383-000.json](S5921-383-000.json) | AARP Medicare Rx Preferred from UHC (PDP), Florida | 2027 Summary of Benefits, 5 pages | 43 | 41 | 2 | 0 |
+| [S5921-356-000.json](S5921-356-000.json) | AARP Medicare Rx Saver from UHC (PDP), Florida | 2027 Summary of Benefits, 5 pages | 28 | 28 | 0 | 0 |
+| [S5921-403-000.json](S5921-403-000.json) | AARP Medicare Rx Preferred from UHC (PDP), Texas | 2027 Summary of Benefits, 5 pages | 28 | 28 | 0 | 0 |
+| [S5921-367-000.json](S5921-367-000.json) | AARP Medicare Rx Saver from UHC (PDP), Texas | 2027 Summary of Benefits, 5 pages | 28 | 28 | 0 | 0 |
+| [S5921-413-000.json](S5921-413-000.json) | AARP Medicare Rx Preferred from UHC (PDP), California | 2027 Summary of Benefits, 5 pages | 28 | 28 | 0 | 0 |
+
+453 checks: 423 MATCH, 29 READING, 1 DIFFERENCE. The READINGs are the October ones: a copay the PBP file states as a range from $0 where the Summary of Benefits prints the maximum (specialists, urgent care, mental health), an observation copay the file gives per day, and the October file's own. The 1 DIFFERENCE is an importer gap: H1045-059's CareFlex credit, $450 every 3 months toward the member's cost sharing, which `pbp_Section_D.txt` holds as Reductions in Cost Sharing (`pbp_d_rics_*`) and the importer does not read yet. Every premium matches: a stand-alone plan's from the Part D formulary file, and each Medicare Advantage plan's $0; the 4 new Medicare Advantage files check `drug_amount` $0 too, and H2406-013's October file reads `amount` only. S5921-383 has 41 MATCH here and 40 in October: its premium, which the PBP files do not hold, now comes from the formulary file.

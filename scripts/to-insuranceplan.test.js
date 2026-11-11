@@ -139,13 +139,15 @@ const GOLDEN_SHA256 = {
 // benefits as unmapped and gains the 2 pharmacy generalCost entries; and 2026-11-04
 // when the importer began writing no-limit entries (schema 1.2.0 draft 8): each
 // Bundle's inpatient hospital benefit gains 1 BenefitLimitation for the unlimited
-// additional days, with limitText and limitType and no limitValue.
+// additional days, with limitText and limitType and no limitValue; and 2026-11-11 when the
+// importer began noting that a premium leaves out the Part D part (schema 1.2.0 draft 9): each
+// Bundle's premium entry gains a comment.
 const PBP_BUNDLE_SHA256 = {
-  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': '0020173885a80d77311c4d83b0833b318e599eae8fdb3fffb8ce1238080e6025',
-  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': 'eedcf299212dd8b826a465618054eb7bd4c448f01d0b6182c4844ddb6859bf07',
-  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '0604ccae3d08271c522dbe4d278a2a8b347ab9efb2fc69e2b24ea8cb635a5fca',
-  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': '31b244e97c3647af30e86abba6133dd6dcf2d4fec7c1b74d46455b86b00afbc1',
-  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': '953342171f2fef81d120fb1a91ec3b9f61555ad65eb8ab1348e072edb6ba79fd',
+  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': '9c9e39c24c46612213713cd66d470cd08ec42f16b1c491c7fc4a8cbd546bcc90',
+  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': '7a57408469065ccd2a87c52072c5c85caf6eef294999a62b5e5bfbe30d3eb76f',
+  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '02d1a2c04593b79e8c012444a3709638dad0cf864bf695d049c3f0a0a16fb1fa',
+  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': 'aa341ba7ed69cbe87e412c321d05889e5d5aad8978944c977e30093c65e3f553',
+  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': '9c75dc00b2ad5f6e54f6109de605e5fa398e356264be9030f1733152fc2ae2c3',
 };
 
 test('the 10 golden files are byte-identical to the pinned versions, and the converter reproduces them', () => {

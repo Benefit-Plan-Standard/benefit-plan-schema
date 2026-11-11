@@ -102,7 +102,9 @@ test('every list and plan in examples/partd-formulary/ validates, and every drug
     assert.deepStrictEqual(rest, pbpDoc.pharmacy, `${key} pharmacy`);
     assert.deepStrictEqual(plan.benefits, pbpDoc.benefits, `${key} benefits`);
     assert.deepStrictEqual(plan.source_references.slice(0, pbpDoc.source_references.length), pbpDoc.source_references, `${key} citations`);
-    for (const k of Object.keys(pbpDoc).filter((x) => !['pharmacy', 'source_references'].includes(x))) assert.deepStrictEqual(plan[k], pbpDoc[k], `${key} ${k}`);
+    for (const k of Object.keys(pbpDoc).filter((x) => !['pharmacy', 'source_references', 'premium'].includes(x))) assert.deepStrictEqual(plan[k], pbpDoc[k], `${key} ${k}`);
+    // A Medicare Advantage plan's premium is the PBP importer's with drug_amount, the file's PREMIUM (draft 9).
+    if (!key.startsWith('S')) assert.deepStrictEqual(plan.premium, { ...pbpDoc.premium, drug_amount: { 'H2406-013-000': 0, 'H1036-068-000': 0, 'H5533-019-000': 28 }[key] }, `${key} premium`);
     // A stand-alone drug plan gains its premium, from PREMIUM; a Medicare Advantage plan keeps the PBP importer's (finding N1).
     const extra = Object.keys(plan).filter((k) => !(k in pbpDoc));
     if (key.startsWith('S')) {

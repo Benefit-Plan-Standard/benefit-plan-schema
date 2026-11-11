@@ -1,0 +1,734 @@
+{
+  "plan": "H5420-001-000",
+  "document": {
+    "title": "Summary of Benefits 2027, UHC MedicareMax Medicare Advantage FL-0028 (HMO)",
+    "id": "Y0066_SB_H5420_001_000_2027_M",
+    "file": "data/pbp/2027/sob/H5420-001-000-2027-SB.pdf",
+    "source": "https://www.uhc.com/medicare/alphadog/PNFL27HM0413007_000, the \"Summary of Benefits (PDF)\" link of https://www.uhc.com/medicare/health-plans/details.html/33130/086/H5420001000/2027, downloaded 2026-11-11, SHA-256 9fae86bc404a091555bccdf28ae89a4c4f11b74dc9d2683e8848469ef4d71cb4",
+    "pages": 10,
+    "read_with": "pdftotext -layout, and pdftotext -raw where the layout reading splits a value from its label; pages counted in the PDF."
+  },
+  "golden": "node scripts/from-partd-formulary.js --release 2027_20261008 --plan H5420-001-000 (the Medicare Advantage importer's document for the plan with its drug list and premium parts; not committed)",
+  "spec": "docs/specs/pbp-importer.md section 13; docs/specs/partd-formulary-importer.md section 7",
+  "status": "Written 2026-11-11 from the plan's 2027 Summary of Benefits, item by item, with the pointers and shapes of the October check files.",
+  "checks": [
+    {
+      "item": "Monthly plan premium",
+      "page": 2,
+      "printed": "Monthly plan premium $0",
+      "expected": {
+        "amount": 0,
+        "drug_amount": 0
+      },
+      "path": "/premium",
+      "note": "The Summary of Benefits prints the whole monthly premium; premium.amount is the PBP importer's, without the Part D part, and premium.drug_amount the CMS Part D formulary file's Part D part (v1.2.0 draft 9); both are $0 on this plan."
+    },
+    {
+      "item": "Part B premium reduction",
+      "page": 2,
+      "printed": "Part B premium reduction: Up to $50",
+      "expected": {
+        "amount": 50
+      },
+      "path": "/part_b_premium_reduction"
+    },
+    {
+      "item": "Annual medical deductible, in network",
+      "page": 2,
+      "printed": "This plan does not have a medical deductible.",
+      "expected": {
+        "$absent": true
+      },
+      "path": "/accumulators/individual_deductible"
+    },
+    {
+      "item": "Maximum out-of-pocket amount, in network",
+      "page": 2,
+      "printed": "Maximum out-of-pocket amount: $3,900",
+      "expected": {
+        "amount": 3900,
+        "network_tier": "IN"
+      },
+      "path": "/accumulators/individual_oop_max"
+    },
+    {
+      "item": "Inpatient hospital care, in network, days 1 to N",
+      "page": 2,
+      "printed": "Inpatient hospital care2 $95 copay per day: days 1-4",
+      "expected": {
+        "type": "copay",
+        "amount": 95,
+        "basis": "per_day",
+        "unit_range": {
+          "from": 1,
+          "to": 4
+        }
+      },
+      "path": "/benefits/2/network_cost_shares/0/cost_shares/0"
+    },
+    {
+      "item": "Inpatient hospital care, in network, the days after",
+      "page": 2,
+      "printed": "$0 copay per day: days 5 and beyond",
+      "expected": {
+        "type": "copay",
+        "amount": 0,
+        "basis": "per_day",
+        "unit_range": {
+          "from": 5
+        }
+      },
+      "path": "/benefits/2/network_cost_shares/0/cost_shares/1"
+    },
+    {
+      "item": "Inpatient hospital care, unlimited days",
+      "page": 2,
+      "printed": "Our plan covers an unlimited number of days for an inpatient hospital stay.",
+      "expected": [
+        {
+          "type": "days",
+          "value": null,
+          "unlimited": true
+        }
+      ],
+      "path": "/benefits/2/limits"
+    },
+    {
+      "item": "Ambulatory surgical center (ASC), in network",
+      "page": 2,
+      "printed": "$0 copay for a colonoscopy; $75 copay otherwise",
+      "expected": [
+        {
+          "type": "copay",
+          "amount_min": 0,
+          "amount_max": 75
+        }
+      ],
+      "path": "/benefits/5/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient hospital, including surgery, in network",
+      "page": 2,
+      "printed": "$0 copay for a colonoscopy; $175 copay otherwise",
+      "expected": [
+        {
+          "type": "copay",
+          "amount_min": 0,
+          "amount_max": 175
+        }
+      ],
+      "path": "/benefits/3/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient hospital observation services, in network",
+      "page": 2,
+      "printed": "Outpatient hospital observation services: $175 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 175,
+          "basis": {
+            "$absent": true
+          }
+        }
+      ],
+      "path": "/benefits/4/network_cost_shares/0/cost_shares",
+      "expected_reading": [
+        {
+          "type": "copay",
+          "amount": 175,
+          "basis": "per_day"
+        }
+      ],
+      "note": "The Summary of Benefits prints no basis; the PBP file's observation copay is per day, as in the October check of H2406-013."
+    },
+    {
+      "item": "Primary care provider, in network",
+      "page": 2,
+      "printed": "Primary care $0 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/0/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Specialists, in network",
+      "page": 2,
+      "printed": "Specialists 1,2 $15 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 15
+        }
+      ],
+      "path": "/benefits/1/network_cost_shares/0/cost_shares",
+      "expected_reading": [
+        {
+          "type": "copay",
+          "amount_min": 0,
+          "amount_max": 15
+        }
+      ],
+      "note": "The PBP file states a range, pbp_b7d_copay_amt_mc_min \"0.00\" to _max; the Summary of Benefits prints the maximum. The same reading as the October check of H2406-013 (specialists and mental health)."
+    },
+    {
+      "item": "Medicare-covered preventive services, in network",
+      "page": 3,
+      "printed": "Medicare-covered $0 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/37/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Emergency care, in network",
+      "page": 3,
+      "printed": "Emergency care $150 copay per visit",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 150
+        }
+      ],
+      "path": "/benefits/6/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Urgently needed services, in network",
+      "page": 3,
+      "printed": "Urgently needed services $25 copay per visit",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 25
+        }
+      ],
+      "path": "/benefits/7/network_cost_shares/0/cost_shares",
+      "expected_reading": [
+        {
+          "type": "copay",
+          "amount_min": 0,
+          "amount_max": 25
+        }
+      ],
+      "note": "The PBP file states a range, pbp_b4b_copay_amt_mc_min \"0.00\" to _max; the Summary of Benefits prints the maximum. The same reading as the October check of H2406-013 (specialists and mental health)."
+    },
+    {
+      "item": "Diagnostic radiology services (e.g. MRI, CT scan), in network",
+      "page": 3,
+      "printed": "$0 copay for each diagnostic mammogram; $150 copay otherwise",
+      "expected": [
+        {
+          "type": "copay",
+          "amount_min": 0,
+          "amount_max": 150
+        }
+      ],
+      "path": "/benefits/12/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Lab services, in network",
+      "page": 3,
+      "printed": "Lab services2 $0 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/11/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Diagnostic tests and procedures, in network",
+      "page": 3,
+      "printed": "Diagnostic tests $0 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/10/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Therapeutic radiology, in network",
+      "page": 3,
+      "printed": "Therapeutic $10 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 10
+        }
+      ],
+      "path": "/benefits/13/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Outpatient X-rays, in network",
+      "page": 4,
+      "printed": "Outpatient X-rays2 $0 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/14/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Exam to diagnose and treat hearing and balance issues, in network",
+      "page": 4,
+      "printed": "Exam to diagnose $0 copay and treat hearing",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/22/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Routine hearing exam, in network",
+      "page": 4,
+      "printed": "Routine hearing $0 copay for a routine hearing exam",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/23/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Hearing aids, quantity and allowance",
+      "page": 4,
+      "printed": "Hearing aids2 $700 allowance for 2 hearing aids every year",
+      "expected": [
+        {
+          "type": "hearing_aids",
+          "value": 2,
+          "period": "per_year"
+        },
+        {
+          "type": "dollars",
+          "value": 700,
+          "period": "per_year"
+        }
+      ],
+      "path": "/benefits/26/limits"
+    },
+    {
+      "item": "Routine dental, cleanings, in network",
+      "page": 4,
+      "printed": "$0 copay for exams, cleanings, X-rays, and fluoride",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/30/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Comprehensive dental (fillings), in network",
+      "page": 4,
+      "printed": "$0 copay for comprehensive dental services",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/31/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Exam to diagnose and treat diseases and conditions of the eye, in network",
+      "page": 4,
+      "printed": "Exam to diagnose $0 copay and treat diseases",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/24/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Routine eye exam, in network",
+      "page": 4,
+      "printed": "Routine eye exam $0 copay, 1 per year",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/25/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Routine eye exam, each year",
+      "page": 4,
+      "printed": "Routine eye exam $0 copay, 1 per year",
+      "expected": {
+        "type": "visits",
+        "value": 1,
+        "period": "per_year"
+      },
+      "path": "/benefits/25/limits/0"
+    },
+    {
+      "item": "Routine eyewear, allowance",
+      "page": 4,
+      "printed": "Plan pays up to $200 every year for lenses/frames and contacts.",
+      "expected": {
+        "type": "dollars",
+        "value": 200,
+        "period": "per_year"
+      },
+      "path": "/benefits/32/limits/1",
+      "note": "The Summary of Benefits prints the dollar allowance only; the document's first limits entry is the PBP file's eyewear count."
+    },
+    {
+      "item": "Mental health, outpatient individual therapy visit, in network",
+      "page": 4,
+      "printed": "Outpatient individual therapy visit: $0 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/27/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Skilled nursing facility, in network",
+      "page": 5,
+      "printed": "$0 copay per day: days 1-20; $221 copay per day: days 21-100",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0,
+          "basis": "per_day",
+          "unit_range": {
+            "from": 1,
+            "to": 20
+          }
+        },
+        {
+          "type": "copay",
+          "amount": 221,
+          "basis": "per_day",
+          "unit_range": {
+            "from": 21,
+            "to": 100
+          }
+        }
+      ],
+      "path": "/benefits/29/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Physical therapy and speech and language therapy visit, in network",
+      "page": 5,
+      "printed": "Physical therapy $0 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/15/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Occupational therapy visit, in network",
+      "page": 5,
+      "printed": "Occupational $0 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/16/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Ambulance, ground, in network",
+      "page": 5,
+      "printed": "$80 copay for ground",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 80
+        }
+      ],
+      "path": "/benefits/8/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Ambulance, air, in network",
+      "page": 5,
+      "printed": "$80 copay for air",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 80
+        }
+      ],
+      "path": "/benefits/9/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Medicare-covered chiropractic care, in network",
+      "page": 6,
+      "printed": "Chiropractic Medicare-covered $15 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 15
+        }
+      ],
+      "path": "/benefits/17/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Foot exams and treatment, in network",
+      "page": 7,
+      "printed": "Foot exams and $15 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 15
+        }
+      ],
+      "path": "/benefits/19/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Routine foot care, in network",
+      "page": 7,
+      "printed": "Routine foot care $15 copay, 6 visits per year",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 15
+        }
+      ],
+      "path": "/benefits/20/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Routine foot care, visits per year",
+      "page": 7,
+      "printed": "Routine foot care $15 copay, 6 visits per year",
+      "expected": {
+        "type": "visits",
+        "value": 6,
+        "period": "per_year"
+      },
+      "path": "/benefits/20/limits/0"
+    },
+    {
+      "item": "Home health care, in network",
+      "page": 7,
+      "printed": "Home health care2 $0 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/28/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Fitness program, in network",
+      "page": 7,
+      "printed": "Fitness program $0 copay",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/36/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Part D deductible and the tiers it applies to",
+      "page": 5,
+      "printed": "This plan does not have a prescription drug deductible.",
+      "expected": {
+        "amount": 0,
+        "currency": "USD"
+      },
+      "path": "/pharmacy/deductible",
+      "expected_reading": {
+        "$absent": true
+      }
+    },
+    {
+      "item": "Tier 1, retail standard, 30-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 1: $0 copay (retail standard, 30-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/38/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 1, retail standard, 100-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 1: $0 copay (retail standard, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/39/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 1, mail order preferred, 100-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 1: $0 copay (mail order preferred, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/41/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 1, mail order standard, 100-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 1: $0 copay (mail order standard, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/40/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 2, retail standard, 30-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 2: $0 copay (retail standard, 30-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/44/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 2, retail standard, 100-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 2: $0 copay (retail standard, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/45/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 2, mail order preferred, 100-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 2: $0 copay (mail order preferred, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/47/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 2, mail order standard, 100-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 2: $0 copay (mail order standard, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/46/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 3, retail standard, 30-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 3: $25 copay (retail standard, 30-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 25
+        }
+      ],
+      "path": "/benefits/50/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 3, retail standard, 100-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 3: $75 copay (retail standard, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 75
+        }
+      ],
+      "path": "/benefits/51/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 3, mail order preferred, 100-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 3: $65 copay (mail order preferred, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 65
+        }
+      ],
+      "path": "/benefits/53/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 3, mail order standard, 100-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 3: $75 copay (mail order standard, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 75
+        }
+      ],
+      "path": "/benefits/52/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 4, retail standard, 30-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 4: 27% coinsurance (retail standard, 30-day supply)",
+      "expected": [
+        {
+          "type": "coinsurance",
+          "rate": 0.27
+        }
+      ],
+      "path": "/benefits/56/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 5, retail standard, 30-day supply, initial coverage",
+      "page": 6,
+      "printed": "Tier 5: 33% coinsurance (retail standard, 30-day supply)",
+      "expected": [
+        {
+          "type": "coinsurance",
+          "rate": 0.33
+        }
+      ],
+      "path": "/benefits/61/network_cost_shares/0/cost_shares"
+    }
+  ]
+}

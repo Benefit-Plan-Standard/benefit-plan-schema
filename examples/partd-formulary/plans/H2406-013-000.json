@@ -54,7 +54,9 @@
   },
   "premium": {
     "amount": 0,
-    "currency": "USD"
+    "currency": "USD",
+    "notes": "Plan Premium Amount (A/B), pbp_d_mplusc_premium: the monthly premium without its Part D (drug) part, which no PBP file states (premium.drug_amount, when another source gives it).",
+    "drug_amount": 0
   },
   "contacts": {
     "member_services_phone": "(866)627-7806"
@@ -3577,6 +3579,10 @@
     {
       "document": "2027_20261008.zip",
       "excerpt": "plan information  20261031.txt, header: CONTRACT_ID|PLAN_ID|SEGMENT_ID|CONTRACT_NAME|PLAN_NAME|FORMULARY_ID|PREMIUM|DEDUCTIBLE|MA_REGION_CODE|PDP_REGION_CODE|STATE|COUNTY_CODE|SNP|PLAN_SUPPRESSED_YN. The plan's first row of 7, 1 per county, which all give the same FORMULARY_ID, PREMIUM, DEDUCTIBLE, SNP and PLAN_NAME: H2406|013|000|CARE IMPROVEMENT PLUS SOUTH CENTRAL INSURANCE CO.|AARP Medicare Advantage from UHC FL-0021 (PPO)|00027002|0.00|685| | |FL|10090|0|N"
+    },
+    {
+      "document": "2027_20261008.zip",
+      "excerpt": "plan information  20261031.txt: PREMIUM \"0.00\", the layout's \"Monthly premium amount\". For a Medicare Advantage plan it is the Part D part of the monthly premium, written as premium.drug_amount; premium.amount, from the PBP files, is the rest, and the monthly plan premium is their sum (docs/specs/partd-formulary-importer.md section 7.2)."
     },
     {
       "document": "2027_20261008.zip",

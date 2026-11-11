@@ -1,0 +1,38 @@
+{
+  "description": "Rows cut from the CMS Prescription Drug Plan Formulary and Pharmacy Network Information file, release 2027_20261008, by node scripts/from-partd-formulary.js --write-fixtures, for scripts/from-partd-formulary.test.js. Each file holds the original header line and the kept records, byte for byte. The golden plans keep every row of their formularies; the edge plans keep the first 3 rows of theirs and every row whose drug is on the plan's Excluded Drugs or Indication Based Coverage rows. downloaded, urls and sha256 are those of the full files, which the documents cite.",
+  "downloaded": "2026-11-11",
+  "release_label": "2027_20261008",
+  "urls": [
+    "https://data.cms.gov/sites/default/files/2026-10/73ce0d29-e440-4d9a-9608-93678a50e8c8/2027_20261008.zip",
+    "https://data.cms.gov/sites/default/files/2026-10/PUFRecordLayout-2027.pdf",
+    "https://data.cms.gov/sites/default/files/2026-10/Methodology-PUF-2027.pdf"
+  ],
+  "zip_last_modified": "Thu, 08 Oct 2026 18:30:17 GMT",
+  "golden_plans": [
+    "S5921-383-000",
+    "S4802-146-000",
+    "H2406-013-000",
+    "H1036-068-000",
+    "H5533-019-000"
+  ],
+  "edge_plans": [
+    "H5580-001-000",
+    "H2960-024-000",
+    "H1225-001-000",
+    "H1993-001-000"
+  ],
+  "records": {
+    "plan information  20261031.txt": 40,
+    "basic drugs formulary file  20261031.txt": 17289,
+    "excluded drugs formulary file  20261031.txt": 48,
+    "beneficiary cost file  20261031.txt": 265,
+    "Indication Based Coverage Formulary File  20261031.txt": 7
+  },
+  "sha256": {
+    "plan information  20261031.txt": "c43530c4879765e078bed4942c22e7188f70b2bb7cab62e11a71ca233d64f018",
+    "basic drugs formulary file  20261031.txt": "e0546788078f80dbc1a13cf155d88b36aebd6ca28998bebf735ee32ac836baf1",
+    "excluded drugs formulary file  20261031.txt": "1416fa6eedb92ff258b1e3530f7b0d4c6c52bb3a35d90039091bf6fecc11f6a8",
+    "beneficiary cost file  20261031.txt": "11cf39a02111b90e18bdcab02a31d55c904860921ce5086468173d87ccfac27e",
+    "Indication Based Coverage Formulary File  20261031.txt": "e7bf6b98c87950ede263c8836eed156a3f582164be10a0cb2c9c562fbd29476c"
+  }
+}

@@ -3519,7 +3519,8 @@
                 "cost": {
                   "value": 5,
                   "currency": "USD"
-                }
+                },
+                "comment": "Plan Premium Amount (A/B), pbp_d_mplusc_premium: the monthly premium without its Part D (drug) part, which no PBP file states (premium.drug_amount, when another source gives it)."
               },
               {
                 "type": {

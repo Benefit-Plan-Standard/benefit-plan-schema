@@ -372,3 +372,19 @@ The other 19 give the counts of their last run: the 5 Marketplace Bundles those 
 | `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 197 |
 
 **Warnings and information.** Every count is the eleventh run's, file by file: 183 warnings and 2,906 information messages across the 20. A `BenefitLimitation` with no `limitValue` raises no message: its 4 parts are optional in the ballot package, and `days` is a code of `limit-type`.
+
+## Thirteenth run: 2026-11-11, all 20 Bundles after the 1.2.0 draft 9 premium note
+
+**What changed.** The 1.2.0 draft 9 adds `premium.drug_amount`, the Part D part of a Medicare Advantage plan's premium, and the Medicare Advantage importer now says in `premium.notes`, on a plan with drug coverage, that its `pbp_d_mplusc_premium` (Plan Premium Amount (A/B)) leaves the Part D part out (`docs/changelog.md`). The converter carries `premium.notes` as the premium entry's `comment`, so each of the 5 PBP Bundles gains 1 `comment`; they are regenerated and re-pinned. The 10 SBC Bundles and the 5 Marketplace Bundles are byte-identical.
+
+**Result:** all 20 files pass with **0 errors**. Same validator (`validator_cli.jar` 7.0.0, Git# 37795f3f571f), Java (OpenJDK 17.0.19), FHIR version, packages and command as the tenth run.
+
+| File | Errors | Warnings | Information |
+|---|---|---|---|
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | 0 | 0 | 168 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | 0 | 0 | 172 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | 0 | 13 | 201 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | 0 | 4 | 203 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 197 |
+
+**Warnings and information.** Every count is the twelfth run's, file by file: 183 warnings and 2,906 information messages across the 20. A `comment` on a `generalCost` entry raises no message.

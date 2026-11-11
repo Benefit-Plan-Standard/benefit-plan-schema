@@ -496,7 +496,8 @@ test('gap G3: Section D premium and Part B premium reduction, with no period; ab
   for (const x of await maBuilt()) {
     const doc = x.result.doc;
     const [premium, reduction] = want[x.g.plan];
-    assert.deepStrictEqual(doc.premium, { amount: premium, currency: 'USD' }, x.g.plan);
+    // v1.2.0 draft 9: every golden Medicare Advantage plan has drug coverage, so its premium says it leaves the Part D part out.
+    assert.deepStrictEqual(doc.premium, { amount: premium, currency: 'USD', notes: PREMIUM_NOTE }, x.g.plan);
     assert.deepStrictEqual(doc.part_b_premium_reduction, reduction === null ? undefined : { amount: reduction }, x.g.plan);
     const ex = excerptStarting(doc, 'Premium from Section D:');
     assert.ok(ex.includes(`pbp_d_mplusc_premium "${x.rows.d.pbp_d_mplusc_premium}"`), x.g.plan);
@@ -509,8 +510,18 @@ test('gap G3: Section D premium and Part B premium reduction, with no period; ab
   assert.ok(noAmount.errors.some((e) => e.includes('pbp_d_mco_pay_reduct_yn "1" but pbp_d_mco_pay_reduct_amt ""')));
   const bOnly = await alteredPart('H5533-019-000', 'd', { pbp_d_mplusc_bonly_premium: '3.00' });
   assert.ok(excerptStarting(bOnly.doc, 'Premium from Section D:').includes('pbp_d_mplusc_bonly_premium "3.00"'));
-  assert.deepStrictEqual(bOnly.doc.premium, { amount: 5, currency: 'USD' });
+  assert.deepStrictEqual(bOnly.doc.premium, { amount: 5, currency: 'USD', notes: PREMIUM_NOTE });
+  // A plan with no drug coverage: its premium has no Part D part to leave out, so no note.
+  const { rows, source } = await loadPlan({ dataDir: FIXTURE_DIR, year: 2027, plan: 'H5533-019-000' });
+  const keep = new Set(['pbp_a_hnumber', 'pbp_a_plan_identifier', 'segment_id', 'pbp_a_ben_cov', 'pbp_a_plan_type', 'orgtype', 'bid_id', 'version']);
+  const mrx = Object.fromEntries(Object.entries(rows.mrx).map(([k, v]) => [k, keep.has(k) ? v : '']));
+  mrx.mrx_drug_ben_yn = '2';
+  const noRx = buildDocument({ ...rows, mrx, mrxTiers: [], mrxPost: [] }, source);
+  assert.deepStrictEqual(noRx.errors, []);
+  assert.strictEqual(noRx.doc.pharmacy, undefined);
+  assert.deepStrictEqual(noRx.doc.premium, { amount: 5, currency: 'USD' });
 });
+const PREMIUM_NOTE = "Plan Premium Amount (A/B), pbp_d_mplusc_premium: the monthly premium without its Part D (drug) part, which no PBP file states (premium.drug_amount, when another source gives it).";
 
 test('gaps G4 and G5: Section A phone, website and provider directory; an address with no scheme is quoted, not written', async () => {
   const want = {

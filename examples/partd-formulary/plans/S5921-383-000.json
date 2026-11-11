@@ -1828,7 +1828,7 @@
     },
     {
       "document": "2027_20261008.zip",
-      "excerpt": "plan information  20261031.txt: PREMIUM \"184.10\", the layout's \"Monthly premium amount\", written as premium.amount in USD with period per_month. The PBP files hold no premium for a stand-alone drug plan (docs/specs/pbp-part-d-mapping.md section 4), so this is the document's only premium (docs/specs/partd-formulary-importer.md section 7.2)."
+      "excerpt": "plan information  20261031.txt: PREMIUM \"184.10\", the layout's \"Monthly premium amount\". Written as premium.amount in USD with period per_month. The PBP files hold no premium for a stand-alone drug plan (docs/specs/pbp-part-d-mapping.md section 4), so this is the document's only premium (docs/specs/partd-formulary-importer.md section 7.2)."
     },
     {
       "document": "2027_20261008.zip",

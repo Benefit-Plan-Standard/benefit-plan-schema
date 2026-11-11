@@ -120,7 +120,7 @@ Namespaces used below:
 | (none) | `type` = `insurance-plan-type#medical` | True of all inputs. Plan design (`PPO`, `HMO`) goes in `plan.type`, not here. |
 | `coverage_period`, `effective_date`, `expiry_date`, `plan_year` | `period` | See section 5. |
 | `plan_year`, `market`, `schema_version`, `service_area` (v1.2.0) | `bps-plan-metadata` **[BPS ext]** | `market` can no longer go in `plan.type`, which is bound to `sbc-plan-type`. `service_area` is not mapped to `plan.coverageArea`, because that element needs `Location` resources, which are out of scope. |
-| `premium` (v1.2.0) | `plan[0].generalCost[]`, `type.text` `Premium`, `cost` Money, `comment` from `period` and `notes` | |
+| `premium` (v1.2.0) | `plan[0].generalCost[]`, `type.text` `Premium`, `cost` Money, `comment` from `period` and `notes` | `premium.drug_amount` (v1.2.0 draft 9, the Part D part of a Medicare Advantage premium) is not converted yet: no golden document that the converter reads carries it, and the formulary importer's plan documents are not converted. |
 | `part_b_premium_reduction` (v1.2.0) | `plan[0].generalCost[]`, `type.text` `Part B premium reduction`; `cost` only when `amount` is non-null; `comment` = `notes` verbatim | Humana's amount is null ("up to $3"), so only the comment is emitted. |
 | `source_references[]` (plan level) | `bps-source-reference` **[BPS ext]** on `InsurancePlan`, one per entry, in order | Section 9. |
 | (none) | `contact` | Section 5. |

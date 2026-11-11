@@ -2060,6 +2060,9 @@ const SECTION_A_UNCARRIED = ['bid_id', 'version', 'orgtype', 'pbp_a_org_name', '
 // Section D's plan premium, "Plan Premium Amount (A/B)", and the Part B premium
 // reduction. No file or dictionary text states a period, so none is written. A
 // blank premium writes no premium; a reduction answered "2" (No) writes none.
+const PREMIUM_WITHOUT_PART_D = 'Plan Premium Amount (A/B), pbp_d_mplusc_premium: the monthly premium without its Part D (drug) part, ' +
+  'which no PBP file states (premium.drug_amount, when another source gives it).';
+
 function buildPremium(d, errors) {
   const out = {};
   const parts = [];
@@ -2233,7 +2236,12 @@ function buildDocument(rows, source) {
   doc.plan_year = area.planYear;
   doc.market = 'medicare_advantage';
   if (area.service_area) doc.service_area = area.service_area;
-  if (premium.premium) doc.premium = premium.premium;
+  if (premium.premium) {
+    doc.premium = premium.premium;
+    // v1.2.0 draft 9: for a plan with drug coverage, pbp_d_mplusc_premium leaves the Part D part of
+    // the premium out, and no PBP file states it (docs/specs/pbp-importer.md section 4.1).
+    if (partD.pharmacy) doc.premium.notes = PREMIUM_WITHOUT_PART_D;
+  }
   if (premium.part_b_premium_reduction) doc.part_b_premium_reduction = premium.part_b_premium_reduction;
   if (contacts.contacts) doc.contacts = contacts.contacts;
   doc.network_tiers = network_tiers;

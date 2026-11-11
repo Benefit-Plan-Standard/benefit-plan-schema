@@ -19,3 +19,5 @@
 # importer requires CRLF, so git must not convert them.
 test/fixtures/pbp/**/*.txt -text
 test/fixtures/pbp-segment/**/*.txt -text
+# Part D formulary fixtures are byte-for-byte cuts of the CMS monthly file (CRLF) too.
+test/fixtures/partd-formulary/**/*.txt -text

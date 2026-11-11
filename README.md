@@ -340,6 +340,15 @@ node scripts/from-pbp.js --year 2027 --plan H2406-013-000 --out plan.json
 node --test scripts/from-pbp.test.js
 ```
 
+`scripts/from-partd-formulary.js` (since the schema 1.2.0 draft 9) reads the CMS monthly public use file "Prescription Drug Plan Formulary and Pharmacy Network Information" and writes the drug lists of Medicare Part D plans: a formulary list (`schema/v1.2.0/formulary.schema.json`) once for every plan that shares it, with each drug's tier, prior authorization, step therapy, quantity limit and negotiation flag quoting its row, and a plan document that is `scripts/from-pbp.js`'s document for the plan with `pharmacy.formulary_reference` and the plan's own items: the drugs Part D excludes that the plan covers, and drugs covered for named indications only. Every drug's tier is a tier the PBP importer writes for the plan, or, for a Defined Standard plan, for which the PBP files hold no tier rows, a tier of the file's Beneficiary Cost rows. The monthly zip is not in the repository: unzip it into `data/partd-formulary/<release>/txt/` (git-ignored) with a `download.json`; the pharmacy network files in it are not read. The test runs on rows committed in `test/fixtures/partd-formulary/`. Spec: [`docs/specs/partd-formulary-importer.md`](docs/specs/partd-formulary-importer.md); examples: `examples/partd-formulary/`.
+
+```bash
+node scripts/from-partd-formulary.js --release 2027_20261008 --plan H2406-013-000 --out plan.json   # 1 plan, its list inline
+node scripts/from-partd-formulary.js --release 2027_20261008 --formulary 00027002 --out list.json   # 1 list
+node scripts/from-partd-formulary.js --release 2027_20261008 --all --out-dir out/                   # every list and plan, and a report
+node --test scripts/from-partd-formulary.test.js
+```
+
 ### Segments, completeness and pledgee publishing
 
 Three scripts sit beside the importers for the medical MVP. `scripts/pbp-segment.js` gives a Medicare Advantage plan's segment and plan key for a contract, a plan and a county, from an SSA county code or from the county's name and state, read from the PBP files or from a pledgee's `service-areas.json`; its test runs on the cuts in `test/fixtures/pbp-segment/`. `scripts/rtb-completeness.js` counts, for one or more documents, how many of the specification's SHALL items that apply to the plan the document populates. `scripts/publish-fhir.js --pledgee <root>` reads a pledgee's release folders and writes the index and `service-areas.json` the specification describes.

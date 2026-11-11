@@ -1,0 +1,346 @@
+{
+  "plan": "S5921-413-000",
+  "document": {
+    "title": "Summary of Benefits 2027, AARP Medicare Rx Preferred from UHC (PDP)",
+    "id": "Y0066_SB_S5921_413_000_2027_M",
+    "file": "data/pbp/2027/sob/S5921-413-000-2027-SB.pdf",
+    "source": "https://www.uhc.com/medicare/alphadog/PDCA27PD0398719_000, the \"Summary of Benefits (PDF)\" link of https://www.uhc.com/medicare/health-plans/details.html/90012/037/S5921413000/2027, downloaded 2026-11-11, SHA-256 d77381e4fdd6c67b57177c70c9542ace9614f87819b0e4923558972696a91f91",
+    "pages": 5,
+    "read_with": "pdftotext -layout, and pdftotext -raw where the layout reading splits a value from its label; pages counted in the PDF."
+  },
+  "golden": "node scripts/from-partd-formulary.js --release 2027_20261008 --plan S5921-413-000 (the Medicare Advantage importer's document for the plan with its drug list and premium parts; not committed)",
+  "spec": "docs/specs/pbp-importer.md section 13; docs/specs/partd-formulary-importer.md section 7",
+  "status": "Written 2026-11-11 from the plan's 2027 Summary of Benefits, item by item, with the pointers and shapes of the October check files.",
+  "checks": [
+    {
+      "item": "Monthly plan premium",
+      "page": 2,
+      "printed": "Monthly plan premium $242.60",
+      "expected": {
+        "amount": 242.6,
+        "currency": "USD",
+        "period": "per_month"
+      },
+      "path": "/premium",
+      "note": "Written from the CMS Part D formulary file's Plan Information PREMIUM; the PBP files hold no premium for a stand-alone drug plan."
+    },
+    {
+      "item": "Annual prescription drug deductible",
+      "page": 2,
+      "printed": "$0 per year for Tier 1 and Tier 2; $300 for Tier 3, Tier 4 and Tier 5",
+      "expected": {
+        "amount": 300,
+        "currency": "USD",
+        "applies_to_tiers": [
+          "T3",
+          "T4",
+          "T5"
+        ]
+      },
+      "path": "/pharmacy/deductible"
+    },
+    {
+      "item": "Part D out-of-pocket threshold",
+      "page": 2,
+      "printed": "paid a combined total of $2,400,",
+      "expected": {
+        "amount": 2400,
+        "currency": "USD"
+      },
+      "path": "/pharmacy/out_of_pocket_max"
+    },
+    {
+      "item": "Plan type",
+      "page": 4,
+      "printed": "is a Medicare Prescription Drug Plan with a Medicare",
+      "expected": "PDP",
+      "path": "/plan_type"
+    },
+    {
+      "item": "Tier 1, retail preferred, 30-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 1: $0 (retail preferred, 30-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/2/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 1, retail preferred, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 1: $0 (retail preferred, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/3/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 1, retail standard, 30-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 1: $5 (retail standard, 30-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 5
+        }
+      ],
+      "path": "/benefits/0/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 1, retail standard, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 1: $15 (retail standard, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 15
+        }
+      ],
+      "path": "/benefits/1/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 1, mail order preferred, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 1: $0 (mail order preferred, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/5/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 1, mail order standard, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 1: $15 (mail order standard, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 15
+        }
+      ],
+      "path": "/benefits/4/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 2, retail preferred, 30-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 2: $5 (retail preferred, 30-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 5
+        }
+      ],
+      "path": "/benefits/10/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 2, retail preferred, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 2: $15 (retail preferred, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 15
+        }
+      ],
+      "path": "/benefits/11/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 2, retail standard, 30-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 2: $10 (retail standard, 30-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 10
+        }
+      ],
+      "path": "/benefits/8/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 2, retail standard, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 2: $30 (retail standard, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 30
+        }
+      ],
+      "path": "/benefits/9/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 2, mail order preferred, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 2: $0 (mail order preferred, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/13/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 2, mail order standard, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 2: $30 (mail order standard, 100-day supply)",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 30
+        }
+      ],
+      "path": "/benefits/12/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 3, retail preferred, 30-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 3: 21% (retail preferred, 30-day supply)",
+      "expected": [
+        {
+          "type": "coinsurance",
+          "rate": 0.21
+        }
+      ],
+      "path": "/benefits/18/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 3, retail preferred, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 3: 21% (retail preferred, 100-day supply)",
+      "expected": [
+        {
+          "type": "coinsurance",
+          "rate": 0.21
+        }
+      ],
+      "path": "/benefits/19/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 3, retail standard, 30-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 3: 21% (retail standard, 30-day supply)",
+      "expected": [
+        {
+          "type": "coinsurance",
+          "rate": 0.21
+        }
+      ],
+      "path": "/benefits/16/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 3, retail standard, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 3: 21% (retail standard, 100-day supply)",
+      "expected": [
+        {
+          "type": "coinsurance",
+          "rate": 0.21
+        }
+      ],
+      "path": "/benefits/17/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 3, mail order preferred, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 3: 21% (mail order preferred, 100-day supply)",
+      "expected": [
+        {
+          "type": "coinsurance",
+          "rate": 0.21
+        }
+      ],
+      "path": "/benefits/21/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 3, mail order standard, 100-day supply, initial coverage",
+      "page": 2,
+      "printed": "Tier 3: 21% (mail order standard, 100-day supply)",
+      "expected": [
+        {
+          "type": "coinsurance",
+          "rate": 0.21
+        }
+      ],
+      "path": "/benefits/20/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 4, retail preferred, 30-day supply, initial coverage",
+      "page": 3,
+      "printed": "Tier 4: 29% (retail preferred, 30-day supply)",
+      "expected": [
+        {
+          "type": "coinsurance",
+          "rate": 0.29
+        }
+      ],
+      "path": "/benefits/25/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 4, retail standard, 30-day supply, initial coverage",
+      "page": 3,
+      "printed": "Tier 4: 29% (retail standard, 30-day supply)",
+      "expected": [
+        {
+          "type": "coinsurance",
+          "rate": 0.29
+        }
+      ],
+      "path": "/benefits/24/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 5, retail preferred, 30-day supply, initial coverage",
+      "page": 3,
+      "printed": "Tier 5: 30% (retail preferred, 30-day supply)",
+      "expected": [
+        {
+          "type": "coinsurance",
+          "rate": 0.3
+        }
+      ],
+      "path": "/benefits/31/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Tier 5, retail standard, 30-day supply, initial coverage",
+      "page": 3,
+      "printed": "Tier 5: 30% (retail standard, 30-day supply)",
+      "expected": [
+        {
+          "type": "coinsurance",
+          "rate": 0.3
+        }
+      ],
+      "path": "/benefits/30/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Catastrophic coverage, Tier 1, covered Part D drugs",
+      "page": 3,
+      "printed": "Once you're in this stage, you won't pay anything for your Medicare-covered Part D drugs for the rest of the plan year.",
+      "expected": [
+        {
+          "type": "copay",
+          "amount": 0
+        }
+      ],
+      "path": "/benefits/36/network_cost_shares/0/cost_shares"
+    },
+    {
+      "item": "Service area",
+      "page": 4,
+      "printed": "Our service area includes California.",
+      "expected": {
+        "$absent": true
+      },
+      "path": "/service_area",
+      "note": "The plan is sold in the Part D region California, which the PBP importer quotes and the schema has no field for (docs/specs/pbp-part-d-mapping.md section 4)."
+    }
+  ]
+}

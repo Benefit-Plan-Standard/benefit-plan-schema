@@ -484,3 +484,19 @@ test('v1.2.0 draft 9: schema/v1.2.0/formulary.schema.json validates a list of co
   // A plan document is not a list.
   assert.ok(!check(minimal()));
 });
+
+test('v1.2.0 draft 9: premium.drug_amount, the Part D part of a Medicare Advantage premium, is an optional number or null', () => {
+  const P = CORE.properties.premium;
+  const doc = (p) => minimal({ premium: { amount: 13, currency: 'USD', ...p } });
+  for (const p of [{}, { drug_amount: 13 }, { drug_amount: 0 }, { drug_amount: null }, { drug_amount: 105, notes: 'Plan Premium Amount (A/B) only.' }]) {
+    assert.deepStrictEqual(errorsOf(doc(p)), [], JSON.stringify(p));
+  }
+  assert.ok(errorsOf(doc({ drug_amount: '13' })).some((e) => e.includes('drug_amount')));
+  assert.ok(errorsOf(minimal({ premium: { drug_amount: 13 } })).some((e) => e.includes("must have required property 'amount'")), 'amount stays required');
+  assert.deepStrictEqual(P.required, ['amount']);
+  assert.deepStrictEqual(shape(P.properties.drug_amount), { type: ['number', 'null'] });
+  assert.ok(P.properties.drug_amount.description.includes("'Monthly plan premium $26'"));
+  assert.ok(P.properties.drug_amount.description.includes('Absent or null means the document gives no Part D part'));
+  assert.ok(P.description.includes('the monthly plan premium is then amount plus drug_amount'));
+  assert.ok(CORE.description.includes('it adds 7 optional properties'));
+});

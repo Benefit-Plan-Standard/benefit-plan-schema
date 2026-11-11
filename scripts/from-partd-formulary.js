@@ -111,6 +111,7 @@ const ITEM_KEYS = ['rxcui', 'drug_name', 'ndc', 'brand_name', 'generic_name', 'd
 const ROOT_KEYS = ['plan_id', 'plan_identifiers', 'plan_name', 'carrier', 'plan_type', 'plan_year', 'effective_date', 'expiry_date',
   'coverage_period', 'market', 'service_area', 'premium', 'part_b_premium_reduction', 'contacts', 'network_tiers', 'accumulators', 'pharmacy',
   'benefits', 'source_references', 'schema_version'];
+const PREMIUM_KEYS = ['amount', 'currency', 'period', 'notes', 'drug_amount'];
 const PHARMACY_KEYS = ['deductible', 'out_of_pocket_max', 'coverage_stages', 'formulary_tiers', 'pharmacy_networks',
   'formulary_items', 'formulary_reference', 'mail_order_supply_multiplier'];
 const ordered = (obj, keys) => {
@@ -505,12 +506,14 @@ function buildPlanDocument(rel, key, pbpDoc, { mode = 'whole', items } = {}) {
   // Part D part of its premium and is not written here.
   const standAlone = key[0] === 'S';
   const premiumCell = cells[c.PREMIUM];
-  if (standAlone) {
-    if (!/^\d+\.\d{2}$/.test(premiumCell)) errors.push(`${at(rel, 'plan', p.first, 'PREMIUM')} is not an amount in dollars and cents`);
-    if (doc.premium) errors.push(`${key}: the PBP document already has a premium, and a stand-alone drug plan's comes from PREMIUM only`);
-  }
+  if (!/^\d+\.\d{2}$/.test(premiumCell)) errors.push(`${at(rel, 'plan', p.first, 'PREMIUM')} is not an amount in dollars and cents`);
+  if (standAlone && doc.premium) errors.push(`${key}: the PBP document already has a premium, and a stand-alone drug plan's comes from PREMIUM only`);
   if (errors.length) throw new Error(`${key} cannot be imported:\n  ${errors.join('\n  ')}`);
+  // A Medicare Advantage plan's PREMIUM is the Part D part of its premium: premium.drug_amount
+  // (v1.2.0 draft 9), beside the PBP importer's amount, which leaves that part out. With no PBP
+  // premium there is no amount to put it beside, and it is quoted only.
   if (standAlone) doc.premium = { amount: Number(premiumCell), currency: 'USD', period: 'per_month' };
+  else if (doc.premium) doc.premium = ordered({ ...doc.premium, drug_amount: Number(premiumCell) }, PREMIUM_KEYS);
 
   const kinds = ['plan', 'basic', 'cost', ...(own.excluded.length ? ['excluded'] : []), ...(own.ibcRows ? ['ibc'] : [])];
   const reference = {
@@ -545,10 +548,11 @@ function buildPlanDocument(rel, key, pbpDoc, { mode = 'whole', items } = {}) {
       ? `The PBP files hold no tier rows for this plan (a Defined Standard plan), so pharmacy.formulary_tiers is read from these rows; no cost share is written from them (${SPEC} section 7.3).`
       : `The same tiers as pharmacy.formulary_tiers, which the PBP files give; the file's cost cells are compared with the Part D benefits and not written (${SPEC} sections 7.3 and 8).`),
   });
-  if (standAlone) {
-    refs.splice(1, 0, { document: rel.zip, excerpt: `${rel.names.plan}: PREMIUM "${premiumCell}", the layout's "Monthly premium amount", written as premium.amount in USD with ` +
-      `period per_month. The PBP files hold no premium for a stand-alone drug plan (docs/specs/pbp-part-d-mapping.md section 4), so this is the document's only premium (${SPEC} section 7.2).` });
-  }
+  refs.splice(1, 0, { document: rel.zip, excerpt: `${rel.names.plan}: PREMIUM "${premiumCell}", the layout's "Monthly premium amount". ` + (standAlone
+    ? `Written as premium.amount in USD with period per_month. The PBP files hold no premium for a stand-alone drug plan (docs/specs/pbp-part-d-mapping.md section 4), so this is the document's only premium (${SPEC} section 7.2).`
+    : doc.premium
+      ? `For a Medicare Advantage plan it is the Part D part of the monthly premium, written as premium.drug_amount; premium.amount, from the PBP files, is the rest, and the monthly plan premium is their sum (${SPEC} section 7.2).`
+      : `For a Medicare Advantage plan it is the Part D part of the monthly premium. Not written: the PBP document has no premium for it to complete (${SPEC} section 7.2).`) });
   doc.source_references = [...(doc.source_references || []), ...refs];
   return {
     doc: ordered(doc, ROOT_KEYS),

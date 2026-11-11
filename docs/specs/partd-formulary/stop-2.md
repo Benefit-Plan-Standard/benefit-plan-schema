@@ -66,4 +66,12 @@ A reviewer with no part in the build read the diff and the evidence, not this fi
 
 - **N2:** decided by Diego Orofino: the file's amount on a tier of excluded drugs only, Q6 everywhere else. Done in `scripts/from-pbp.js` (`docs/specs/pbp-part-d-mapping.md` section 6.6), with a test.
 - **N1, stand-alone drug plans:** decided: their premium is written from `PREMIUM` now. Done in `scripts/from-partd-formulary.js` (spec section 7.2): S5921-383 $184.10 and S4802-146 $5.30 in the examples.
-- **N1, Medicare Advantage plans:** not deferred: what the PBP document's premium says, and a proposal for draft 9, wait for a decision; nothing is changed until then.
+- **N1, Medicare Advantage plans:** decided: draft 9 gains `premium.drug_amount`, the Part D part of a Medicare Advantage premium; the PBP importer says in `premium.notes` that its amount leaves that part out; the formulary importer writes `drug_amount` from `PREMIUM`. Before it was written on 5,155 plans, the reading was checked on 3 plans whose 2 parts are both above $0, each against its 2027 Summary of Benefits:
+
+  | Plan | `pbp_d_mplusc_premium` | `PREMIUM` | Sum | The Summary of Benefits prints |
+  |---|---|---|---|---|
+  | H0292-002-000, Humana Gold Plus H0292-002 (HMO) | 13.00 | 13.00 | $26 | "Monthly plan premium $26" (page 4; https://assets.humana.com/is/content/humana/H0292002000SB27pdf, SHA-256 `630cf74bcc0f9c44c1dac2ff5a642a835086fa4fc7038523244c15c946c3a6b0`) |
+  | H0473-003-000, HumanaChoice H0473-003 (PPO) | 13.00 | 105.00 | $118 | "Monthly plan premium $118" (page 5; https://assets.humana.com/is/content/humana/H0473003000SB27pdf, SHA-256 `6da9fb1df55bd93aade4a3e4a17610daf8aa107b1c053426de85bde46b4b7954`) |
+  | H5533-019-000, UPMC for Life PPO Rx Choice (PPO) | 5.00 | 28.00 | $33 | "Monthly plan premium $33 per month" (page 4; the October check file `../pbp-sob-checks/H5533-019-000.json`) |
+
+  3 of 3 add up. The 5 PBP Bundles are re-pinned (each premium entry gains a `comment`), and the HL7 validator's thirteenth run gives 0 errors and the twelfth run's counts (`examples/fhir/VALIDATION.md`).
