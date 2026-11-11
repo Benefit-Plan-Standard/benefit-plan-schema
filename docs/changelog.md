@@ -712,7 +712,7 @@ Backward-compatible minor release. Existing v1.0.0 documents continue to validat
 - v1.1.0 canonical: `https://benefitplanstandard.org/schema/v1.1.0/benefit-plan.schema.json`
 - v1.0.0 remains available at: `https://benefitplanstandard.org/schema/v1.0.0/benefit-plan.schema.json`
 
-## [1.0.0] – 2025-11-30
+## [1.0.0] – 2026-05-21
 
 ### Added
 
