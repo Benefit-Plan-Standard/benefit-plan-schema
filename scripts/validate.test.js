@@ -7,8 +7,11 @@
  * benefit whose benefit_type is not "pharmacy", and a formulary_tier_id,
  * pharmacy_network_id or coverage_stage_id that the document's pharmacy object does
  * not define) stop printing, change their text, or make the validator fail, or if a
- * document with the fields of draft 7 stops passing with no warning.
- * Fixtures: test/fixtures/validate/. Needs a local copy of Ajv (npm install ajv ajv-formats).
+ * document with the fields of draft 7 stops passing with no warning. Draft 9: fails if
+ * --schema schema/v1.2.0/formulary.schema.json stops loading the core schema beside it,
+ * so that a formulary list validates or fails by the core item shape.
+ * Fixtures: test/fixtures/validate/ (plans) and test/fixtures/validate-formulary/ (lists).
+ * Needs a local copy of Ajv (npm install ajv ajv-formats).
  */
 
 'use strict';
@@ -66,11 +69,25 @@ test('pharmacy warnings never fail the run, with --strict-vocab or --no-vocab', 
   }
 });
 
-test('no document in examples/ and no pharmacy module example of v0.2.1 or v0.2.2 gets a pharmacy warning', () => {
+test('no document in examples/ and no pharmacy module example of v0.2.1, v0.2.2 or v0.2.3 gets a pharmacy warning', () => {
   const list = (dir) => fs.readdirSync(path.join(REPO, dir)).filter((f) => f.endsWith('.json')).map((f) => path.join(dir, f));
-  const files = [...list('examples'), ...list(path.join('modules', 'pharmacy', 'v0.2.1', 'examples')), ...list(path.join('modules', 'pharmacy', 'v0.2.2', 'examples'))];
-  assert.ok(files.length >= 26);
+  const files = [...list('examples'), ...['v0.2.1', 'v0.2.2', 'v0.2.3'].flatMap((v) => list(path.join('modules', 'pharmacy', v, 'examples')))];
+  assert.ok(files.length >= 28);
   const { status, lines } = run('--no-vocab', '--schema', V120, ...files);
   assert.strictEqual(status, 0);
   assert.deepStrictEqual(warnings(lines), []);
+});
+
+test('v1.2.0 draft 9: a formulary list validates against formulary.schema.json, with the core schema loaded beside it', () => {
+  const LIST = path.join('schema', 'v1.2.0', 'formulary.schema.json');
+  const LISTS = path.join('test', 'fixtures', 'validate-formulary');
+  const ok = run('--no-vocab', '--schema', LIST, path.join(LISTS, 'formulary-list.json'));
+  assert.strictEqual(ok.status, 0, ok.lines.join('\n'));
+  assert.ok(ok.lines[0].startsWith('PASS'), ok.lines[0]);
+  const bad = run('--no-vocab', '--schema', LIST, path.join(LISTS, 'formulary-list-item-without-tier.json'));
+  assert.strictEqual(bad.status, 1);
+  assert.ok(bad.lines.some((l) => l.includes("formulary_tier_id")), bad.lines.join('\n'));
+  // A plan is not a list, and a list is not a plan.
+  assert.strictEqual(run('--no-vocab', '--schema', LIST, path.join('examples', 'unitedhealthcare-aarp-medicare-rx-preferred-from-uhc.pbp.json')).status, 1);
+  assert.strictEqual(run('--no-vocab', '--schema', V120, path.join(LISTS, 'formulary-list.json')).status, 1);
 });

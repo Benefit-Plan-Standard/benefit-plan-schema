@@ -1,0 +1,7 @@
+{
+  "formulary_reference": { "formulary_id": "00027000", "formulary_version": "8" },
+  "formulary_items": [
+    { "rxcui": "1551300", "ndc": "00002143380", "covered": true }
+  ],
+  "schema_version": "1.2.0"
+}

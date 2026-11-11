@@ -21,6 +21,9 @@
  *   node scripts/validate.js --schema schema/v1.2.0/benefit-plan.schema.json plan.json
  *   node scripts/validate.js --no-vocab plan.json          (layer 1 only)
  *   node scripts/validate.js --strict-vocab plan.json      (warnings also fail)
+ *   node scripts/validate.js --schema schema/v1.2.0/formulary.schema.json list.json
+ *                                       (a formulary list, v1.2.0 draft 9; the core
+ *                                        schema beside it is loaded for its $refs)
  *
  * Exit codes: 0 = schema-valid (vocabulary warnings allowed unless --strict-vocab),
  *             1 = schema-invalid or file/usage error.
@@ -84,6 +87,11 @@ try {
 }
 
 const schema = readJson(schemaPath);
+// A schema that refers to the core schema of its folder by a relative $ref (the
+// formulary list, schema/v1.2.0/formulary.schema.json, since v1.2.0 draft 9) needs
+// that core file loaded beside it.
+const coreBeside = path.join(path.dirname(schemaPath), 'benefit-plan.schema.json');
+if (path.basename(schemaPath) !== 'benefit-plan.schema.json' && fs.existsSync(coreBeside)) ajv.addSchema(readJson(coreBeside));
 const validate = ajv.compile(schema);
 
 // ---- layer 2: vocabularies -------------------------------------------------

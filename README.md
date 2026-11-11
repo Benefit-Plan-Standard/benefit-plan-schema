@@ -7,7 +7,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
   </a>
   <img src="https://img.shields.io/badge/Schema-v1.1.0-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Status-Stable-blueviolet?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Draft-v1.2.0%20draft%208-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Draft-v1.2.0%20draft%209-orange?style=for-the-badge" />
   <img src="https://img.shields.io/github/license/Benefit-Plan-Standard/benefit-plan-schema?style=for-the-badge" />
 </p>
 
@@ -17,7 +17,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 
 - Documentation: https://benefitplanstandard.org  
 - Canonical schema file (current): `schema/v1.1.0/benefit-plan.schema.json`  
-- Draft schema (v1.2.0, draft 8): `schema/v1.2.0/benefit-plan.schema.json`; each published draft is a git tag, `v1.2.0-draft.1` through `v1.2.0-draft.8`  
+- Draft schema (v1.2.0, draft 9): `schema/v1.2.0/benefit-plan.schema.json`, and since draft 9 `schema/v1.2.0/formulary.schema.json` for a drug list that many plans share; each published draft is a git tag, `v1.2.0-draft.1` through `v1.2.0-draft.9`  
 - Previous schema (v1.0.0): `schema/v1.0.0/benefit-plan.schema.json`  
 - Example plans: `examples/`, 22 plans: 10 read from plan documents, 5 imported from the CMS Marketplace public use files, 7 from the CMS PBP files (5 Medicare Advantage plans with drug coverage and 2 stand-alone Part D plans)  
 - Vocabularies (canonical benefits, categories, markets, plan types): `vocabularies/`  
@@ -76,7 +76,8 @@ schema/
   ├── v1.1.0/
   │   └── benefit-plan.schema.json   ← current
   └── v1.2.0/
-      └── benefit-plan.schema.json   ← draft (draft 8; each published draft is a git tag, v1.2.0-draft.N)
+      ├── benefit-plan.schema.json   ← draft (draft 9; each published draft is a git tag, v1.2.0-draft.N)
+      └── formulary.schema.json      ← draft 9: a drug list written once for the plans that share it
 docs/
   ├── carin-dic-reconciliation.md
   ├── changelog.md
@@ -148,7 +149,8 @@ modules/
   └── pharmacy/
       ├── v0.2.0/
       ├── v0.2.1/
-      └── v0.2.2/                    ← pharmacy module, draft, with its own README; in the v1.2.0 core since draft 6, v0.2.2 since draft 7
+      ├── v0.2.2/
+      └── v0.2.3/                    ← pharmacy module, draft, with its own README; in the v1.2.0 core since draft 6, v0.2.2 since draft 7, v0.2.3 since draft 9
 ADOPTERS.md                          ← adopters on record under the release rule
 LICENSE
 ```
@@ -165,7 +167,7 @@ The schema follows **semantic versioning**:
 
 Current version: **v1.1.0** (backward-compatible with v1.0.0)
 
-Draft: **v1.2.0**, draft 8, tagged `v1.2.0-draft.8`. Drafts are numbered as they are published, and each one is a git tag on this repository, so any earlier draft can be checked out by its tag. Under the release rule in `docs/governance.md`, v1.2.0 becomes final after two independent adopters implement and validate it; until then every v1.2.0 document says which draft it validates against. The adopters on record are in `ADOPTERS.md`. The two importers write v1.2.0 draft documents.
+Draft: **v1.2.0**, draft 9, tagged `v1.2.0-draft.9`. Drafts are numbered as they are published, and each one is a git tag on this repository, so any earlier draft can be checked out by its tag. Under the release rule in `docs/governance.md`, v1.2.0 becomes final after two independent adopters implement and validate it; until then every v1.2.0 document says which draft it validates against. The adopters on record are in `ADOPTERS.md`. The two importers write v1.2.0 draft documents.
 
 Validation uses:
 
@@ -266,6 +268,7 @@ node scripts/validate.js myplan.json                    # your own file
 node scripts/validate.js --no-vocab myplan.json         # layer 1 only
 node scripts/validate.js --strict-vocab myplan.json     # vocabulary warnings also fail
 node scripts/validate.js --schema schema/v1.2.0/benefit-plan.schema.json myplan.json
+node scripts/validate.js --schema schema/v1.2.0/formulary.schema.json mylist.json   # a formulary list (draft 9)
 ```
 
 ### Validate a plan file using Ajv CLI

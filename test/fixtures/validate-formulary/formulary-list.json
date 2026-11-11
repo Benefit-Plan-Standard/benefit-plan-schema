@@ -1,0 +1,51 @@
+{
+  "formulary_reference": {
+    "formulary_id": "00027000",
+    "formulary_version": "8",
+    "completeness": "full_formulary",
+    "data_sources": [
+      {
+        "source_type": "cms_part_d_formulary",
+        "source_url": "https://data.cms.gov/sites/default/files/2026-10/73ce0d29-e440-4d9a-9608-93678a50e8c8/2027_20261008.zip",
+        "import_timestamp": "2026-11-11",
+        "file_date": "2026-10-08",
+        "notes": "A test fixture: 2 rows of the Basic Drugs Formulary file, not a whole list."
+      }
+    ]
+  },
+  "plan_year": 2027,
+  "formulary_items": [
+    {
+      "rxcui": "1551300",
+      "ndc": "00002143380",
+      "formulary_tier_id": "T3",
+      "covered": true,
+      "prior_authorization": true,
+      "step_therapy": false,
+      "quantity_limit": { "value": 2, "period": "per_28_days" },
+      "coverage_basis": "medicare_covered",
+      "negotiation_selected_drug": false,
+      "source_references": [
+        { "document": "2027_20261008.zip", "excerpt": "basic drugs formulary file  20261031.txt: 00027000|8|2027|1551300|00002143380|3|Y|2|28|Y|N|N" }
+      ]
+    },
+    {
+      "rxcui": "1593140",
+      "ndc": "00005010005",
+      "formulary_tier_id": "T3",
+      "covered": true,
+      "prior_authorization": false,
+      "step_therapy": false,
+      "quantity_limit": { "value": 0.5, "period": "per_1_days" },
+      "coverage_basis": "medicare_covered",
+      "negotiation_selected_drug": false,
+      "source_references": [
+        { "document": "2027_20261008.zip", "excerpt": "basic drugs formulary file  20261031.txt: 00027000|8|2027|1593140|00005010005|3|Y|0.50|1|N|N|N" }
+      ]
+    }
+  ],
+  "source_references": [
+    { "document": "2027_20261008.zip", "excerpt": "basic drugs formulary file  20261031.txt, header: FORMULARY_ID|FORMULARY_VERSION|CONTRACT_YEAR|RXCUI|NDC|TIER_LEVEL_VALUE|QUANTITY_LIMIT_YN|QUANTITY_LIMIT_AMOUNT|QUANTITY_LIMIT_DAYS|PRIOR_AUTHORIZATION_YN|STEP_THERAPY_YN|SELECTED_DRUG_YN" }
+  ],
+  "schema_version": "1.2.0"
+}

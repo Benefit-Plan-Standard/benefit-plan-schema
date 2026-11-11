@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://benefitplanstandard.org/schema/v1.2.0/benefit-plan.schema.json",
   "title": "Benefit Plan Standard Schema",
-  "description": "Canonical JSON schema for representing normalized health benefit plans across carriers. v1.2.0 (DRAFT) is a backward-compatible minor release that adds network-tier classification (tier_class, parent_tier_id, provider_set) and verbatim limit text (limits[].raw_text). Origin: reconciliation of the three InsurancePlan changes merged into the HL7 CARIN Digital Insurance Card IG in June 2026 (FHIR-57525 multi-tier cost sharing, FHIR-57526 deductible applicability, FHIR-57527 structured benefit limitation). See docs/carin-dic-reconciliation.md. The draft also adds Medicare Advantage fields (gaps G1 to G11 and G14 of docs/medicare-advantage-notes.md), motivated by two 2026 CMS Summary of Benefits documents (SCAN Classic HMO, Los Angeles; Humana Gold Plus H1036-025 HMO): plan_identifiers, service_area, premium, part_b_premium_reduction, the pharmacy accumulators object, cost-share unit ranges, caps and ranges, deductible_ref, coverage_basis, alternative_group, limit scope, shared limits and carryover, and per-benefit source_references. On 2026-10-20 the draft adds 2 optional fields for the medical MVP technical specification of the CMS Health Tech Ecosystem Real-Time Benefits workgroup (docs/specs/rtb-medical-mvp/): contacts (member services phone and website) and network_tiers[].provider_directory_url. Draft 6, on 2026-10-24, wires the pharmacy module v0.2.1 into core: the rest of its pharmacy object (formulary_tiers, pharmacy_networks, formulary_items, formulary_reference, mail_order_supply_multiplier) with its shapes copied into $defs, its benefit extension fields on benefits[] items (formulary_tier_id, pharmacy_network_id, coverage_stage_id, day_supply, drug_examples, step_therapy_required, quantity_limit), and cost_shares[].moop_ref, the out-of-pocket counterpart of deductible_ref. Draft 7, on 2026-11-01, adds 6 optional properties motivated by the GatorCare Prime EPO 2026 pharmacy SBC: pharmacy.deductible.family_amount (with the pharmacy module v0.2.2, which core now copies), cost_shares[].min_amount and min_basis (the floor under a coinsurance), network_cost_shares[].covered_under and not_covered_reason (why a row is not covered and which other benefit the document points to), and source_references[].document (which source document a citation is in, when a plan was read from more than 1). Draft 8, on 2026-11-04, adds 1 optional property, limits[].unlimited, and lets limits[].value be null on an entry where it is true and only there, so that a limits entry can say the source states no limit of its type: the 2027 Medicare PBP files answer 'no maximum' or 'unlimited' for meals, fitness, rides and other benefits, and before draft 8 such a plan's limits read the same as limits not read.",
+  "description": "Canonical JSON schema for representing normalized health benefit plans across carriers. v1.2.0 (DRAFT) is a backward-compatible minor release that adds network-tier classification (tier_class, parent_tier_id, provider_set) and verbatim limit text (limits[].raw_text). Origin: reconciliation of the three InsurancePlan changes merged into the HL7 CARIN Digital Insurance Card IG in June 2026 (FHIR-57525 multi-tier cost sharing, FHIR-57526 deductible applicability, FHIR-57527 structured benefit limitation). See docs/carin-dic-reconciliation.md. The draft also adds Medicare Advantage fields (gaps G1 to G11 and G14 of docs/medicare-advantage-notes.md), motivated by two 2026 CMS Summary of Benefits documents (SCAN Classic HMO, Los Angeles; Humana Gold Plus H1036-025 HMO): plan_identifiers, service_area, premium, part_b_premium_reduction, the pharmacy accumulators object, cost-share unit ranges, caps and ranges, deductible_ref, coverage_basis, alternative_group, limit scope, shared limits and carryover, and per-benefit source_references. On 2026-10-20 the draft adds 2 optional fields for the medical MVP technical specification of the CMS Health Tech Ecosystem Real-Time Benefits workgroup (docs/specs/rtb-medical-mvp/): contacts (member services phone and website) and network_tiers[].provider_directory_url. Draft 6, on 2026-10-24, wires the pharmacy module v0.2.1 into core: the rest of its pharmacy object (formulary_tiers, pharmacy_networks, formulary_items, formulary_reference, mail_order_supply_multiplier) with its shapes copied into $defs, its benefit extension fields on benefits[] items (formulary_tier_id, pharmacy_network_id, coverage_stage_id, day_supply, drug_examples, step_therapy_required, quantity_limit), and cost_shares[].moop_ref, the out-of-pocket counterpart of deductible_ref. Draft 7, on 2026-11-01, adds 6 optional properties motivated by the GatorCare Prime EPO 2026 pharmacy SBC: pharmacy.deductible.family_amount (with the pharmacy module v0.2.2, which core then copied), cost_shares[].min_amount and min_basis (the floor under a coinsurance), network_cost_shares[].covered_under and not_covered_reason (why a row is not covered and which other benefit the document points to), and source_references[].document (which source document a citation is in, when a plan was read from more than 1). Draft 8, on 2026-11-04, adds 1 optional property, limits[].unlimited, and lets limits[].value be null on an entry where it is true and only there, so that a limits entry can say the source states no limit of its type: the 2027 Medicare PBP files answer 'no maximum' or 'unlimited' for meals, fitness, rides and other benefits, and before draft 8 such a plan's limits read the same as limits not read. Draft 9, on 2026-11-11, makes room for the CMS monthly Part D formulary files (Prescription Drug Plan Formulary and Pharmacy Network Information; contract year 2027: 286 formularies shared by 5,492 plans, docs/specs/partd-formulary/stop-0.md): it adds 6 optional properties, pharmacy.formulary_reference.formulary_version and formulary_items_url, and formulary_items[].coverage_basis, negotiation_selected_drug, capped_benefit and source_references; it makes formulary_items[].drug_name and quantity_limit_detail.units optional, since those files name no drug and give no unit; it copies the pharmacy module v0.2.3, which carries the same changes; and it adds schema/v1.2.0/formulary.schema.json, a drug list written once for the plans that share it and named by their formulary_items_url.",
   "type": "object",
   "properties": {
     "plan_id": {
@@ -245,11 +245,11 @@
     },
     "pharmacy": {
       "type": "object",
-      "description": "Pharmacy-specific accumulators and coverage stages (closes gap G4 of the Medicare Advantage notes). A Medicare Advantage plan with drug coverage runs a Part D deductible scoped to drug tiers (SCAN: 'You pay the full cost of your Tier 3 through Tier 5 drugs until you have paid $250') and a Part D out-of-pocket threshold separate from the medical maximum (both source documents: $2,100, after which the member pays $0), and neither fits the accumulators object. Since v1.2.0 draft 6 (2026-10-24) the object has every property of the pharmacy module's pharmacy object, v0.2.2 since draft 7: formulary_tiers, pharmacy_networks, formulary_items, formulary_reference and mail_order_supply_multiplier join deductible, out_of_pocket_max and coverage_stages, so a pharmacy value is valid here exactly when it is valid under the module. The shapes formulary_tier, pharmacy_network, coverage_stage, quantity_limit_detail, formulary_item, coverage_exception, formulary_alternative and formulary_reference in $defs are copied unchanged from modules/pharmacy/v0.2.2/pharmacy.schema.json, so a validator needs no second file, and scripts/schema.test.js fails if a copy differs from the module. Typed as object only, not null, so that every pharmacy value core accepts is also valid under the module's own pharmacy object.",
+      "description": "Pharmacy-specific accumulators and coverage stages (closes gap G4 of the Medicare Advantage notes). A Medicare Advantage plan with drug coverage runs a Part D deductible scoped to drug tiers (SCAN: 'You pay the full cost of your Tier 3 through Tier 5 drugs until you have paid $250') and a Part D out-of-pocket threshold separate from the medical maximum (both source documents: $2,100, after which the member pays $0), and neither fits the accumulators object. Since v1.2.0 draft 6 (2026-10-24) the object has every property of the pharmacy module's pharmacy object, v0.2.2 since draft 7 and v0.2.3 since draft 9: formulary_tiers, pharmacy_networks, formulary_items, formulary_reference and mail_order_supply_multiplier join deductible, out_of_pocket_max and coverage_stages, so a pharmacy value is valid here exactly when it is valid under the module. The shapes formulary_tier, pharmacy_network, coverage_stage, quantity_limit_detail, formulary_item, coverage_exception, formulary_alternative and formulary_reference in $defs are copied unchanged from modules/pharmacy/v0.2.3/pharmacy.schema.json, and the module carries a copy of core's source_reference, which formulary_item refers to since draft 9, so a validator needs no second file, and scripts/schema.test.js fails if a copy differs from the module. Typed as object only, not null, so that every pharmacy value core accepts is also valid under the module's own pharmacy object.",
       "properties": {
         "deductible": {
           "type": "object",
-          "description": "Pharmacy deductible, separate from the medical deductible (gap G4). Same shape as pharmacy.deductible in the pharmacy module v0.2.2.",
+          "description": "Pharmacy deductible, separate from the medical deductible (gap G4). Same shape as pharmacy.deductible in the pharmacy module v0.2.3.",
           "properties": {
             "amount":   { "type": "number", "description": "Pharmacy deductible amount." },
             "currency": { "type": "string", "default": "USD", "description": "ISO 4217 currency code." },
@@ -266,7 +266,7 @@
         },
         "out_of_pocket_max": {
           "type": "object",
-          "description": "Pharmacy out-of-pocket maximum or threshold, separate from the medical maximum (gap G4; e.g. the Part D annual out-of-pocket threshold, $2,100 in both source documents, after which the member pays $0 for covered drugs). Same shape as pharmacy.out_of_pocket_max in the pharmacy module v0.2.2.",
+          "description": "Pharmacy out-of-pocket maximum or threshold, separate from the medical maximum (gap G4; e.g. the Part D annual out-of-pocket threshold, $2,100 in both source documents, after which the member pays $0 for covered drugs). Same shape as pharmacy.out_of_pocket_max in the pharmacy module v0.2.3.",
           "properties": {
             "amount":   { "type": "number", "description": "Pharmacy out-of-pocket maximum amount." },
             "currency": { "type": "string", "default": "USD", "description": "ISO 4217 currency code." },
@@ -277,31 +277,31 @@
         },
         "coverage_stages": {
           "type": "array",
-          "description": "Coverage stages, primarily for Medicare Part D plans (gap G4). Post-2025 (IRA redesign): Deductible, Initial Coverage, Catastrophic Coverage. Item shape: $defs/coverage_stage, copied from the pharmacy module v0.2.2 (in core since v1.2.0 draft 6; the inline item it replaces validated the same way). benefits[].coverage_stage_id names these stage_id values.",
+          "description": "Coverage stages, primarily for Medicare Part D plans (gap G4). Post-2025 (IRA redesign): Deductible, Initial Coverage, Catastrophic Coverage. Item shape: $defs/coverage_stage, copied from the pharmacy module v0.2.3 (in core since v1.2.0 draft 6; the inline item it replaces validated the same way). benefits[].coverage_stage_id names these stage_id values.",
           "items": { "$ref": "#/$defs/coverage_stage" }
         },
         "formulary_tiers": {
           "type": "array",
-          "description": "Drug formulary tiers (e.g., generic, preferred brand, non-preferred brand, specialty). Order is preserved. Item shape: $defs/formulary_tier, copied from the pharmacy module v0.2.2 (in core since v1.2.0 draft 6). benefits[].formulary_tier_id, formulary_items[].formulary_tier_id and deductible.applies_to_tiers name these tier_id values.",
+          "description": "Drug formulary tiers (e.g., generic, preferred brand, non-preferred brand, specialty). Order is preserved. Item shape: $defs/formulary_tier, copied from the pharmacy module v0.2.3 (in core since v1.2.0 draft 6). benefits[].formulary_tier_id, formulary_items[].formulary_tier_id and deductible.applies_to_tiers name these tier_id values.",
           "items": { "$ref": "#/$defs/formulary_tier" }
         },
         "pharmacy_networks": {
           "type": "array",
-          "description": "Pharmacy network tiers (e.g., preferred retail, standard retail, mail order, specialty pharmacy). A separate concept from the medical `network_tiers[]`. Item shape: $defs/pharmacy_network, copied from the pharmacy module v0.2.2 (in core since v1.2.0 draft 6). benefits[].pharmacy_network_id names these network_id values.",
+          "description": "Pharmacy network tiers (e.g., preferred retail, standard retail, mail order, specialty pharmacy). A separate concept from the medical `network_tiers[]`. Item shape: $defs/pharmacy_network, copied from the pharmacy module v0.2.3 (in core since v1.2.0 draft 6). benefits[].pharmacy_network_id names these network_id values.",
           "items": { "$ref": "#/$defs/pharmacy_network" }
         },
         "formulary_items": {
           "type": "array",
-          "description": "Optional drug-level formulary. Each entry places a drug on a formulary tier and carries utilization-management flags and optional indication-dependent coverage. Optional because many plans publish tier structure without a full drug list. This is structure for drug data; adopters supply their own formularies. Item shape: $defs/formulary_item, copied from the pharmacy module v0.2.2 (in core since v1.2.0 draft 6).",
+          "description": "Optional drug-level formulary. Each entry places a drug on a formulary tier and carries utilization-management flags and optional indication-dependent coverage. Optional because many plans publish tier structure without a full drug list. This is structure for drug data; adopters supply their own formularies. Item shape: $defs/formulary_item, copied from the pharmacy module v0.2.3 (in core since v1.2.0 draft 6).",
           "items": { "$ref": "#/$defs/formulary_item" }
         },
         "formulary_reference": {
           "$ref": "#/$defs/formulary_reference",
-          "description": "Provenance and identity metadata for the plan's formulary data. Shape: $defs/formulary_reference, copied from the pharmacy module v0.2.2 (in core since v1.2.0 draft 6). Its source_plan_identifiers name the plan the formulary data was read for, which can differ from this document's own plan_identifiers, so they stay here and are not a second plan identity."
+          "description": "Provenance and identity metadata for the plan's formulary data. Shape: $defs/formulary_reference, copied from the pharmacy module v0.2.3 (in core since v1.2.0 draft 6). Its source_plan_identifiers name the plan the formulary data was read for, which can differ from this document's own plan_identifiers, so they stay here and are not a second plan identity."
         },
         "mail_order_supply_multiplier": {
           "type": "number",
-          "description": "When mail-order is a 90-day supply for the cost of N retail copays, this is N. Common values: 2.0 (90 for 2x30) or 2.5. Use day_supply on individual benefit entries for exact representations. From the pharmacy module v0.2.2 (in core since v1.2.0 draft 6)."
+          "description": "When mail-order is a 90-day supply for the cost of N retail copays, this is N. Common values: 2.0 (90 for 2x30) or 2.5. Use day_supply on individual benefit entries for exact representations. From the pharmacy module v0.2.3 (in core since v1.2.0 draft 6)."
         }
       },
       "additionalProperties": false
@@ -577,32 +577,32 @@
           },
           "formulary_tier_id": {
             "type": "string",
-            "description": "References `pharmacy.formulary_tiers[].tier_id`. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.2 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type, or when pharmacy.formulary_tiers defines no such tier_id."
+            "description": "References `pharmacy.formulary_tiers[].tier_id`. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type, or when pharmacy.formulary_tiers defines no such tier_id."
           },
           "pharmacy_network_id": {
             "type": "string",
-            "description": "References `pharmacy.pharmacy_networks[].network_id`. Useful when the same drug tier has different cost shares at different pharmacy networks. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.2 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type, or when pharmacy.pharmacy_networks defines no such network_id."
+            "description": "References `pharmacy.pharmacy_networks[].network_id`. Useful when the same drug tier has different cost shares at different pharmacy networks. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type, or when pharmacy.pharmacy_networks defines no such network_id."
           },
           "coverage_stage_id": {
             "type": "string",
-            "description": "References `pharmacy.coverage_stages[].stage_id`. For Medicare Part D plans, you typically have one benefit entry per (tier, network, stage) combination. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.2 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type, or when pharmacy.coverage_stages defines no such stage_id."
+            "description": "References `pharmacy.coverage_stages[].stage_id`. For Medicare Part D plans, you typically have one benefit entry per (tier, network, stage) combination. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type, or when pharmacy.coverage_stages defines no such stage_id."
           },
           "day_supply": {
             "type": "integer",
-            "description": "Day supply this cost-share applies to (e.g., 30, 90). Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.2 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
+            "description": "Day supply this cost-share applies to (e.g., 30, 90). Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
           },
           "drug_examples": {
             "type": "array",
             "items": { "type": "string" },
-            "description": "Optional list of example drug names commonly in this tier. For documentation only; not authoritative. For an authoritative drug list, use `pharmacy.formulary_items[]`. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.2 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
+            "description": "Optional list of example drug names commonly in this tier. For documentation only; not authoritative. For an authoritative drug list, use `pharmacy.formulary_items[]`. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
           },
           "step_therapy_required": {
             "type": ["boolean", "null"],
-            "description": "Whether step therapy applies before this drug is covered. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.2 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
+            "description": "Whether step therapy applies before this drug is covered. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
           },
           "quantity_limit": {
             "$ref": "#/$defs/quantity_limit_detail",
-            "description": "A pharmacy quantity limit, shape $defs/quantity_limit_detail. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.2 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
+            "description": "A pharmacy quantity limit, shape $defs/quantity_limit_detail. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
           }
         },
         "required": ["benefit_id", "category", "service_name", "network_cost_shares"],
@@ -690,7 +690,7 @@
     },
     "source_reference": {
       "type": "object",
-      "description": "A citation back to the source document: a page and an excerpt. Used by the plan-level source_references and, since v1.2.0 (gap G14 of the Medicare Advantage notes), by benefits[].source_references.",
+      "description": "A citation back to the source document: a page and an excerpt. Used by the plan-level source_references and, since v1.2.0 (gap G14 of the Medicare Advantage notes), by benefits[].source_references. Since v1.2.0 draft 9 also by pharmacy.formulary_items[].source_references and by a formulary list document's source_references (schema/v1.2.0/formulary.schema.json); the pharmacy module v0.2.3 carries a copy of this shape.",
       "properties": {
         "document": {
           "type": ["string", "null"],
@@ -783,10 +783,10 @@
       "description": "A pharmacy quantity limit. Shared shape, referenced by the per-benefit extension, by `formulary_item`, and by an indication-level `restrictions_override`.",
       "properties": {
         "value":  { "type": "number" },
-        "units":  { "type": "string", "description": "e.g., 'tablets', 'capsules', 'mL', 'doses', 'pens'" },
+        "units":  { "type": "string", "description": "e.g., 'tablets', 'capsules', 'mL', 'doses', 'pens'. Optional since v0.2.3 (the Benefit Plan Standard 1.2.0 draft 9): the CMS Part D formulary files give a quantity limit as an amount and a number of days, with no unit. Absent means the source states no unit." },
         "period": { "type": ["string", "null"], "description": "e.g., 'per_30_days', 'per_90_days', 'per_fill'" }
       },
-      "required": ["value", "units"],
+      "required": ["value"],
       "additionalProperties": false
     },
     "formulary_item": {
@@ -794,7 +794,7 @@
       "description": "A single drug placed on a formulary tier, with utilization-management flags and optional indication-dependent coverage.",
       "properties": {
         "rxcui":        { "type": "string", "description": "RxNorm Concept Unique Identifier. Primary drug identifier; required when the item is populated." },
-        "drug_name":    { "type": "string", "description": "Human-readable drug name." },
+        "drug_name":    { "type": "string", "description": "Human-readable drug name. Optional since v0.2.3 (the Benefit Plan Standard 1.2.0 draft 9): the CMS Part D formulary files identify a drug by RXCUI and NDC and name none, and rxcui identifies the drug. Absent means the source names no drug." },
         "ndc":          { "type": ["string", "null"], "description": "11-digit NDC, secondary identifier." },
         "brand_name":   { "type": ["string", "null"] },
         "generic_name": { "type": ["string", "null"] },
@@ -807,9 +807,13 @@
         "quantity_limit":      { "$ref": "#/$defs/quantity_limit_detail" },
         "specialty_pharmacy_required": { "type": ["boolean", "null"], "default": false },
         "coverage_exceptions": { "type": "array", "items": { "$ref": "#/$defs/coverage_exception" }, "description": "Indication-dependent overrides on the default coverage. Empty/absent = the `covered` value applies in all indications." },
-        "alternatives":        { "type": "array", "items": { "$ref": "#/$defs/formulary_alternative" } }
+        "alternatives":        { "type": "array", "items": { "$ref": "#/$defs/formulary_alternative" } },
+        "coverage_basis":      { "type": ["string", "null"], "description": "Which program pays for this drug (v0.2.3; the Benefit Plan Standard 1.2.0 draft 9), with the recommended values of benefits[].coverage_basis in the core schema: 'medicare_covered' for a drug covered under Medicare Part D (a row of the CMS Basic Drugs Formulary file), 'supplemental_mandatory' for a drug that Part D excludes and the plan covers as a supplemental benefit every member gets (a row of the CMS Excluded Drugs Formulary file, which enhanced alternative plans may elect to cover). Not enforced as enum. A plan can list the same rxcui twice, once per coverage_basis: the contract year 2027 CMS files have 43 such plan rows. Absent or null means the document does not make the distinction." },
+        "negotiation_selected_drug": { "type": ["boolean", "null"], "description": "true when the drug is one of the Part D drugs selected for negotiation under the Medicare Drug Price Negotiation Program, as the CMS Part D formulary files flag it (SELECTED_DRUG_YN) (v0.2.3; the Benefit Plan Standard 1.2.0 draft 9). Absent or null means the source does not say." },
+        "capped_benefit":      { "type": ["boolean", "null"], "description": "true when the source flags a capped benefit restriction on the drug, as the CMS Excluded Drugs Formulary file does (CAPPED_BENEFIT_YN) with no amount (v0.2.3; the Benefit Plan Standard 1.2.0 draft 9). Absent or null means the source does not say." },
+        "source_references":   { "type": "array", "items": { "$ref": "#/$defs/source_reference" }, "description": "Citations for this item's values, the shape of benefits[].source_references in the core schema (v0.2.3; the Benefit Plan Standard 1.2.0 draft 9). For an item read from a CMS formulary file: the row it was read from." }
       },
-      "required": ["rxcui", "drug_name", "formulary_tier_id", "covered"],
+      "required": ["rxcui", "formulary_tier_id", "covered"],
       "additionalProperties": false
     },
     "coverage_exception": {
@@ -850,6 +854,8 @@
       "properties": {
         "formulary_id":   { "type": ["string", "null"] },
         "formulary_url":  { "type": ["string", "null"], "format": "uri" },
+        "formulary_version": { "type": ["string", "null"], "description": "The version of the formulary the items were read from, as its source names it (v0.2.3; the Benefit Plan Standard 1.2.0 draft 9). The CMS Part D formulary files give each FORMULARY_ID a FORMULARY_VERSION, and the list under 1 id can change from 1 monthly file to the next. Absent or null means the source names no version." },
+        "formulary_items_url": { "type": ["string", "null"], "format": "uri-reference", "description": "Where the plan's drug list is published as a formulary list document (schema/v1.2.0/formulary.schema.json), for a list that many plans share and that is written once (v0.2.3; the Benefit Plan Standard 1.2.0 draft 9). A URI, or a reference relative to this document. The plan's drug list is then the list's formulary_items together with this document's own pharmacy.formulary_items, and an item here replaces a list item with the same rxcui and coverage_basis. The list carries no tiers: its formulary_tier_id values name tiers in this document's pharmacy.formulary_tiers. Absent or null means the plan's drug list, if it has one, is pharmacy.formulary_items alone." },
         "pharmacy_benefit_manager": { "type": ["string", "null"] },
         "completeness":   { "type": "string", "enum": ["none", "tier_structure_only", "partial", "full_formulary"] },
         "source_plan_identifiers": {

@@ -1,6 +1,6 @@
 # Part D formulary importer, stop 0: facts and decisions
 
-**Date:** November 11, 2026. **For:** the Benefit Plan Standard 1.2.0 release gate. **Status:** waiting for the decisions in section 7. No importer code is written; the profile in [`profile/`](profile/) is the evidence for the counts below.
+**Date:** November 11, 2026. **For:** the Benefit Plan Standard 1.2.0 release gate. **Status:** decided. Diego Orofino accepted the recommended answer to each of D1 to D9 (section 7) on November 11, 2026. Gaps F1 to F8 are in the 1.2.0 draft 9, and the mapping, with each decision written in, is [`../partd-formulary-importer.md`](../partd-formulary-importer.md). The profile in [`profile/`](profile/) is the evidence for the counts below.
 
 **Reads with:** [`../pbp-part-d-mapping.md`](../pbp-part-d-mapping.md) (the Part D sections of the Medicare Advantage importer, which write each plan's tiers), [`../pbp-importer.md`](../pbp-importer.md), the core schema's `pharmacy` object (`schema/v1.2.0/benefit-plan.schema.json`, `$defs/formulary_item`, `$defs/formulary_reference`).
 
@@ -203,3 +203,5 @@ The 2 left out: H1609-028-000 (00027013, 540 plans) and H5425-140-000 (00027384)
 | D7 | Beneficiary Cost | Proof and comparison only (3.4) | Also write the Defined Standard plans' initial coverage cost shares, which the PBP files do not state and this file does |
 | D8 | Name, command line, layout, fixtures, the 5 examples | As in section 6 | |
 | D9 | Insulin Beneficiary Cost | Not read now; it belongs with the insulin follow-up the Part D mapping left open (its question Q1) | Read it now |
+
+Decided by Diego Orofino on 2026-11-11: the recommended answer to each of D1 to D9 is accepted. The draft 9 names of the fields in section 4: F2 `formulary_reference.formulary_version`, F4 `formulary_item.source_references`, F5 `formulary_item.negotiation_selected_drug`, F6 `formulary_item.coverage_basis`, F7 `formulary_item.capped_benefit`, F8 `schema/v1.2.0/formulary.schema.json` and `formulary_reference.formulary_items_url`.
