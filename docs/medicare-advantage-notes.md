@@ -252,7 +252,7 @@ For each construct, the question was whether it fits v1.1.0, needs the v1.2.0 dr
 
 **Update, September 20, 2026.** Twelve of the fourteen gaps are now fields in the v1.2.0 draft schema: `plan_identifiers` (G1), `service_area` (G2), `premium` and `part_b_premium_reduction` (G3), the top-level `pharmacy` object plus `cost_shares[].deductible_ref` (G4), `cost_shares[].unit_range` (G5), the cap and range fields on `cost_shares[]` (G6), `benefits[].coverage_basis` (G7), an authoritative null on `benefits[].moop_applicability` (G8), `limits[].carryover` (G9), `benefits[].alternative_group` (G10), `limits[].scope` and `limits[].shared_limit_id` with `per_12_months` as a recommended period (G11), and `benefits[].source_references` (G14). G12 and G13 are deferred. Both examples were updated the same day to carry these values in the fields, so the third column above records how they were built on September 16, not how they read now. The field list is in `docs/changelog.md`.
 
-Both examples declare `schema_version` "1.2.0" and validate against the v1.2.0 draft. They fail against v1.1.0 because they use `tier_class` and `raw_text`. They're the first examples on the draft, so if ballot reconciliation reshapes v1.2.0, they'll change with it.
+Both examples declare `schema_version` "1.2.0" and validate against v1.2.0. They fail against v1.1.0 because they use `tier_class` and `raw_text`. They were the first examples on the v1.2.0 drafts.
 
 ---
 

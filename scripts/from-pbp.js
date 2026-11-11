@@ -2342,8 +2342,8 @@ function buildPremium(d, errors) {
 }
 
 // ---- contacts and the provider directory (spec section 4.1; medical MVP gaps G4 and G5) ------
-// contacts.website and network_tiers[].provider_directory_url are URIs in the
-// v1.2.0 draft, so a Section A address is written only when it is a web address
+// contacts.website and network_tiers[].provider_directory_url are URIs in
+// v1.2.0, so a Section A address is written only when it is a web address
 // with its scheme. One without a scheme (www.aetna.com/medicare) is quoted and
 // not written; the importer never adds a scheme it would have to guess.
 const WEB_ADDRESS = /^https?:\/\/[A-Za-z0-9.-]+(?::\d+)?(?:[/?#][A-Za-z0-9\-._~!$&'()*+,;=:@/?#%]*)?$/;

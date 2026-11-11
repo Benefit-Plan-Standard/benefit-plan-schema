@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [1.2.0] – 2026-11-13: release
 
-The Benefit Plan Standard 1.2.0 is final. It was published as 9 drafts, tagged `v1.2.0-draft.1` through `v1.2.0-draft.9`, and the release is tagged `v1.2.0`. The release schema is draft 9's: only its root description changes, which no longer says DRAFT. Under the release rule in `docs/governance.md` (Releases), a draft becomes final after 2 independent adopters implement and validate it; the 2 on record are in `ADOPTERS.md`, unchanged by the release. The entries below this one record each draft as it was published.
+The Benefit Plan Standard 1.2.0 is final. It was published as 9 drafts, tagged `v1.2.0-draft.1` through `v1.2.0-draft.9`, and the release is tagged `v1.2.0`. The release schemas are draft 9's with 2 descriptions changed: the root description of `schema/v1.2.0/benefit-plan.schema.json` no longer says DRAFT, and the description of `schema/v1.2.0/formulary.schema.json` opens with "(new in v1.2.0)" where it said "(v1.2.0 draft 9)". Under the release rule in `docs/governance.md` (Releases), a draft becomes final after 2 independent adopters implement and validate it; the 2 on record are in `ADOPTERS.md`, unchanged by the release. The entries below this one record each draft as it was published.
 
 ### What 1.2.0 adds to 1.1.0
 

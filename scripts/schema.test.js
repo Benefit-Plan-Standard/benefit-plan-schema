@@ -1,5 +1,5 @@
 /**
- * Tests for schema/v1.2.0/benefit-plan.schema.json (draft)
+ * Tests for schema/v1.2.0/benefit-plan.schema.json
  *
  *   node --test scripts/schema.test.js
  *
