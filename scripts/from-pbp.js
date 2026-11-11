@@ -1393,6 +1393,17 @@ const PDP_TYPE = '29';
 // 6.6): the standard deductible the file's amount is checked against, the annual
 // out-of-pocket threshold, and the source of the $0 cost sharing after it.
 const PART_D_PARAMETERS = {
+  // The 2026 column of the same tables, read 2026-11-11 (the PDF's SHA-256 is in docs/specs/pbp-part-d-mapping.md section 2).
+  2026: {
+    deductible: 615,
+    out_of_pocket_threshold: 2100,
+    source: 'CMS, "Announcement of Calendar Year (CY) 2027 Medicare Advantage (MA) Capitation Rates and Part C and Part D Payment Policies", ' +
+      'April 6, 2026, Attachment V, Table V-2 (page 95) and Table V-6 (page 99), the 2026 column, https://www.cms.gov/files/document/2027-announcement.pdf',
+    post_threshold_source: '42 CFR 423.104(d)(5)(i) (eCFR, version of 2026-10-01): "After an enrollee\'s incurred costs exceed the annual ' +
+      'out-of-pocket threshold ... for 2024 and each subsequent year, cost-sharing equal to $0"; 42 CFR 423.104(e)(2) holds alternative ' +
+      'prescription drug coverage to "cost-sharing no greater than" that once the threshold is met, and 42 CFR 423.104(f) holds enhanced ' +
+      'alternative coverage to paragraph (e)',
+  },
   2027: {
     deductible: 700,
     out_of_pocket_threshold: 2400,
@@ -1899,16 +1910,29 @@ function buildPartD(rows, source, errors, warn) {
     const includes = codeOf(p, 'mrx_tier_post_includes', MRX_POST_INCLUDES, errors);
     if (codeOf(p, 'mrx_tier_post_cost_struct', MRX_COST_STRUCTURES, errors) === null || includes === null) continue;
     const amountCells = [];
+    const read = {};
     let nonZero = false;
     for (const [col, reader] of [['mrx_tier_post_copay_amt', amount], ['mrx_tier_post_coins_pct', percent]]) {
       if (q(p, col) === '') continue;
       const v = reader(p, col, errors);
+      read[col] = v;
       if (v !== null && v > 0) nonZero = true;
       amountCells.push(cell(p, col));
     }
     const moop = moopOf(p, 'mrx_tier_post_includes', MRX_POST_INCLUDES);
     const step = { type: 'copay', sequence: 1, amount: 0, basis: 'per_prescription', applies_to_deductible: false, applies_to_moop: moop.applies, moop_ref: 'pharmacy' };
-    if (nonZero) {
+    // A tier of excluded drugs only has no covered Part D drug for question Q6's $0 to apply to:
+    // its step after the threshold is the file's amount (decided 2026-11-11, finding N2 of
+    // docs/specs/partd-formulary/stop-2.md; docs/specs/pbp-part-d-mapping.md section 6.6).
+    const excludedOnly = includes === '2';
+    if (excludedOnly) {
+      const struct = q(p, 'mrx_tier_post_cost_struct');
+      if (struct === '2' && typeof read.mrx_tier_post_copay_amt === 'number') step.amount = read.mrx_tier_post_copay_amt;
+      else if (struct === '1' && typeof read.mrx_tier_post_coins_pct === 'number') { delete step.amount; step.type = 'coinsurance'; step.rate = read.mrx_tier_post_coins_pct / 100; }
+      else errors.push(`pbp_mrx_p.txt ${cell(p, 'mrx_tier_post_id')}: a tier of excluded drugs only with ${cell(p, 'mrx_tier_post_cost_struct')} and ${amountCells.join(', ') || 'no amount'} is not mapped (docs/specs/pbp-part-d-mapping.md section 6.6)`);
+      step.notes = `The tier holds only drugs excluded from Part D (${cell(p, 'mrx_tier_post_includes')}), so the step after the out-of-pocket threshold is the ` +
+        `file's amount for the tier, ${amountCells.join(', ')}; the $0 of 42 CFR 423.104(d)(5)(i) is for a covered Part D drug, and the tier has none.`;
+    } else if (nonZero) {
       const context = `${cell(p, 'mrx_tier_post_includes')}, ${MRX_POST_INCLUDES[includes]}; ${cell(mrx, postCol)}${postLabel ? `, ${postLabel}` : ''}`;
       if (includes === '1') {
         warn('part-d-post-threshold-cost-share', `pbp_mrx_p.txt ${cell(p, 'mrx_tier_post_id')}: ${amountCells.join(', ')} on a tier of Part D drugs only`);
@@ -1925,8 +1949,10 @@ function buildPartD(rows, source, errors, warn) {
     const sentences = [`pbp_mrx_p.txt, ${keyOf(p)}, ${cell(p, 'mrx_tier_post_label_list')}: ` + [cell(p, 'mrx_tier_post_id'),
       coded(p, 'mrx_tier_post_type_id', MRX_POST_TYPES), positions(p, 'mrx_tier_post_drug_type', MRX_DRUG_TYPES),
       coded(p, 'mrx_tier_post_includes', MRX_POST_INCLUDES), coded(p, 'mrx_tier_post_cost_struct', MRX_COST_STRUCTURES), ...amountCells].join(', '),
-    'The step\'s $0 is not read from this row: it is the cost sharing for a covered Part D drug after the out-of-pocket threshold, ' +
-      '42 CFR 423.104(d)(5)(i) (docs/specs/pbp-part-d-mapping.md section 6.6)',
+    excludedOnly
+      ? 'The step is read from this row: the tier holds only drugs excluded from Part D (docs/specs/pbp-part-d-mapping.md section 6.6)'
+      : 'The step\'s $0 is not read from this row: it is the cost sharing for a covered Part D drug after the out-of-pocket threshold, ' +
+        '42 CFR 423.104(d)(5)(i) (docs/specs/pbp-part-d-mapping.md section 6.6)',
     `pbp_mrx.txt: ${coded(mrx, postCol, MRX_STAGE_COLUMNS[postCol])}`];
     const b = { benefit_id: `RX_T${n}_CATASTROPHIC`, benefit_type: 'pharmacy', category: 'PHARMACY', service_name: `Tier ${n} (${label}), catastrophic coverage` };
     if (key) b.canonical_key = key;
@@ -2357,11 +2383,12 @@ function parseKey(s) {
   return { contract: m[1], plan: m[2], segment: m[3] };
 }
 
-async function loadPlan({ dataDir = DATA_DIR, year, plan, downloaded }) {
-  const key = parseKey(plan);
-  const { dir, find } = pbpDir(dataDir, year);
+// The rows buildDocument() reads for 1 plan, from get(file), which gives the
+// plan's rows of 1 file. Shared by loadPlan (1 plan, each file streamed for it)
+// and loadPlans (many plans, each file streamed once).
+async function assembleRows(plan, get) {
   const one = async (file, required) => {
-    const r = await rowsFor(find(file), key);
+    const r = await get(file);
     if (r.length > 1) throw new Error(`${file}: ${r.length} rows for ${plan}`);
     if (required && r.length === 0) throw new Error(`no plan ${plan} in ${file}`);
     return r[0] || null;
@@ -2371,15 +2398,15 @@ async function loadPlan({ dataDir = DATA_DIR, year, plan, downloaded }) {
     a,
     d: await one('pbp_Section_D.txt', false),
     c: await one('pbp_Section_C.txt', false),
-    oonGroups: await rowsFor(find('pbp_Section_C_OON.txt'), key),
-    posGroups: await rowsFor(find('pbp_Section_C_POS.txt'), key),
+    oonGroups: await get('pbp_Section_C_OON.txt'),
+    posGroups: await get('pbp_Section_C_POS.txt'),
     hospital: [],
     b: {},
-    area: await rowsFor(find('PlanArea.txt'), key),
-    region: await rowsFor(find('PlanRegionArea.txt'), key),
+    area: await get('PlanArea.txt'),
+    region: await get('PlanRegionArea.txt'),
     mrx: await one('pbp_mrx.txt', false),
-    mrxTiers: await rowsFor(find('pbp_mrx_tier.txt'), key),
-    mrxPost: await rowsFor(find('pbp_mrx_p.txt'), key),
+    mrxTiers: await get('pbp_mrx_tier.txt'),
+    mrxPost: await get('pbp_mrx_p.txt'),
   };
   for (const file of B_FILES) {
     const row = await one(file, false);
@@ -2388,7 +2415,45 @@ async function loadPlan({ dataDir = DATA_DIR, year, plan, downloaded }) {
   for (const cat of HOSPITAL_TIER_CATEGORIES) {
     if (rows.b[cat.file]) rows.hospital.push({ cat, row: rows.b[cat.file] });
   }
+  return rows;
+}
+
+async function loadPlan({ dataDir = DATA_DIR, year, plan, downloaded }) {
+  const key = parseKey(plan);
+  const { dir, find } = pbpDir(dataDir, year);
+  const rows = await assembleRows(plan, (file) => rowsFor(find(file), key));
   return { rows, source: { year, ...readManifest(dir, downloaded) } };
+}
+
+// The rows of many plans, each file streamed once: a Map from contract-plan-segment
+// to { rows, source }, as loadPlan returns for 1 plan. For a run over a whole file
+// (the Part D formulary importer's --all), where loadPlan would stream every file
+// once per plan. A plan missing from pbp_Section_A.txt is an error, as in loadPlan.
+async function loadPlans({ dataDir = DATA_DIR, year, plans, downloaded }) {
+  const keys = new Map(plans.map((p) => { const k = parseKey(p); return [`${k.contract}-${k.plan}-${k.segment}`, k]; }));
+  const contractPlans = new Set([...keys.values()].map((k) => `${k.contract}-${k.plan}`));
+  const { dir, find } = pbpDir(dataDir, year);
+  const byFile = new Map();
+  for (const file of READ_FILES) {
+    const m = new Map();
+    await streamTsv(find(file), (f, idx) => {
+      if (!contractPlans.has(`${f[0]}-${f[1]}`)) return;
+      if (!/^\d{1,3}$/.test(f[2])) throw new Error(`${file}: segment_id "${f[2]}" is not 1 to 3 digits`);
+      const keyText = `${f[0]}-${f[1]}-${pad3(f[2])}`;
+      if (!keys.has(keyText)) return;
+      const row = {};
+      for (const [h, i] of idx) row[h] = f[i];
+      if (!m.has(keyText)) m.set(keyText, []);
+      m.get(keyText).push(row);
+    });
+    byFile.set(file, m);
+  }
+  const source = { year, ...readManifest(dir, downloaded) };
+  const out = new Map();
+  for (const keyText of keys.keys()) {
+    out.set(keyText, { rows: await assembleRows(keyText, async (file) => byFile.get(file).get(keyText) || []), source });
+  }
+  return out;
 }
 
 // Returns { doc, warnings }; throws when the plan cannot be imported.
@@ -2556,7 +2621,7 @@ async function main(argv) {
 }
 
 module.exports = {
-  streamTsv, rowsFor, buildDocument, serialize, loadPlan, importPlan, listPlans, validateDocument, parseKey, pad3,
+  streamTsv, rowsFor, buildDocument, serialize, loadPlan, loadPlans, importPlan, listPlans, validateDocument, parseKey, pad3,
   HOSPITAL_TIER_CATEGORIES, MVP_PLAN_TYPES, B_FILES, MRX_FILES, READ_FILES, CROSSWALK, GOLDEN, baseSlug, goldenSlugs, buildGolden, writeFixtures,
   cutFile, pbpDir, DATA_DIR, EXAMPLES_DIR, FIXTURE_DIR, SCHEMA_VERSION, PART_D_PARAMETERS,
 };

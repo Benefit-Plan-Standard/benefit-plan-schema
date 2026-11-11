@@ -30,9 +30,18 @@ The 1.2.0 schema stays a draft under the release rule in `docs/governance.md` (R
 - `docs/specs/partd-formulary/stop-0.md`: the decisions and the field names.
 - Docs: `README.md`, `modules/README.md`, `docs/roadmap.md` (v1.2.0 list, item 4).
 
+### Added after the schema commit: the Part D formulary importer
+
+- `scripts/from-partd-formulary.js`: reads Plan Information, Basic Drugs Formulary, Excluded Drugs Formulary, Beneficiary Cost and Indication Based Coverage, and writes a formulary list per `FORMULARY_ID` and a plan document per plan, which starts from `scripts/from-pbp.js`'s document for the plan (spec: `docs/specs/partd-formulary-importer.md`). `--plan` writes 1 plan with its list inline, `--formulary` 1 list, `--all` every list once and every plan pointing at its list, with a count report and a comparison of the file's cost cells with the PBP documents. On release `2027_20261008`: 286 lists and 5,478 plans, all valid, 0 errors, and 17 plans refused (3 suppressed, 14 of plan types the PBP importer does not cover); 642,243 of 642,271 compared cells and facts agree with the PBP documents, and the file's `PREMIUM` turns out not to be the PBP premium (spec section 15).
+- `examples/partd-formulary/`: 5 lists and 5 plans (S5921-383, S4802-146, H2406-013, H1036-068, H5533-019), whose tiers, benefits and other fields are those of the plans' PBP examples. 2 are checked against the carrier's published drug list, 10 drugs each: `docs/specs/partd-formulary/drug-list-checks.md`, 19 of 20 agree.
+- `scripts/from-pbp.js`: `loadPlans()`, which reads the rows of many plans with each PBP file streamed once, for `--all`; `loadPlan()` and it share 1 function that assembles a plan's rows, and a test in `scripts/from-pbp.test.js` checks that both give the same rows and documents for the 7 golden plans.
+- Decided after stop 2 (`docs/specs/partd-formulary/stop-2.md` section 6): a stand-alone drug plan's document gains `premium` from the file's `PREMIUM` (`per_month`), which no PBP file holds; and `scripts/from-pbp.js` writes the file's amount after the out-of-pocket threshold on a tier of excluded drugs only (52 tiers in 2027, 2 of them $10), keeping the $0 of question Q6 on every other tier.
+- `scripts/from-pbp.js`: the Part D parameters of contract year 2026 ($615 deductible, $2,100 threshold), from the 2026 column of the same Rate Announcement tables, for the 2026 PBP files.
+- `test/fixtures/partd-formulary/2027_20261008/` (17,649 rows, byte for byte) and a `.gitattributes` line for it; `scripts/from-partd-formulary.test.js`, 17 tests. `node --test scripts/*.test.js`: 259 tests, was 240.
+
 ### Not changed
 
-`schema/v1.1.0/`, the pharmacy modules v0.2.0 to v0.2.2, the vocabularies, the crosswalks in `fhir/`, the importers and the converter, `ADOPTERS.md`, `docs/governance.md`, and the 22 documents in `examples/` and the 20 Bundles in `examples/fhir/` and `examples/fhir-puf/`, which carry none of the new properties; all 22 documents and the module examples of v0.2.1 to v0.2.3 validate against draft 9.
+`schema/v1.1.0/`, the pharmacy modules v0.2.0 to v0.2.2, the vocabularies, the crosswalks in `fhir/`, the output of the importers and the converter, `ADOPTERS.md`, `docs/governance.md`, and the 22 documents in `examples/` and the 20 Bundles in `examples/fhir/` and `examples/fhir-puf/`, which carry none of the new properties; all 22 documents and the module examples of v0.2.1 to v0.2.3 validate against draft 9.
 
 ## [1.2.0] – DRAFT (2026-11-04), draft 8: a limit that the source states as no limit
 

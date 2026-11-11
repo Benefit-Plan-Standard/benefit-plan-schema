@@ -851,8 +851,11 @@ test('part-d deductible: code 3, the standard benefit types, all tiers, and the 
 });
 
 test('part-d threshold: out_of_pocket_max 2400 from PART_D_PARAMETERS with its source reference; a contract year with no entry is an error', async () => {
-  assert.deepStrictEqual(Object.keys(PART_D_PARAMETERS), ['2027']);
+  assert.deepStrictEqual(Object.keys(PART_D_PARAMETERS), ['2026', '2027']);
   assert.deepStrictEqual([PART_D_PARAMETERS[2027].deductible, PART_D_PARAMETERS[2027].out_of_pocket_threshold], [700, 2400]);
+  // 2026 (added 2026-11-11 for the 2026 PBP files): the 2026 column of the same Table V-2.
+  assert.deepStrictEqual([PART_D_PARAMETERS[2026].deductible, PART_D_PARAMETERS[2026].out_of_pocket_threshold], [615, 2100]);
+  assert.ok(PART_D_PARAMETERS[2026].source.includes('Table V-2 (page 95) and Table V-6 (page 99), the 2026 column'));
   for (const x of await built()) {
     const doc = x.result.doc;
     assert.deepStrictEqual(doc.pharmacy.out_of_pocket_max, { amount: 2400, currency: 'USD' }, x.g.plan);
@@ -861,9 +864,9 @@ test('part-d threshold: out_of_pocket_max 2400 from PART_D_PARAMETERS with its s
       'year 2027 Part D annual out-of-pocket threshold. No PBP column states it; source: ' + PART_D_PARAMETERS[2027].source), x.g.plan);
   }
   const { rows, source } = await loadPlan({ dataDir: FIXTURE_DIR, year: 2027, plan: 'S5921-383-000' });
-  const r = buildDocument(rows, { ...source, year: 2026 });
+  const r = buildDocument(rows, { ...source, year: 2025 });
   assert.strictEqual(r.doc, null);
-  assert.ok(r.errors.includes('no Part D out-of-pocket threshold is recorded for contract year 2026; add it from that year\'s Rate Announcement ' +
+  assert.ok(r.errors.includes('no Part D out-of-pocket threshold is recorded for contract year 2025; add it from that year\'s Rate Announcement ' +
     '(docs/specs/pbp-part-d-mapping.md section 5.5)'), r.errors.join('; '));
 });
 
@@ -1170,4 +1173,44 @@ test('sob-check: H5425-140-000 and H5533-019-000 golden files against their Summ
   doc.benefits[0].network_cost_shares[0].cost_shares[0].amount = 10;
   assert.strictEqual(runChecks(doc, readJson(path.join(SOB_CHECKS, 'H5425-140-000.json'))).counts.DIFFERENCE, 2,
     'a primary care copay other than the $0 that decision S1 writes is a difference');
+});
+
+// ---- loadPlans (2026-11-11), for the Part D formulary importer's --all ------------------------
+test('loadPlans reads many plans with each file streamed once, and gives what loadPlan gives', async () => {
+  const pbp = require('./from-pbp.js');
+  const plans = GOLDEN.filter((g) => g.year === 2027).map((g) => g.plan);
+  const many = await pbp.loadPlans({ dataDir: FIXTURE_DIR, year: 2027, plans });
+  assert.deepStrictEqual([...many.keys()], plans);
+  for (const plan of plans) {
+    const one = await pbp.loadPlan({ dataDir: FIXTURE_DIR, year: 2027, plan });
+    assert.deepStrictEqual(many.get(plan), one, plan);
+    assert.strictEqual(pbp.serialize(pbp.buildDocument(many.get(plan).rows, many.get(plan).source).doc),
+      pbp.serialize(pbp.buildDocument(one.rows, one.source).doc), `${plan} document`);
+  }
+  await assert.rejects(pbp.loadPlans({ dataDir: FIXTURE_DIR, year: 2027, plans: ['H2406-013-000', 'H9999-001-000'] }),
+    /no plan H9999-001-000 in pbp_Section_A\.txt/, 'a plan missing from Section A is the same error as in loadPlan');
+});
+
+// ---- N2 (2026-11-11): a tier of excluded drugs only keeps the file's amount after the threshold --
+test('part-d catastrophic: a tier of excluded drugs only (mrx_tier_post_includes "2") takes the file\'s post-threshold amount; every other tier keeps $0', async () => {
+  const { rows, source } = await loadPlan({ dataDir: FIXTURE_DIR, year: 2027, plan: 'S5921-383-000' });
+  const withPost = (edit) => {
+    const r = JSON.parse(JSON.stringify(rows));
+    edit(r.mrxPost.find((p) => p.mrx_tier_post_id === '5'));
+    return buildDocument(r, source);
+  };
+  const t5 = (r) => r.doc.benefits.find((b) => b.benefit_id === 'RX_T5_CATASTROPHIC');
+  const copay = withPost((p) => { p.mrx_tier_post_includes = '2'; p.mrx_tier_post_cost_struct = '2'; p.mrx_tier_post_copay_amt = '10.00'; p.mrx_tier_post_coins_pct = ''; });
+  assert.deepStrictEqual(copay.errors, []);
+  const step = t5(copay).network_cost_shares[0].cost_shares[0];
+  assert.deepStrictEqual([step.type, step.amount, step.applies_to_moop], ['copay', 10, false]);
+  assert.ok(step.notes.startsWith('The tier holds only drugs excluded from Part D (mrx_tier_post_includes "2"), so the step after the out-of-pocket threshold is the file\'s amount'));
+  assert.ok(t5(copay).source_references[0].excerpt.includes('The step is read from this row: the tier holds only drugs excluded from Part D'));
+  const coins = withPost((p) => { p.mrx_tier_post_includes = '2'; p.mrx_tier_post_cost_struct = '1'; p.mrx_tier_post_copay_amt = ''; p.mrx_tier_post_coins_pct = '25'; });
+  const c = t5(coins).network_cost_shares[0].cost_shares[0];
+  assert.deepStrictEqual([c.type, c.rate, c.amount], ['coinsurance', 0.25, undefined]);
+  const other = withPost((p) => { p.mrx_tier_post_includes = '2'; p.mrx_tier_post_cost_struct = '3'; p.mrx_tier_post_copay_amt = '10.00'; });
+  assert.ok(other.errors.some((e) => e.includes('a tier of excluded drugs only with mrx_tier_post_cost_struct "3"')), other.errors.join('; '));
+  // The other 4 tiers of the plan, Part D drugs only, keep the $0 (question Q6).
+  for (const n of ['1', '2', '3', '4']) assert.strictEqual(copay.doc.benefits.find((b) => b.benefit_id === `RX_T${n}_CATASTROPHIC`).network_cost_shares[0].cost_shares[0].amount, 0, n);
 });

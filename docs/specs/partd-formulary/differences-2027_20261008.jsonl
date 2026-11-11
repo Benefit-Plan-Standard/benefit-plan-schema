@@ -1,0 +1,28 @@
+{"plan":"H4286-001-000","kind":"cost_value","detail":"H4286-001-000 T5 RETAIL_PREFERRED 1M CATASTROPHIC: COST_TYPE_PREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-001-000","kind":"cost_value","detail":"H4286-001-000 T5 RETAIL_STANDARD 1M CATASTROPHIC: COST_TYPE_NONPREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-001-000","kind":"cost_value","detail":"H4286-001-000 T5 MAIL_ORDER_PREFERRED 1M CATASTROPHIC: COST_TYPE_MAIL_PREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-001-000","kind":"cost_value","detail":"H4286-001-000 T5 MAIL_ORDER_STANDARD 1M CATASTROPHIC: COST_TYPE_MAIL_NONPREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-001-000","kind":"cost_value","detail":"H4286-001-000 T5 RETAIL_PREFERRED 3M CATASTROPHIC: COST_TYPE_PREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-001-000","kind":"cost_value","detail":"H4286-001-000 T5 RETAIL_STANDARD 3M CATASTROPHIC: COST_TYPE_NONPREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-001-000","kind":"cost_value","detail":"H4286-001-000 T5 MAIL_ORDER_PREFERRED 3M CATASTROPHIC: COST_TYPE_MAIL_PREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-001-000","kind":"cost_value","detail":"H4286-001-000 T5 MAIL_ORDER_STANDARD 3M CATASTROPHIC: COST_TYPE_MAIL_NONPREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-001-000","kind":"cost_value","detail":"H4286-001-000 T5 RETAIL_PREFERRED 2M CATASTROPHIC: COST_TYPE_PREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-001-000","kind":"cost_value","detail":"H4286-001-000 T5 RETAIL_STANDARD 2M CATASTROPHIC: COST_TYPE_NONPREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-001-000","kind":"cost_value","detail":"H4286-001-000 T5 MAIL_ORDER_PREFERRED 2M CATASTROPHIC: COST_TYPE_MAIL_PREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-001-000","kind":"cost_value","detail":"H4286-001-000 T5 MAIL_ORDER_STANDARD 2M CATASTROPHIC: COST_TYPE_MAIL_NONPREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-003-000","kind":"cost_value","detail":"H4286-003-000 T5 RETAIL_PREFERRED 1M CATASTROPHIC: COST_TYPE_PREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-003-000","kind":"cost_value","detail":"H4286-003-000 T5 RETAIL_STANDARD 1M CATASTROPHIC: COST_TYPE_NONPREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-003-000","kind":"cost_value","detail":"H4286-003-000 T5 MAIL_ORDER_PREFERRED 1M CATASTROPHIC: COST_TYPE_MAIL_PREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-003-000","kind":"cost_value","detail":"H4286-003-000 T5 MAIL_ORDER_STANDARD 1M CATASTROPHIC: COST_TYPE_MAIL_NONPREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-003-000","kind":"cost_value","detail":"H4286-003-000 T5 RETAIL_PREFERRED 3M CATASTROPHIC: COST_TYPE_PREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-003-000","kind":"cost_value","detail":"H4286-003-000 T5 RETAIL_STANDARD 3M CATASTROPHIC: COST_TYPE_NONPREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-003-000","kind":"cost_value","detail":"H4286-003-000 T5 MAIL_ORDER_PREFERRED 3M CATASTROPHIC: COST_TYPE_MAIL_PREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-003-000","kind":"cost_value","detail":"H4286-003-000 T5 MAIL_ORDER_STANDARD 3M CATASTROPHIC: COST_TYPE_MAIL_NONPREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-003-000","kind":"cost_value","detail":"H4286-003-000 T5 RETAIL_PREFERRED 2M CATASTROPHIC: COST_TYPE_PREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-003-000","kind":"cost_value","detail":"H4286-003-000 T5 RETAIL_STANDARD 2M CATASTROPHIC: COST_TYPE_NONPREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-003-000","kind":"cost_value","detail":"H4286-003-000 T5 MAIL_ORDER_PREFERRED 2M CATASTROPHIC: COST_TYPE_MAIL_PREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H4286-003-000","kind":"cost_value","detail":"H4286-003-000 T5 MAIL_ORDER_STANDARD 2M CATASTROPHIC: COST_TYPE_MAIL_NONPREF \"1\", COST_AMT \"10\", MIN \"0\", MAX \"0\"; PBP RX_T5_CATASTROPHIC: copay 0"}
+{"plan":"H6194-001-000","kind":"plan_name","detail":"PLAN_NAME \"MultiCare Health Plan Evergreen Enhanced (HMO)\", PBP plan_name \"MultiCare Health Plan (HMO)\""}
+{"plan":"H6194-002-000","kind":"plan_name","detail":"PLAN_NAME \"MultiCare Health Plan Evergreen Essential (HMO)\", PBP plan_name \"MultiCare Health Plan (HMO)\""}
+{"plan":"H9065-014-000","kind":"plan_name","detail":"PLAN_NAME \"Anthem   MaineHealth Chronic Care (HMO-POS C-SNP)\", PBP plan_name \"Anthem | MaineHealth Chronic Care (HMO-POS C-SNP)\""}
+{"plan":"H9065-016-000","kind":"plan_name","detail":"PLAN_NAME \"Anthem   MaineHealth Dual Advantage (HMO D-SNP)\", PBP plan_name \"Anthem | MaineHealth Dual Advantage (HMO D-SNP)\""}
