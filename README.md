@@ -5,9 +5,8 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
   <a href="https://benefitplanstandard.org">
     <img src="https://img.shields.io/badge/Documentation-Live-blue?style=for-the-badge" />
   </a>
-  <img src="https://img.shields.io/badge/Schema-v1.1.0-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Schema-v1.2.0-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Status-Stable-blueviolet?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Draft-v1.2.0%20draft%209-orange?style=for-the-badge" />
   <img src="https://img.shields.io/github/license/Benefit-Plan-Standard/benefit-plan-schema?style=for-the-badge" />
 </p>
 
@@ -16,9 +15,8 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 ## 🔎 Quick Links
 
 - Documentation: https://benefitplanstandard.org  
-- Canonical schema file (current): `schema/v1.1.0/benefit-plan.schema.json`  
-- Draft schema (v1.2.0, draft 9): `schema/v1.2.0/benefit-plan.schema.json`, and since draft 9 `schema/v1.2.0/formulary.schema.json` for a drug list that many plans share; each published draft is a git tag, `v1.2.0-draft.1` through `v1.2.0-draft.9`  
-- Previous schema (v1.0.0): `schema/v1.0.0/benefit-plan.schema.json`  
+- Canonical schema file (current, v1.2.0): `schema/v1.2.0/benefit-plan.schema.json`, and `schema/v1.2.0/formulary.schema.json` for a drug list that many plans share; tagged `v1.2.0`, after 9 published drafts tagged `v1.2.0-draft.1` through `v1.2.0-draft.9`  
+- Previous schemas: v1.1.0, `schema/v1.1.0/benefit-plan.schema.json`, and v1.0.0, `schema/v1.0.0/benefit-plan.schema.json`  
 - Example plans: `examples/`, 22 plans: 10 read from plan documents, 5 imported from the CMS Marketplace public use files, 7 from the CMS PBP files (5 Medicare Advantage plans with drug coverage and 2 stand-alone Part D plans)  
 - Vocabularies (canonical benefits, categories, markets, plan types): `vocabularies/`  
 - FHIR alignment: `docs/fhir-alignment.md`  
@@ -52,7 +50,7 @@ It is designed to support:
 
 This repository contains:
 
-- The **canonical JSON Schema (v1.1.0)**, backward-compatible with v1.0.0, and the v1.2.0 draft  
+- The **canonical JSON Schema (v1.2.0)**, backward-compatible with v1.1.0 and v1.0.0  
 - 22 example plans: 10 read from plan documents across 9 carriers, 5 imported from the CMS Marketplace public use files, 7 from the CMS PBP files (5 Medicare Advantage, 2 stand-alone Part D)  
 - Recommended vocabularies (canonical benefits, categories, markets, plan types)  
 - FHIR R4 `InsurancePlan` alignment guide  
@@ -74,10 +72,10 @@ schema/
   ├── v1.0.0/
   │   └── benefit-plan.schema.json
   ├── v1.1.0/
-  │   └── benefit-plan.schema.json   ← current
+  │   └── benefit-plan.schema.json
   └── v1.2.0/
-      ├── benefit-plan.schema.json   ← draft (draft 9; each published draft is a git tag, v1.2.0-draft.N)
-      └── formulary.schema.json      ← draft 9: a drug list written once for the plans that share it
+      ├── benefit-plan.schema.json   ← current (tag v1.2.0; its 9 drafts are tags v1.2.0-draft.N)
+      └── formulary.schema.json      ← since draft 9: a drug list written once for the plans that share it
 docs/
   ├── carin-dic-reconciliation.md
   ├── changelog.md
@@ -150,7 +148,7 @@ modules/
       ├── v0.2.0/
       ├── v0.2.1/
       ├── v0.2.2/
-      └── v0.2.3/                    ← pharmacy module, draft, with its own README; in the v1.2.0 core since draft 6, v0.2.2 since draft 7, v0.2.3 since draft 9
+      └── v0.2.3/                    ← pharmacy module, draft, with its own README; copied into the v1.2.0 core (v0.2.1 at draft 6, v0.2.2 at draft 7, v0.2.3 at draft 9)
 ADOPTERS.md                          ← adopters on record under the release rule
 LICENSE
 ```
@@ -165,9 +163,9 @@ The schema follows **semantic versioning**:
 - **MINOR** → Backward-compatible additions  
 - **PATCH** → Fixes & clarifications  
 
-Current version: **v1.1.0** (backward-compatible with v1.0.0)
+Current version: **v1.2.0** (backward-compatible with v1.1.0 and v1.0.0), released on 2026-11-13
 
-Draft: **v1.2.0**, draft 9, tagged `v1.2.0-draft.9`. Drafts are numbered as they are published, and each one is a git tag on this repository, so any earlier draft can be checked out by its tag. Under the release rule in `docs/governance.md`, v1.2.0 becomes final after two independent adopters implement and validate it; until then every v1.2.0 document says which draft it validates against. The adopters on record are in `ADOPTERS.md`. The two importers write v1.2.0 draft documents.
+Drafts: v1.2.0 was published as 9 drafts before its release, each a git tag on this repository (`v1.2.0-draft.1` through `v1.2.0-draft.9`), so any draft can still be checked out by its tag; the release is tagged `v1.2.0`. Under the release rule in `docs/governance.md`, a draft becomes final after two independent adopters implement and validate it; the adopters on record are in `ADOPTERS.md`. The importers write v1.2.0 documents.
 
 Validation uses:
 
@@ -261,14 +259,14 @@ The included script runs both:
 npm install ajv ajv-formats     # one time
 
 node scripts/validate.js examples/aetna_example.json
-# PASS  examples/aetna_example.json — valid against schema/v1.1.0/benefit-plan.schema.json
+# PASS  examples/aetna_example.json — valid against schema/v1.2.0/benefit-plan.schema.json
 #       vocabulary: all category/canonical_key/market/plan_type values are canonical
 
 node scripts/validate.js myplan.json                    # your own file
 node scripts/validate.js --no-vocab myplan.json         # layer 1 only
 node scripts/validate.js --strict-vocab myplan.json     # vocabulary warnings also fail
-node scripts/validate.js --schema schema/v1.2.0/benefit-plan.schema.json myplan.json
-node scripts/validate.js --schema schema/v1.2.0/formulary.schema.json mylist.json   # a formulary list (draft 9)
+node scripts/validate.js --schema schema/v1.1.0/benefit-plan.schema.json myplan.json   # the previous version
+node scripts/validate.js --schema schema/v1.2.0/formulary.schema.json mylist.json   # a formulary list
 ```
 
 ### Validate a plan file using Ajv CLI
@@ -277,7 +275,7 @@ node scripts/validate.js --schema schema/v1.2.0/formulary.schema.json mylist.jso
 npm install -g ajv-cli
 
 ajv validate \
-  -s schema/v1.1.0/benefit-plan.schema.json \
+  -s schema/v1.2.0/benefit-plan.schema.json \
   -d myplan.json \
   --strict=false
 ```
@@ -288,7 +286,7 @@ ajv validate \
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import fs from "fs";
-import schema from "./schema/v1.1.0/benefit-plan.schema.json" assert { type: "json" };
+import schema from "./schema/v1.2.0/benefit-plan.schema.json" assert { type: "json" };
 
 const ajv = new Ajv({ strict: false });
 addFormats(ajv);
@@ -299,13 +297,13 @@ const plan = JSON.parse(fs.readFileSync("myplan.json", "utf8"));
 if (!validate(plan)) {
   console.error(validate.errors);
 } else {
-  console.log("Valid according to Benefit Plan Standard v1.1.0");
+  console.log("Valid according to Benefit Plan Standard v1.2.0");
 }
 ```
 
 ### Converting a plan to FHIR InsurancePlan
 
-`scripts/to-insuranceplan.js` converts a BPS file (v1.1.0 or the v1.2.0 draft) into a FHIR R4 collection `Bundle` holding one `InsurancePlan` and the `Organization` it references. The `InsurancePlan` targets the CARIN Digital Insurance Card SBC InsurancePlan profile (`sbc-insurance-plan`, package `hl7.fhir.us.insurance-card#2.0.0-ballot`, draft). The converter makes no network calls and keeps no state, and the same input always gives the same output.
+`scripts/to-insuranceplan.js` converts a BPS file (v1.1.0 or v1.2.0) into a FHIR R4 collection `Bundle` holding one `InsurancePlan` and the `Organization` it references. The `InsurancePlan` targets the CARIN Digital Insurance Card SBC InsurancePlan profile (`sbc-insurance-plan`, package `hl7.fhir.us.insurance-card#2.0.0-ballot`, draft). The converter makes no network calls and keeps no state, and the same input always gives the same output.
 
 ```bash
 node scripts/to-insuranceplan.js examples/aetna_example.json > aetna.insuranceplan.json

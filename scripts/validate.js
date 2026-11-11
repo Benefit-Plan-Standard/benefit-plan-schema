@@ -35,7 +35,7 @@ const fs = require('fs');
 const path = require('path');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
-const DEFAULT_SCHEMA = path.join(REPO_ROOT, 'schema', 'v1.1.0', 'benefit-plan.schema.json');
+const DEFAULT_SCHEMA = path.join(REPO_ROOT, 'schema', 'v1.2.0', 'benefit-plan.schema.json');
 const VOCAB_DIR = path.join(REPO_ROOT, 'vocabularies');
 
 function readJson(p) {

@@ -1,6 +1,6 @@
 # Medicare Advantage field proposal for the v1.2.0 draft
 
-**Status:** The v1.2.0 draft schema on this branch carries the 12 shipping fields as of September 20, 2026, pending review.
+**Status:** The 12 shipping fields are in the Benefit Plan Standard 1.2.0, released on 2026-11-13. As of September 20, 2026, when this was written, the v1.2.0 draft schema on this branch carried them, pending review.
 **Written:** September 20, 2026
 **Inputs:** `docs/medicare-advantage-notes.md` (branch `medicare-advantage-ground-truth`, sections 2 and 3), the v1.2.0 draft schema, the pharmacy module v0.2.1, and `docs/carin-dic-reconciliation.md` section 5.
 

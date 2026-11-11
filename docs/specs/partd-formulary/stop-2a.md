@@ -1,6 +1,6 @@
 # Stop 2a: 10 UnitedHealthcare and AARP plans against their Summaries of Benefits
 
-**Date:** November 11, 2026. **For:** the Benefit Plan Standard 1.2.0 release gate. **Status:** the contract year 2027 column is checked; the 2026 column waits on the Medicare Advantage importer's reading of the 2026 PBP layout (section 3), which needs no schema change.
+**Date:** November 11, 2026. **For:** the Benefit Plan Standard 1.2.0 release gate. **Status:** the contract year 2027 column is checked, and its 1 importer gap is closed the same day (section 2); the 2026 column waits on the Medicare Advantage importer's reading of the 2026 PBP layout (section 3), which needs no schema change.
 
 ## 1. The plans
 
@@ -23,12 +23,12 @@ Each keeps its contract, plan and segment from 2026 to 2027 in the PBP files.
 
 Each plan's document is the Medicare Advantage importer's document with its Part D drug list and premium parts (`scripts/from-partd-formulary.js --plan`), validated against the 1.2.0 draft 9 schema, and checked with `scripts/pbp-sob-check.js` against 1 check file per plan in [`../pbp-sob-checks/`](../pbp-sob-checks/README.md), premium included.
 
-**453 checks: 423 MATCH, 29 READING, 1 DIFFERENCE.**
+**453 checks: 423 MATCH, 29 READING, 1 DIFFERENCE** at the stop. **With the Reductions in Cost Sharing reader (below): 424 MATCH, 29 READING, 0 DIFFERENCE.**
 
 - **Agreements, 423 checks:** every premium (a stand-alone plan's, $115.70 to $242.60, from the Part D formulary file; each Medicare Advantage plan's $0, with `drug_amount` $0 checked on the 4 new files), the 2 Part B premium reductions ($55 and $50), the medical and drug deductibles, the out-of-pocket maximums, inpatient and skilled nursing day steps, office visits, emergency and urgent care, outpatient and surgical center, imaging and lab, hearing, vision and dental allowances, therapies, chiropractic, ambulance, foot care, home health, fitness, and the drug tier cost shares the Summaries print.
 - **Readings, 29:** of the kinds the October check found: a copay the PBP file states as a range from $0 where the Summary prints the maximum (specialists, urgent care, mental health), an observation copay the file gives per day, and the October H2406-013 and S5921-383 files' own.
 - **Contradictions between the CMS file and the carrier's document: 0.**
-- **Importer gaps: 1, on 1 plan.** H1045-059's CareFlex credit, "$450 quarterly credit to help lower your out-of-pocket costs" (page 2), is in `pbp_Section_D.txt` as Reductions in Cost Sharing: `pbp_d_rics_yn` "1", `pbp_d_rics_max_bene_amt_1` "450.00", `pbp_d_rics_period_1` "5" (Every 3 months), `pbp_d_rics_mod_1` "010" (Debit Card), with the 38 Medicare service categories it applies to in `pbp_d_rics_mc_cats_1`. `scripts/from-pbp.js` does not read the `pbp_d_rics_` columns, so the document says nothing of it; 95 plans of contract year 2027 have such a credit. The schema can hold it as it stands (a benefit with a dollars limit per 3 months and its categories in `conditions` or `notes`), so this is importer work, not a schema gap.
+- **Importer gaps: 1, on 1 plan.** H1045-059's CareFlex credit, "$450 quarterly credit to help lower your out-of-pocket costs" (page 2), is in `pbp_Section_D.txt` as Reductions in Cost Sharing: `pbp_d_rics_yn` "1", `pbp_d_rics_max_bene_amt_1` "450.00", `pbp_d_rics_period_1` "5" (Every 3 months), `pbp_d_rics_mod_1` "010" (Debit Card), with the 38 Medicare service categories it applies to in `pbp_d_rics_mc_cats_1`. `scripts/from-pbp.js` does not read the `pbp_d_rics_` columns, so the document says nothing of it; 95 plans of contract year 2027 have such a credit. The schema can hold it as it stands (a benefit with a dollars limit per 3 months and its categories in `conditions` or `notes`), so this is importer work, not a schema gap. **Closed on November 11, 2026:** `scripts/from-pbp.js` reads the `pbp_d_rics_` columns, 1 benefit entry per group, `PBP_D_RICS_<n>`, after the medical benefits, with the amount as a `dollars` limit and the categories, delivery mode and deductible answer as `conditions` ([`../pbp-importer.md`](../pbp-importer.md) section 5.10), under 1 new category code, `REDUCTIONS_IN_COST_SHARING`. H1045-059's check points at `/benefits/38/limits/0` and matches ($450, `per_3_months`); its 14 pointers into the Part D benefits moved up by 1. Over the 2027 file: 95 plans, 110 groups, 78 of them sharing the amount of a combined supplemental benefit group of the same name, amount and period, whose `shared_limit_id` they take; 0 errors.
 
 ## 3. Contract year 2026
 

@@ -958,6 +958,256 @@ function withComboLimits(limits, groups) {
   return out;
 }
 
+// ---- reductions in cost sharing (spec 5.10, v1.2.0 draft 9) ----------------------------------
+// Section D's pbp_d_rics_* columns answer "Does your plan offer Reductions in Cost Sharing?"
+// (pbp_d_rics_yn) and hold up to 5 groups (pbp_d_rics_cnt). Each group is an amount per period
+// (pbp_d_rics_max_bene_amt_<n>, "Maximum plan benefit coverage amount") that lowers the member's
+// cost sharing for the Medicare-covered and non-Medicare-covered service categories it lists,
+// such as H1045-059-000's "CareFlex credit", $450 every 3 months on a debit card. Each group is 1
+// benefit entry, PBP_D_RICS_<n>, after the medical benefits: the amount is a dollars limit, and
+// the categories, the delivery mode and the deductible answer are conditions; every cell is
+// quoted. A group whose amount is shared with a combined supplemental benefit group
+// (pbp_d_rics_comb_shr_yn_<n> 1, the group named in pbp_d_rics_comb_pkg_num_<n>) takes that
+// group's shared_limit_id, PBP_D_COMBO_<k> (5.9), when the 2 state the same amount and period.
+const RICS_COLS = ['grp_name', 'cats_ehc', 'mc_cats', 'nmc_cats', 'max_bene_amt', 'period', 'period_d', 'comb_shr_yn', 'comb_pkg_num',
+  'app_ded_yn', 'mod', 'mod_d'];
+// Code lists verbatim from PBP_Benefits_2027_dictionary.xlsx; groups 1 to 5 have the same lists.
+const RICS_PERIOD_LABELS = { 1: 'Every 3 years', 2: 'Every 2 years', 3: 'Every year', 4: 'Every 6 months', 5: 'Every 3 months', 6: 'Other, Describe', 7: 'Every month' };
+const RICS_EHC = ['Non-Medicare covered benefits', 'Medicare-covered benefits'];
+const RICS_MODES = ['Other (describe)', 'Debit Card', 'Reimbursement'];
+const RICS_MC_CATS = {
+  "1a": "1a: Inpatient Hospital-Acute",
+  "1b": "1b: Inpatient Hospital Psychiatric",
+  "2": "2: Skilled Nursing Facility (SNF)",
+  "3-1": "3-1: Cardiac Rehabilitation Services",
+  "3-2": "3-2: Intensive Cardiac Rehabilitation Services",
+  "3-3": "3-3: Pulmonary Rehabilitation Services",
+  "3-4": "3-4: SET for PAD Services",
+  "4a": "4a: Emergency Services",
+  "4b": "4b: Urgently Needed Services",
+  "5a": "5a: Partial Hospitalization Program",
+  "5b": "5b: Intensive Outpatient Program Services",
+  "6": "6: Home Health Services",
+  "7a": "7a: Primary Care Physician Services",
+  "7b": "7b: Chiropractic Services",
+  "7c": "7c: Occupational Therapy Services",
+  "7d": "7d: Physician Specialist Services",
+  "7e1": "7e1: Individual Sessions for Mental Health Specialty Services",
+  "7e2": "7e2: Group Sessions for Mental Health Specialty Services",
+  "7f": "7f: Podiatry Services",
+  "7g": "7g: Other Health Care Professional",
+  "7h1": "7h1: Individual Sessions for Psychiatric Services",
+  "7h2": "7h2: Group Sessions for Psychiatric Services",
+  "7i": "7i: Physical Therapy and Speech-Language Pathology Services",
+  "7j": "7j: Additional Telehealth Benefits",
+  "7k": "7k: Opioid Treatment Program Services",
+  "8a1": "8a1: Diagnostic Procedures/Tests",
+  "8a2": "8a2: Lab Services",
+  "8b1": "8b1: Diagnostic Radiological Services",
+  "8b2": "8b2: Therapeutic Radiological Services",
+  "8b3": "8b3: Outpatient X-Ray Services",
+  "9a1": "9a1: Outpatient Hospital Services",
+  "9a2": "9a2: Observation Services",
+  "9b": "9b: Ambulatory Surgical Center (ASC) Services",
+  "9c1": "9c1: Individual Sessions for Outpatient Substance Abuse",
+  "9c2": "9c2: Group Sessions for Outpatient Substance Abuse",
+  "9d": "9d: Outpatient Blood Services",
+  "10a1": "10a1: Ground Ambulance Services",
+  "10a2": "10a2: Air Ambulance Services",
+  "11a": "11a: Durable Medical Equipment (DME)",
+  "11b1": "11b1: Prosthetic Devices",
+  "11b2": "11b2: Medical Supplies",
+  "11c1": "11c1: Diabetic Supplies",
+  "11c2": "11c2: Diabetic Therapeutic Shoes/Inserts",
+  "11c3": "11c3: Diabetic Monitors",
+  "12": "12: Dialysis Services",
+  "14a": "14a: Medicare-covered Zero Dollar Preventive Services",
+  "14d": "14d: Kidney Disease Education Services",
+  "14e1": "14e1: Glaucoma Screening",
+  "14e2": "14e2: Diabetes Self-Management Training",
+  "14e4": "14e4: Digital Rectal Exams",
+  "14e5": "14e5: EKG following Welcome Visit",
+  "15-1-I": "15-1-I: Medicare Part B Insulin Drugs",
+  "15-2": "15-2: Medicare Part B Chemotherapy/Radiation Drugs",
+  "15-3": "15-3: Other Medicare Part B Drugs",
+  "16a": "16a: Medicare Dental Services",
+  "17a": "17a: Eye Exams",
+  "17b": "17b: Eyewear",
+  "18a": "18a: Hearing Exams",
+  "20": "20: Prescription Drugs (Cost Plans Only)",
+};
+const RICS_NMC_CATS = {
+  "1a-B": "1a: Inpatient Hospital-Acute (B Only)",
+  "1a1": "1a1: Additional Days for Inpatient Hospital-Acute",
+  "1a2": "1a2: Non-Medicare-covered Stay for Inpatient Hospital-Acute",
+  "1a3": "1a3: Upgrades for Inpatient Hospital-Acute",
+  "1b-B": "1b: Inpatient Hospital Psychiatric (B Only)",
+  "1b1": "1b1: Additional Days for Inpatient Hospital Psychiatric",
+  "1b2": "1b2: Non-Medicare-covered Stay for Inpatient Hospital Psychiatric",
+  "2-B": "2: Skilled Nursing Facility (SNF) (B Only)",
+  "2-1": "2-1: Additional Days beyond Medicare-covered for Skilled Nursing Facility (SNF)",
+  "3-1_2": "3-1: Additional Cardiac Rehabilitation Services",
+  "3-2_2": "3-2: Additional Intensive Cardiac Rehabilitation Services",
+  "3-3_2": "3-3: Additional Pulmonary Rehabilitation Services",
+  "3-4_2": "3-4: Additional SET for PAD Services",
+  "4c1": "4c1: Worldwide Emergency Coverage",
+  "4c2": "4c2: Worldwide Urgent Coverage",
+  "4c3": "4c3: Worldwide Emergency Transportation",
+  "7b1": "7b1: Routine Chiropractic Care",
+  "7b2": "7b2: Other Chiropractic Services",
+  "7f_2": "7f: Podiatry Services - Routine Foot Care",
+  "10b1": "10b1: Transportation Services - Plan Approved Health-related Location",
+  "10b2": "10b2: Transportation Services -  Any Health-related Location",
+  "13a": "13a: Acupuncture Treatments",
+  "13b": "13b: Over-the-Counter (OTC) Items",
+  "13c": "13c: Meal Benefit",
+  "13d": "13d: Other 1",
+  "13e": "13e: Other 2",
+  "13f": "13f: Other 3",
+  "13g": "13g: Dual Eligible SNPs with Highly Integrated Services",
+  "14b": "14b: Annual Physical Exam",
+  "14c1": "14c1: Health Education",
+  "14c2": "14c2: Nutritional/Dietary Benefit",
+  "14c3": "14c3: Additional Sessions of Smoking and Tobacco Cessation Counseling",
+  "14c4": "14c4: Fitness Benefit",
+  "14c5": "14c5: Enhanced Disease Management",
+  "14c6": "14c6: Telemonitoring Services",
+  "14c7": "14c7: Remote Access Technologies (including Web/Phone-based technologies and Nursing Hotline)",
+  "14c8": "14c8: Home and Bathroom Safety Devices and Modifications",
+  "14c9": "14c9: Counseling Services",
+  "14c10": "14c10: In-Home Safety Assessment",
+  "14c11": "14c11: Personal Emergency Response System (PERS)",
+  "14c12": "14c12: Medical Nutrition Therapy (MNT)",
+  "14c13": "14c13: Post discharge In-Home Medication Reconciliation",
+  "14c14": "14c14: Re-admission Prevention",
+  "14c15": "14c15: Wigs for Hair Loss Related to Chemotherapy",
+  "14c16": "14c16: Weight Management Programs",
+  "14c17": "14c17: Alternative Therapies",
+  "14c18": "14c18: Therapeutic Massage",
+  "14c19": "14c19: Adult Day Health Services",
+  "14c20": "14c20: Home-Based Palliative Care",
+  "14c21": "14c21: In-Home Support Services",
+  "14c22": "14c22: Support for Caregivers of Enrollees",
+  "15": "15: Home Infusion bundled Services",
+  "16b1": "16b1: Oral Exams",
+  "16b2": "16b2: Dental X-Rays",
+  "16b3": "16b3: Other Diagnostic Dental Services",
+  "16b4": "16b4: Prophylaxis (Cleaning)",
+  "16b5": "16b5: Fluoride Treatment",
+  "16b6": "16b6: Other Preventive Dental Services",
+  "16c1": "16c1: Restorative Services",
+  "16c2": "16c2: Endodontics",
+  "16c3": "16c3: Periodontics",
+  "16c4": "16c4: Prosthodontics, removable",
+  "16c5": "16c5: Maxillofacial Prosthetics",
+  "16c6": "16c6: Implant Services",
+  "16c7": "16c7: Prosthodontics, fixed",
+  "16c8": "16c8: Oral and Maxillofacial Surgery",
+  "16c9": "16c9: Orthodontics",
+  "16c10": "16c10: Adjunctive General Services",
+  "17a1": "17a1: Routine Eye Exams",
+  "17a2": "17a2: Other Eye Exam Services",
+  "17b1": "17b1: Contact Lenses",
+  "17b2": "17b2: Eyeglasses (lenses and frames)",
+  "17b3": "17b3: Eyeglass lenses",
+  "17b4": "17b4: Eyeglass frames",
+  "17b5": "17b5: Upgrades",
+  "18a1": "18a1: Routine Hearing Exams",
+  "18a2": "18a2: Fitting/Evaluation for Hearing Aid",
+  "18b1": "18b1: Prescription Hearing Aids (all types)",
+  "18b2": "18b2: Prescription Hearing Aids - Inner Ear",
+  "18b3": "18b3: Prescription Hearing Aids - Outer Ear",
+  "18b4": "18b4: Prescription Hearing Aids - Over the Ear",
+  "18c": "18c: OTC Hearing Aids",
+  "20-S": "20: Prescription Drugs Supplemental (Cost Plans Only)",
+  "19b": "19b: Additional Benefits for UF/SSBCI",
+};
+
+function ricsCol(s, n) {
+  return s === 'mod_d' ? `pbp_d_rics_mod_${n}_d` : `pbp_d_rics_${s}_${n}`;
+}
+
+// The combined supplemental benefit group a Reductions in Cost Sharing group shares its amount
+// with: the 1 group of that name whose maximum states the same amount and period.
+function ricsSharedId(d, n, limit, combo, errors) {
+  const shared = yn(d, ricsCol('comb_shr_yn', n), errors);
+  if (shared !== '1') return null;
+  const name = q(d, ricsCol('comb_pkg_num', n)).trim();
+  const hits = combo.filter((g) => q(d, `pbp_d_combo_grp_name_${g.n}`).trim() === name);
+  const g = hits.length === 1 ? hits[0] : null;
+  if (!g || !g.limit || g.limit.value !== limit.value || g.limit.period !== limit.period) {
+    errors.push(`${cell(d, ricsCol('comb_shr_yn', n))} but ${cell(d, ricsCol('comb_pkg_num', n))} names no 1 combined supplemental benefit ` +
+      'group with the same maximum amount and period');
+    return null;
+  }
+  return g.limit.shared_limit_id;
+}
+
+function ricsBenefits(d, combo, errors) {
+  const offered = q(d, 'pbp_d_rics_yn');
+  if (offered === '' || offered === '2') return [];
+  if (offered !== '1') { errors.push(`pbp_d_rics_yn "${offered}" is not 1 or 2`); return []; }
+  const num = q(d, 'pbp_d_rics_cnt');
+  if (!/^[1-5]$/.test(num)) { errors.push(`pbp_d_rics_yn "1" but ${cell(d, 'pbp_d_rics_cnt')}`); return []; }
+  const out = [];
+  for (let n = 1; n <= Number(num); n++) {
+    const col = (s) => ricsCol(s, n);
+    const before = errors.length;
+    const amt = amount(d, col('max_bene_amt'), errors);
+    if (amt === null && q(d, col('max_bene_amt')) === '') errors.push(`pbp_d_rics_cnt "${num}" but ${cell(d, col('max_bene_amt'))}`);
+    const per = q(d, col('period'));
+    if (!(per in CROSSWALK.periodicity)) errors.push(`${cell(d, col('period'))} is not a periodicity code`);
+    const ehc = q(d, col('cats_ehc'));
+    if (!/^[01]{2}$/.test(ehc)) errors.push(`${cell(d, col('cats_ehc'))} is not a position string of 2`);
+    const mode = q(d, col('mod'));
+    if (!/^[01]{3}$/.test(mode)) errors.push(`${cell(d, col('mod'))} is not a position string of 3`);
+    const ded = yn(d, col('app_ded_yn'), errors);
+    if (errors.length > before) continue;
+
+    const conditions = [];
+    for (const [pos, listCol, labels] of [[2, 'mc_cats', RICS_MC_CATS], [1, 'nmc_cats', RICS_NMC_CATS]]) {
+      const codes = cats(q(d, col(listCol)));
+      const unknown = codes.filter((c) => !(c in labels));
+      if (unknown.length) errors.push(`${cell(d, col(listCol))} lists ${unknown.join(', ')}, which the dictionary does not`);
+      if (chosen(ehc, pos) !== (codes.length > 0)) errors.push(`${cell(d, col('cats_ehc'))} disagrees with ${cell(d, col(listCol))}`);
+      if (codes.length && !unknown.length) {
+        conditions.push({ type: 'applies_to', description: `${RICS_EHC[pos - 1]} the reduction applies to (${col(listCol)}): ` +
+          `${codes.map((c) => labels[c]).join('; ')}.` });
+      }
+    }
+    const modes = RICS_MODES.filter((_, i) => chosen(mode, i + 1));
+    if (modes.length) {
+      const other = chosen(mode, 1) && q(d, col('mod_d')).trim() ? ` (${cell(d, col('mod_d'))})` : '';
+      conditions.push({ type: 'delivery_mode', description: `Mode of delivery (${cell(d, col('mod'))}): ${modes.join(', ')}${other}.` });
+    }
+    if (ded) {
+      conditions.push({ type: 'deductible', description: `${cell(d, col('app_ded_yn'))}: the reduction ${ded === '1' ? 'can' : 'cannot'} ` +
+        'be applied to a deductible.' });
+    }
+    const limit = { type: 'dollars', value: amt, period: CROSSWALK.periodicity[per] };
+    const sharedId = ricsSharedId(d, n, limit, combo, errors);
+    if (sharedId) limit.shared_limit_id = sharedId;
+    limit.raw_text = `Reductions in Cost Sharing group ${n} maximum plan benefit coverage amount: ` +
+      `${cellsOf(d, [col('max_bene_amt'), col('period'), col('period_d')]).join(', ')} (${RICS_PERIOD_LABELS[per]})` +
+      (sharedId ? `; shared with the combined supplemental benefit group ${cell(d, col('comb_pkg_num'))}, whose maximum states the ` +
+        `same amount and period (shared_limit_id ${sharedId}).` : '.');
+    const name = q(d, col('grp_name')).trim();
+    out.push({
+      benefit_id: `PBP_D_RICS_${n}`,
+      coverage_basis: null,
+      category: 'REDUCTIONS_IN_COST_SHARING',
+      service_name: 'Reductions in Cost Sharing',
+      ...(name ? { raw_label: name } : {}),
+      network_cost_shares: [],
+      limits: [limit],
+      conditions,
+      source_references: [{ excerpt: `Reductions in Cost Sharing group ${n} of ${num} (pbp_Section_D.txt), verbatim: ` +
+        `${cellsOf(d, ['pbp_d_rics_yn', 'pbp_d_rics_cnt', ...RICS_COLS.map(col)]).join('; ')}.` }],
+    });
+  }
+  return out;
+}
+
 // ---- one benefit ------------------------------------------------------------------------------
 // Deductible steps first, then copay and coinsurance in the order read.
 function sequence(steps) {
@@ -2218,6 +2468,7 @@ function buildDocument(rows, source) {
     skipped: [],
   };
   const benefits = buildBenefits(rows, ctx, errors, warn);
+  const rics = ricsBenefits(d, ctx.combo, errors);
   const premium = buildPremium(d, errors);
   const contacts = buildContacts(a);
   if (errors.length) return { doc: null, errors, warnings };
@@ -2247,7 +2498,7 @@ function buildDocument(rows, source) {
   doc.network_tiers = network_tiers;
   doc.accumulators = accumulators;
   if (partD.pharmacy) doc.pharmacy = partD.pharmacy;
-  doc.benefits = [...benefits, ...partD.benefits];
+  doc.benefits = [...benefits, ...rics, ...partD.benefits];
 
   const excerpts = [
     ...releaseExcerpts(a, source, planType, MVP_PLAN_TYPES[planType]),
@@ -2259,7 +2510,9 @@ function buildDocument(rows, source) {
     ...accNotes,
     'Every non-blank Section D deductible and out-of-pocket cell, verbatim, in file order: ' + accumulatorCells(d).join('; ') + '.',
     `Benefits: the ${CROSSWALK.benefits.length} service categories in fhir/pbp-crosswalk.json (the workgroup MVP), ${benefits.length} written. ` +
-      'Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8).',
+      'Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8).' +
+      (rics.length ? ` Then ${rics.length} Reductions in Cost Sharing ${rics.length === 1 ? 'entry' : 'entries'} from Section D ` +
+        `(${rics.map((b) => b.benefit_id).join(', ')}; section 5.10).` : ''),
     ctx.skipped.length
       ? `Medicare-covered categories with no copay or coinsurance answer in the file, not written (${cell(a, 'pbp_a_ben_cov')}): ${ctx.skipped.join('; ')}.`
       : null,

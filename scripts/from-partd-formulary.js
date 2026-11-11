@@ -4,7 +4,7 @@
  *
  * Reads the CMS public use file "Prescription Drug Plan Formulary and Pharmacy
  * Network Information" (the monthly zip, unzipped) and writes the drug lists of
- * Medicare Part D plans in Benefit Plan Standard v1.2.0 (draft 9): a formulary list
+ * Medicare Part D plans in Benefit Plan Standard v1.2.0 (since draft 9): a formulary list
  * (schema/v1.2.0/formulary.schema.json) once per FORMULARY_ID, and a plan document
  * that is the Medicare Advantage importer's document for the same plan
  * (scripts/from-pbp.js) with pharmacy.formulary_reference and the plan's own

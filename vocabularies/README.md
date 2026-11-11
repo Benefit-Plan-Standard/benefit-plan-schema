@@ -13,7 +13,7 @@ This directory contains **non-normative recommended vocabularies** referenced fr
 
 - **Non-normative.** The JSON Schema does not enforce these via `enum`; the schema treats the corresponding fields as free-form strings. Adopters who want strict validation can layer an additional `enum` constraint locally.
 - **Recommended for interoperability.** Adopters SHOULD prefer these values where applicable. If you need a term that doesn't exist here, please open an issue or PR.
-- **Versioned alongside the schema.** Vocabularies share the same version number as the schema (currently v1.1.0), except `canonical-benefits.json`, which is at v1.4.0 beside the v1.2.0 draft schema: it went to v1.2.0 with that draft, the key added on 2026-10-20 bumped it to v1.3.0, and the 6 pharmacy keys of 2026-10-24 to v1.4.0; and `markets.json`, which is at v1.2.0 since `medicare_part_d` was added on 2026-10-24. Backward-compatible additions are minor bumps.
+- **Versioned alongside the schema.** Vocabularies started at the schema version number, v1.1.0, and each moves on its own: `benefit-types.json` and `plan-types.json` are at v1.1.0 beside the v1.2.0 schema; `canonical-benefits.json` is at v1.4.0: it went to v1.2.0 with the 1.2.0 drafts, the key added on 2026-10-20 bumped it to v1.3.0, and the 6 pharmacy keys of 2026-10-24 to v1.4.0; `markets.json`, which is at v1.2.0 since `medicare_part_d` was added on 2026-10-24; and `categories.json`, which is at v1.2.0 since `REDUCTIONS_IN_COST_SHARING` was added on 2026-11-11 (38 codes; the 12 codes added on 2026-09-20 for the Medicare Advantage examples went into v1.1.0 without a version change). Backward-compatible additions are minor bumps.
 
 ## Sources
 

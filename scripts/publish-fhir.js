@@ -54,8 +54,8 @@ const DEFS_DIR = path.join(REPO_ROOT, 'fhir', 'definitions');
 const SITE = 'https://benefitplanstandard.org/fhir/';
 const BPS_EXT = 'https://benefitplanstandard.org/fhir/StructureDefinition/';
 
-const MA_LABEL = 'Medicare Advantage, read from the CMS Summary of Benefits, validates against the v1.2.0 draft only.';
-const PBP_LABEL = 'Medicare Advantage, imported from the CMS PBP benefits files for contract year 2027, validates against the v1.2.0 draft only.';
+const MA_LABEL = 'Medicare Advantage, read from the CMS Summary of Benefits, validates against v1.2.0, not v1.1.0.';
+const PBP_LABEL = 'Medicare Advantage, imported from the CMS PBP benefits files for contract year 2027, validates against v1.2.0, not v1.1.0.';
 
 function readJson(p) {
   return JSON.parse(fs.readFileSync(p, 'utf8'));

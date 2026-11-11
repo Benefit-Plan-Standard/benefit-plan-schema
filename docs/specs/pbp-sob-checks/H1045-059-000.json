@@ -555,7 +555,7 @@
           "amount": 0
         }
       ],
-      "path": "/benefits/38/network_cost_shares/0/cost_shares"
+      "path": "/benefits/39/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Tier 1, retail standard, 100-day supply, initial coverage",
@@ -567,7 +567,7 @@
           "amount": 0
         }
       ],
-      "path": "/benefits/39/network_cost_shares/0/cost_shares"
+      "path": "/benefits/40/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Tier 1, mail order preferred, 100-day supply, initial coverage",
@@ -579,7 +579,7 @@
           "amount": 0
         }
       ],
-      "path": "/benefits/41/network_cost_shares/0/cost_shares"
+      "path": "/benefits/42/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Tier 1, mail order standard, 100-day supply, initial coverage",
@@ -591,7 +591,7 @@
           "amount": 0
         }
       ],
-      "path": "/benefits/40/network_cost_shares/0/cost_shares"
+      "path": "/benefits/41/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Tier 2, retail standard, 30-day supply, initial coverage",
@@ -603,7 +603,7 @@
           "amount": 5
         }
       ],
-      "path": "/benefits/44/network_cost_shares/0/cost_shares"
+      "path": "/benefits/45/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Tier 2, retail standard, 100-day supply, initial coverage",
@@ -615,7 +615,7 @@
           "amount": 15
         }
       ],
-      "path": "/benefits/45/network_cost_shares/0/cost_shares"
+      "path": "/benefits/46/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Tier 2, mail order preferred, 100-day supply, initial coverage",
@@ -627,7 +627,7 @@
           "amount": 0
         }
       ],
-      "path": "/benefits/47/network_cost_shares/0/cost_shares"
+      "path": "/benefits/48/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Tier 2, mail order standard, 100-day supply, initial coverage",
@@ -639,7 +639,7 @@
           "amount": 15
         }
       ],
-      "path": "/benefits/46/network_cost_shares/0/cost_shares"
+      "path": "/benefits/47/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Tier 3, retail standard, 30-day supply, initial coverage",
@@ -651,7 +651,7 @@
           "rate": 0.22
         }
       ],
-      "path": "/benefits/50/network_cost_shares/0/cost_shares"
+      "path": "/benefits/51/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Tier 3, retail standard, 100-day supply, initial coverage",
@@ -663,7 +663,7 @@
           "rate": 0.22
         }
       ],
-      "path": "/benefits/51/network_cost_shares/0/cost_shares"
+      "path": "/benefits/52/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Tier 3, mail order preferred, 100-day supply, initial coverage",
@@ -675,7 +675,7 @@
           "rate": 0.22
         }
       ],
-      "path": "/benefits/53/network_cost_shares/0/cost_shares"
+      "path": "/benefits/54/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Tier 3, mail order standard, 100-day supply, initial coverage",
@@ -687,7 +687,7 @@
           "rate": 0.22
         }
       ],
-      "path": "/benefits/52/network_cost_shares/0/cost_shares"
+      "path": "/benefits/53/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Tier 4, retail standard, 30-day supply, initial coverage",
@@ -699,7 +699,7 @@
           "rate": 0.27
         }
       ],
-      "path": "/benefits/56/network_cost_shares/0/cost_shares"
+      "path": "/benefits/57/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Tier 5, retail standard, 30-day supply, initial coverage",
@@ -711,7 +711,7 @@
           "rate": 0.26
         }
       ],
-      "path": "/benefits/61/network_cost_shares/0/cost_shares"
+      "path": "/benefits/62/network_cost_shares/0/cost_shares"
     },
     {
       "item": "Exam to diagnose and treat diseases and conditions of the eye, in network",
@@ -742,11 +742,12 @@
       "page": 2,
       "printed": "CareFlex credit: $450 quarterly credit to help lower your out-of-pocket costs. Use your credit right away or throughout the year on: Inpatient hospital care; Outpatient hospital care; Doctor visits, specialists; Emergency care; Urgently needed services; ...",
       "expected": {
-        "amount": 450,
+        "type": "dollars",
+        "value": 450,
         "period": "per_3_months"
       },
-      "path": "/benefits/RICS",
-      "note": "An importer gap, not a CMS-file difference: pbp_Section_D.txt holds the credit (pbp_d_rics_yn \"1\", Does your plan offer Reductions in Cost Sharing?; pbp_d_rics_max_bene_amt_1 \"450.00\"; pbp_d_rics_period_1 \"5\", Every 3 months; pbp_d_rics_mod_1 \"010\", Debit Card; pbp_d_rics_mc_cats_1 the 38 Medicare service categories it applies to), and scripts/from-pbp.js does not read the pbp_d_rics_ columns yet, so the document has no entry for it (95 plans in contract year 2027 have one). The pointer names no entry of the document on purpose."
+      "path": "/benefits/38/limits/0",
+      "note": "pbp_Section_D.txt holds the credit as Reductions in Cost Sharing (pbp_d_rics_yn \"1\"; pbp_d_rics_max_bene_amt_1 \"450.00\"; pbp_d_rics_period_1 \"5\", Every 3 months; pbp_d_rics_mod_1 \"010\", Debit Card; pbp_d_rics_mc_cats_1 the 38 Medicare service categories it applies to, which the entry's conditions list). Read since v1.2.0 draft 9 as the benefit entry PBP_D_RICS_1 (docs/specs/pbp-importer.md section 5.10); before that the document had no entry for it and this check was the 1 importer gap of stop 2a. The Summary of Benefits name, CareFlex, is not in the file: the group name is \"RICS Benefit 1\"."
     }
   ]
 }

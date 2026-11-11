@@ -3,6 +3,40 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] – 2026-11-13: release
+
+The Benefit Plan Standard 1.2.0 is final. It was published as 9 drafts, tagged `v1.2.0-draft.1` through `v1.2.0-draft.9`, and the release is tagged `v1.2.0`. The release schema is draft 9's: only its root description changes, which no longer says DRAFT. Under the release rule in `docs/governance.md` (Releases), a draft becomes final after 2 independent adopters implement and validate it; the 2 on record are in `ADOPTERS.md`, unchanged by the release. The entries below this one record each draft as it was published.
+
+### What 1.2.0 adds to 1.1.0
+
+Every addition is optional. Compared with 1.1.0, no property is removed, none becomes required and no type is narrowed, and the 7 examples that validate against 1.1.0 validate against 1.2.0 unchanged.
+
+- Network tiers and limits, from the reconciliation with the CARIN Digital Insurance Card changes of June 2026 (`docs/carin-dic-reconciliation.md`): `network_tiers[].tier_class`, `parent_tier_id` and `provider_set`, and `limits[].raw_text`.
+- Medicare Advantage fields (gaps G1 to G11 and G14 of `docs/medicare-advantage-notes.md`): `plan_identifiers`, `service_area`, `premium`, `part_b_premium_reduction`, the `pharmacy` accumulators, cost-share unit ranges, caps and ranges, `deductible_ref`, `coverage_basis`, `alternative_group`, limit `scope`, `shared_limit_id` and `carryover`, and per-benefit `source_references`.
+- For the medical MVP specification of the CMS Health Tech Ecosystem Real-Time Benefits workgroup: `contacts` and `network_tiers[].provider_directory_url`.
+- The pharmacy module in core (draft 6, copying the module v0.2.1, then v0.2.2 at draft 7 and v0.2.3 at draft 9): the rest of the `pharmacy` object and the benefit extension fields, and `cost_shares[].moop_ref`.
+- Draft 7: `pharmacy.deductible.family_amount`, `cost_shares[].min_amount` and `min_basis`, `network_cost_shares[].covered_under` and `not_covered_reason`, and `source_references[].document`.
+- Draft 8: `limits[].unlimited`, with `limits[].value` null on such an entry and only there.
+- Draft 9: `pharmacy.formulary_reference.formulary_version` and `formulary_items_url`, `formulary_items[].coverage_basis`, `negotiation_selected_drug`, `capped_benefit` and `source_references`, `premium.drug_amount`, `formulary_items[].drug_name` and `quantity_limit_detail.units` optional, and `schema/v1.2.0/formulary.schema.json`, a drug list written once for the plans that share it.
+- Vocabularies: `canonical-benefits.json` 1.4.0 (124 keys), `markets.json` 1.2.0 (`medicare_part_d`), `categories.json` 1.2.0 (38 codes, with `REDUCTIONS_IN_COST_SHARING`).
+- Tools in this repository: the Marketplace, Medicare Advantage and Part D formulary importers, the converter to the CARIN SBC `InsurancePlan` profile, and `scripts/validate.js`, which now validates against 1.2.0 when no `--schema` is given (it was 1.1.0).
+
+### Migration from 1.1.0
+
+- A 1.1.0 document needs no change. To say it is a 1.2.0 document, set `schema_version` to "1.2.0".
+- `node scripts/validate.js plan.json` validates against 1.2.0; `--schema schema/v1.1.0/benefit-plan.schema.json` keeps the 1.1.0 check.
+- A document written against a 1.2.0 draft validates against 1.2.0 as it is: the release schema is draft 9's.
+- What a reader written for 1.1.0 can misread in a 1.2.0 document:
+  - `limits[].value` is null when `unlimited` is true: the source states no limit of that type.
+  - `premium.amount` is not the whole premium when `premium.drug_amount` is present: the monthly premium is their sum (a Medicare Advantage plan with drug coverage).
+  - `pharmacy.formulary_items[].drug_name` and `quantity_limit_detail.units` can be absent.
+  - An accumulator's `network_tier` is the `tier_id` of a tier in `network_tiers`, such as `IN`, `OUT` or `POS`; the importers write tier ids.
+  - A benefit can have no `canonical_key` and no `network_cost_shares` rows, such as a Medicare Advantage Reductions in Cost Sharing entry (`category` `REDUCTIONS_IN_COST_SHARING`), whose amount is a `dollars` limit.
+
+### Not in this release
+
+Items 1 and 2 of the v1.2.0 list in `docs/roadmap.md`: the validator does not flag a plan-identity value that has no source reference, and the rule that `market` comes from a dataset with provenance is not written into a tool.
+
 ## [1.2.0] – DRAFT (2026-11-11), draft 9: room for the CMS Part D formulary files
 
 The 1.2.0 schema stays a draft under the release rule in `docs/governance.md` (Releases); each published draft is a git tag, and this one is `v1.2.0-draft.9`. Every addition is optional, and the 2 properties that stop being required leave every draft 8 document valid, so every document valid against draft 8 is valid against draft 9 unchanged. The motivation is the CMS monthly public use file "Prescription Drug Plan Formulary and Pharmacy Network Information", read for the Part D formulary importer ([`docs/specs/partd-formulary/stop-0.md`](specs/partd-formulary/stop-0.md)): release `2027_20261008`, contract year 2027, lists 286 formularies shared by 5,492 plans, up to 660 plans on 1 list, and 963,666 drug rows. Read against draft 8, 8 of its facts had no place (gaps F1 to F8 of stop 0): a formulary item required a drug name and a quantity limit required a unit, and the file gives neither; an item could not cite the row it was read from; the formulary version, the negotiation flag, the excluded-drug case and the capped-benefit flag had no field; and a list shared by many plans had no document of its own. Decisions D1 to D9 of stop 0 were decided on November 11, 2026.
@@ -39,11 +73,12 @@ The 1.2.0 schema stays a draft under the release rule in `docs/governance.md` (R
 - `schema/v1.2.0/benefit-plan.schema.json` (draft 9, decided after stop 2): `premium.drug_amount` (number or null), the Part D (drug) part of a Medicare Advantage plan's premium, when the source gives it apart; `amount` is then the premium without it, and the monthly plan premium is their sum. The PBP files give a Medicare Advantage premium without its Part D part (`pbp_d_mplusc_premium`, "Plan Premium Amount (A/B)"), and before this a reader could take it for the whole premium: H5533-019 read $5, where its Summary of Benefits prints $33. Checked on 3 plans whose 2 parts are both above $0, each adding up to its Summary of Benefits ($13 + $13 = $26, $13 + $105 = $118, $5 + $28 = $33). The Medicare Advantage importer says in `premium.notes`, on a plan with drug coverage, that its amount leaves the Part D part out, so the 5 Medicare Advantage golden documents and their 5 Bundles change (each Bundle's premium entry gains a `comment`; re-pinned; the HL7 validator's thirteenth run, on all 20 Bundles: 0 errors and the twelfth run's counts); the formulary importer writes `drug_amount` from the file's `PREMIUM`. `scripts/schema.test.js` 1 test.
 - `scripts/from-pbp.js`: the Part D parameters of contract year 2026 ($615 deductible, $2,100 threshold), from the 2026 column of the same Rate Announcement tables, for the 2026 PBP files.
 - `test/fixtures/partd-formulary/2027_20261008/` (17,649 rows, byte for byte) and a `.gitattributes` line for it; `scripts/from-partd-formulary.test.js`, 17 tests. `node --test scripts/*.test.js`: 260 tests, was 240.
-- `docs/specs/pbp-sob-checks/`: 8 check files (H1045-026, H1045-001, H5420-001, H1045-059, S5921-356, S5921-403, S5921-367 and S5921-413), and the H2406-013 and S5921-383 files run again, for 10 UnitedHealthcare and AARP plans against their 2027 Summaries of Benefits, premium included: 453 checks, 423 match, 29 readings, 1 difference. The difference is a value the Medicare Advantage importer does not read: H1045-059's $450 credit every 3 months, filed as Reductions in Cost Sharing in `pbp_Section_D.txt` (`pbp_d_rics_*`, 95 plans in 2027). Rollup: [`docs/specs/partd-formulary/stop-2a.md`](specs/partd-formulary/stop-2a.md).
+- `docs/specs/pbp-sob-checks/`: 8 check files (H1045-026, H1045-001, H5420-001, H1045-059, S5921-356, S5921-403, S5921-367 and S5921-413), and the H2406-013 and S5921-383 files run again, for 10 UnitedHealthcare and AARP plans against their 2027 Summaries of Benefits, premium included: 453 checks, 423 match, 29 readings, 1 difference. The difference was a value the Medicare Advantage importer did not read: H1045-059's $450 credit every 3 months, filed as Reductions in Cost Sharing in `pbp_Section_D.txt` (`pbp_d_rics_*`, 95 plans in 2027), which the importer reads since the same day (next item): 424 match, 0 differences. Rollup: [`docs/specs/partd-formulary/stop-2a.md`](specs/partd-formulary/stop-2a.md).
+- `scripts/from-pbp.js`: the Reductions in Cost Sharing groups of Section D, 1 benefit entry per group, `PBP_D_RICS_<n>`, after the medical benefits: the amount as a `dollars` limit with its period, the categories it applies to, its delivery mode and whether it can be applied to a deductible as `conditions`, and every cell quoted ([`docs/specs/pbp-importer.md`](specs/pbp-importer.md) section 5.10). A group that shares its amount with a combined supplemental benefit group takes that group's `shared_limit_id` (78 of the 110 groups in 2027, each stating its group's name, amount and period). `vocabularies/categories.json`: the category `REDUCTIONS_IN_COST_SHARING`. No golden plan files a reduction, so no golden document or Bundle changes. H1045-059's check points at the entry, and its pointers into the Part D benefits move up by 1. `scripts/from-pbp.test.js` 1 test. `node --test scripts/*.test.js`: 261 tests.
 
 ### Not changed
 
-`schema/v1.1.0/`, the pharmacy modules v0.2.0 to v0.2.2, the vocabularies, the crosswalks in `fhir/`, the converter, `ADOPTERS.md`, `docs/governance.md`, and, apart from the 5 Medicare Advantage golden documents and their 5 Bundles (the premium note, above), the 22 documents in `examples/` and the 20 Bundles in `examples/fhir/` and `examples/fhir-puf/`. None of them carries a new property; all 22 documents and the module examples of v0.2.1 to v0.2.3 validate against draft 9.
+`schema/v1.1.0/`, the pharmacy modules v0.2.0 to v0.2.2, the vocabularies apart from 1 category code (above), the crosswalks in `fhir/`, the converter, `ADOPTERS.md`, `docs/governance.md`, and, apart from the 5 Medicare Advantage golden documents and their 5 Bundles (the premium note, above), the 22 documents in `examples/` and the 20 Bundles in `examples/fhir/` and `examples/fhir-puf/`. None of them carries a new property; all 22 documents and the module examples of v0.2.1 to v0.2.3 validate against draft 9.
 
 ## [1.2.0] – DRAFT (2026-11-04), draft 8: a limit that the source states as no limit
 

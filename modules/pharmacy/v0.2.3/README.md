@@ -87,7 +87,7 @@ The core schema, `schema/v1.2.0/benefit-plan.schema.json`, took the module in th
 
 `source_plan_identifiers` stays inside `formulary_reference` and does not graduate to core, because it names the plan the formulary file was read for, which can differ from the document's own `plan_identifiers`.
 
-Both examples validate against the module and against the core draft.
+Both examples validate against the module and against the core schema 1.2.0.
 
 ## How to validate
 

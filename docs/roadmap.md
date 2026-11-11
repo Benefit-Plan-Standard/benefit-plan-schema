@@ -13,6 +13,10 @@ Dates are indicative and subject to change based on community feedback and imple
 - ✅ **Canonical vocabulary** — published 100 canonical benefit identifiers as a non-normative recommended vocabulary (`vocabularies/canonical-benefits.json`).
 - ✅ **FHIR alignment doc** — `docs/fhir-alignment.md` maps BPS to FHIR R4 `InsurancePlan`.
 
+### v1.2.0 (2026-11-13)
+
+Released after 9 published drafts (`v1.2.0-draft.1` to `v1.2.0-draft.9`) and 2 independent adopters on record in `ADOPTERS.md`. What it adds is in `docs/changelog.md`, under 1.2.0: network-tier classification and verbatim limit text from the CARIN Digital Insurance Card reconciliation; the Medicare Advantage fields; the pharmacy module in core; `limits[].unlimited` (item 3 below); room for the CMS Part D formulary files and `premium.drug_amount` (item 4 below). Items 1 and 2 of the v1.2.0 list below are not in the release.
+
 ## Near-term goals
 
 1. **Pharmacy module** — Extend the schema to support detailed Part D and commercial pharmacy benefit structures, including tiers, mail-order rules, and cost-sharing stages. v1.1.0 lays the groundwork via `benefit_type: "pharmacy"`; the next step is a pharmacy-specific module schema.

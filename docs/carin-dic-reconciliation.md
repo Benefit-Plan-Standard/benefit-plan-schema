@@ -1,6 +1,6 @@
 # BPS ↔ CARIN Digital Insurance Card Reconciliation
 
-**Status:** Draft (accompanies the BPS v1.2.0 draft schema)
+**Status:** Released with the Benefit Plan Standard 1.2.0 on 2026-11-13 (written for the v1.2.0 draft schema)
 **Last updated:** 2026-09-24
 **Scope:** The three `InsurancePlan` changes merged into the HL7 CARIN Digital Insurance Card IG (SBC InsurancePlan profile) on June 25, 2026, and how each is expressed in, and mapped to, the Benefit Plan Standard core schema.
 
@@ -138,5 +138,5 @@ Backward compatibility, per the v1.x governance rules:
 - BPS to CARIN SBC InsurancePlan converter spec: [`specs/insuranceplan-converter.md`](specs/insuranceplan-converter.md)
 - HL7 JIRA tickets: FHIR-57525, FHIR-57526, FHIR-57527 (IG) and FHIR-57503, FHIR-57504, FHIR-57505 (R6 core)
 - BPS ↔ FHIR R4 alignment guide: [`fhir-alignment.md`](fhir-alignment.md)
-- BPS v1.2.0 draft schema: [`../schema/v1.2.0/benefit-plan.schema.json`](../schema/v1.2.0/benefit-plan.schema.json)
+- Benefit Plan Standard v1.2.0 schema: [`../schema/v1.2.0/benefit-plan.schema.json`](../schema/v1.2.0/benefit-plan.schema.json)
 - DaVinci PDex Plan Net IG (provider-set / network modeling): https://hl7.org/fhir/us/davinci-pdex-plan-net/

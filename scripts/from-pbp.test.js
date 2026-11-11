@@ -523,6 +523,73 @@ test('gap G3: Section D premium and Part B premium reduction, with no period; ab
 });
 const PREMIUM_NOTE = "Plan Premium Amount (A/B), pbp_d_mplusc_premium: the monthly premium without its Part D (drug) part, which no PBP file states (premium.drug_amount, when another source gives it).";
 
+// ---- Reductions in Cost Sharing (v1.2.0 draft 9, spec 5.10) -------------------------------------
+const RICS_1 = {
+  pbp_d_rics_yn: '1', pbp_d_rics_cnt: '1', pbp_d_rics_grp_name_1: 'RICS Benefit 1', pbp_d_rics_cats_ehc_1: '01',
+  pbp_d_rics_mc_cats_1: '1a;7d;', pbp_d_rics_max_bene_amt_1: '450.00', pbp_d_rics_period_1: '5', pbp_d_rics_comb_shr_yn_1: '2',
+  pbp_d_rics_app_ded_yn_1: '2', pbp_d_rics_mod_1: '010',
+};
+
+test('draft 9, Reductions in Cost Sharing: 1 entry per group after the medical benefits, the amount as a dollars limit, the categories, mode and deductible answer as conditions, every cell quoted', async () => {
+  const r = await alteredPart('H1036-068-000', 'd', RICS_1);
+  assert.deepStrictEqual(r.errors, []);
+  const i = r.doc.benefits.findIndex((b) => b.benefit_id === 'PBP_D_RICS_1');
+  assert.ok(i > 0 && !r.doc.benefits[i - 1].coverage_stage_id && r.doc.benefits[i + 1].coverage_stage_id, 'after the medical benefits, before Part D');
+  assert.deepStrictEqual(r.doc.benefits[i], {
+    benefit_id: 'PBP_D_RICS_1',
+    coverage_basis: null,
+    category: 'REDUCTIONS_IN_COST_SHARING',
+    service_name: 'Reductions in Cost Sharing',
+    raw_label: 'RICS Benefit 1',
+    network_cost_shares: [],
+    limits: [{ type: 'dollars', value: 450, period: 'per_3_months',
+      raw_text: 'Reductions in Cost Sharing group 1 maximum plan benefit coverage amount: pbp_d_rics_max_bene_amt_1 "450.00", pbp_d_rics_period_1 "5" (Every 3 months).' }],
+    conditions: [
+      { type: 'applies_to', description: 'Medicare-covered benefits the reduction applies to (pbp_d_rics_mc_cats_1): 1a: Inpatient Hospital-Acute; 7d: Physician Specialist Services.' },
+      { type: 'delivery_mode', description: 'Mode of delivery (pbp_d_rics_mod_1 "010"): Debit Card.' },
+      { type: 'deductible', description: 'pbp_d_rics_app_ded_yn_1 "2": the reduction cannot be applied to a deductible.' },
+    ],
+    source_references: [{ excerpt: 'Reductions in Cost Sharing group 1 of 1 (pbp_Section_D.txt), verbatim: pbp_d_rics_yn "1"; pbp_d_rics_cnt "1"; ' +
+      'pbp_d_rics_grp_name_1 "RICS Benefit 1"; pbp_d_rics_cats_ehc_1 "01"; pbp_d_rics_mc_cats_1 "1a;7d;"; pbp_d_rics_max_bene_amt_1 "450.00"; ' +
+      'pbp_d_rics_period_1 "5"; pbp_d_rics_comb_shr_yn_1 "2"; pbp_d_rics_app_ded_yn_1 "2"; pbp_d_rics_mod_1 "010".' }],
+  });
+  assert.ok(excerptStarting(r.doc, 'Benefits: ').endsWith(' Then 1 Reductions in Cost Sharing entry from Section D (PBP_D_RICS_1; section 5.10).'));
+
+  // Shared with the combined group of that name, whose maximum states the same amount and period: its shared_limit_id.
+  const shared = await alteredPart('H1036-068-000', 'd', { ...RICS_1, pbp_d_rics_cats_ehc_1: '11', pbp_d_rics_nmc_cats_1: '13b;', pbp_d_rics_max_bene_amt_1: '90.00',
+    pbp_d_rics_comb_shr_yn_1: '1', pbp_d_rics_comb_pkg_num_1: 'OTC Max Allowance', pbp_d_rics_app_ded_yn_1: '1', pbp_d_rics_mod_1: '100', pbp_d_rics_mod_1_d: 'Card' });
+  assert.deepStrictEqual(shared.errors, []);
+  const s = benefit(shared.doc, 'PBP_D_RICS_1');
+  assert.strictEqual(s.limits[0].shared_limit_id, 'PBP_D_COMBO_1');
+  assert.ok(s.limits[0].raw_text.endsWith('; shared with the combined supplemental benefit group pbp_d_rics_comb_pkg_num_1 "OTC Max Allowance", whose maximum states the same amount and period (shared_limit_id PBP_D_COMBO_1).'));
+  assert.deepStrictEqual(s.conditions.map((c) => c.description), [
+    'Medicare-covered benefits the reduction applies to (pbp_d_rics_mc_cats_1): 1a: Inpatient Hospital-Acute; 7d: Physician Specialist Services.',
+    'Non-Medicare covered benefits the reduction applies to (pbp_d_rics_nmc_cats_1): 13b: Over-the-Counter (OTC) Items.',
+    'Mode of delivery (pbp_d_rics_mod_1 "100"): Other (describe) (pbp_d_rics_mod_1_d "Card").',
+    'pbp_d_rics_app_ded_yn_1 "1": the reduction can be applied to a deductible.',
+  ]);
+
+  // "2" or blank writes nothing (the golden files); bad cells are errors that quote them, and no document is written.
+  for (const [changes, msg] of [
+    [{ pbp_d_rics_yn: '3' }, 'pbp_d_rics_yn "3" is not 1 or 2'],
+    [{ pbp_d_rics_cnt: '' }, 'pbp_d_rics_yn "1" but pbp_d_rics_cnt ""'],
+    [{ pbp_d_rics_max_bene_amt_1: '' }, 'pbp_d_rics_cnt "1" but pbp_d_rics_max_bene_amt_1 ""'],
+    [{ pbp_d_rics_max_bene_amt_1: '450 dollars' }, 'pbp_d_rics_max_bene_amt_1 "450 dollars" is not an amount'],
+    [{ pbp_d_rics_period_1: '9' }, 'pbp_d_rics_period_1 "9" is not a periodicity code'],
+    [{ pbp_d_rics_cats_ehc_1: '1' }, 'pbp_d_rics_cats_ehc_1 "1" is not a position string of 2'],
+    [{ pbp_d_rics_mod_1: '01' }, 'pbp_d_rics_mod_1 "01" is not a position string of 3'],
+    [{ pbp_d_rics_app_ded_yn_1: '3' }, 'pbp_d_rics_app_ded_yn_1 "3" is not 1 (Yes) or 2 (No) or blank'],
+    [{ pbp_d_rics_mc_cats_1: '1a;99z;' }, 'pbp_d_rics_mc_cats_1 "1a;99z;" lists 99z, which the dictionary does not'],
+    [{ pbp_d_rics_cats_ehc_1: '11' }, 'pbp_d_rics_cats_ehc_1 "11" disagrees with pbp_d_rics_nmc_cats_1 ""'],
+    [{ pbp_d_rics_comb_shr_yn_1: '1', pbp_d_rics_comb_pkg_num_1: 'OTC Max Allowance' },
+      'pbp_d_rics_comb_shr_yn_1 "1" but pbp_d_rics_comb_pkg_num_1 "OTC Max Allowance" names no 1 combined supplemental benefit group with the same maximum amount and period'],
+  ]) {
+    const bad = await alteredPart('H1036-068-000', 'd', { ...RICS_1, ...changes });
+    assert.strictEqual(bad.doc, null, msg);
+    assert.ok(bad.errors.includes(msg), `${msg}: ${bad.errors.join(' | ')}`);
+  }
+});
+
 test('gaps G4 and G5: Section A phone, website and provider directory; an address with no scheme is quoted, not written', async () => {
   const want = {
     'H2406-013-000': ['(866)627-7806', null, null],

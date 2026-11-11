@@ -440,13 +440,13 @@ benefit-plan-docs/
 
 For `humana` and `scan`, both the index `label` and the docs page read exactly:
 
-> Medicare Advantage, read from the CMS Summary of Benefits, validates against the v1.2.0 draft only.
+> Medicare Advantage, read from the CMS Summary of Benefits, validates against v1.2.0, not v1.1.0.
 
 The same text heads `examples/fhir/README.md` for those two files.
 
 For the 5 PBP Bundles the index `label` reads:
 
-> Medicare Advantage, imported from the CMS PBP benefits files for contract year 2027, validates against the v1.2.0 draft only.
+> Medicare Advantage, imported from the CMS PBP benefits files for contract year 2027, validates against v1.2.0, not v1.1.0.
 
 The docs page gives it once, above the table of the 5.
 

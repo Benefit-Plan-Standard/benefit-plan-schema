@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "vocabulary_id": "https://benefitplanstandard.org/vocabularies/v1.1.0/categories.json",
+  "vocabulary_id": "https://benefitplanstandard.org/vocabularies/v1.2.0/categories.json",
   "title": "BPS Recommended Benefit Category Vocabulary",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Non-normative recommended values for the `category` field on `benefits[]`. Categories are uppercase snake_case to remain visually distinct from canonical_key (lowercase snake_case). Adopters MAY extend; carrier-specific or proprietary categories should ideally map to one of these.",
   "license": "MIT",
   "categories": [
@@ -42,6 +42,7 @@
     { "code": "IN_HOME_SUPPORT",      "label": "In-home support",           "description": "In-home personal care, post-discharge home care, and respite care (supplemental benefit)." },
     { "code": "FITNESS",              "label": "Fitness",                   "description": "Fitness program membership (supplemental benefit)." },
     { "code": "PERSONAL_EMERGENCY_RESPONSE", "label": "Personal emergency response", "description": "Personal emergency response device and monitoring service (supplemental benefit)." },
-    { "code": "MEMBER_SUPPORT",       "label": "Member support",            "description": "Member support services such as technology help for accessing health information (supplemental benefit)." }
+    { "code": "MEMBER_SUPPORT",       "label": "Member support",            "description": "Member support services such as technology help for accessing health information (supplemental benefit)." },
+    { "code": "REDUCTIONS_IN_COST_SHARING", "label": "Reductions in cost sharing", "description": "An amount per period that lowers the member's cost sharing for the services it lists, such as a quarterly credit on a debit card (Medicare Advantage supplemental benefit; the PBP files' Reductions in Cost Sharing, not a Marketplace cost-sharing reduction variant)." }
   ]
 }
