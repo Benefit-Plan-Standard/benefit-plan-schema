@@ -1,0 +1,46 @@
+name: Commit check
+
+# Every commit of a pull request is checked before it can reach main:
+# its author and committer address, and that its message credits no co-author.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  commits:
+    name: commits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Check each commit of the pull request
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+          ALLOWED: dorofino@benefitplanstandard.org
+        run: |
+          set -eu
+          fail=0
+          for c in $(git rev-list "$BASE..$HEAD"); do
+            ae=$(git log -1 --format=%ae "$c")
+            ce=$(git log -1 --format=%ce "$c")
+            if [ "$ae" != "$ALLOWED" ]; then
+              echo "::error::commit $c: author address $ae is not $ALLOWED"; fail=1
+            fi
+            if [ "$ce" != "$ALLOWED" ]; then
+              echo "::error::commit $c: committer address $ce is not $ALLOWED"; fail=1
+            fi
+            if git log -1 --format=%B "$c" | grep -qiE '^co-authored-by:'; then
+              echo "::error::commit $c: the message has a co-author line"; fail=1
+            fi
+          done
+          if [ "$fail" -ne 0 ]; then
+            echo "One or more commits must be rewritten before this pull request can merge."
+          fi
+          exit "$fail"
