@@ -3,6 +3,21 @@
 All notable changes to the **Benefit Plan Standard Schema** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] – unreleased: the Medicare Advantage importer's zero-dollar D-SNPs, in-network deductible scopes and point-of-service maximum
+
+A patch to the tools, not the schema: `schema/v1.2.0/` is unchanged, and a 1.2.0 document stays valid. 10 plans of contract year 2027 from 5 organizations other than UnitedHealthcare (Humana, Wellcare, Kaiser Permanente, HealthSpring, Priority Health) were checked with `scripts/pbp-sob-check.js` against their own Summaries of Benefits on 2026-11-25: 750 checks, 648 match, 41 readings, 61 differences, 40 of them values the importer did not read. 36 of the 40 were the cost sharing of zero-dollar D-SNPs, 1 a deductible scope and 1 a maximum; the other 2 are gap G12 (optional supplemental packages), which stays.
+
+### Changed: `scripts/from-pbp.js` (docs/specs/pbp-importer.md)
+
+- **Zero-dollar cost-sharing D-SNPs (section 5.11).** A plan whose Section A answers `pbp_a_dsnp_zerodollar` "1" ("Is this D-SNP plan a Medicare zero-dollar cost sharing plan (this does not apply to Part D Services)?") charges $0 in network for Medicare-covered services: each step of an in-network row of a Medicare-covered benefit becomes a $0 copay with its basis and day range, and the row's notes give the cost sharing the plan files. The in-network deductible is not written; a deductible that applies in and out of network is written out of network only. Out-of-network and point-of-service rows, the out-of-pocket maximums, the supplemental benefits and Part D stay as filed. Before, the document served the filed Medicare cost sharing as what these members pay. CY 2027: 739 plans, all open to individuals (HMO 492, HMO-POS 132, local PPO 114, regional PPO 1).
+- **The in-network deductible scopes (section 7.3).** A PPO deductible whose scope (`pbp_d_ann_deduct_bens`) names in-network services also covers the out-of-network Medicare-covered services, which the scope has no position for, as decision 1 reads a blank scope. The `010`, `001` and `011` scopes, read as in network only before, are written `individual_deductible` with `network_tier` null, and every scope that names in-network services now flags the out-of-network Medicare-covered steps from `pbp_c_oon_mc_bendesc_cats`. Confirmed on HealthSpring H7849-002 and Network Health H5215-008 and H5215-011. CY 2027: 537 plans; the 489 with a `010` or `011` scope (479 open to individuals, 10 employer-only) had their deductible on `IN`, now null (483) or, on the 6 zero-dollar D-SNPs among them, out of network.
+- **The point-of-service maximum plan benefit coverage (section 5.12).** `pbp_c_pos_maxplan_*`, not read before, is 1 benefit entry, `PBP_C_POS_MAXPLAN`, after the Reductions in Cost Sharing entries and before Part D: a `dollars` limit, and the network and the categories it covers as `conditions`; each listed benefit's `POS` row names it. CY 2027: 164 HMO-POS plans, all every year.
+- No golden plan meets any of the 3 rules, so `examples/*.pbp.json` and the FHIR Bundles are unchanged. Over the CY 2027 files, 7,195 documents built, 0 failing the schema; 1,404 differ from 1.2.0, each only where 1 of the 3 rules says. 4 tests.
+
+### Changed: `vocabularies/categories.json` 1.3.0
+
+- `POINT_OF_SERVICE_MAXIMUM`, the category of the point-of-service maximum entry (39 codes).
+
 ## [1.2.0] – 2026-11-13: release
 
 The Benefit Plan Standard 1.2.0 is final. It was published as 9 drafts, tagged `v1.2.0-draft.1` through `v1.2.0-draft.9`, and the release is tagged `v1.2.0`. The release schemas are draft 9's with 2 descriptions changed: the root description of `schema/v1.2.0/benefit-plan.schema.json` no longer says DRAFT, and the description of `schema/v1.2.0/formulary.schema.json` opens with "(new in v1.2.0)" where it said "(v1.2.0 draft 9)". Under the release rule in `docs/governance.md` (Releases), a draft becomes final after 2 independent adopters implement and validate it; the 2 on record are in `ADOPTERS.md`, unchanged by the release. The entries below this one record each draft as it was published.

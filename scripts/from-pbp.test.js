@@ -590,6 +590,193 @@ test('draft 9, Reductions in Cost Sharing: 1 entry per group after the medical b
   }
 });
 
+// ---- v1.2.1: the in-network deductible scope, zero-dollar D-SNPs, the POS maximum ----------------
+async function alteredParts(plan, parts, edit) {
+  const { rows, source } = await loadPlan({ dataDir: FIXTURE_DIR, year: 2027, plan });
+  for (const [part, changes] of Object.entries(parts)) rows[part] = { ...rows[part], ...changes };
+  if (edit) edit(rows);
+  return buildDocument(rows, source);
+}
+const tier = (b, id) => b.network_cost_shares.find((t) => t.tier_id === id);
+const SCOPE_010 = { pbp_d_ann_deduct_bens: '010', pbp_d_ann_deduct_inn_mc_yn: '2', pbp_d_ann_deduct_inn_mc_cats: '7d;9a1;' };
+
+test('v1.2.1, spec 7.3: a PPO deductible whose scope names in-network services applies in and out of network: network_tier null, out-of-network Medicare-covered flags from the plan\'s list', async () => {
+  const r = await alteredParts('H2406-013-000', { d: SCOPE_010 });
+  assert.deepStrictEqual(r.errors, []);
+  assert.deepStrictEqual(r.doc.accumulators.individual_deductible, { amount: 1000, currency: 'USD', network_tier: null, applies_to: 'medical' });
+  assert.strictEqual(r.doc.accumulators.oon_individual_deductible, undefined);
+  const note = excerptStarting(r.doc, 'Annual plan deductible: $1000, written as individual_deductible with network_tier null: it applies in and out of network');
+  assert.ok(note && note.includes('pbp_d_ann_deduct_bens "010"') && note.includes('pbp_d_ann_deduct_inn_mc_cats "7d;9a1;"') &&
+    note.includes('pbp_d_ann_deduct_14a_yn "2"') && note.includes('pbp_c_oon_mc_bendesc_cats "1a;'), note);
+  // In network the listed categories only; out of network every category of the plan's out-of-network list.
+  for (const [id, inn, out] of [['SPECIALIST', true, true], ['OUTPATIENT_HOSPITAL', true, true], ['PRIMARY_CARE', false, true]]) {
+    const b = benefit(r.doc, id);
+    assert.strictEqual(tier(b, 'IN').cost_shares.find((s) => s.type !== 'deductible').applies_to_deductible, inn, `${id} IN`);
+    assert.strictEqual(tier(b, 'OUT').cost_shares.find((s) => s.type !== 'deductible').applies_to_deductible, out, `${id} OUT`);
+    assert.match(tier(b, 'OUT').notes, /refers to the annual plan deductible written as individual_deductible with network_tier null/);
+  }
+  // 14a stays out of the out-of-network deductible when pbp_d_ann_deduct_14a_yn is "2".
+  assert.ok(tier(benefit(r.doc, 'PREVENTIVE_SERVICES'), 'OUT').cost_shares.every((s) => s.applies_to_deductible === false));
+  // A scope with position 1 too ("110") reads the same out of network.
+  const both = await alteredParts('H2406-013-000', { d: { ...SCOPE_010, pbp_d_ann_deduct_bens: '110', pbp_d_ann_deduct_oon_nmc_yn: '1' } });
+  assert.deepStrictEqual(both.errors, []);
+  assert.strictEqual(both.doc.accumulators.individual_deductible.network_tier, null);
+  assert.strictEqual(tier(benefit(both.doc, 'PRIMARY_CARE'), 'OUT').cost_shares[0].applies_to_deductible, true);
+  // A plan that declares no out-of-network benefit keeps an in-network-only deductible.
+  const noOut = await alteredParts('H2406-013-000', { d: SCOPE_010, c: { pbp_c_oon_yn: '2', pbp_c_oon_mc_bendesc_cats: '', pbp_c_oon_nmc_bendesc_cats: '' } },
+    (rows) => { rows.oonGroups = []; });
+  assert.deepStrictEqual(noOut.errors, []);
+  assert.deepStrictEqual(noOut.doc.accumulators.individual_deductible, { amount: 1000, currency: 'USD', network_tier: 'IN', applies_to: 'medical' });
+  assert.ok(excerptStarting(noOut.doc, 'Annual plan deductible: $1000, scope in network only').includes('declares no out-of-network benefit'));
+});
+
+const ZERO = { pbp_a_dsnp_zerodollar: '1', pbp_a_snp_state_cvg_yn: '1' };
+const INN_650 = { pbp_d_inn_deduct_yn: '1', pbp_d_inn_deduct_partb_yn: '2', pbp_d_inn_deduct_amt: '650.00', pbp_d_inn_deduct_bens: '01',
+  pbp_d_inn_deduct_m_yn: '2', pbp_d_inn_deduct_m_cats: '7d;8a1;' };
+const allZero = (b, tierId) => tier(b, tierId).cost_shares.every((s) => s.type === 'copay' && s.amount === 0 &&
+  !('applies_to_deductible' in s) && !('applies_to_moop' in s));
+
+test('v1.2.1, spec 5.11: a zero-dollar D-SNP charges $0 in network for Medicare-covered services; supplemental benefits, Part D and the maximum as filed; the in-network deductible not written', async () => {
+  const base = await alteredParts('H1036-068-000', { d: INN_650 });
+  const r = await alteredParts('H1036-068-000', { a: ZERO, d: INN_650 });
+  assert.deepStrictEqual(base.errors, []);
+  assert.deepStrictEqual(r.errors, []);
+  assert.deepStrictEqual(r.doc.accumulators.individual_deductible, undefined);
+  assert.deepStrictEqual(r.doc.accumulators.individual_oop_max, base.doc.accumulators.individual_oop_max);
+  assert.deepStrictEqual(base.doc.accumulators.individual_deductible.amount, 650);
+  assert.deepStrictEqual(r.doc.pharmacy, base.doc.pharmacy);
+  let medicare = 0;
+  r.doc.benefits.forEach((b, i) => {
+    const was = base.doc.benefits[i];
+    assert.strictEqual(b.benefit_id, was.benefit_id);
+    if (b.coverage_basis !== 'medicare_covered') { assert.deepStrictEqual(b, was, b.benefit_id); return; }
+    medicare++;
+    for (const t of b.network_cost_shares) {
+      assert.ok(allZero(b, t.tier_id), `${b.benefit_id} ${t.tier_id}: ${JSON.stringify(t.cost_shares)}`);
+      assert.ok(t.notes.startsWith(tier(was, t.tier_id).notes.split(' applies_to_')[0]), `${b.benefit_id}: the cells stay quoted`);
+      assert.match(t.notes, /Zero-dollar cost-sharing D-SNP \(pbp_Section_A pbp_a_dsnp_zerodollar "1"\): the member pays \$0 .* section 5\.11\)\. The cost sharing the file states for this row, which the member does not pay in network: .+\.$/);
+    }
+    assert.deepStrictEqual(b.limits, was.limits, b.benefit_id);
+  });
+  assert.ok(medicare > 20, `${medicare} Medicare-covered benefits`);
+  // The filed steps, described in the notes; the structure of a $0 step is kept, contiguous days joined.
+  const spec = benefit(r.doc, 'SPECIALIST').network_cost_shares[0];
+  const filed = benefit(base.doc, 'SPECIALIST').network_cost_shares[0].cost_shares[0];
+  const want = filed.amount !== undefined ? `$${filed.amount} copay` : `$${filed.amount_min} to $${filed.amount_max} copay`;
+  assert.ok(filed.amount !== 0 && spec.notes.endsWith(`in network: ${want}.`), spec.notes);
+  const ranged = r.doc.benefits.find((b, i) => b.coverage_basis === 'medicare_covered' &&
+    base.doc.benefits[i].network_cost_shares[0].cost_shares.some((s) => s.amount_max !== undefined && s.type === 'copay'));
+  const step = base.doc.benefits[r.doc.benefits.indexOf(ranged)].network_cost_shares[0].cost_shares.find((s) => s.amount_max !== undefined);
+  assert.ok(ranged.network_cost_shares[0].notes.includes(`$${step.amount_min} to $${step.amount_max} copay`), ranged.benefit_id);
+  const inpatient = benefit(r.doc, 'INPATIENT_HOSPITAL').network_cost_shares[0].cost_shares;
+  assert.ok(inpatient.every((s) => s.amount === 0) && inpatient.length >= 1);
+  assert.deepStrictEqual(inpatient.filter((s) => s.basis === 'per_day').map((s) => s.unit_range.from), [1], 'contiguous $0 days are 1 step');
+  const ex = excerptStarting(r.doc, 'Zero-dollar cost-sharing D-SNP:');
+  assert.ok(ex.startsWith('Zero-dollar cost-sharing D-SNP: pbp_a_dsnp_zerodollar "1" ("Is this D-SNP plan a Medicare zero-dollar cost sharing plan ' +
+    '(this does not apply to Part D Services)?"), pbp_a_snp_state_cvg_yn "1".'), ex);
+  assert.ok(ex.includes('the in-network deductible the plan files, $650, is not written, because in network the member pays none'), ex);
+  assert.ok(ex.includes('The out-of-pocket maximums are written as filed.'), ex);
+  // "2" and blank change nothing; any other answer is an error that quotes the cell.
+  for (const v of ['2', '']) {
+    const same = (await alteredParts('H1036-068-000', { a: { pbp_a_dsnp_zerodollar: v }, d: INN_650 })).doc;
+    assert.deepStrictEqual([same.accumulators, same.benefits], [base.doc.accumulators, base.doc.benefits], `"${v}"`);
+    assert.ok(!excerptStarting(same, 'Zero-dollar cost-sharing D-SNP:'));
+  }
+  const bad = await alteredParts('H1036-068-000', { a: { pbp_a_dsnp_zerodollar: '3' } });
+  assert.strictEqual(bad.doc, null);
+  assert.ok(bad.errors.includes('pbp_a_dsnp_zerodollar "3" is not 1 or 2'), bad.errors.join(' | '));
+  // An in-network deductible that also names non-Medicare-covered services is outside the flag: an error (0 plans in 2027).
+  const nmc = await alteredParts('H1036-068-000', { a: ZERO, d: { ...INN_650, pbp_d_inn_deduct_bens: '11', pbp_d_inn_deduct_nm_yn: '1' } });
+  assert.strictEqual(nmc.doc, null);
+  assert.ok(nmc.errors.some((e) => e.startsWith('pbp_a_dsnp_zerodollar "1", but the in-network deductible also applies to non-Medicare-covered services (pbp_d_inn_deduct_bens "11")')), nmc.errors.join(' | '));
+});
+
+test('v1.2.1, spec 5.11: out-of-network and point-of-service rows of a zero-dollar D-SNP keep the filed cost sharing, with a note; a deductible that applies in both networks is written out of network', async () => {
+  // HMO-POS: the POS rows and the POS deductible (decision 4) as filed.
+  const posBase = await docFor('H1609-028-000');
+  const pos = await alteredParts('H1609-028-000', { a: ZERO });
+  assert.deepStrictEqual(pos.errors, []);
+  assert.deepStrictEqual(pos.doc.accumulators, posBase.accumulators);
+  const spec = benefit(pos.doc, 'SPECIALIST');
+  assert.ok(allZero(spec, 'IN'));
+  assert.deepStrictEqual(tier(spec, 'POS').cost_shares, tier(benefit(posBase, 'SPECIALIST'), 'POS').cost_shares);
+  assert.ok(tier(spec, 'POS').notes.endsWith('Zero-dollar cost-sharing D-SNP (pbp_a_dsnp_zerodollar "1"): under the point-of-service option the cost ' +
+    'sharing is written as filed; a provider outside the plan\'s network who is not enrolled in the state\'s Medicaid may charge it, depending on the ' +
+    'member\'s Medicaid eligibility (docs/specs/pbp-importer.md section 5.11).'));
+  // PPO: OUT rows as filed; decision 1's out-of-network deductible as filed.
+  const ppoBase = await docFor('H2406-013-000');
+  const ppo = await alteredParts('H2406-013-000', { a: ZERO });
+  assert.deepStrictEqual(ppo.doc.accumulators, ppoBase.accumulators);
+  const pcp = benefit(ppo.doc, 'PRIMARY_CARE');
+  assert.ok(allZero(pcp, 'IN'));
+  assert.deepStrictEqual(tier(pcp, 'OUT').cost_shares, tier(benefit(ppoBase, 'PRIMARY_CARE'), 'OUT').cost_shares);
+  assert.match(tier(pcp, 'OUT').notes, /out of network the cost sharing is written as filed/);
+  // Hospital cost tiers are in network.
+  const tiers = await alteredParts('H5533-019-000', { a: ZERO });
+  const inpatient = benefit(tiers.doc, 'INPATIENT_HOSPITAL');
+  assert.ok(allZero(inpatient, 'IN_1A_TIER_1') && allZero(inpatient, 'IN_1A_TIER_2'));
+  // A "010" deductible applies in and out of network; in network the member pays none, so it is written out of network only.
+  const both = await alteredParts('H2406-013-000', { a: ZERO, d: SCOPE_010 });
+  assert.deepStrictEqual(both.errors, []);
+  assert.strictEqual(both.doc.accumulators.individual_deductible, undefined);
+  assert.deepStrictEqual(both.doc.accumulators.oon_individual_deductible, { amount: 1000, currency: 'USD', network_tier: 'OUT', applies_to: 'medical' });
+  assert.strictEqual(tier(benefit(both.doc, 'PRIMARY_CARE'), 'OUT').cost_shares[0].applies_to_deductible, true);
+  assert.ok(excerptStarting(both.doc, 'Zero-dollar cost-sharing D-SNP:').includes('the annual deductible, $1000, which applies in and out of network, ' +
+    'is written as oon_individual_deductible with network_tier OUT, because in network the member pays none'));
+});
+
+const POS_MAX = { pbp_c_pos_maxplan_yn: '1', pbp_c_pos_maxplan_bens: '11', pbp_c_pos_maxplan_mc_subcats: '7d;8a2;', pbp_c_pos_maxplan_nmc_subcats: '14b;',
+  pbp_c_pos_maxplan_amt: '1000.00', pbp_c_pos_maxplan_per: '3' };
+
+test('v1.2.1, spec 5.12: the POS maximum plan benefit coverage is 1 entry after the medical benefits, a dollars limit, the network and the categories as conditions; the covered POS rows say so', async () => {
+  const base = await docFor('H1609-028-000');
+  const r = await alteredParts('H1609-028-000', { c: POS_MAX });
+  assert.deepStrictEqual(r.errors, []);
+  const i = r.doc.benefits.findIndex((b) => b.benefit_id === 'PBP_C_POS_MAXPLAN');
+  assert.ok(i > 0 && !r.doc.benefits[i - 1].coverage_stage_id && r.doc.benefits[i + 1].coverage_stage_id, 'after the medical benefits, before Part D');
+  assert.strictEqual(r.doc.benefits.length, base.benefits.length + 1);
+  assert.deepStrictEqual(r.doc.benefits[i], {
+    benefit_id: 'PBP_C_POS_MAXPLAN',
+    coverage_basis: null,
+    category: 'POINT_OF_SERVICE_MAXIMUM',
+    service_name: 'Point-of-service maximum plan benefit coverage',
+    network_cost_shares: [],
+    limits: [{ type: 'dollars', value: 1000, period: 'per_year',
+      raw_text: 'Point-of-service maximum plan benefit coverage amount: pbp_c_pos_maxplan_amt "1000.00", pbp_c_pos_maxplan_per "3" (Every year); it applies under the point-of-service option only.' }],
+    conditions: [
+      { type: 'network', description: 'The maximum applies under the point-of-service option only (network tier POS): pbp_c_pos_maxplan_yn "1" ("Is there a POS maximum plan benefit coverage?").' },
+      { type: 'applies_to', description: 'Medicare-covered benefits the point-of-service maximum covers (pbp_c_pos_maxplan_mc_subcats): 7d: Physician Specialist Services; 8a2: Lab Services.' },
+      { type: 'applies_to', description: 'Non-Medicare-covered benefits the point-of-service maximum covers (pbp_c_pos_maxplan_nmc_subcats): 14b: Annual Physical Exam.' },
+    ],
+    source_references: [{ excerpt: 'Point-of-service maximum plan benefit coverage (pbp_Section_C.txt), verbatim: pbp_c_pos_yn "1"; pbp_c_pos_maxplan_yn "1"; ' +
+      'pbp_c_pos_maxplan_bens "11"; pbp_c_pos_maxplan_mc_subcats "7d;8a2;"; pbp_c_pos_maxplan_nmc_subcats "14b;"; pbp_c_pos_maxplan_amt "1000.00"; pbp_c_pos_maxplan_per "3".' }],
+  });
+  const note = 'The point-of-service maximum plan benefit coverage, $1000 (every year), covers this service under the point-of-service option ' +
+    '(benefit PBP_C_POS_MAXPLAN; docs/specs/pbp-importer.md section 5.12).';
+  assert.ok(tier(benefit(r.doc, 'SPECIALIST'), 'POS').notes.endsWith(note));
+  assert.deepStrictEqual(tier(benefit(r.doc, 'SPECIALIST'), 'POS').cost_shares, tier(benefit(base, 'SPECIALIST'), 'POS').cost_shares);
+  for (const b of r.doc.benefits) {
+    const pos = b.benefit_id === 'SPECIALIST' || b.benefit_id === 'LAB_SERVICES' ? null : (b.network_cost_shares || []).find((t) => t.tier_id === 'POS');
+    if (pos) assert.ok(!pos.notes.includes('PBP_C_POS_MAXPLAN'), `${b.benefit_id} is not listed`);
+  }
+  assert.ok(excerptStarting(r.doc, 'Benefits: ').endsWith(' Then 1 point-of-service maximum plan benefit coverage entry from Section C (PBP_C_POS_MAXPLAN; section 5.12).'));
+  assert.deepStrictEqual(r.doc.benefits.filter((b) => b.benefit_id !== 'PBP_C_POS_MAXPLAN').map((b) => b.benefit_id), base.benefits.map((b) => b.benefit_id));
+  // "2" (the golden plan) and blank write nothing; bad cells are errors that quote them.
+  assert.deepStrictEqual((await alteredParts('H1609-028-000', { c: { pbp_c_pos_maxplan_yn: '' } })).doc, base);
+  for (const [changes, msg] of [
+    [{ pbp_c_pos_maxplan_yn: '3' }, 'pbp_c_pos_maxplan_yn "3" is not 1 or 2'],
+    [{ pbp_c_pos_maxplan_amt: '' }, 'pbp_c_pos_maxplan_yn "1" but pbp_c_pos_maxplan_amt ""'],
+    [{ pbp_c_pos_maxplan_per: '9' }, 'pbp_c_pos_maxplan_per "9" is not a periodicity code'],
+    [{ pbp_c_pos_maxplan_bens: '1' }, 'pbp_c_pos_maxplan_bens "1" is not a position string of 2'],
+    [{ pbp_c_pos_maxplan_bens: '01' }, 'pbp_c_pos_maxplan_bens "01" disagrees with pbp_c_pos_maxplan_nmc_subcats "14b;"'],
+    [{ pbp_c_pos_maxplan_nmc_subcats: '19b;' }, 'pbp_c_pos_maxplan_nmc_subcats "19b;" lists 19b, which the dictionary does not'],
+  ]) {
+    const bad = await alteredParts('H1609-028-000', { c: { ...POS_MAX, ...changes } });
+    assert.strictEqual(bad.doc, null, msg);
+    assert.ok(bad.errors.includes(msg), `${msg}: ${bad.errors.join(' | ')}`);
+  }
+});
+
 test('gaps G4 and G5: Section A phone, website and provider directory; an address with no scheme is quoted, not written', async () => {
   const want = {
     'H2406-013-000': ['(866)627-7806', null, null],
