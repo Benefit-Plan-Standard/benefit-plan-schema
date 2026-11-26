@@ -219,12 +219,23 @@ function partBDeductible(d, fam, label, slotFn, errors) {
 // Medicare-covered Services Deductible", so that scope is always present.
 // Decision 1 (spec section 7): a plan that declares an OUT tier and names no
 // in-network scope gets the amount in oon_individual_deductible, network_tier
-// OUT, with the scope list quoted. Any other combination with an out-of-network
-// position, or a blank scope without an OUT tier, stays network_tier null.
+// OUT, with the scope list quoted. Since v1.2.1 (spec section 7.3, the in-network
+// scopes): on a plan that declares an OUT tier, a scope that names in-network
+// services (position 2 or 3) applies in and out of network, so the amount is
+// written with network_tier null, as before for a scope with position 1 too; a
+// blank scope without an OUT tier stays network_tier null.
 function annualDeductibleOutOnly(d, c) {
   const bens = q(d, 'pbp_d_ann_deduct_bens');
   return !!c && q(c, 'pbp_c_oon_yn') === '1' && bens[1] !== '1' && bens[2] !== '1' &&
     q(d, 'pbp_d_ann_deduct_inn_mc_yn') !== '1' && q(d, 'pbp_d_ann_deduct_inn_nmc_yn') !== '1';
+}
+
+// v1.2.1: a plan that declares an OUT tier and whose annual deductible names
+// in-network services. The deductible then covers those and the out-of-network
+// Medicare-covered services (spec section 7.3).
+function annualDeductibleBothNetworks(d, c) {
+  const bens = q(d, 'pbp_d_ann_deduct_bens');
+  return !!c && q(c, 'pbp_c_oon_yn') === '1' && (bens[1] === '1' || bens[2] === '1');
 }
 
 function annualDeductible(d, c, errors) {
@@ -253,10 +264,25 @@ function annualDeductible(d, c, errors) {
   if (bens !== '' && !/^[01]{3}$/.test(bens)) { errors.push(`pbp_d_ann_deduct_bens "${bens}" is not a 3-position string`); return { slot: null, notes: [] }; }
   const oonBit = bens[0] === '1';
   const innBit = bens[1] === '1' || bens[2] === '1';
-  if (innBit && !oonBit) {
+  if (innBit && !oonBit && !annualDeductibleBothNetworks(d, c)) {
     return {
       slot: inNetworkSlot(amt),
-      notes: [`Annual plan deductible: $${amt}, scope in network only (${cells}); written as individual_deductible, network_tier IN.`],
+      notes: [`Annual plan deductible: $${amt}, scope in network only (${cells}) on a plan that declares no out-of-network benefit; ` +
+        'written as individual_deductible, network_tier IN.'],
+    };
+  }
+  if (innBit && !oonBit) {
+    const scope = [cell(d, 'pbp_d_ann_deduct_inn_mc_cats'), cell(d, 'pbp_d_ann_deduct_inn_nmc_cats'), cell(d, 'pbp_d_ann_deduct_14a_yn'),
+      cell(c, 'pbp_c_oon_mc_bendesc_cats')];
+    return {
+      slot: { amount: amt, currency: 'USD', network_tier: null, applies_to: 'medical' },
+      notes: [`Annual plan deductible: $${amt}, written as individual_deductible with network_tier null: it applies in and out of network ` +
+        `(docs/specs/pbp-importer.md section 7.3). The file says: ${cells}. pbp_d_ann_deduct_bens names the in-network services it applies ` +
+        'to (position 2 Medicare-covered, position 3 non-Medicare-covered) and has no position for out-of-network Medicare-covered services, ' +
+        'which the deductible covers: pbp_d_ann_deduct_14a_yn asks whether 14a preventive services are part of "your OON Medicare-covered ' +
+        'Services Deductible", and the plan answers it. Out of network the deductible applies to the categories of the plan\'s ' +
+        'out-of-network benefit, less 14a when that answer is "2". The deductible\'s service categories, verbatim: ' +
+        `${scope.join('; ')}.`],
     };
   }
   if (annualDeductibleOutOnly(d, c)) {
@@ -703,7 +729,12 @@ function deductibleScopes(d, c, planType, accumulators) {
     const innNmc = bens[2] === '1' ? listScope(q(d, 'pbp_d_ann_deduct_inn_nmc_yn'), q(d, 'pbp_d_ann_deduct_inn_nmc_cats')) : none;
     const oonNmc = bens[0] === '1' ? listScope(q(d, 'pbp_d_ann_deduct_oon_nmc_yn'), q(d, 'pbp_d_ann_deduct_oon_nmc_cats')) : none;
     scopes.IN = (code, mc) => (mc ? innMc(code) : innNmc(code));
-    if (annualDeductibleOutOnly(d, c) && accumulators.oon_individual_deductible) {
+    // Out of network, a written deductible covers the out-of-network Medicare-covered
+    // categories: decision 1's, and since v1.2.1 a type 4 deductible whose scope names
+    // in-network services too (spec section 7.3).
+    const bothWritten = q(d, 'pbp_d_ann_deduct_amt_type') === '4' && annualDeductibleBothNetworks(d, c) &&
+      !!(accumulators.individual_deductible || accumulators.oon_individual_deductible);
+    if ((annualDeductibleOutOnly(d, c) && accumulators.oon_individual_deductible) || bothWritten) {
       const oonMc = cats(q(c, 'pbp_c_oon_mc_bendesc_cats')).filter((x) => !(x === '14a' && q(d, 'pbp_d_ann_deduct_14a_yn') === '2'));
       scopes.OUT = (code, mc) => (mc ? oonMc.includes(code) : oonNmc(code));
     } else {
@@ -1208,6 +1239,74 @@ function ricsBenefits(d, combo, errors) {
   return out;
 }
 
+// ---- the point-of-service maximum plan benefit coverage (v1.2.1, spec section 5.12) ----------
+// Section C's pbp_c_pos_maxplan_* columns: "Is there a POS maximum plan benefit coverage?", the
+// categories it covers (pbp_c_pos_maxplan_bens: position 1 non-Medicare-covered, 2
+// Medicare-covered, each with its list), an amount and a period. Like a Reductions in Cost
+// Sharing group (5.10), it is an amount per period over the categories it lists, not a limit on
+// any 1 service, and it applies under the point-of-service option only, which a benefit's
+// limits cannot say: 1 benefit entry of its own, and a note on each covered benefit's POS row.
+// "2" or blank writes nothing. The lists use the dictionary's codes, those of the Reductions in
+// Cost Sharing lists less 19b.
+const POS_MAX_COLS = ['pbp_c_pos_maxplan_yn', 'pbp_c_pos_maxplan_bens', 'pbp_c_pos_maxplan_mc_subcats', 'pbp_c_pos_maxplan_nmc_subcats',
+  'pbp_c_pos_maxplan_amt', 'pbp_c_pos_maxplan_per', 'pbp_c_pos_maxplan_per_d'];
+
+function posMaximum(c, errors) {
+  if (!c) return null;
+  const v = q(c, 'pbp_c_pos_maxplan_yn');
+  if (v === '' || v === '2') return null;
+  if (v !== '1') { errors.push(`pbp_c_pos_maxplan_yn "${v}" is not 1 or 2`); return null; }
+  if (q(c, 'pbp_c_pos_yn') !== '1') { errors.push(`pbp_c_pos_maxplan_yn "1" but ${cell(c, 'pbp_c_pos_yn')}`); return null; }
+  const before = errors.length;
+  const amt = amount(c, 'pbp_c_pos_maxplan_amt', errors);
+  if (amt === null && q(c, 'pbp_c_pos_maxplan_amt') === '') errors.push(`pbp_c_pos_maxplan_yn "1" but ${cell(c, 'pbp_c_pos_maxplan_amt')}`);
+  const per = q(c, 'pbp_c_pos_maxplan_per');
+  if (!(per in CROSSWALK.periodicity)) errors.push(`${cell(c, 'pbp_c_pos_maxplan_per')} is not a periodicity code`);
+  const bens = q(c, 'pbp_c_pos_maxplan_bens');
+  if (!/^[01]{2}$/.test(bens)) errors.push(`${cell(c, 'pbp_c_pos_maxplan_bens')} is not a position string of 2`);
+  if (errors.length > before) return null;
+  const nmcLabels = Object.fromEntries(Object.entries(RICS_NMC_CATS).filter(([k]) => k !== '19b'));
+  const codes = {};
+  const conditions = [{ type: 'network', description: 'The maximum applies under the point-of-service option only (network tier POS): ' +
+    `${cell(c, 'pbp_c_pos_maxplan_yn')} ("Is there a POS maximum plan benefit coverage?").` }];
+  for (const [pos, col, labels, kind, k] of [[2, 'pbp_c_pos_maxplan_mc_subcats', RICS_MC_CATS, 'Medicare-covered', 'mc'],
+    [1, 'pbp_c_pos_maxplan_nmc_subcats', nmcLabels, 'Non-Medicare-covered', 'nmc']]) {
+    const list = cats(q(c, col));
+    const unknown = list.filter((x) => !(x in labels));
+    if (unknown.length) errors.push(`${cell(c, col)} lists ${unknown.join(', ')}, which the dictionary does not`);
+    if (chosen(bens, pos) !== (list.length > 0)) errors.push(`${cell(c, 'pbp_c_pos_maxplan_bens')} disagrees with ${cell(c, col)}`);
+    codes[k] = list;
+    if (list.length && !unknown.length) {
+      conditions.push({ type: 'applies_to', description: `${kind} benefits the point-of-service maximum covers (${col}): ` +
+        `${list.map((x) => labels[x]).join('; ')}.` });
+    }
+  }
+  if (errors.length > before) return null;
+  const label = CROSSWALK.periodicity_labels[per];
+  const limit = {
+    type: 'dollars', value: amt, period: CROSSWALK.periodicity[per],
+    raw_text: 'Point-of-service maximum plan benefit coverage amount: ' +
+      `${cellsOf(c, ['pbp_c_pos_maxplan_amt', 'pbp_c_pos_maxplan_per', 'pbp_c_pos_maxplan_per_d']).join(', ')} (${label}); ` +
+      'it applies under the point-of-service option only.',
+  };
+  return {
+    codes,
+    note: `The point-of-service maximum plan benefit coverage, ${money(amt)} (${label.toLowerCase()}), covers this service under the ` +
+      'point-of-service option (benefit PBP_C_POS_MAXPLAN; docs/specs/pbp-importer.md section 5.12).',
+    benefit: {
+      benefit_id: 'PBP_C_POS_MAXPLAN',
+      coverage_basis: null,
+      category: 'POINT_OF_SERVICE_MAXIMUM',
+      service_name: 'Point-of-service maximum plan benefit coverage',
+      network_cost_shares: [],
+      limits: [limit],
+      conditions,
+      source_references: [{ excerpt: 'Point-of-service maximum plan benefit coverage (pbp_Section_C.txt), verbatim: ' +
+        `${cellsOf(c, ['pbp_c_pos_yn', ...POS_MAX_COLS]).join('; ')}.` }],
+    },
+  };
+}
+
 // ---- one benefit ------------------------------------------------------------------------------
 // Deductible steps first, then copay and coinsurance in the order read.
 function sequence(steps) {
@@ -1229,11 +1328,123 @@ function flagSteps(steps, tierKey, b, ctx) {
   });
 }
 
+// ---- zero-dollar cost-sharing D-SNPs (v1.2.1, spec section 5.11) ------------------------------
+// pbp_a_dsnp_zerodollar "1": the member pays $0 for Medicare-covered services in network. Each
+// in-network row (IN and its hospital cost tiers) of a Medicare-covered benefit is 1 $0 copay,
+// and its notes say what the file states. Out-of-network and point-of-service rows,
+// supplemental benefits and Part D keep the cost sharing the file states.
+const ZERO_DOLLAR_QUESTION = 'Is this D-SNP plan a Medicare zero-dollar cost sharing plan (this does not apply to Part D Services)?';
+const ZERO_DOLLAR_IN = 'Zero-dollar cost-sharing D-SNP (pbp_Section_A pbp_a_dsnp_zerodollar "1"): the member pays $0 for this ' +
+  'Medicare-covered service in network: each step the file states is written as a $0 copay with its basis and day range ' +
+  '(docs/specs/pbp-importer.md section 5.11).';
+const ZERO_DOLLAR_OTHER = {
+  OUT: 'Zero-dollar cost-sharing D-SNP (pbp_a_dsnp_zerodollar "1"): out of network the cost sharing is written as filed; a provider ' +
+    'outside the plan\'s network who is not enrolled in the state\'s Medicaid may charge it, depending on the member\'s Medicaid ' +
+    'eligibility (docs/specs/pbp-importer.md section 5.11).',
+  POS: 'Zero-dollar cost-sharing D-SNP (pbp_a_dsnp_zerodollar "1"): under the point-of-service option the cost sharing is written as ' +
+    'filed; a provider outside the plan\'s network who is not enrolled in the state\'s Medicaid may charge it, depending on the ' +
+    'member\'s Medicaid eligibility (docs/specs/pbp-importer.md section 5.11).',
+};
+const BASIS_WORDS = { per_stay: 'per stay', per_day: 'per day', per_visit: 'per visit', per_aid: 'per aid' };
+
+function money(n) {
+  return Number.isInteger(n) ? `$${n}` : `$${n.toFixed(2)}`;
+}
+
+function pct(r) {
+  return `${Math.round(r * 10000) / 100}%`;
+}
+
+function describeStep(s) {
+  const what = s.type === 'deductible' ? 'service deductible' : s.type;
+  let v = s.type === 'coinsurance'
+    ? (s.rate !== undefined ? `${pct(s.rate)} coinsurance` : `${pct(s.rate_min)} to ${pct(s.rate_max)} coinsurance`)
+    : (s.amount !== undefined ? `${money(s.amount)} ${what}` : `${money(s.amount_min)} to ${money(s.amount_max)} ${what}`);
+  if (s.basis) v += ` ${BASIS_WORDS[s.basis] || s.basis}`;
+  if (s.unit_range) v += `, ${s.basis === 'per_day' ? 'days' : 'units'} ${s.unit_range.from} to ${s.unit_range.to}`;
+  if (s.max_amount !== undefined) v += `, up to ${money(s.max_amount)}${s.max_basis ? ` ${BASIS_WORDS[s.max_basis] || s.max_basis}` : ''}`;
+  return v;
+}
+
+// Each step the file states becomes a $0 copay with the step's basis and unit range (a $0
+// per-stay or per-day structure is kept); a service deductible step is dropped, steps that
+// become equal are written once, $0 steps of 1 basis over contiguous ranges are 1 step (days
+// 1 to 20 and 21 to 100 are days 1 to 100), and a row with no step gets 1 $0 copay. No step
+// carries applies_to_deductible or applies_to_moop: in network the member pays none.
+function zeroDollarSteps(steps) {
+  const out = [];
+  for (const s of steps) {
+    if (s.type === 'deductible') continue;
+    const z = { type: 'copay', amount: 0 };
+    if (s.basis) z.basis = s.basis;
+    if (s.unit_range) z.unit_range = { ...s.unit_range };
+    if (out.some((o) => o.basis === z.basis && JSON.stringify(o.unit_range) === JSON.stringify(z.unit_range))) continue;
+    const prev = out.find((o) => o.basis === z.basis && o.unit_range && z.unit_range && o.unit_range.to + 1 === z.unit_range.from);
+    if (prev) prev.unit_range.to = z.unit_range.to;
+    else out.push(z);
+  }
+  if (!out.length) out.push({ type: 'copay', amount: 0 });
+  return out.map((s, i) => orderStep({ ...s, sequence: i + 1 }));
+}
+
+function zeroDollarRow(tierId, steps, notes) {
+  const filed = steps.length ? steps.map(describeStep).join('; ') : 'no step (no amount in the file)';
+  return {
+    tier_id: tierId,
+    covered: true,
+    cost_shares: zeroDollarSteps(steps),
+    notes: [notes, ZERO_DOLLAR_IN, `The cost sharing the file states for this row, which the member does not pay in network: ${filed}.`]
+      .filter(Boolean).join(' '),
+  };
+}
+
+// The plan's flag, its accumulators and the plan-level source_references entry. The member
+// pays no deductible in network: an in-network deductible is not written, and one that applies
+// in and out of network is written out of network only. The out-of-pocket maximums stay as
+// filed: they cap what a member pays who is charged (out of network, or after losing Medicaid
+// eligibility). Every 2027 zero-dollar plan's in-network deductible covers Medicare-covered
+// services only; one that names non-Medicare-covered services is an error (0 plans).
+function zeroDollar(a, d, planType, accumulators, errors) {
+  const v = q(a, 'pbp_a_dsnp_zerodollar');
+  if (v === '' || v === '2') return { on: false, excerpt: null };
+  if (v !== '1') { errors.push(`pbp_a_dsnp_zerodollar "${v}" is not 1 or 2`); return { on: false, excerpt: null }; }
+  const said = [];
+  const ded = accumulators.individual_deductible;
+  if (ded) {
+    const nmcCol = PPO_TYPES.has(planType) ? ['pbp_d_ann_deduct_bens', 2] : ['pbp_d_inn_deduct_bens', 0];
+    if (q(d, nmcCol[0])[nmcCol[1]] === '1') {
+      errors.push(`${cell(a, 'pbp_a_dsnp_zerodollar')}, but the in-network deductible also applies to non-Medicare-covered services ` +
+        `(${cell(d, nmcCol[0])}), which the flag does not cover (docs/specs/pbp-importer.md section 5.11)`);
+      return { on: false, excerpt: null };
+    }
+    if (ded.network_tier === null) {
+      accumulators.oon_individual_deductible = { ...ded, network_tier: 'OUT' };
+      said.push(`the annual deductible, ${money(ded.amount)}, which applies in and out of network, is written as ` +
+        'oon_individual_deductible with network_tier OUT, because in network the member pays none');
+    } else {
+      said.push(`the in-network deductible the plan files, ${money(ded.amount)}, is not written, because in network the member pays none`);
+    }
+    delete accumulators.individual_deductible;
+  }
+  return {
+    on: true,
+    excerpt: `Zero-dollar cost-sharing D-SNP: ${cell(a, 'pbp_a_dsnp_zerodollar')} ("${ZERO_DOLLAR_QUESTION}"), ` +
+      `${cell(a, 'pbp_a_snp_state_cvg_yn')}. In network the member pays $0 for Medicare-covered services: each in-network row of a ` +
+      'Medicare-covered benefit charges $0 (each step the file states as a $0 copay with its basis and day range), and its notes give ' +
+      'the cost sharing the plan files' +
+      (said.length ? `; ${said.join('; ')}` : '') + '. The out-of-pocket maximums are written as filed. Out-of-network and ' +
+      'point-of-service rows, supplemental benefits and Part D keep the cost sharing the plan files (docs/specs/pbp-importer.md section 5.11).',
+  };
+}
+
 function tierRow(tierId, tierKey, b, r, ctx) {
+  if (ctx.zeroDollar && b.medicare_covered && tierKey === 'IN') return zeroDollarRow(tierId, sequence(r.steps), r.notes);
   const steps = flagSteps(sequence(r.steps), tierKey, b, ctx);
   const notes = [r.notes];
   if (steps.some((s) => s.applies_to_deductible === true) && ctx.ded.notes[tierKey]) notes.push(ctx.ded.notes[tierKey]);
   if (steps.some((s) => s.applies_to_moop !== undefined) && ctx.moop.notes[tierKey]) notes.push(ctx.moop.notes[tierKey]);
+  if (ctx.zeroDollar && b.medicare_covered) notes.push(ZERO_DOLLAR_OTHER[tierKey]);
+  if (tierKey === 'POS' && ctx.posMax && ctx.posMax.codes[b.medicare_covered ? 'mc' : 'nmc'].includes(b.pbp_code)) notes.push(ctx.posMax.note);
   const row = { tier_id: tierId, covered: true, cost_shares: steps };
   const text = notes.filter(Boolean).join(' ');
   if (text) row.notes = text;
@@ -2440,6 +2651,8 @@ function buildDocument(rows, source) {
   if (errors.length) return { doc: null, errors, warnings };
 
   const { accumulators, notes: accNotes } = buildAccumulators(d, rows.c, planType, errors);
+  // v1.2.1 (spec section 5.11): before the deductible scopes, which read the accumulators.
+  const zero = zeroDollar(a, d, planType, accumulators, errors);
   const network_tiers = buildTiers(rows.c, rows.oonGroups.length > 0, rows.posGroups.length > 0, rows.hospital, errors);
   const area = buildServiceArea(rows.area, rows.region, source.year, errors);
   const partD = buildPartD(rows, source, errors, warn);
@@ -2465,10 +2678,13 @@ function buildDocument(rows, source) {
     ded: deductibleScopes(d, rows.c, planType, accumulators),
     moop: moopScopes(d, planType, accumulators),
     combo: comboGroups(d, errors),
+    zeroDollar: zero.on,
+    posMax: posMaximum(rows.c, errors),
     skipped: [],
   };
   const benefits = buildBenefits(rows, ctx, errors, warn);
   const rics = ricsBenefits(d, ctx.combo, errors);
+  const posMax = ctx.posMax ? [ctx.posMax.benefit] : [];
   const premium = buildPremium(d, errors);
   const contacts = buildContacts(a);
   if (errors.length) return { doc: null, errors, warnings };
@@ -2498,7 +2714,7 @@ function buildDocument(rows, source) {
   doc.network_tiers = network_tiers;
   doc.accumulators = accumulators;
   if (partD.pharmacy) doc.pharmacy = partD.pharmacy;
-  doc.benefits = [...benefits, ...rics, ...partD.benefits];
+  doc.benefits = [...benefits, ...rics, ...posMax, ...partD.benefits];
 
   const excerpts = [
     ...releaseExcerpts(a, source, planType, MVP_PLAN_TYPES[planType]),
@@ -2508,11 +2724,13 @@ function buildDocument(rows, source) {
     area.excerpt,
     premium.excerpt,
     ...accNotes,
+    zero.excerpt,
     'Every non-blank Section D deductible and out-of-pocket cell, verbatim, in file order: ' + accumulatorCells(d).join('; ') + '.',
     `Benefits: the ${CROSSWALK.benefits.length} service categories in fhir/pbp-crosswalk.json (the workgroup MVP), ${benefits.length} written. ` +
       'Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8).' +
       (rics.length ? ` Then ${rics.length} Reductions in Cost Sharing ${rics.length === 1 ? 'entry' : 'entries'} from Section D ` +
-        `(${rics.map((b) => b.benefit_id).join(', ')}; section 5.10).` : ''),
+        `(${rics.map((b) => b.benefit_id).join(', ')}; section 5.10).` : '') +
+      (posMax.length ? ' Then 1 point-of-service maximum plan benefit coverage entry from Section C (PBP_C_POS_MAXPLAN; section 5.12).' : ''),
     ctx.skipped.length
       ? `Medicare-covered categories with no copay or coinsurance answer in the file, not written (${cell(a, 'pbp_a_ben_cov')}): ${ctx.skipped.join('; ')}.`
       : null,
