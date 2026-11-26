@@ -163,7 +163,7 @@ The schema follows **semantic versioning**:
 - **MINOR** → Backward-compatible additions  
 - **PATCH** → Fixes & clarifications  
 
-Current version: **v1.2.0** (backward-compatible with v1.1.0 and v1.0.0), released on 2026-11-13
+Current version: **v1.2.1** (unreleased), a patch of the tools and of the categories vocabulary (1.3.0) on the v1.2.0 schema, which it does not change. v1.2.0 (backward-compatible with v1.1.0 and v1.0.0) was released on 2026-11-13
 
 Drafts: v1.2.0 was published as 9 drafts before its release, each a git tag on this repository (`v1.2.0-draft.1` through `v1.2.0-draft.9`), so any draft can still be checked out by its tag; the release is tagged `v1.2.0`. Under the release rule in `docs/governance.md`, a draft becomes final after two independent adopters implement and validate it; the adopters on record are in `ADOPTERS.md`. The importers write v1.2.0 documents.
 

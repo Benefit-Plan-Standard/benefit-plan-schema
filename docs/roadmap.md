@@ -17,6 +17,10 @@ Dates are indicative and subject to change based on community feedback and imple
 
 Released after 9 published drafts (`v1.2.0-draft.1` to `v1.2.0-draft.9`) and 2 independent adopters on record in `ADOPTERS.md`. What it adds is in `docs/changelog.md`, under 1.2.0: network-tier classification and verbatim limit text from the CARIN Digital Insurance Card reconciliation; the Medicare Advantage fields; the pharmacy module in core; `limits[].unlimited` (item 3 below); room for the CMS Part D formulary files and `premium.drug_amount` (item 4 below). Items 1 and 2 of the v1.2.0 list below are not in the release.
 
+### v1.2.1 (unreleased)
+
+A patch of the tools and of 1 vocabulary; the schema is v1.2.0's, unchanged. The Medicare Advantage importer reads zero-dollar cost-sharing D-SNPs, the in-network deductible scopes and the point-of-service maximum plan benefit coverage, found by checking 10 plans of 5 organizations against their Summaries of Benefits, and `vocabularies/categories.json` 1.3.0 adds `POINT_OF_SERVICE_MAXIMUM` (`docs/changelog.md`, under 1.2.1). Item 1 of the v1.2.2 list below, written for 1.2.1, is not in it.
+
 ## Near-term goals
 
 1. **Pharmacy module** — Extend the schema to support detailed Part D and commercial pharmacy benefit structures, including tiers, mail-order rules, and cost-sharing stages. v1.1.0 lays the groundwork via `benefit_type: "pharmacy"`; the next step is a pharmacy-specific module schema.
@@ -33,7 +37,9 @@ Released after 9 published drafts (`v1.2.0-draft.1` to `v1.2.0-draft.9`) and 2 i
 3. **No limit, said as such.** Draft 8 (2026-11-04) adds `limits[].unlimited`: an entry with `unlimited` true and `value` null says the source states no limit of its type, and the Medicare Advantage importer writes one for every unlimited or no-maximum answer on a covered benefit, and for fitness when the 14c maximum list does not name it. Still open: the Marketplace importer does not write one (`QuantLimitOnSvc` is not carried); and the SBC InsurancePlan profile's `benefit-limitation` has no element for no limit, so a Bundle carries it as `limitText` and `limitType` only.
 4. **A Part D drug list from the CMS formulary files.** Draft 9 (2026-11-11) makes room for the CMS monthly Part D formulary files: `formulary_version` and `formulary_items_url` on `formulary_reference`, `coverage_basis`, `negotiation_selected_drug`, `capped_benefit` and `source_references` on a formulary item, `drug_name` and a quantity limit's `units` optional, and `schema/v1.2.0/formulary.schema.json` for a list that many plans share; and `premium.drug_amount`, the Part D part of a Medicare Advantage premium, which the PBP files leave out of the premium they give. The importer that writes them is specified in `docs/specs/partd-formulary-importer.md`. Still open: drug names (the files name no drug; RxNorm is the likely source), the unit of a quantity limit (the files give none), the meaning of a 999-day quantity limit, and the insulin cost file.
 
-### v1.2.1 list
+### v1.2.2 list
+
+Written as the v1.2.1 list; 1.2.1 was released without it.
 
 1. **"Up to $X" with no floor.** The description of `cost_shares[].amount_min` says that `amount_min` stays null when the document prints a ceiling with no floor, such as "Up to $150 copay", written as `amount` null and `amount_max` 150. It is 0 only when the source states a floor of 0, as the CMS Plan Benefit Package files do for a copay range. A clarification of the description, with no change to the schema's structure.
 

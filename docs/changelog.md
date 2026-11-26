@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 A patch to the tools, not the schema: `schema/v1.2.0/` is unchanged, and a 1.2.0 document stays valid. 10 plans of contract year 2027 from 5 organizations other than UnitedHealthcare (Humana, Wellcare, Kaiser Permanente, HealthSpring, Priority Health) were checked with `scripts/pbp-sob-check.js` against their own Summaries of Benefits on 2026-11-25: 750 checks, 648 match, 41 readings, 61 differences, 40 of them values the importer did not read. 36 of the 40 were the cost sharing of zero-dollar D-SNPs, 1 a deductible scope and 1 a maximum; the other 2 are gap G12 (optional supplemental packages), which stays.
 
+The schema is unchanged, and the importer's output changes on 1,404 of its 7,195 documents for contract year 2027, each only where 1 of the 3 rules below says; the release rule's 2 independent adopters (`docs/governance.md`, Releases) are met because the schema they implemented and validated, v1.2.0 (RxCare and MyDigiRecords, in `ADOPTERS.md`), is the schema of 1.2.1, and every document the 1.2.1 importer writes validates against it.
+
 ### Changed: `scripts/from-pbp.js` (docs/specs/pbp-importer.md)
 
 - **Zero-dollar cost-sharing D-SNPs (section 5.11).** A plan whose Section A answers `pbp_a_dsnp_zerodollar` "1" ("Is this D-SNP plan a Medicare zero-dollar cost sharing plan (this does not apply to Part D Services)?") charges $0 in network for Medicare-covered services: each step of an in-network row of a Medicare-covered benefit becomes a $0 copay with its basis and day range, and the row's notes give the cost sharing the plan files. The in-network deductible is not written; a deductible that applies in and out of network is written out of network only. Out-of-network and point-of-service rows, the out-of-pocket maximums, the supplemental benefits and Part D stay as filed. Before, the document served the filed Medicare cost sharing as what these members pay. CY 2027: 739 plans, all open to individuals (HMO 492, HMO-POS 132, local PPO 114, regional PPO 1).
@@ -16,7 +18,17 @@ A patch to the tools, not the schema: `schema/v1.2.0/` is unchanged, and a 1.2.0
 
 ### Changed: `vocabularies/categories.json` 1.3.0
 
-- `POINT_OF_SERVICE_MAXIMUM`, the category of the point-of-service maximum entry (39 codes).
+- `POINT_OF_SERVICE_MAXIMUM`, the category of the point-of-service maximum entry (39 codes). The site serves it at `https://benefitplanstandard.org/vocabularies/v1.3.0/categories.json`; the 1.2.0 file stays at its own address.
+
+### Documentation
+
+- `docs/specs/pbp-importer.md` cites each Summary of Benefits of the check by its title, document ID, SHA-256 and pages, and by its address only where a page of the organization's site links it.
+- `docs/roadmap.md`: the "Up to $X" item, written for 1.2.1, moves to a v1.2.2 list.
+- The release steps and their checks: `docs/specs/release-1.2.1-checklist.md`.
+
+### Not in this release
+
+The "Up to $X" description item (now the roadmap's v1.2.2 list), gap G12 (optional supplemental packages), and the 10 plans' expectations files, which were written outside this repository.
 
 ## [1.2.0] – 2026-11-13: release
 
