@@ -82,6 +82,28 @@
       "network_tier": "OUT",
       "applies_to": "integrated",
       "embedded": true
+    },
+    "combined_individual_deductible": {
+      "amount": 13200,
+      "currency": "USD",
+      "applies_to": "medical"
+    },
+    "combined_family_deductible": {
+      "amount": 39600,
+      "currency": "USD",
+      "applies_to": "medical",
+      "embedded": true
+    },
+    "combined_individual_oop_max": {
+      "amount": 39600,
+      "currency": "USD",
+      "applies_to": "integrated"
+    },
+    "combined_family_oop_max": {
+      "amount": 79200,
+      "currency": "USD",
+      "applies_to": "integrated",
+      "embedded": true
     }
   },
   "benefits": [
@@ -2276,7 +2298,7 @@
       "excerpt": "CMS Health Insurance Exchange Public Use Files, plan year 2026: Plan Attributes PUF (plan-attributes-puf.csv, from https://download.cms.gov/marketplace-puf/2026/plan-attributes-puf.zip) and Benefits and Cost Sharing PUF (benefits-and-cost-sharing-puf.csv, from https://download.cms.gov/marketplace-puf/2026/benefits-and-cost-sharing-puf.zip), downloaded 2026-10-05, and Network PUF (network-puf.csv, from https://download.cms.gov/marketplace-puf/2026/network-puf.zip), downloaded 2026-10-20. ImportDate as each file gives it: Plan Attributes PUF ImportDate \"10/15/2025\"; Benefits and Cost Sharing PUF ImportDate \"2025-10-15\"; Network PUF ImportDate \"2025-10-15\". HIOS plan ID: PlanId \"97176LA0340010-01\", StandardComponentId \"97176LA0340010\", written in plan_identifiers. SBC URL from the Plan Attributes PUF: https://www.lablue.com/web/applications/sbcportal/sbcs/2026/97176LA0340010-01.pdf."
     },
     {
-      "excerpt": "Plan Attributes PUF values with no Benefit Plan Standard v1.2.0 field, verbatim: CSRVariationType \"Standard Silver On Exchange Plan\"; PlanVariantMarketingName \"Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits\"; MetalLevel \"Silver\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"No\"; FirstTierUtilization \"100%\"; NetworkId \"LAN001\"; ServiceAreaId \"LAS001\"; FormularyId \"LAF010\"; NationalNetwork \"Yes\"; IsReferralRequiredForSpecialist \"No\"; OutOfCountryCoverage \"Yes\"; OutOfCountryCoverageDescription \"Emergency and non-emergency coverage subject to Blue Card Worldwide rules.\"; OutOfServiceAreaCoverage \"Yes\"; OutOfServiceAreaCoverageDescription \"Coverage available for covered benefits\"; SpecialtyDrugMaximumCoinsurance \"$250\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.709458831\"; FormularyURL \"https://lablue.com/pharmacy-3tier-formulary2026\"; PlanBrochure \"http://www.lablue.com/individual-solutions-brochure2026\"."
+      "excerpt": "Plan Attributes PUF values with no Benefit Plan Standard v1.3.0 field, verbatim: CSRVariationType \"Standard Silver On Exchange Plan\"; PlanVariantMarketingName \"Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits\"; MetalLevel \"Silver\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"No\"; FirstTierUtilization \"100%\"; NetworkId \"LAN001\"; ServiceAreaId \"LAS001\"; FormularyId \"LAF010\"; NationalNetwork \"Yes\"; IsReferralRequiredForSpecialist \"No\"; OutOfCountryCoverage \"Yes\"; OutOfCountryCoverageDescription \"Emergency and non-emergency coverage subject to Blue Card Worldwide rules.\"; OutOfServiceAreaCoverage \"Yes\"; OutOfServiceAreaCoverageDescription \"Coverage available for covered benefits\"; SpecialtyDrugMaximumCoinsurance \"$250\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.709458831\"; FormularyURL \"https://lablue.com/pharmacy-3tier-formulary2026\"; PlanBrochure \"http://www.lablue.com/individual-solutions-brochure2026\"."
     },
     {
       "excerpt": "Provider directory from the Network PUF, the row whose BusinessYear, StateCode, IssuerId, NetworkId and MarketCoverage are the plan's: NetworkName \"PPO Vision Dental\", NetworkURL \"https://lablue.com/ppo-medical-vision-dental\", written as network_tiers[tier_id=IN].provider_directory_url."
@@ -2288,5 +2310,5 @@
       "excerpt": "Benefits and Cost Sharing PUF rows for this plan whose BenefitName has no canonical_key in fhir/marketplace-puf-crosswalk.json, not emitted as benefits (23): Abortion for Which Public Funding is Prohibited (Not Covered); Accidental Dental (Covered); Attention Deficit Disorder (Covered); Basic Dental Care - Child (Covered); Clinical Trials (Covered); Congenital Anomaly, including Cleft Lip/Palate (Covered); Cosmetic Surgery (Not Covered); Dental Anesthesia (Covered); Diabetes Care Management (Covered); Infusion Therapy (Covered); Inherited Metabolic Disorder - PKU (Covered); Long-Term/Custodial Nursing Home Care (Not Covered); Major Dental Care - Child (Covered); Non-Emergency Care When Traveling Outside the U.S. (Covered); Orthodontia - Adult (Not Covered); Orthodontia - Child (Covered); Prenatal and Postnatal Care (Covered); Prescription Drugs Other (Covered); Private-Duty Nursing (Covered); Reconstructive Surgery (Covered); Transplant (Covered); Treatment for Temporomandibular Joint Disorders (Not Covered); Weight Loss Programs (Not Covered)."
     }
   ],
-  "schema_version": "1.2.0"
+  "schema_version": "1.3.0"
 }

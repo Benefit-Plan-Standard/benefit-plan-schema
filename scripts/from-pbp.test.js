@@ -9,7 +9,10 @@
  * the crosswalk names a column the files do not have, or if a Summary of Benefits
  * check (H2406-013-000, H1036-068-000, S5921-383-000) finds a difference. Since schema
  * 1.2.0 draft 8 it also fails if a "no maximum" or "unlimited" answer stops being a
- * no-limit limits entry, or if a blank answer starts writing one. The golden plans
+ * no-limit limits entry, or if a blank answer starts writing one. Since schema 1.3.0 draft 1 it
+ * also fails if a deductible for both networks, the combined maximum or the HMO-POS combined
+ * deductible stops being its combined_* slot, or a step stops naming it with deductible_ref or
+ * moop_ref "combined". The golden plans
  * are built from the rows committed in test/fixtures/pbp/2027/, so the test runs
  * without the full PBP files; when data/pbp/2027/ is present the golden plans are
  * also built from the full files. Regenerate on purpose with:
@@ -170,12 +173,98 @@ test('fixtures: every file the importer reads, with the golden plans only', asyn
 });
 
 // ---- mapping rules on the golden plans ----------------------------------------------------------
-test('decision N1: every network_tier is IN, OUT, POS or null', async () => {
+test('decision N1: every per-network slot\'s network_tier is IN, OUT, POS or null, and a combined slot has none (schema 1.3.0)', async () => {
   for (const x of await maBuilt()) {
     for (const [slot, a] of Object.entries(x.result.doc.accumulators)) {
-      assert.ok([null, 'IN', 'OUT', 'POS'].includes(a.network_tier), `${x.g.plan} ${slot}: ${a.network_tier}`);
+      if (slot.startsWith('combined_')) assert.ok(!('network_tier' in a), `${x.g.plan} ${slot}`);
+      else assert.ok([null, 'IN', 'OUT', 'POS'].includes(a.network_tier), `${x.g.plan} ${slot}: ${a.network_tier}`);
     }
   }
+});
+
+test('schema 1.3.0, gap 9.1: the combined maximum is combined_individual_oop_max; the out-of-network or point-of-service steps it caps carry moop_ref "combined"; in-network steps keep the in-network maximum', async () => {
+  const steps = (doc, tierId) => doc.benefits.flatMap((b) => (b.network_cost_shares || []).filter((t) => t.tier_id === tierId))
+    .flatMap((t) => t.cost_shares || []).filter((s) => s.type !== 'deductible');
+  for (const [plan, out, amt, inn] of [['H2406-013-000', 'OUT', 10750, 7150], ['H1609-028-000', 'POS', 10100, 6750]]) {
+    const doc = await docFor(plan);
+    assert.deepStrictEqual(doc.accumulators.combined_individual_oop_max, { amount: amt, currency: 'USD', applies_to: 'medical' }, plan);
+    assert.deepStrictEqual(doc.accumulators.individual_oop_max, { amount: inn, currency: 'USD', network_tier: 'IN', applies_to: 'medical' }, `${plan} beside the in-network maximum`);
+    assert.strictEqual(doc.accumulators.oon_individual_oop_max, undefined, plan);
+    const outSteps = steps(doc, out).filter((s) => s.applies_to_moop !== undefined);
+    assert.ok(outSteps.length > 10 && outSteps.every((s) => s.moop_ref === 'combined'), `${plan} ${out}`);
+    assert.ok(steps(doc, 'IN').filter((s) => !s.formulary_tier_id).every((s) => s.moop_ref === undefined || s.moop_ref === 'pharmacy'), `${plan} IN`);
+    assert.ok(!doc.benefits.some((b) => (b.network_cost_shares || []).some((t) => /applies_to_moop refers to the combined/.test(t.notes || ''))), `${plan}: the ref, not a note`);
+    const ex = excerptStarting(doc, 'Combined in-network and out-of-network out-of-pocket maximum, written as combined_individual_oop_max');
+    assert.ok(ex && ex.includes(`pbp_d_comb_max_enr_amt "${amt}.00"`) && ex.includes('pbp_d_comb_max_enr_amt_type "'), ex);
+    assert.ok(!excerpts(doc).some((e) => e.includes('no field for a maximum that covers both networks')), plan);
+  }
+  assert.ok(excerptStarting(await docFor('H1609-028-000'), 'Combined in-network and out-of-network out-of-pocket maximum')
+    .includes('(on this HMO-POS plan, out of network is the point-of-service option)'));
+  // With an out-of-network maximum of its own, the OUT steps refer to it, by the tier, as before.
+  const oon = await alteredParts('H2406-013-000', { d: { pbp_d_oon_max_enr_oopc_yn: '1', pbp_d_oon_max_enr_oopc_amt: '9000.00', pbp_d_oon_max_enr_oopc_bens: '01', pbp_d_oon_max_enr_m_yn: '1' } });
+  assert.deepStrictEqual(oon.errors, []);
+  assert.strictEqual(oon.doc.accumulators.oon_individual_oop_max.amount, 9000);
+  assert.strictEqual(oon.doc.accumulators.combined_individual_oop_max.amount, 10750, 'the combined maximum beside it');
+  assert.ok(steps(oon.doc, 'OUT').every((s) => s.moop_ref === undefined));
+  // "2" writes no slot and keeps its note; the HMO golden plan files none.
+  const none = await alteredParts('H2406-013-000', { d: { pbp_d_comb_max_enr_amt_yn: '2', pbp_d_comb_max_enr_amt: '', pbp_d_comb_max_enr_oopc_bens: '' } });
+  assert.strictEqual(none.doc.accumulators.combined_individual_oop_max, undefined);
+  assert.ok(excerptStarting(none.doc, 'Combined out-of-pocket maximum: the plan says it has none (pbp_d_comb_max_enr_amt_yn "2").'));
+  assert.ok(steps(none.doc, 'OUT').every((s) => s.applies_to_moop === undefined && s.moop_ref === undefined));
+  assert.strictEqual((await docFor('H1036-068-000')).accumulators.combined_individual_oop_max, undefined);
+});
+
+// H1609-028 (HMO-POS) given the combined deductible family of H3305-038-000, the 1 HMO-POS plan of
+// contract year 2027 that files an amount there: no in-network or out-of-network deductible.
+const COMB_250 = {
+  pbp_d_oon_deduct_yn: '2', pbp_d_oon_deduct_partb_yn: '', pbp_d_oon_deduct_amt: '', pbp_d_oon_deduct_bens: '', pbp_d_oon_deduct_m_yn: '',
+  pbp_d_oon_deduct_m_cats: '', pbp_d_comb_deduct_yn: '1', pbp_d_comb_deduct_partb_yn: '2', pbp_d_comb_deduct_amt: '250.00',
+  pbp_d_comb_deduct_bens: '0101', pbp_d_comb_deduct_inn_m_yn: '2', pbp_d_comb_deduct_inn_m_cats: '1a;9a1;', pbp_d_comb_deduct_oon_m_yn: '2',
+  pbp_d_comb_deduct_oon_m_cats: '1a;9a1;',
+};
+
+test('schema 1.3.0, gap 9.1: an HMO-POS combined deductible with an amount is combined_individual_deductible, with deductible_ref "combined" on the in-network and point-of-service steps', async () => {
+  const r = await alteredParts('H1609-028-000', { d: COMB_250 });
+  assert.deepStrictEqual(r.errors, []);
+  assert.deepStrictEqual(r.doc.accumulators.combined_individual_deductible, { amount: 250, currency: 'USD', applies_to: 'medical' });
+  assert.strictEqual(r.doc.accumulators.oon_individual_deductible, undefined);
+  assert.strictEqual(r.doc.accumulators.individual_deductible, undefined);
+  assert.strictEqual(excerptStarting(r.doc, 'Combined in-network and out-of-network deductible:'),
+    'Combined in-network and out-of-network deductible: $250, written as combined_individual_deductible: it is 1 deductible that applies in and ' +
+    'out of network (on this HMO-POS plan, out of network is the point-of-service option). The file says: pbp_d_comb_deduct_yn "1", ' +
+    'pbp_d_comb_deduct_partb_yn "2", pbp_d_comb_deduct_amt "250.00".');
+  const inpatient = benefit(r.doc, 'INPATIENT_HOSPITAL');
+  for (const t of ['IN', 'POS']) {
+    const s = tier(inpatient, t).cost_shares.find((x) => x.type !== 'deductible');
+    assert.deepStrictEqual([s.applies_to_deductible, s.deductible_ref], [true, 'combined'], t);
+    assert.ok(!/applies_to_deductible/.test(tier(inpatient, t).notes || ''), `${t}: the ref, not a note`);
+  }
+  const spec = tier(benefit(r.doc, 'SPECIALIST'), 'IN').cost_shares[0];
+  assert.deepStrictEqual([spec.applies_to_deductible, spec.deductible_ref], [false, 'combined']);
+  // The Medicare-defined Part B deductible writes no slot, and the rows' note says so (112 plans in 2027).
+  const partB = await alteredParts('H1609-028-000', { d: { ...COMB_250, pbp_d_comb_deduct_partb_yn: '1', pbp_d_comb_deduct_amt: '' } });
+  assert.deepStrictEqual(partB.errors, []);
+  assert.strictEqual(partB.doc.accumulators.combined_individual_deductible, undefined);
+  assert.ok(excerptStarting(partB.doc, 'Combined in-network and out-of-network deductible: the plan charges the Medicare-defined Part B deductible amount, ' +
+    'which the file does not state (pbp_d_comb_deduct_yn "1", pbp_d_comb_deduct_partb_yn "1", pbp_d_comb_deduct_amt ""). A Benefit Plan Standard ' +
+    'deductible needs a dollar amount, so none is written.'));
+  const row = tier(benefit(partB.doc, 'INPATIENT_HOSPITAL'), 'POS');
+  assert.ok(row.notes.endsWith('applies_to_deductible may refer to a deductible with no accumulator slot: the combined in-network and out-of-network ' +
+    'deductible is the Medicare-defined Part B deductible, which the file does not state.'), row.notes);
+  assert.ok(row.cost_shares.every((s) => s.deductible_ref === undefined));
+  // Beside the plan's own point-of-service deductible, a step's flag may mean either: a note, no ref.
+  const two = await alteredParts('H1609-028-000', { d: { ...COMB_250, pbp_d_oon_deduct_yn: '1', pbp_d_oon_deduct_partb_yn: '2', pbp_d_oon_deduct_amt: '500.00',
+    pbp_d_oon_deduct_bens: '01', pbp_d_oon_deduct_m_yn: '1' } });
+  assert.deepStrictEqual(two.errors, []);
+  const posRow = tier(benefit(two.doc, 'INPATIENT_HOSPITAL'), 'POS');
+  assert.ok(posRow.cost_shares.every((s) => s.deductible_ref === undefined));
+  assert.ok(posRow.notes.endsWith('applies_to_deductible may refer to the plan\'s own deductible for this tier or to the combined in-network and ' +
+    'out-of-network deductible (combined_individual_deductible).'), posRow.notes);
+  // On a zero-dollar D-SNP no rule places it: an error (0 plans in 2027).
+  const zero = await alteredParts('H1609-028-000', { a: ZERO, d: COMB_250 });
+  assert.strictEqual(zero.doc, null);
+  assert.ok(zero.errors.some((e) => e.startsWith('pbp_a_dsnp_zerodollar "1", and the plan files a combined in-network and out-of-network deductible ' +
+    '(pbp_d_comb_deduct_yn "1", pbp_d_comb_deduct_amt "250.00")')), zero.errors.join(' | '));
 });
 
 test('decision 1: H2406-013 PPO deductible on OUT, quoted scope; no in-network deductible', async () => {
@@ -601,28 +690,36 @@ async function alteredParts(plan, parts, edit) {
 const tier = (b, id) => b.network_cost_shares.find((t) => t.tier_id === id);
 const SCOPE_010 = { pbp_d_ann_deduct_bens: '010', pbp_d_ann_deduct_inn_mc_yn: '2', pbp_d_ann_deduct_inn_mc_cats: '7d;9a1;' };
 
-test('v1.2.1, spec 7.3: a PPO deductible whose scope names in-network services applies in and out of network: network_tier null, out-of-network Medicare-covered flags from the plan\'s list', async () => {
+test('v1.3.0, spec 7.3: a PPO deductible whose scope names in-network services applies in and out of network: combined_individual_deductible only, deductible_ref "combined", out-of-network Medicare-covered flags from the plan\'s list', async () => {
   const r = await alteredParts('H2406-013-000', { d: SCOPE_010 });
   assert.deepStrictEqual(r.errors, []);
-  assert.deepStrictEqual(r.doc.accumulators.individual_deductible, { amount: 1000, currency: 'USD', network_tier: null, applies_to: 'medical' });
+  assert.deepStrictEqual(r.doc.accumulators.combined_individual_deductible, { amount: 1000, currency: 'USD', applies_to: 'medical' });
+  assert.strictEqual(r.doc.accumulators.individual_deductible, undefined, 'never also as the in-network deductible');
   assert.strictEqual(r.doc.accumulators.oon_individual_deductible, undefined);
-  const note = excerptStarting(r.doc, 'Annual plan deductible: $1000, written as individual_deductible with network_tier null: it applies in and out of network');
+  assert.deepStrictEqual(Object.keys(r.doc.accumulators), ['individual_oop_max', 'combined_individual_deductible', 'combined_individual_oop_max'], 'schema order');
+  const note = excerptStarting(r.doc, 'Annual plan deductible: $1000, written as combined_individual_deductible: it is 1 deductible that applies in and out of network.');
   assert.ok(note && note.includes('pbp_d_ann_deduct_bens "010"') && note.includes('pbp_d_ann_deduct_inn_mc_cats "7d;9a1;"') &&
     note.includes('pbp_d_ann_deduct_14a_yn "2"') && note.includes('pbp_c_oon_mc_bendesc_cats "1a;'), note);
   // In network the listed categories only; out of network every category of the plan's out-of-network list.
   for (const [id, inn, out] of [['SPECIALIST', true, true], ['OUTPATIENT_HOSPITAL', true, true], ['PRIMARY_CARE', false, true]]) {
     const b = benefit(r.doc, id);
-    assert.strictEqual(tier(b, 'IN').cost_shares.find((s) => s.type !== 'deductible').applies_to_deductible, inn, `${id} IN`);
-    assert.strictEqual(tier(b, 'OUT').cost_shares.find((s) => s.type !== 'deductible').applies_to_deductible, out, `${id} OUT`);
-    assert.match(tier(b, 'OUT').notes, /refers to the annual plan deductible written as individual_deductible with network_tier null/);
+    const step = (t) => tier(b, t).cost_shares.find((s) => s.type !== 'deductible');
+    assert.strictEqual(step('IN').applies_to_deductible, inn, `${id} IN`);
+    assert.strictEqual(step('OUT').applies_to_deductible, out, `${id} OUT`);
+    assert.deepStrictEqual([step('IN').deductible_ref, step('OUT').deductible_ref], ['combined', 'combined'], id);
+    assert.ok(!/applies_to_deductible/.test(tier(b, 'OUT').notes || ''), `${id}: the ref, not a note`);
   }
+  assert.ok(!excerpts(r.doc).some((e) => e.includes('network_tier null')));
   // 14a stays out of the out-of-network deductible when pbp_d_ann_deduct_14a_yn is "2".
   assert.ok(tier(benefit(r.doc, 'PREVENTIVE_SERVICES'), 'OUT').cost_shares.every((s) => s.applies_to_deductible === false));
   // A scope with position 1 too ("110") reads the same out of network.
   const both = await alteredParts('H2406-013-000', { d: { ...SCOPE_010, pbp_d_ann_deduct_bens: '110', pbp_d_ann_deduct_oon_nmc_yn: '1' } });
   assert.deepStrictEqual(both.errors, []);
-  assert.strictEqual(both.doc.accumulators.individual_deductible.network_tier, null);
+  assert.deepStrictEqual(both.doc.accumulators.combined_individual_deductible, { amount: 1000, currency: 'USD', applies_to: 'medical' });
+  assert.strictEqual(both.doc.accumulators.individual_deductible, undefined);
+  assert.ok(excerptStarting(both.doc, 'Annual plan deductible: $1000, written as combined_individual_deductible').includes(' The scope names in-network and out-of-network services. The file says: '));
   assert.strictEqual(tier(benefit(both.doc, 'PRIMARY_CARE'), 'OUT').cost_shares[0].applies_to_deductible, true);
+  assert.strictEqual(tier(benefit(both.doc, 'PRIMARY_CARE'), 'OUT').cost_shares[0].deductible_ref, 'combined');
   // A plan that declares no out-of-network benefit keeps an in-network-only deductible.
   const noOut = await alteredParts('H2406-013-000', { d: SCOPE_010, c: { pbp_c_oon_yn: '2', pbp_c_oon_mc_bendesc_cats: '', pbp_c_oon_nmc_bendesc_cats: '' } },
     (rows) => { rows.oonGroups = []; });
@@ -720,8 +817,11 @@ test('v1.2.1, spec 5.11: out-of-network and point-of-service rows of a zero-doll
   const both = await alteredParts('H2406-013-000', { a: ZERO, d: SCOPE_010 });
   assert.deepStrictEqual(both.errors, []);
   assert.strictEqual(both.doc.accumulators.individual_deductible, undefined);
+  assert.strictEqual(both.doc.accumulators.combined_individual_deductible, undefined, 'schema 1.3.0: not the combined slot either');
   assert.deepStrictEqual(both.doc.accumulators.oon_individual_deductible, { amount: 1000, currency: 'USD', network_tier: 'OUT', applies_to: 'medical' });
+  assert.deepStrictEqual(Object.keys(both.doc.accumulators), ['individual_oop_max', 'oon_individual_deductible', 'combined_individual_oop_max'], 'schema order');
   assert.strictEqual(tier(benefit(both.doc, 'PRIMARY_CARE'), 'OUT').cost_shares[0].applies_to_deductible, true);
+  assert.strictEqual(tier(benefit(both.doc, 'PRIMARY_CARE'), 'OUT').cost_shares[0].deductible_ref, undefined, 'the out-of-network deductible, by the tier');
   assert.ok(excerptStarting(both.doc, 'Zero-dollar cost-sharing D-SNP:').includes('the annual deductible, $1000, which applies in and out of network, ' +
     'is written as oon_individual_deductible with network_tier OUT, because in network the member pays none'));
   // Its own excerpt says the same: written out of network only, not with network_tier null (H7355-003-000 and 5 more in 2027).
@@ -1361,11 +1461,12 @@ test('part-d references: the plan-level entries in order, after the medical ones
   assert.ok(!rest[10].includes('pbp_a_hnumber') && !rest[10].includes('bid_id') && rest[10].includes('mrx_vaccine_attest "1"'), rest[10]);
 });
 
-test('part-d schema: every golden document validates against v1.2.0 and scripts/validate.js reports 0 pharmacy warnings', async () => {
+test('part-d schema: every golden document validates against v1.3.0 and scripts/validate.js reports 0 pharmacy warnings', async () => {
   const files = (await built()).map((x) => path.join('examples', x.file));
   assert.strictEqual(files.length, 7);
   for (const x of await built()) assert.deepStrictEqual(validateDocument(x.result.doc), [], x.g.plan);
-  const r = spawnSync(process.execPath, [path.join('scripts', 'validate.js'), '--schema', path.join('schema', 'v1.2.0', 'benefit-plan.schema.json'), ...files],
+  for (const x of await built()) assert.strictEqual(x.result.doc.schema_version, '1.3.0', x.g.plan);
+  const r = spawnSync(process.execPath, [path.join('scripts', 'validate.js'), '--schema', path.join('schema', 'v1.3.0', 'benefit-plan.schema.json'), ...files],
     { cwd: REPO, encoding: 'utf8' });
   assert.strictEqual(r.status, 0, r.stdout);
   assert.strictEqual(r.stdout.split(/\r?\n/).filter((l) => l.startsWith('PASS')).length, 7, r.stdout);

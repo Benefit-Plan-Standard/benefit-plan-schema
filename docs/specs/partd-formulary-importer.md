@@ -100,7 +100,7 @@ Not written, no column: `brand_name`, `generic_name`, `dose_form`, `specialty_ph
 - `plan_year`: `CONTRACT_YEAR`.
 - `formulary_items`: section 5's items.
 - `source_references`: 1 entry quoting the header row, so that every item's excerpt can be read column by column.
-- `schema_version`: `1.2.0`.
+- `schema_version`: `1.3.0` since 2026-11-27 (the 1.3.0 draft 1, whose `formulary.schema.json` is v1.2.0's), `1.2.0` before. The plan documents follow the PBP importer's.
 
 ## 6. Items that are the plan's alone
 

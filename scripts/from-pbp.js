@@ -3,7 +3,7 @@
  * CMS Plan Benefit Package (PBP) Benefits to Benefit Plan Standard importer
  *
  * Reads the PBP Benefits files that CMS publishes for each contract year
- * (Medicare Advantage) and writes one Benefit Plan Standard v1.2.0 document for
+ * (Medicare Advantage) and writes one Benefit Plan Standard v1.3.0 document for
  * one plan. It writes BPS JSON only. Spec: docs/specs/pbp-importer.md; file
  * layout: docs/specs/pbp-record-layout-notes.md.
  *
@@ -56,7 +56,7 @@ const GOLDEN = [
   { year: 2027, plan: 'S5921-383-000', why: 'PDP (UnitedHealthcare); deductible skipping Tiers 1 and 2; split retail and mail order; excluded-drug cost share after the threshold' },
   { year: 2027, plan: 'S4802-146-000', why: 'PDP (Wellcare); 6 tiers, Injectable Drugs and Select Care Drugs with no tier code' },
 ];
-const SCHEMA_VERSION = '1.2.0';
+const SCHEMA_VERSION = '1.3.0';
 const PBP_ZIP = (year) => `https://www.cms.gov/files/zip/pbp-benefits-${year}.zip`;
 
 // ---- tab-delimited text, Windows-1252, streamed ----------------------------------------
@@ -187,6 +187,13 @@ function tierSlot(tierId) {
 
 const inNetworkSlot = tierSlot('IN');
 const outOfNetworkSlot = tierSlot('OUT');
+// A combined_* slot (schema 1.3.0): 1 amount that counts what the member pays in and out of
+// network together. It covers all of the plan's tiers, so it has no network_tier.
+const combinedSlot = (amt) => ({ amount: amt, currency: 'USD', applies_to: 'medical' });
+// The accumulator slots in schema order (schema 1.3.0 adds the 4 combined_* slots).
+const ACCUMULATOR_SLOTS = ['individual_deductible', 'family_deductible', 'individual_oop_max', 'family_oop_max',
+  'oon_individual_deductible', 'oon_family_deductible', 'oon_individual_oop_max', 'oon_family_oop_max',
+  'combined_individual_deductible', 'combined_family_deductible', 'combined_individual_oop_max', 'combined_family_oop_max'];
 
 // A deductible family with a Part B flag (in-network and out-of-network families).
 // Returns { slot, note }.
@@ -238,9 +245,10 @@ function annualDeductibleBothNetworks(d, c) {
   return !!c && q(c, 'pbp_c_oon_yn') === '1' && (bens[1] === '1' || bens[2] === '1');
 }
 
-// A deductible that applies in and out of network is written with network_tier null. On a
-// zero-dollar cost-sharing D-SNP the member pays no deductible in network, so zeroDollar()
-// writes it out of network only, and its note (zeroDollarNote) says so in place of the other.
+// A deductible that applies in and out of network is written as combined_individual_deductible
+// (schema 1.3.0; before, individual_deductible with network_tier null). On a zero-dollar
+// cost-sharing D-SNP the member pays no deductible in network, so zeroDollar() writes it out of
+// network only, and its note (zeroDollarNote) says so in place of the other.
 const ZERO_DOLLAR_DEDUCTIBLE = 'The plan is a zero-dollar cost-sharing D-SNP, so the member pays no deductible in network, and the amount ' +
   'is written as oon_individual_deductible with network_tier OUT only.';
 
@@ -288,8 +296,9 @@ function annualDeductible(d, c, errors) {
       'out-of-network benefit, less 14a when that answer is "2". The deductible\'s service categories, verbatim: ' +
       `${scope.join('; ')}.`;
     return {
-      slot: { amount: amt, currency: 'USD', network_tier: null, applies_to: 'medical' },
-      notes: [`Annual plan deductible: $${amt}, written as individual_deductible with network_tier null: it applies in and out of network.${tail}`],
+      slot: combinedSlot(amt),
+      slotName: 'combined_individual_deductible',
+      notes: [`Annual plan deductible: $${amt}, written as combined_individual_deductible: it is 1 deductible that applies in and out of network.${tail}`],
       zeroDollarNote: `Annual plan deductible: $${amt}. It applies in and out of network. ${ZERO_DOLLAR_DEDUCTIBLE}${tail}`,
     };
   }
@@ -304,11 +313,27 @@ function annualDeductible(d, c, errors) {
         `deductible names no in-network scope: ${cells}. The deductible's service categories, verbatim: ${scope.join('; ')}. ` +
         'pbp_d_ann_deduct_14a_yn asks whether 14a preventive services are part of the out-of-network Medicare-covered ' +
         'services deductible; the categories are those of the plan\'s out-of-network benefit, less 14a when that answer is "2". ' +
-        'Verified on H2406-013-000 against its 2027 Summary of Benefits; to be confirmed on 2 more PPO carriers.'],
+        'Confirmed against the 2027 Summaries of Benefits of 2 PPOs of 2 carriers whose scope is blank, UnitedHealthcare ' +
+        'H2406-013-000 and Humana R0110-001-000; ' + (bens === ''
+          ? 'to be confirmed on a PPO of 1 more carrier.'
+          : 'to be confirmed on a PPO whose scope names out-of-network non-Medicare-covered services, as this plan\'s does.')],
     };
   }
-  // Blank scope on a plan with no OUT tier, or a scope that names in-network and
-  // out-of-network services: amount written, network unstated.
+  // A scope that names in-network and out-of-network services on a plan that declares an
+  // out-of-network benefit: 1 deductible that applies in and out of network (spec 7.3).
+  if (oonBit && innBit && annualDeductibleBothNetworks(d, c)) {
+    const tail = ` The scope names in-network and out-of-network services. The file says: ${cells}; ` +
+      `${cell(d, 'pbp_d_ann_deduct_14a_yn')} refers to an out-of-network Medicare-covered services deductible.`;
+    return {
+      slot: combinedSlot(amt),
+      slotName: 'combined_individual_deductible',
+      notes: [`Annual plan deductible: $${amt}, written as combined_individual_deductible: it is 1 deductible that applies in and out of network.${tail}`],
+      zeroDollarNote: `Annual plan deductible: $${amt}. It applies in and out of network. ${ZERO_DOLLAR_DEDUCTIBLE}${tail}`,
+    };
+  }
+  // Blank scope, or a scope that names out-of-network services, on a plan that declares no
+  // out-of-network benefit: amount written, network unstated (0 plans in contract year 2027:
+  // every PPO declares an out-of-network benefit).
   const why = bens === ''
     ? 'The file does not say which network or services the deductible applies to (pbp_d_ann_deduct_bens is blank) and the plan declares no out-of-network benefit'
     : 'The scope names in-network and out-of-network services, so no single network slot fits';
@@ -351,7 +376,8 @@ function buildAccumulators(d, c, planType, errors) {
         'out-of-network benefit. The file says: ' +
         ['pbp_d_oon_deduct_yn', 'pbp_d_oon_deduct_partb_yn', 'pbp_d_oon_deduct_amt', 'pbp_d_oon_deduct_bens', 'pbp_d_oon_deduct_m_yn',
           'pbp_d_oon_deduct_m_cats', 'pbp_d_oon_deduct_nm_yn', 'pbp_d_oon_deduct_nm_cats'].map((col) => cell(d, col)).join(', ') +
-        '. To be confirmed against the Aetna H1609-028 Summary of Benefits.';
+        '. This reading is confirmed on Aetna H1609-028-000, whose 2027 Summary of Benefits prints the deductible under ' +
+        '"Your out-of-network costs".';
     }
     add('oon_individual_deductible', oonDed);
     if (posPlan && c) {
@@ -366,12 +392,24 @@ function buildAccumulators(d, c, planType, errors) {
         (disagree ? ` Section C and Section D disagree (${cell(d, 'pbp_d_oon_deduct_yn')}, ${cell(d, 'pbp_d_oon_deduct_amt')}); ` +
           'Section D is written.' : ''));
     }
+    // The combined family: combined_individual_deductible (schema 1.3.0) when it states an amount.
     const comb = yn(d, 'pbp_d_comb_deduct_yn', errors);
     const combAmt = amount(d, 'pbp_d_comb_deduct_amt', errors);
+    const combCells = ['pbp_d_comb_deduct_yn', 'pbp_d_comb_deduct_partb_yn', 'pbp_d_comb_deduct_amt'].map((col) => cell(d, col)).join(', ');
     if (comb === '1') {
-      notes.push('Combined in-network and out-of-network deductible: the Benefit Plan Standard has no field for a deductible that covers ' +
-        'both networks together; the plan files it as ' +
-        ['pbp_d_comb_deduct_yn', 'pbp_d_comb_deduct_partb_yn', 'pbp_d_comb_deduct_amt'].map((c) => cell(d, c)).join(', ') + '.');
+      const combPartB = q(d, 'pbp_d_comb_deduct_partb_yn');
+      if (combPartB === '1') {
+        if (combAmt !== null) errors.push('pbp_d_comb_deduct_amt has a value but the plan charges the Medicare-defined Part B deductible');
+        notes.push('Combined in-network and out-of-network deductible: the plan charges the Medicare-defined Part B deductible amount, ' +
+          `which the file does not state (${combCells}). A Benefit Plan Standard deductible needs a dollar amount, so none is written.`);
+      } else if (combPartB === '2' && combAmt !== null) {
+        acc.combined_individual_deductible = combinedSlot(combAmt);
+        notes.push(`Combined in-network and out-of-network deductible: $${combAmt}, written as combined_individual_deductible: it is 1 ` +
+          'deductible that applies in and out of network' +
+          (posPlan ? ' (on this HMO-POS plan, out of network is the point-of-service option)' : '') + `. The file says: ${combCells}.`);
+      } else {
+        errors.push(`Combined in-network and out-of-network deductible: cannot read ${combCells}`);
+      }
     } else if (comb === '2') {
       notes.push(`Combined in-network and out-of-network deductible: the plan says it has none (${cell(d, 'pbp_d_comb_deduct_yn')}).`);
       if (combAmt !== null) errors.push('pbp_d_comb_deduct_amt has a value but pbp_d_comb_deduct_yn is "2"');
@@ -392,14 +430,18 @@ function buildAccumulators(d, c, planType, errors) {
     notes.push(`In-network out-of-pocket maximum: the plan says it has none (${cell(d, 'pbp_d_out_pocket_amt_yn')}); no slot is written.`);
   }
 
-  // Combined (in and out of network) MOOP: no slot.
+  // Combined (in and out of network) MOOP: combined_individual_oop_max (schema 1.3.0).
   const comb = yn(d, 'pbp_d_comb_max_enr_amt_yn', errors);
   const combType = q(d, 'pbp_d_comb_max_enr_amt_type');
   if (comb === '1') {
-    if (amount(d, 'pbp_d_comb_max_enr_amt', errors) === null) errors.push('pbp_d_comb_max_enr_amt_yn "1" but no amount');
-    notes.push('Combined in-network and out-of-network out-of-pocket maximum: the Benefit Plan Standard has no field for a maximum that ' +
-      `covers both networks together; the plan files it as ${cell(d, 'pbp_d_comb_max_enr_amt')}, with ${cell(d, 'pbp_d_comb_max_enr_amt_type')}` +
-      (MOOP_TYPES[combType] ? ` (${MOOP_TYPES[combType]})` : '') + '.');
+    const combMax = amount(d, 'pbp_d_comb_max_enr_amt', errors);
+    if (combMax === null) errors.push('pbp_d_comb_max_enr_amt_yn "1" but no amount');
+    else acc.combined_individual_oop_max = combinedSlot(combMax);
+    notes.push('Combined in-network and out-of-network out-of-pocket maximum, written as combined_individual_oop_max: 1 maximum that ' +
+      'counts what the member pays in and out of network together' +
+      (posPlan ? ' (on this HMO-POS plan, out of network is the point-of-service option)' : '') +
+      `. The plan files it as ${cell(d, 'pbp_d_comb_max_enr_amt')}, with ${cell(d, 'pbp_d_comb_max_enr_amt_type')}` +
+      (MOOP_TYPES[combType] ? ` (${MOOP_TYPES[combType]})` : '') + '; the Benefit Plan Standard has no field for the type.');
   } else if (comb === '2') {
     notes.push(`Combined out-of-pocket maximum: the plan says it has none (${cell(d, 'pbp_d_comb_max_enr_amt_yn')}).`);
   }
@@ -415,7 +457,8 @@ function buildAccumulators(d, c, planType, errors) {
         'and declares a point-of-service option, not an out-of-network benefit. The file says: ' +
         ['pbp_d_oon_max_enr_oopc_yn', 'pbp_d_oon_max_enr_oopc_amt', 'pbp_d_oon_max_enr_oopc_bens', 'pbp_d_oon_max_enr_m_yn',
           'pbp_d_oon_max_enr_nm_yn'].map((col) => cell(d, col)).join(', ') +
-        '. To be confirmed against the Aetna H1609-028 Summary of Benefits.');
+        '. This reading is confirmed for the point-of-service deductible (Aetna H1609-028-000), and for the maximum it is to be ' +
+        'confirmed on the Summary of Benefits of a plan that files one.');
     }
   }
   if (posPlan && c) {
@@ -425,10 +468,8 @@ function buildAccumulators(d, c, planType, errors) {
   }
 
   // Schema order of the slots.
-  const order = ['individual_deductible', 'family_deductible', 'individual_oop_max', 'family_oop_max',
-    'oon_individual_deductible', 'oon_family_deductible', 'oon_individual_oop_max', 'oon_family_oop_max'];
   const accumulators = {};
-  for (const k of order) if (acc[k]) accumulators[k] = acc[k];
+  for (const k of ACCUMULATOR_SLOTS) if (acc[k]) accumulators[k] = acc[k];
   return { accumulators, notes, zeroDollarNote };
 }
 
@@ -721,8 +762,10 @@ function stayCostShares(row, kind, cols, errors) {
 
 // ---- deductible and maximum scopes (spec 5.5) ----------------------------------------------
 // Each returns, per tier, a function of (code, medicare_covered) giving true,
-// false or undefined (not stated), and a note for tiers where the deductible or
-// maximum the flag refers to has no accumulator slot.
+// false or undefined (not stated); a note for tiers where the deductible or
+// maximum the flag refers to has no accumulator slot; and, since schema 1.3.0, a
+// ref for tiers where it is a combined_* slot: the steps' deductible_ref or
+// moop_ref "combined".
 function listScope(allYn, list) {
   return (code) => (allYn === '1' ? true : cats(list).includes(code));
 }
@@ -730,15 +773,16 @@ function listScope(allYn, list) {
 function deductibleScopes(d, c, planType, accumulators) {
   const scopes = {};
   const notes = {};
+  const refs = {};
   const none = () => false;
   if (PPO_TYPES.has(planType)) {
     const has = q(d, 'pbp_d_ann_deduct_yn');
-    if (has === '2') { scopes.IN = none; scopes.OUT = none; return { scopes, notes }; }
-    if (has !== '1') return { scopes, notes };
+    if (has === '2') { scopes.IN = none; scopes.OUT = none; return { scopes, notes, refs }; }
+    if (has !== '1') return { scopes, notes, refs };
     const bens = q(d, 'pbp_d_ann_deduct_bens');
     // Decision 1's reading of a blank scope is verified for an amount (type 4)
     // only; for the Medicare-defined types 1 to 3 the flags stay unwritten.
-    if (bens === '' && q(d, 'pbp_d_ann_deduct_amt_type') !== '4') return { scopes, notes };
+    if (bens === '' && q(d, 'pbp_d_ann_deduct_amt_type') !== '4') return { scopes, notes, refs };
     const innMc = bens[1] === '1' ? listScope(q(d, 'pbp_d_ann_deduct_inn_mc_yn'), q(d, 'pbp_d_ann_deduct_inn_mc_cats')) : none;
     const innNmc = bens[2] === '1' ? listScope(q(d, 'pbp_d_ann_deduct_inn_nmc_yn'), q(d, 'pbp_d_ann_deduct_inn_nmc_cats')) : none;
     const oonNmc = bens[0] === '1' ? listScope(q(d, 'pbp_d_ann_deduct_oon_nmc_yn'), q(d, 'pbp_d_ann_deduct_oon_nmc_cats')) : none;
@@ -747,7 +791,7 @@ function deductibleScopes(d, c, planType, accumulators) {
     // categories: decision 1's, and since v1.2.1 a type 4 deductible whose scope names
     // in-network services too (spec section 7.3).
     const bothWritten = q(d, 'pbp_d_ann_deduct_amt_type') === '4' && annualDeductibleBothNetworks(d, c) &&
-      !!(accumulators.individual_deductible || accumulators.oon_individual_deductible);
+      !!(accumulators.combined_individual_deductible || accumulators.individual_deductible || accumulators.oon_individual_deductible);
     if ((annualDeductibleOutOnly(d, c) && accumulators.oon_individual_deductible) || bothWritten) {
       const oonMc = cats(q(c, 'pbp_c_oon_mc_bendesc_cats')).filter((x) => !(x === '14a' && q(d, 'pbp_d_ann_deduct_14a_yn') === '2'));
       scopes.OUT = (code, mc) => (mc ? oonMc.includes(code) : oonNmc(code));
@@ -758,10 +802,13 @@ function deductibleScopes(d, c, planType, accumulators) {
     if (type !== '4') {
       notes.IN = notes.OUT = `applies_to_deductible refers to the annual plan deductible, ${cell(d, 'pbp_d_ann_deduct_amt_type')} ` +
         `(${DED_TYPES[type] || 'not a dictionary code'}), which the file does not state as an amount, so no slot holds it.`;
+    } else if (accumulators.combined_individual_deductible) {
+      // Schema 1.3.0: the deductible that applies in and out of network is the combined slot.
+      refs.IN = refs.OUT = 'combined';
     } else if (accumulators.individual_deductible && accumulators.individual_deductible.network_tier === null) {
       notes.IN = notes.OUT = 'applies_to_deductible refers to the annual plan deductible written as individual_deductible with network_tier null.';
     }
-    return { scopes, notes };
+    return { scopes, notes, refs };
   }
   // HMO and HMO-POS: in-network family for IN, out-of-network family for POS
   // (decision 4), and the combined family for both when filled.
@@ -789,20 +836,36 @@ function deductibleScopes(d, c, planType, accumulators) {
   const combFilled = q(d, 'pbp_d_comb_deduct_yn') === '1';
   scopes.IN = either(inn, combFilled ? combIn : null);
   scopes.POS = either(oon, combFilled ? combOut : null);
+  // Schema 1.3.0: a combined deductible with an amount is combined_individual_deductible; one
+  // that is the Medicare-defined Part B deductible has no slot.
+  const combSlot = !!accumulators.combined_individual_deductible;
+  const combPartB = combFilled && q(d, 'pbp_d_comb_deduct_partb_yn') === '1';
+  const combWhy = 'the combined in-network and out-of-network deductible is the Medicare-defined Part B deductible, which the file does not state';
+  const both = 'applies_to_deductible may refer to the plan\'s own deductible for this tier or to the combined in-network and ' +
+    'out-of-network deductible (combined_individual_deductible).';
   const why = [];
   if (q(d, 'pbp_d_inn_deduct_partb_yn') === '1') why.push('the in-network deductible is the Medicare-defined Part B deductible, which the file does not state');
-  if (combFilled) why.push('the combined in-network and out-of-network deductible has no slot');
+  if (combPartB) why.push(combWhy);
   if (why.length) notes.IN = `applies_to_deductible may refer to a deductible with no accumulator slot: ${why.join('; ')}.`;
+  else if (combSlot) {
+    if (q(d, 'pbp_d_inn_deduct_yn') === '1') notes.IN = both;
+    else refs.IN = 'combined';
+  }
   const whyPos = [];
   if (q(d, 'pbp_d_oon_deduct_partb_yn') === '1') whyPos.push('the out-of-network deductible is the Medicare-defined Part B deductible, which the file does not state');
-  if (combFilled) whyPos.push('the combined in-network and out-of-network deductible has no slot');
+  if (combPartB) whyPos.push(combWhy);
   if (whyPos.length) notes.POS = `applies_to_deductible may refer to a deductible with no accumulator slot: ${whyPos.join('; ')}.`;
-  return { scopes, notes };
+  else if (combSlot) {
+    if (q(d, 'pbp_d_oon_deduct_yn') === '1') notes.POS = both;
+    else refs.POS = 'combined';
+  }
+  return { scopes, notes, refs };
 }
 
 function moopScopes(d, planType, accumulators) {
   const scopes = {};
   const notes = {};
+  const refs = {};
   const none = () => false;
   const fromBens = (bens, mcPos, nmcPos, mYn, mCats, nmYn, nmCats) => {
     const mc = bens[mcPos - 1] === '1' ? listScope(q(d, mYn), q(d, mCats)) : none;
@@ -821,11 +884,12 @@ function moopScopes(d, planType, accumulators) {
     } else if (q(d, 'pbp_d_comb_max_enr_amt_yn') === '1') {
       scopes[outTier] = fromBens(q(d, 'pbp_d_comb_max_enr_oopc_bens'), 4, 1, 'pbp_d_comb_max_enr_oon_m_yn', 'pbp_d_comb_max_enr_oon_mcat_ex',
         'pbp_d_comb_max_enr_oon_nm_yn', 'pbp_d_comb_max_enr_oon_nmcatex');
-      notes[outTier] = `applies_to_moop refers to the combined in-network and out-of-network maximum (${cell(d, 'pbp_d_comb_max_enr_amt')}), ` +
-        'which has no field in the Benefit Plan Standard.';
+      // Schema 1.3.0: the combined maximum is combined_individual_oop_max. An in-network row
+      // keeps the in-network maximum, which the combined one also counts.
+      if (accumulators.combined_individual_oop_max) refs[outTier] = 'combined';
     }
   }
-  return { scopes, notes };
+  return { scopes, notes, refs };
 }
 
 // ---- out-of-network and point-of-service groups ----------------------------------------------
@@ -1342,8 +1406,14 @@ function flagSteps(steps, tierKey, b, ctx) {
     const out = { ...s };
     const dv = ded ? ded(b.pbp_code, b.medicare_covered) : undefined;
     const mv = moop ? moop(b.pbp_code, b.medicare_covered) : undefined;
-    if (typeof dv === 'boolean') out.applies_to_deductible = dv;
-    if (typeof mv === 'boolean') out.applies_to_moop = mv;
+    if (typeof dv === 'boolean') {
+      out.applies_to_deductible = dv;
+      if (ctx.ded.refs[tierKey]) out.deductible_ref = ctx.ded.refs[tierKey];
+    }
+    if (typeof mv === 'boolean') {
+      out.applies_to_moop = mv;
+      if (ctx.moop.refs[tierKey]) out.moop_ref = ctx.moop.refs[tierKey];
+    }
     return orderStep(out);
   });
 }
@@ -1428,7 +1498,17 @@ function zeroDollar(a, d, planType, accumulators, accNotes, zeroDollarNote, erro
   if (v === '' || v === '2') return { on: false, excerpt: null };
   if (v !== '1') { errors.push(`pbp_a_dsnp_zerodollar "${v}" is not 1 or 2`); return { on: false, excerpt: null }; }
   const said = [];
-  const ded = accumulators.individual_deductible;
+  // Since schema 1.3.0 a PPO's deductible that applies in and out of network is
+  // combined_individual_deductible. An HMO-POS plan's combined family (pbp_d_comb_deduct_*) on a
+  // zero-dollar plan has no rule here, so it is an error (0 plans in contract year 2027).
+  if (accumulators.combined_individual_deductible && !PPO_TYPES.has(planType)) {
+    errors.push(`${cell(a, 'pbp_a_dsnp_zerodollar')}, and the plan files a combined in-network and out-of-network deductible ` +
+      `(${cell(d, 'pbp_d_comb_deduct_yn')}, ${cell(d, 'pbp_d_comb_deduct_amt')}), which the zero-dollar reading has no rule for ` +
+      '(docs/specs/pbp-importer.md section 5.11)');
+    return { on: false, excerpt: null };
+  }
+  const slotName = accumulators.combined_individual_deductible ? 'combined_individual_deductible' : 'individual_deductible';
+  const ded = accumulators[slotName];
   if (ded) {
     const nmcCol = PPO_TYPES.has(planType) ? ['pbp_d_ann_deduct_bens', 2] : ['pbp_d_inn_deduct_bens', 0];
     if (q(d, nmcCol[0])[nmcCol[1]] === '1') {
@@ -1436,18 +1516,28 @@ function zeroDollar(a, d, planType, accumulators, accNotes, zeroDollarNote, erro
         `(${cell(d, nmcCol[0])}), which the flag does not cover (docs/specs/pbp-importer.md section 5.11)`);
       return { on: false, excerpt: null };
     }
-    if (ded.network_tier === null) {
-      accumulators.oon_individual_deductible = { ...ded, network_tier: 'OUT' };
+    // Both networks: combined_individual_deductible, or individual_deductible with network_tier
+    // null on a PPO that declares no out-of-network benefit (0 plans in contract year 2027).
+    const bothNetworks = slotName === 'combined_individual_deductible' || ded.network_tier === null;
+    if (bothNetworks) {
+      accumulators.oon_individual_deductible = { amount: ded.amount, currency: ded.currency, network_tier: 'OUT', applies_to: ded.applies_to };
       said.push(`the annual deductible, ${money(ded.amount)}, which applies in and out of network, is written as ` +
         'oon_individual_deductible with network_tier OUT, because in network the member pays none');
     } else {
       said.push(`the in-network deductible the plan files, ${money(ded.amount)}, is not written, because in network the member pays none`);
     }
-    delete accumulators.individual_deductible;
+    delete accumulators[slotName];
+    // The slots in schema order again.
+    const slots = Object.entries(accumulators);
+    for (const [k] of slots) delete accumulators[k];
+    for (const k of ACCUMULATOR_SLOTS) {
+      const hit = slots.find(([name]) => name === k);
+      if (hit) accumulators[k] = hit[1];
+    }
     // The annual deductible's note says what is written now (H7355-003-000: OUT only).
     if (zeroDollarNote) accNotes[zeroDollarNote.index] = zeroDollarNote.text;
-    else if (ded.network_tier === null) {
-      errors.push(`${cell(a, 'pbp_a_dsnp_zerodollar')}: no note for the annual deductible written with network_tier null`);
+    else if (bothNetworks) {
+      errors.push(`${cell(a, 'pbp_a_dsnp_zerodollar')}: no note for the annual deductible that applies in and out of network`);
       return { on: false, excerpt: null };
     }
   }

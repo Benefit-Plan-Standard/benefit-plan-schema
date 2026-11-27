@@ -192,8 +192,8 @@
         "id": "Extension.extension:deductibleRef",
         "path": "Extension.extension",
         "sliceName": "deductibleRef",
-        "short": "BPS cost_shares[].deductible_ref (v1.2.0).",
-        "definition": "BPS cost_shares[].deductible_ref (v1.2.0).",
+        "short": "BPS cost_shares[].deductible_ref (v1.2.0); combined names a combined_* deductible (v1.3.0).",
+        "definition": "BPS cost_shares[].deductible_ref (v1.2.0); combined names a combined_* deductible (v1.3.0).",
         "min": 0,
         "max": "1"
       },
@@ -221,8 +221,8 @@
         "id": "Extension.extension:moopRef",
         "path": "Extension.extension",
         "sliceName": "moopRef",
-        "short": "BPS cost_shares[].moop_ref (v1.2.0).",
-        "definition": "BPS cost_shares[].moop_ref (v1.2.0).",
+        "short": "BPS cost_shares[].moop_ref (v1.2.0); combined names a combined_* maximum (v1.3.0).",
+        "definition": "BPS cost_shares[].moop_ref (v1.2.0); combined names a combined_* maximum (v1.3.0).",
         "min": 0,
         "max": "1"
       },

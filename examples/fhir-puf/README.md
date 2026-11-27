@@ -1,6 +1,6 @@
 # FHIR Bundles from the public-file importer
 
-These files prove the chain from the CMS Marketplace public use files to FHIR: `scripts/from-marketplace-puf.js` writes a Benefit Plan Standard v1.2.0 document from the public files (v1.1.0 before 2026-10-20), and the existing converter, `scripts/to-insuranceplan.js`, reads that document unchanged and writes the Bundle. They are not golden files, they are not published, and they are not in `fhir/index.json`. The 15 published Bundles are in [`../fhir/`](../fhir/).
+These files prove the chain from the CMS Marketplace public use files to FHIR: `scripts/from-marketplace-puf.js` writes a Benefit Plan Standard v1.3.0 document from the public files (v1.2.0 from 2026-10-20 to 2026-11-27, v1.1.0 before), and the existing converter, `scripts/to-insuranceplan.js`, reads that document unchanged and writes the Bundle. They are not golden files, they are not published, and they are not in `fhir/index.json`. The 15 published Bundles are in [`../fhir/`](../fhir/).
 
 Importer spec: [`../../docs/specs/marketplace-puf-importer.md`](../../docs/specs/marketplace-puf-importer.md). Converter spec: [`../../docs/specs/insuranceplan-converter.md`](../../docs/specs/insuranceplan-converter.md). The whole route in one diagram, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow).
 
@@ -79,3 +79,7 @@ node scripts/to-insuranceplan.js --excluded-services examples/avmed-avmed-entrus
 ```
 
 The first command needs the public files in `data/puf/<year>/` (importer spec, section 11).
+
+## 2026-11-27, schema 1.3.0 draft 1
+
+The 5 Bundles were written again with the commands above after the importer moved to schema 1.3.0: each changes in its `schemaVersion`, its narrative and the excerpt that names the version, and the Louisiana Bundle, whose plan files combined in-network and out-of-network amounts (`CombInnOon`), gains 4 `generalCost` entries, "Individual deductible, in and out of network combined" $13,200, "Family deductible, in and out of network combined" $39,600, and the 2 maximums, $39,600 and $79,200 (converter spec 6.4). The HL7 validator was not run: the machine had no Java.

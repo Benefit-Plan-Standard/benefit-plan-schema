@@ -1,0 +1,942 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://benefitplanstandard.org/schema/v1.3.0/benefit-plan.schema.json",
+  "title": "Benefit Plan Standard Schema",
+  "description": "Canonical JSON schema for representing normalized health benefit plans across carriers. DRAFT: v1.3.0 is a backward-compatible minor release of v1.2.0, published as drafts tagged v1.3.0-draft.N, and every document valid against v1.2.0 is valid against it. Draft 1, on 2026-11-27, lets an amount cover the in-network and out-of-network tiers together. It adds 4 optional accumulator slots, combined_individual_deductible, combined_family_deductible, combined_individual_oop_max and combined_family_oop_max, on the existing deductible_accumulator and oop_max_accumulator shapes, whose network_tier is absent or null because each counts all of the plan's tiers, and the recommended value 'combined' for cost_shares[].deductible_ref and moop_ref, which names those slots. Before v1.3.0 no slot could hold such an amount: in the CMS Plan Benefit Package files for contract year 2027, 531 Medicare Advantage PPOs file 1 deductible that applies in and out of network, and 2,632 Medicare Advantage plans file a maximum for both networks beside the in-network one (HealthSpring H7849-002, a PPO: $4,450 in network, $6,700 in and out of network combined); the CMS Marketplace Plan Attributes files give the same kind of amount in their CombInnOon columns (3,498 medical plans of plan year 2026, 2,558 of 2027). Nothing in v1.2.0 changes meaning: the legacy slots still default to IN and the oon_* slots to OUT, null keeps no meaning on them, and 'medical' and 'pharmacy' keep theirs. The rest of this description is v1.2.0's. v1.2.0, released on 2026-11-13 after 9 published drafts, is a backward-compatible minor release that adds network-tier classification (tier_class, parent_tier_id, provider_set) and verbatim limit text (limits[].raw_text). Origin: reconciliation of the three InsurancePlan changes merged into the HL7 CARIN Digital Insurance Card IG in June 2026 (FHIR-57525 multi-tier cost sharing, FHIR-57526 deductible applicability, FHIR-57527 structured benefit limitation). See docs/carin-dic-reconciliation.md. It also adds Medicare Advantage fields (gaps G1 to G11 and G14 of docs/medicare-advantage-notes.md), motivated by two 2026 CMS Summary of Benefits documents (SCAN Classic HMO, Los Angeles; Humana Gold Plus H1036-025 HMO): plan_identifiers, service_area, premium, part_b_premium_reduction, the pharmacy accumulators object, cost-share unit ranges, caps and ranges, deductible_ref, coverage_basis, alternative_group, limit scope, shared limits and carryover, and per-benefit source_references. On 2026-10-20 it adds 2 optional fields for the medical MVP technical specification of the CMS Health Tech Ecosystem Real-Time Benefits workgroup (docs/specs/rtb-medical-mvp/): contacts (member services phone and website) and network_tiers[].provider_directory_url. Draft 6, on 2026-10-24, wires the pharmacy module v0.2.1 into core: the rest of its pharmacy object (formulary_tiers, pharmacy_networks, formulary_items, formulary_reference, mail_order_supply_multiplier) with its shapes copied into $defs, its benefit extension fields on benefits[] items (formulary_tier_id, pharmacy_network_id, coverage_stage_id, day_supply, drug_examples, step_therapy_required, quantity_limit), and cost_shares[].moop_ref, the out-of-pocket counterpart of deductible_ref. Draft 7, on 2026-11-01, adds 6 optional properties motivated by the GatorCare Prime EPO 2026 pharmacy SBC: pharmacy.deductible.family_amount (with the pharmacy module v0.2.2, which core then copied), cost_shares[].min_amount and min_basis (the floor under a coinsurance), network_cost_shares[].covered_under and not_covered_reason (why a row is not covered and which other benefit the document points to), and source_references[].document (which source document a citation is in, when a plan was read from more than 1). Draft 8, on 2026-11-04, adds 1 optional property, limits[].unlimited, and lets limits[].value be null on an entry where it is true and only there, so that a limits entry can say the source states no limit of its type: the 2027 Medicare PBP files answer 'no maximum' or 'unlimited' for meals, fitness, rides and other benefits, and before draft 8 such a plan's limits read the same as limits not read. Draft 9, on 2026-11-11, makes room for the CMS monthly Part D formulary files (Prescription Drug Plan Formulary and Pharmacy Network Information; contract year 2027: 286 formularies shared by 5,492 plans, docs/specs/partd-formulary/stop-0.md): it adds 7 optional properties, pharmacy.formulary_reference.formulary_version and formulary_items_url, formulary_items[].coverage_basis, negotiation_selected_drug, capped_benefit and source_references, and premium.drug_amount, the Part D part of a Medicare Advantage plan's premium, which the PBP files leave out of the premium they give and the formulary file gives; it makes formulary_items[].drug_name and quantity_limit_detail.units optional, since those files name no drug and give no unit; it copies the pharmacy module v0.2.3, which carries the same changes; and it adds schema/v1.2.0/formulary.schema.json, a drug list written once for the plans that share it and named by their formulary_items_url.",
+  "type": "object",
+  "properties": {
+    "plan_id": {
+      "type": "string",
+      "description": "Unique identifier for the benefit plan."
+    },
+    "plan_identifiers": {
+      "type": "array",
+      "description": "Regulator-assigned identifiers for this plan (closes gap G1 of the Medicare Advantage notes). Each entry names the identifier system and the value. Recommended system values: 'cms_contract_plan_segment' (e.g. 'H1036-025-000'), 'cms_contract_id' (e.g. 'H1036'), 'cms_pbp_id' (e.g. '025'), 'hios_id' (14-character marketplace plan id). Not enforced as enum to allow adopter extension. Distinct from plan_id, which remains a document-local readable slug.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "system": {
+            "type": "string",
+            "description": "Identifier system this value belongs to. See the recommended values on plan_identifiers."
+          },
+          "value": {
+            "type": "string",
+            "description": "The identifier value, as assigned by the system."
+          },
+          "source": {
+            "type": ["string", "null"],
+            "description": "Where the value came from when the plan's own document does not print it (gap G1; e.g. a public CMS plan listing). Null or absent when the value is printed in the source document. Motivated by the SCAN Summary of Benefits, which prints no contract and plan number for either of its plans."
+          }
+        },
+        "required": ["system", "value"],
+        "additionalProperties": false
+      }
+    },
+    "plan_name": {
+      "type": "string",
+      "description": "Marketing or descriptive name of the plan."
+    },
+    "carrier": {
+      "type": "string",
+      "description": "Name of the issuing carrier or plan sponsor."
+    },
+    "plan_type": {
+      "type": "string",
+      "description": "High-level classification of the plan (e.g. PPO, HMO, POS, EPO, HDHP, Medicare Advantage)."
+    },
+    "plan_year": {
+      "type": "integer",
+      "description": "Coverage year for the plan (e.g., 2025). Useful when effective_date is absent or when grouping plans across years (a 'plan family').",
+      "minimum": 1900,
+      "maximum": 2100
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date on which the plan becomes effective (ISO 8601, YYYY-MM-DD)."
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date on which the plan expires or renews (ISO 8601, YYYY-MM-DD)."
+    },
+    "coverage_period": {
+      "type": "object",
+      "description": "Explicit coverage start and end dates as a pair. May differ from effective_date / expiry_date when those reflect the plan-document lifecycle rather than the coverage window.",
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "format": "date",
+          "description": "First date coverage applies (ISO 8601)."
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Last date coverage applies (ISO 8601)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "market": {
+      "type": "string",
+      "description": "Market segment (e.g., 'individual', 'individual_on_exchange', 'small_group', 'large_group', 'medicare_advantage', 'medicaid'). Not enforced as enum to allow adopter extension; see vocabularies/markets.json for the recommended values."
+    },
+    "service_area": {
+      "type": ["object", "null"],
+      "description": "Geographic service area the plan is sold in (closes gap G2 of the Medicare Advantage notes). Medicare Advantage plans are sold by county. Carry the counties as printed (e.g. Humana: 'Our service area includes the following county/counties in Florida: Hernando, Hillsborough, Pasco, Pinellas.'); fips is available when a machine-readable county code is known, but neither source document prints one.",
+      "properties": {
+        "state": {
+          "type": ["string", "null"],
+          "description": "Two-letter USPS state code (e.g. 'CA', 'FL')."
+        },
+        "counties": {
+          "type": "array",
+          "description": "Counties in the service area.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "County name as printed (e.g. 'Los Angeles')."
+              },
+              "fips": {
+                "type": ["string", "null"],
+                "description": "Five-digit county FIPS code, when known (gap G2). Null when the source document does not print one."
+              }
+            },
+            "required": ["name"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "premium": {
+      "type": ["object", "null"],
+      "description": "The plan premium (closes gap G3 of the Medicare Advantage notes). The CMS Summary of Benefits leads with the monthly premium; the ACA SBC leaves the premium out, which is why the field did not exist before v1.2.0. For Medicare Advantage this is the plan premium and does not include the Medicare Part B premium. Since v1.2.0 draft 9, a Medicare Advantage plan's premium can be given in 2 parts: amount without the Part D (drug) part, and drug_amount the Part D part; the monthly plan premium is then amount plus drug_amount. When amount leaves the Part D part out and drug_amount is absent, notes says so.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "description": "Premium amount. With drug_amount present, the premium without its Part D part (v1.2.0 draft 9)."
+        },
+        "currency": {
+          "type": "string",
+          "default": "USD",
+          "description": "ISO 4217 currency code."
+        },
+        "period": {
+          "type": ["string", "null"],
+          "description": "Billing period (e.g. 'per_month')."
+        },
+        "notes": {
+          "type": ["string", "null"],
+          "description": "Free-text qualifier (e.g. 'You must continue to pay your Medicare Part B premium.')."
+        },
+        "drug_amount": {
+          "type": ["number", "null"],
+          "description": "The Part D (drug) part of a Medicare Advantage plan's premium, when the source gives it apart from the rest (v1.2.0 draft 9). The CMS PBP files give a Medicare Advantage plan's premium without it (pbp_d_mplusc_premium, 'Plan Premium Amount (A/B)'), and the CMS monthly Part D formulary file gives it (Plan Information, PREMIUM): Humana Gold Plus H0292-002 (HMO) has $13 and $13, and its 2027 Summary of Benefits prints 'Monthly plan premium $26'. When drug_amount is present, amount is the premium without it, and the monthly plan premium is amount plus drug_amount. Absent or null means the document gives no Part D part. Not used for a stand-alone drug plan, whose amount is its whole premium."
+        }
+      },
+      "required": ["amount"],
+      "additionalProperties": false
+    },
+    "part_b_premium_reduction": {
+      "type": ["object", "null"],
+      "description": "Medicare Part B premium reduction offered by the plan, when printed (part of gap G3 of the Medicare Advantage notes). When the document prints a qualified value (e.g. Humana's 'by up to $3'), leave amount null and quote the qualifier in notes; set amount only when the document prints a flat reduction.",
+      "properties": {
+        "amount": {
+          "type": ["number", "null"],
+          "description": "Flat reduction amount, when the document prints one. Null when the printed value is qualified."
+        },
+        "period": {
+          "type": ["string", "null"],
+          "description": "Period the reduction applies per (e.g. 'per_month')."
+        },
+        "notes": {
+          "type": ["string", "null"],
+          "description": "Verbatim qualifier from the document."
+        }
+      },
+      "additionalProperties": false
+    },
+    "contacts": {
+      "type": "object",
+      "description": "How a member reaches the plan. Added to the v1.2.0 draft on 2026-10-20 for the medical MVP technical specification (docs/specs/rtb-medical-mvp/, gap G4), whose scope asks for the member services phone and website. Both properties are optional; leave a property out when the source gives no value.",
+      "properties": {
+        "member_services_phone": {
+          "type": "string",
+          "description": "The phone number a member calls for member services, as the source gives it (e.g. '(800)457-4708')."
+        },
+        "website": {
+          "type": "string",
+          "format": "uri",
+          "description": "The plan's website: a link a member can open, as an absolute URI with its scheme. An address the source gives without a scheme is not a URI; leave the property out and quote the address in source_references."
+        }
+      },
+      "additionalProperties": false
+    },
+    "network_tiers": {
+      "type": "array",
+      "description": "List of network tiers available for this plan. A tier is any label a benefit's cost sharing can be keyed to. v1.2.0 distinguishes three classes of tier via the optional tier_class field: an actual provider network the member accesses, a cost-sharing designation applied to a subset of providers within one network (e.g. a carrier's 'Value Choice' rate), or a modality / site of service (e.g. virtual care). Pre-v1.2.0 documents that omit tier_class are read as class 'network'.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tier_id": {
+            "type": "string",
+            "description": "Identifier for the network tier."
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name for the network tier."
+          },
+          "description": {
+            "type": ["string", "null"],
+            "description": "Human-friendly description of the tier."
+          },
+          "tier_class": {
+            "type": ["string", "null"],
+            "description": "Classification of this tier. Recommended values: 'network' (a distinct provider network the member accesses), 'cost_designation' (a cost-sharing designation applied to a subset of providers within a single network, e.g. 'Value Choice' vs 'Standard'), 'modality' (a delivery channel or site of service, e.g. virtual/telehealth). Not enforced as enum to allow adopter extension. Absent or null means 'network', which is the pre-v1.2.0 meaning. The decision rule: is this a distinct provider network the member accesses, or a cost-sharing designation within a single network?",
+            "default": "network"
+          },
+          "parent_tier_id": {
+            "type": ["string", "null"],
+            "description": "For 'cost_designation' or 'modality' tiers: the tier_id of the network-class tier this designation or modality lives within (e.g. a 'VALUE_CHOICE' designation within the 'IN' network). Null or absent for 'network' tiers."
+          },
+          "provider_set": {
+            "type": ["object", "null"],
+            "description": "For 'cost_designation' tiers: the set of providers the designation applies to. A designation rarely applies to every provider in the network, and without this link the structured data can overstate the benefit (a $0 tier may be reachable only in a few metro areas). Maps to the CARIN Digital Insurance Card CostAppliesToNetwork extension.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Display name of the provider set (the carrier's name for the designated group of providers)."
+              },
+              "description": {
+                "type": ["string", "null"],
+                "description": "Human-friendly description of the provider set (e.g. which provider groups it comprises)."
+              },
+              "reference": {
+                "type": ["string", "null"],
+                "description": "Optional machine-readable reference to a provider-directory entity, e.g. a FHIR (DaVinci PDex Plan-Net) Organization URL or identifier, so the tier can be joined to a provider directory."
+              }
+            },
+            "required": ["name"],
+            "additionalProperties": false
+          },
+          "provider_directory_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "A link a member can open to the plan's provider directory for this tier, as an absolute URI with its scheme. Added to the v1.2.0 draft on 2026-10-20 for the medical MVP technical specification (docs/specs/rtb-medical-mvp/, gap G5). Distinct from provider_set.reference, a machine reference to 1 provider-directory entity. An address the source gives without a scheme is not a URI; leave the property out and quote the address in source_references."
+          }
+        },
+        "required": ["tier_id", "name"],
+        "additionalProperties": false
+      }
+    },
+    "accumulators": {
+      "type": "object",
+      "description": "Plan-level deductible and out-of-pocket maximum values. The four legacy slots (individual_deductible / family_deductible / individual_oop_max / family_oop_max) are implicitly in-network. v1.1.0 adds explicit out-of-network counterparts (oon_*). Use the `network_tier` field on each slot to be explicit. v1.3.0 adds 4 combined_* slots for an amount that counts what a member pays in network and out of network together. A plan may have a combined slot beside the per-network slots, and each counts its own costs; a combined maximum counts what the in-network maximum counts, unless the plan says otherwise. A document that has a combined slot may have no legacy slot for that amount: a deductible the plan states for both networks is written in combined_individual_deductible only. The example is HealthSpring H7849-002 (True Choice, a Medicare Advantage PPO in Illinois) as the CMS Plan Benefit Package files for contract year 2027 state it: a $525 deductible that applies in and out of network, a $4,450 in-network maximum and a $6,700 maximum in and out of network combined.",
+      "properties": {
+        "individual_deductible": { "$ref": "#/$defs/deductible_accumulator" },
+        "family_deductible":     { "$ref": "#/$defs/deductible_accumulator" },
+        "individual_oop_max":    { "$ref": "#/$defs/oop_max_accumulator" },
+        "family_oop_max":        { "$ref": "#/$defs/oop_max_accumulator" },
+        "oon_individual_deductible": { "$ref": "#/$defs/deductible_accumulator" },
+        "oon_family_deductible":     { "$ref": "#/$defs/deductible_accumulator" },
+        "oon_individual_oop_max":    { "$ref": "#/$defs/oop_max_accumulator" },
+        "oon_family_oop_max":        { "$ref": "#/$defs/oop_max_accumulator" },
+        "combined_individual_deductible": {
+          "$ref": "#/$defs/deductible_accumulator",
+          "description": "One deductible that counts what a member pays in network and out of network together (v1.3.0 draft 1). It covers all of the plan's tiers, so its network_tier is left out. A plan may have it beside the per-network deductibles, each counting its own costs, or alone: a deductible the plan states for both networks is written here only, never also as individual_deductible (531 Medicare Advantage PPOs of contract year 2027, e.g. HealthSpring H7849-002, $525). A reader that reads only the legacy slots finds no deductible on such a plan. A cost-share step subject to it says so with applies_to_deductible true and deductible_ref 'combined'.",
+          "properties": {
+            "network_tier": {
+              "type": "null",
+              "description": "Absent or null: the slot counts all of the plan's tiers together. The combined_* slots are the only place where null has this meaning (v1.3.0); on the other slots it has none."
+            }
+          }
+        },
+        "combined_family_deductible": {
+          "$ref": "#/$defs/deductible_accumulator",
+          "description": "The family amount of combined_individual_deductible (v1.3.0 draft 1): one family deductible that counts what members pay in network and out of network together. Its network_tier is left out, as on combined_individual_deductible, and embedded says whether each member has an individual amount inside it.",
+          "properties": {
+            "network_tier": {
+              "type": "null",
+              "description": "Absent or null: the slot counts all of the plan's tiers together. The combined_* slots are the only place where null has this meaning (v1.3.0); on the other slots it has none."
+            }
+          }
+        },
+        "combined_individual_oop_max": {
+          "$ref": "#/$defs/oop_max_accumulator",
+          "description": "One out-of-pocket maximum that counts what a member pays in network and out of network together (v1.3.0 draft 1). It covers all of the plan's tiers, so its network_tier is left out. A plan may have it beside the per-network maximums, each counting its own costs (HealthSpring H7849-002: individual_oop_max $4,450 in network, combined_individual_oop_max $6,700; 2,632 Medicare Advantage plans of contract year 2027 file both kinds). A combined maximum counts what the in-network maximum counts, unless the plan says otherwise: an in-network cost-share step that counts toward the in-network maximum also counts toward the combined one, and its moop_ref stays 'medical' (or absent), naming the in-network maximum. A step that counts toward the combined maximum and no per-network maximum, such as an out-of-network step on a plan with no out-of-network maximum, says so with moop_ref 'combined'.",
+          "properties": {
+            "network_tier": {
+              "type": "null",
+              "description": "Absent or null: the slot counts all of the plan's tiers together. The combined_* slots are the only place where null has this meaning (v1.3.0); on the other slots it has none."
+            }
+          }
+        },
+        "combined_family_oop_max": {
+          "$ref": "#/$defs/oop_max_accumulator",
+          "description": "The family amount of combined_individual_oop_max (v1.3.0 draft 1): one family out-of-pocket maximum that counts what members pay in network and out of network together, with the same rule: it counts what the in-network family maximum counts, unless the plan says otherwise. Its network_tier is left out, as on combined_individual_oop_max, and embedded says whether each member has an individual amount inside it.",
+          "properties": {
+            "network_tier": {
+              "type": "null",
+              "description": "Absent or null: the slot counts all of the plan's tiers together. The combined_* slots are the only place where null has this meaning (v1.3.0); on the other slots it has none."
+            }
+          }
+        }
+      },
+      "additionalProperties": false,
+      "examples": [
+        {
+          "individual_oop_max": { "amount": 4450, "currency": "USD", "network_tier": "IN", "applies_to": "medical" },
+          "combined_individual_deductible": { "amount": 525, "currency": "USD", "applies_to": "medical" },
+          "combined_individual_oop_max": { "amount": 6700, "currency": "USD", "applies_to": "medical" }
+        }
+      ]
+    },
+    "pharmacy": {
+      "type": "object",
+      "description": "Pharmacy-specific accumulators and coverage stages (closes gap G4 of the Medicare Advantage notes). A Medicare Advantage plan with drug coverage runs a Part D deductible scoped to drug tiers (SCAN: 'You pay the full cost of your Tier 3 through Tier 5 drugs until you have paid $250') and a Part D out-of-pocket threshold separate from the medical maximum (both source documents: $2,100, after which the member pays $0), and neither fits the accumulators object. Since v1.2.0 draft 6 (2026-10-24) the object has every property of the pharmacy module's pharmacy object, v0.2.2 since draft 7 and v0.2.3 since draft 9: formulary_tiers, pharmacy_networks, formulary_items, formulary_reference and mail_order_supply_multiplier join deductible, out_of_pocket_max and coverage_stages, so a pharmacy value is valid here exactly when it is valid under the module. The shapes formulary_tier, pharmacy_network, coverage_stage, quantity_limit_detail, formulary_item, coverage_exception, formulary_alternative and formulary_reference in $defs are copied unchanged from modules/pharmacy/v0.2.3/pharmacy.schema.json, and the module carries a copy of core's source_reference, which formulary_item refers to since draft 9, so a validator needs no second file, and scripts/schema.test.js fails if a copy differs from the module. Typed as object only, not null, so that every pharmacy value core accepts is also valid under the module's own pharmacy object.",
+      "properties": {
+        "deductible": {
+          "type": "object",
+          "description": "Pharmacy deductible, separate from the medical deductible (gap G4). Same shape as pharmacy.deductible in the pharmacy module v0.2.3.",
+          "properties": {
+            "amount":   { "type": "number", "description": "Pharmacy deductible amount." },
+            "currency": { "type": "string", "default": "USD", "description": "ISO 4217 currency code." },
+            "period":   { "type": ["string", "null"], "description": "Accumulation period (e.g. 'per_calendar_year', 'per_plan_year')." },
+            "family_amount": { "type": ["number", "null"], "default": null, "description": "Family pharmacy deductible, when the plan prints one beside the individual amount (v1.2.0 draft 7; the GatorCare Prime EPO 2026 pharmacy SBC, '$125 Individual/$500 Family Pharmacy Calendar Year Deductible'). amount then holds the individual amount. Absent or null means the document states no family amount, which is the reading before v1.2.0 draft 7." },
+            "applies_to_tiers": {
+              "type": "array",
+              "description": "Drug tiers the deductible applies to, as the plan names them (e.g. 'Tier 3'). If omitted, applies to all tiers. When the pharmacy module is in use, these are pharmacy.formulary_tiers[].tier_id values.",
+              "items": { "type": "string" }
+            }
+          },
+          "required": ["amount"],
+          "additionalProperties": false
+        },
+        "out_of_pocket_max": {
+          "type": "object",
+          "description": "Pharmacy out-of-pocket maximum or threshold, separate from the medical maximum (gap G4; e.g. the Part D annual out-of-pocket threshold, $2,100 in both source documents, after which the member pays $0 for covered drugs). Same shape as pharmacy.out_of_pocket_max in the pharmacy module v0.2.3.",
+          "properties": {
+            "amount":   { "type": "number", "description": "Pharmacy out-of-pocket maximum amount." },
+            "currency": { "type": "string", "default": "USD", "description": "ISO 4217 currency code." },
+            "period":   { "type": ["string", "null"], "description": "Accumulation period (e.g. 'per_calendar_year')." }
+          },
+          "required": ["amount"],
+          "additionalProperties": false
+        },
+        "coverage_stages": {
+          "type": "array",
+          "description": "Coverage stages, primarily for Medicare Part D plans (gap G4). Post-2025 (IRA redesign): Deductible, Initial Coverage, Catastrophic Coverage. Item shape: $defs/coverage_stage, copied from the pharmacy module v0.2.3 (in core since v1.2.0 draft 6; the inline item it replaces validated the same way). benefits[].coverage_stage_id names these stage_id values.",
+          "items": { "$ref": "#/$defs/coverage_stage" }
+        },
+        "formulary_tiers": {
+          "type": "array",
+          "description": "Drug formulary tiers (e.g., generic, preferred brand, non-preferred brand, specialty). Order is preserved. Item shape: $defs/formulary_tier, copied from the pharmacy module v0.2.3 (in core since v1.2.0 draft 6). benefits[].formulary_tier_id, formulary_items[].formulary_tier_id and deductible.applies_to_tiers name these tier_id values.",
+          "items": { "$ref": "#/$defs/formulary_tier" }
+        },
+        "pharmacy_networks": {
+          "type": "array",
+          "description": "Pharmacy network tiers (e.g., preferred retail, standard retail, mail order, specialty pharmacy). A separate concept from the medical `network_tiers[]`. Item shape: $defs/pharmacy_network, copied from the pharmacy module v0.2.3 (in core since v1.2.0 draft 6). benefits[].pharmacy_network_id names these network_id values.",
+          "items": { "$ref": "#/$defs/pharmacy_network" }
+        },
+        "formulary_items": {
+          "type": "array",
+          "description": "Optional drug-level formulary. Each entry places a drug on a formulary tier and carries utilization-management flags and optional indication-dependent coverage. Optional because many plans publish tier structure without a full drug list. This is structure for drug data; adopters supply their own formularies. Item shape: $defs/formulary_item, copied from the pharmacy module v0.2.3 (in core since v1.2.0 draft 6).",
+          "items": { "$ref": "#/$defs/formulary_item" }
+        },
+        "formulary_reference": {
+          "$ref": "#/$defs/formulary_reference",
+          "description": "Provenance and identity metadata for the plan's formulary data. Shape: $defs/formulary_reference, copied from the pharmacy module v0.2.3 (in core since v1.2.0 draft 6). Its source_plan_identifiers name the plan the formulary data was read for, which can differ from this document's own plan_identifiers, so they stay here and are not a second plan identity."
+        },
+        "mail_order_supply_multiplier": {
+          "type": "number",
+          "description": "When mail-order is a 90-day supply for the cost of N retail copays, this is N. Common values: 2.0 (90 for 2x30) or 2.5. Use day_supply on individual benefit entries for exact representations. From the pharmacy module v0.2.3 (in core since v1.2.0 draft 6)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "benefits": {
+      "type": "array",
+      "description": "List of individual benefit items included in the plan.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "benefit_id": {
+            "type": "string",
+            "description": "Unique identifier for this benefit item."
+          },
+          "benefit_type": {
+            "type": "string",
+            "description": "Domain discriminator for this benefit, used to support modules. Recommended values: 'medical', 'pharmacy', 'dental', 'vision', 'behavioral_health', 'maternity', 'pediatric'. Not enforced as enum to allow adopter extension.",
+            "default": "medical"
+          },
+          "coverage_basis": {
+            "type": ["string", "null"],
+            "description": "Which program pays for this benefit (closes gap G7 of the Medicare Advantage notes). Recommended values: 'medicare_covered' (a Medicare-covered service), 'supplemental_mandatory' (a plan-added benefit every member gets, e.g. Humana's 'Mandatory supplemental ... benefit' rows), 'supplemental_optional' (a plan-added benefit the member buys separately). Not enforced as enum to allow adopter extension. Orthogonal to benefit_type, which describes the service domain (medical, dental, hearing), not the paying program. Absent or null means the document does not make the distinction, which is the pre-v1.2.0 reading."
+          },
+          "category": {
+            "type": "string",
+            "description": "High-level category of the benefit (e.g. PHYSICIAN_SERVICES, EMERGENCY_CARE). See vocabularies/categories.json for the recommended vocabulary."
+          },
+          "service_name": {
+            "type": "string",
+            "description": "Human-readable name for the service."
+          },
+          "canonical_key": {
+            "type": "string",
+            "description": "Optional machine-readable canonical identifier for the service (e.g. 'primary_care', 'imaging_advanced'). See vocabularies/canonical-benefits.json for the recommended vocabulary."
+          },
+          "raw_label": {
+            "type": ["string", "null"],
+            "description": "Optional verbatim label from the source document (SBC/EOC) before normalization. Useful for traceability and dispute resolution."
+          },
+          "place_of_service": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Place(s) where the service is typically rendered (e.g. office, hospital)."
+          },
+          "network_cost_shares": {
+            "type": "array",
+            "description": "Cost sharing details for each network tier. To represent multiple cost points on a single benefit within one network (e.g. a 'Value Choice' rate, a 'Standard' rate, and a 'Virtual' rate all in-network), declare each designation or modality as its own entry in network_tiers (tier_class 'cost_designation' or 'modality', parent_tier_id pointing at the network) and key one network_cost_shares entry to each.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "tier_id": {
+                  "type": "string",
+                  "description": "Identifier of the network tier this cost share applies to."
+                },
+                "covered": {
+                  "type": "boolean",
+                  "description": "Indicates whether the service is covered under this tier."
+                },
+                "covered_under": {
+                  "type": ["string", "null"],
+                  "description": "The other benefit the document points to for this service when covered is false (v1.2.0 draft 7; the GatorCare Prime EPO 2026 pharmacy SBC, insulin pumps: 'covered under the medical benefit'). Recommended values: 'medical', 'pharmacy', 'dental', 'vision', 'behavioral_health', a subset of the benefit_type values. Not enforced as enum to allow adopter extension. It records where the document sends the member, not a statement that the other benefit pays: a document may say 'refer to medical plan for coverage' or 'may be covered', so quote its words in notes or source_references. Absent or null means the document names no other benefit, and a reader infers none."
+                },
+                "not_covered_reason": {
+                  "type": ["string", "null"],
+                  "description": "Why covered is false, when the source says (v1.2.0 draft 7; the GatorCare Prime EPO 2026 pharmacy SBC, and the proposal in docs/specs/pbp-importer.md section 9.1). Recommended values: 'excluded' (the document states the service is not covered), 'not_filed' (a filed source has no entry for the service, e.g. a Medicare PBP service the plan filed no entry for), 'covered_under_other_benefit' (the document points to another benefit; see covered_under), 'not_stated' (the document says not covered and gives no reason). Not enforced as enum to allow adopter extension. Absent or null means no reason is recorded, which is the reading before v1.2.0 draft 7."
+                },
+                "cost_shares": {
+                  "type": "array",
+                  "description": "Sequence of cost sharing components applicable to this tier.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "description": "Type of cost share component (e.g. copay, coinsurance, deductible)."
+                      },
+                      "sequence": {
+                        "type": "integer",
+                        "description": "Order in which this cost share is applied."
+                      },
+                      "amount": {
+                        "type": ["number", "null"],
+                        "description": "Dollar amount for copay or flat deductible; null if not applicable."
+                      },
+                      "amount_min": {
+                        "type": ["number", "null"],
+                        "description": "Lower bound of a dollar range, when the document prints a range instead of a single amount (gap G6 of the Medicare Advantage notes; e.g. SCAN restorative dental 'In-network only: $8-$395'). Use with amount_max and leave amount null."
+                      },
+                      "amount_max": {
+                        "type": ["number", "null"],
+                        "description": "Upper bound of a dollar range (gap G6). See amount_min."
+                      },
+                      "rate": {
+                        "type": ["number", "null"],
+                        "description": "Percentage rate (0.0–1.0) for coinsurance; null if not applicable."
+                      },
+                      "rate_min": {
+                        "type": ["number", "null"],
+                        "description": "Lower bound of a coinsurance-rate range (0.0-1.0), when the document prints a range (gap G6 of the Medicare Advantage notes; e.g. SCAN Part B drugs '$0-20% of the Medicare-approved amount'). Use with rate_max and leave rate null."
+                      },
+                      "rate_max": {
+                        "type": ["number", "null"],
+                        "description": "Upper bound of a coinsurance-rate range (0.0-1.0) (gap G6). See rate_min."
+                      },
+                      "basis": {
+                        "type": ["string", "null"],
+                        "description": "Basis for cost share calculation (e.g. per_visit, per_day, per_test, allowed_amount)."
+                      },
+                      "min_amount": {
+                        "type": ["number", "null"],
+                        "description": "Dollar floor under this cost-share step, the mirror of max_amount (v1.2.0 draft 7; the GatorCare Prime EPO 2026 pharmacy SBC, Tier 1: '25% Coinsurance with $10 Min. to $20 Max.'). Pairs with rate or amount: the member pays the rate or amount, but never less than min_amount per min_basis. Absent or null means the document states no floor, which is the reading before v1.2.0 draft 7."
+                      },
+                      "min_basis": {
+                        "type": ["string", "null"],
+                        "description": "Unit the floor applies per (e.g. 'per_34_day_supply', 'per_90_day_supply') (v1.2.0 draft 7). Only meaningful when min_amount is set."
+                      },
+                      "max_amount": {
+                        "type": ["number", "null"],
+                        "description": "Dollar cap on this cost-share step (gap G6 of the Medicare Advantage notes; e.g. Humana insulin '25% up to $35', SCAN Part B insulin 'No more than $35 for a one-month supply'). Pairs with rate or amount: the member pays the rate or amount, but never more than max_amount per max_basis."
+                      },
+                      "max_basis": {
+                        "type": ["string", "null"],
+                        "description": "Unit the cap applies per (e.g. 'per_prescription', 'per_one_month_supply') (gap G6). Only meaningful when max_amount is set."
+                      },
+                      "unit_range": {
+                        "type": ["object", "null"],
+                        "description": "The span of units this cost-share step applies to, when the amount changes with the unit count (closes gap G5 of the Medicare Advantage notes; e.g. Humana inpatient: '$50 copay per day for days 1-6' then '$0 copay per day for days 7-90'). The unit itself stays in basis (e.g. 'per_day'); this object carries only the bounds. Use one cost_shares step per range.",
+                        "properties": {
+                          "from": {
+                            "type": "integer",
+                            "description": "First unit the step applies to, inclusive."
+                          },
+                          "to": {
+                            "type": ["integer", "null"],
+                            "description": "Last unit the step applies to, inclusive (gap G5). Null when the document leaves the range open-ended."
+                          }
+                        },
+                        "required": ["from"],
+                        "additionalProperties": false
+                      },
+                      "applies_to_deductible": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "deductible_ref": {
+                        "type": ["string", "null"],
+                        "description": "Which deductible applies_to_deductible refers to, when the plan has more than one (gap G4 of the Medicare Advantage notes). Recommended values: 'medical', 'pharmacy' (the pharmacy.deductible, e.g. the Part D deductible on SCAN Tiers 3 to 5 and Humana Tiers 4 and 5), and since v1.3.0 'combined' (the combined_* deductible in accumulators, which counts what a member pays in and out of network together; e.g. the 531 Medicare Advantage PPOs of contract year 2027 whose deductible applies in both networks). Absent or null means the plan's medical deductible, which is the pre-v1.2.0 reading; 'medical' and 'pharmacy' keep their meaning in v1.3.0.",
+                        "default": null
+                      },
+                      "applies_to_moop": {
+                        "type": "boolean",
+                        "default": true
+                      },
+                      "moop_ref": {
+                        "type": ["string", "null"],
+                        "description": "Which out-of-pocket maximum applies_to_moop refers to, when the plan has more than one (v1.2.0 draft 6). Recommended values: 'medical' (the out-of-pocket maximums in accumulators), 'pharmacy' (the pharmacy.out_of_pocket_max, e.g. the Medicare Part D out-of-pocket threshold), and since v1.3.0 'combined' (the combined_* maximum in accumulators, which counts what a member pays in and out of network together). A combined maximum counts what the in-network maximum counts, unless the plan says otherwise, so an in-network step keeps 'medical' (or absent) and 'combined' names a step that counts toward the combined maximum and no per-network maximum (e.g. an out-of-network step on a plan with no out-of-network maximum). Absent or null means the plan's medical maximum, which is the reading before v1.2.0 draft 6; 'medical' and 'pharmacy' keep their meaning in v1.3.0.",
+                        "default": null
+                      },
+                      "notes": {
+                        "type": ["string", "null"],
+                        "description": "Free-text qualifier for this cost-share step (e.g. 'copay waived after day 5')."
+                      }
+                    },
+                    "required": ["type", "sequence"],
+                    "additionalProperties": false
+                  }
+                },
+                "notes": {
+                  "type": ["string", "null"],
+                  "description": "Additional notes or qualifiers for this tier's cost share."
+                }
+              },
+              "required": ["tier_id", "covered"],
+              "additionalProperties": false
+            }
+          },
+          "limits": {
+            "type": "array",
+            "description": "Visit, day, or dollar limits applicable to this benefit. Since v1.2.0 draft 8 an entry with unlimited true says the source states no limit of its type; a type with no entry is not stated.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Type of limit (e.g. visits, days, dollars)."
+                },
+                "value": {
+                  "type": ["number", "null"],
+                  "description": "Numeric value of the limit. Null only on an entry with unlimited true (v1.2.0 draft 8), and required to be null there; every other entry carries a number, as before."
+                },
+                "unlimited": {
+                  "type": ["boolean", "null"],
+                  "description": "true when the source states that the benefit has no limit of this type (v1.2.0 draft 8). value is then null, and period, scope, shared_limit_id and carryover do not apply. Motivated by the 2027 Medicare PBP files, where a plan answers 'No' to 'Is there a maximum plan benefit coverage amount?' (pbp_b13c_maxplan_yn \"2\", meals) or 'Yes' to 'Is this benefit unlimited?' (pbp_b10b_bendesc_lim_pal \"1\", trips): with the entry, a reader can tell 'no limit' from 'not read', because a benefit with no limits entry of a type says nothing about that type. type still says which kind of limit the source rules out (dollars, visits, trips), and raw_text quotes the source. Absent, null or false means the entry is a limit with a numeric value, which is the reading before v1.2.0 draft 8."
+                },
+                "period": {
+                  "type": ["string", "null"],
+                  "description": "Period over which the limit applies. Recommended values: per_plan_year, per_calendar_year, per_benefit_period, per_lifetime, per_12_months (a rolling 12-month window; added in v1.2.0 with gap G11 of the Medicare Advantage notes, e.g. SCAN's 'every 12 months' for exams and hearing aids). The v1.1.0 examples per_year and per_episode remain valid; prefer the more specific values when the source document distinguishes plan year from calendar year."
+                },
+                "scope": {
+                  "type": ["string", "null"],
+                  "description": "The entity this limit counts against (closes gap G11 of the Medicare Advantage notes; e.g. 'per_ear' for Humana's hearing aid limit of 1 per ear, 'per_trip', 'per_admission'). Distinct from type, which is the unit being counted (visits, days, aids). Absent or null means the limit counts against the member over the period, which is the pre-v1.2.0 reading."
+                },
+                "shared_limit_id": {
+                  "type": ["string", "null"],
+                  "description": "Shared identifier for one limit counted across several benefits (gap G11 of the Medicare Advantage notes; e.g. SCAN routine acupuncture and routine chiropractic share 'up to 30 visits per year combined'). Limits carrying the same shared_limit_id on different benefits are a single count, not one count each; a consumer that sums limits must count each shared_limit_id once. Extends the limit-scope open item in docs/carin-dic-reconciliation.md section 5."
+                },
+                "carryover": {
+                  "type": ["string", "null"],
+                  "description": "What happens to the unused balance of an allowance-style limit at the end of its period (closes gap G9 of the Medicare Advantage notes). Recommended values: 'none' (expires, e.g. Humana's over-the-counter allowance 'expires at the end of the quarter'), 'next_period' (carries into the next period), 'within_year' (carries between periods within the year but not across years, e.g. SCAN's over-the-counter allowance). Not enforced as enum. Only meaningful on dollar allowances; absent or null means the document does not state a carryover rule."
+                },
+                "raw_text": {
+                  "type": ["string", "null"],
+                  "description": "Optional verbatim limitation text from the source document (e.g. 'Limited to 35 visits per plan year'). Complements the structured type/value/period. Maps to the CARIN Digital Insurance Card BenefitLimitation limitText."
+                }
+              },
+              "required": ["type", "value"],
+              "additionalProperties": false,
+              "if": { "properties": { "unlimited": { "const": true } }, "required": ["unlimited"] },
+              "then": { "properties": { "value": { "type": "null" } } },
+              "else": { "properties": { "value": { "type": "number" } } }
+            }
+          },
+          "conditions": {
+            "type": "array",
+            "description": "Special conditions or qualifiers for this benefit (e.g. prior authorization required).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Condition category (e.g. authorization, referral, clinical)."
+                },
+                "code": {
+                  "type": ["string", "null"],
+                  "description": "Optional code identifying the condition."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Human-readable description of the condition."
+                }
+              },
+              "required": ["type", "description"],
+              "additionalProperties": false
+            }
+          },
+          "moop_applicability": {
+            "type": ["string", "null"],
+            "description": "Specifies whether cost sharing for this benefit counts toward the maximum out-of-pocket (MOOP). Values may include plan_default, include, or exclude. An explicit null (v1.2.0, gap G8 of the Medicare Advantage notes) means the source document does not state the treatment; consumers must treat the benefit's MOOP handling as unknown rather than applying the applies_to_moop default (e.g. SCAN's Part B drug rows, where page 3 excludes 'prescription drugs' from the maximum without saying whether that includes Part B drugs). An absent field keeps its pre-v1.2.0 meaning of plan_default."
+          },
+          "alternative_group": {
+            "type": ["string", "null"],
+            "description": "Shared identifier for benefits the member chooses between (closes gap G10 of the Medicare Advantage notes; e.g. Humana eyewear is a $300 allowance 'or 2 pairs of select eyeglasses per year at no cost', modeled as two benefits carrying the same alternative_group). A consumer that sums benefits must count at most one benefit per group. Absent or null means the benefit is not part of an either/or choice."
+          },
+          "coding_hints": {
+            "type": "object",
+            "description": "Optional hints for mapping the benefit to coding systems like CPT or revenue codes.",
+            "properties": {
+              "cpt_ranges": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "revenue_codes": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            },
+            "additionalProperties": false
+          },
+          "source_references": {
+            "type": "array",
+            "description": "Citations back to the source document for this benefit (closes gap G14 of the Medicare Advantage notes). Same shape as the plan-level source_references; use this to bind an excerpt to the benefit it evidences instead of relying on the plan-level list's ordering. Motivated by the CMS Summary of Benefits documents, whose 70-plus benefit rows make a positional link fragile.",
+            "items": { "$ref": "#/$defs/source_reference" }
+          },
+          "formulary_tier_id": {
+            "type": "string",
+            "description": "References `pharmacy.formulary_tiers[].tier_id`. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type, or when pharmacy.formulary_tiers defines no such tier_id."
+          },
+          "pharmacy_network_id": {
+            "type": "string",
+            "description": "References `pharmacy.pharmacy_networks[].network_id`. Useful when the same drug tier has different cost shares at different pharmacy networks. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type, or when pharmacy.pharmacy_networks defines no such network_id."
+          },
+          "coverage_stage_id": {
+            "type": "string",
+            "description": "References `pharmacy.coverage_stages[].stage_id`. For Medicare Part D plans, you typically have one benefit entry per (tier, network, stage) combination. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type, or when pharmacy.coverage_stages defines no such stage_id."
+          },
+          "day_supply": {
+            "type": "integer",
+            "description": "Day supply this cost-share applies to (e.g., 30, 90). Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
+          },
+          "drug_examples": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Optional list of example drug names commonly in this tier. For documentation only; not authoritative. For an authoritative drug list, use `pharmacy.formulary_items[]`. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
+          },
+          "step_therapy_required": {
+            "type": ["boolean", "null"],
+            "description": "Whether step therapy applies before this drug is covered. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
+          },
+          "quantity_limit": {
+            "$ref": "#/$defs/quantity_limit_detail",
+            "description": "A pharmacy quantity limit, shape $defs/quantity_limit_detail. Applies to benefit_type 'pharmacy': a field of the pharmacy module v0.2.3 benefit extension, in core since v1.2.0 draft 6. scripts/validate.js warns when it is set on a benefit of another benefit_type."
+          }
+        },
+        "required": ["benefit_id", "category", "service_name", "network_cost_shares"],
+        "additionalProperties": false
+      }
+    },
+    "source_references": {
+      "type": "array",
+      "description": "Optional citations back to the source document used to populate this plan.",
+      "items": { "$ref": "#/$defs/source_reference" }
+    },
+    "schema_version": {
+      "type": "string",
+      "description": "Version of the Benefit Plan Standard schema used to validate this document (e.g. '1.3.0')."
+    }
+  },
+  "required": ["plan_id", "plan_name", "carrier", "network_tiers", "benefits"],
+  "additionalProperties": false,
+  "$defs": {
+    "deductible_accumulator": {
+      "type": "object",
+      "description": "A deductible accumulator (individual or family, in-network or out-of-network, or since v1.3.0 in and out of network combined).",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "description": "Dollar amount of the deductible."
+        },
+        "currency": {
+          "type": "string",
+          "default": "USD",
+          "description": "ISO 4217 currency code."
+        },
+        "period": {
+          "type": ["string", "null"],
+          "description": "Accumulation period (e.g. 'per_year', 'per_calendar_year', 'per_plan_year'). Many real SBCs specify this explicitly."
+        },
+        "network_tier": {
+          "type": ["string", "null"],
+          "description": "Network scope: the tier_id of a tier in network_tiers (IN, OUT, POS or another tier_id the document defines). The legacy slots default to the in-network tier, IN; the oon_* slots default to the out-of-network tier, OUT. The combined_* slots (v1.3.0) leave it out: see their descriptions."
+        },
+        "applies_to": {
+          "type": ["string", "null"],
+          "description": "Coverage line the deductible applies to (e.g. medical, pharmacy)."
+        },
+        "embedded": {
+          "type": ["boolean", "null"],
+          "description": "For family deductibles: whether each family member has an embedded individual sub-deductible that contributes to the family max. Common in real plans."
+        }
+      },
+      "required": ["amount"],
+      "additionalProperties": false
+    },
+    "oop_max_accumulator": {
+      "type": "object",
+      "description": "An out-of-pocket maximum accumulator (individual or family, in-network or out-of-network, or since v1.3.0 in and out of network combined).",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "description": "Dollar amount of the out-of-pocket maximum."
+        },
+        "currency": {
+          "type": "string",
+          "default": "USD",
+          "description": "ISO 4217 currency code."
+        },
+        "period": {
+          "type": ["string", "null"],
+          "description": "Accumulation period (e.g. 'per_year', 'per_calendar_year', 'per_plan_year')."
+        },
+        "network_tier": {
+          "type": ["string", "null"],
+          "description": "Network scope: the tier_id of a tier in network_tiers (IN, OUT, POS or another tier_id the document defines). The combined_* slots (v1.3.0) leave it out: see their descriptions."
+        },
+        "applies_to": {
+          "type": ["string", "null"],
+          "description": "Coverage line the OOP max applies to (e.g. medical, pharmacy, integrated)."
+        },
+        "embedded": {
+          "type": ["boolean", "null"],
+          "description": "For family OOP maxes: whether each family member has an embedded individual sub-max that contributes to the family max."
+        }
+      },
+      "required": ["amount"],
+      "additionalProperties": false
+    },
+    "source_reference": {
+      "type": "object",
+      "description": "A citation back to the source document: a page and an excerpt. Used by the plan-level source_references and, since v1.2.0 (gap G14 of the Medicare Advantage notes), by benefits[].source_references. Since v1.2.0 draft 9 also by pharmacy.formulary_items[].source_references and by a formulary list document's source_references (schema/v1.2.0/formulary.schema.json); the pharmacy module v0.2.3 carries a copy of this shape.",
+      "properties": {
+        "document": {
+          "type": ["string", "null"],
+          "description": "Which source document the citation is in, when the plan was read from more than 1 (v1.2.0 draft 7; GatorCare Prime EPO 2026 has a medical SBC and a pharmacy SBC, each with its own page 4). A file name, a URL or other label the publisher chooses. Absent or null means the plan's 1 source document, which is the reading before v1.2.0 draft 7."
+        },
+        "page_number": { "type": "integer" },
+        "page_range":  { "type": "string" },
+        "excerpt":     { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "formulary_tier": {
+      "type": "object",
+      "properties": {
+        "tier_id": {
+          "type": "string",
+          "description": "Plan-defined identifier (e.g., 'T1', 'tier_1', 'generic')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Tier 1: Preferred Generic')."
+        },
+        "drug_class": {
+          "type": "string",
+          "description": "Canonical drug class. Recommended values: 'preferred_generic', 'generic', 'preferred_brand', 'nonpreferred_brand', 'preferred_specialty', 'nonpreferred_specialty', 'preventive'. See vocabularies/canonical-benefits.json pharmacy category for the cross-reference."
+        },
+        "tier_code": {
+          "type": ["string", "null"],
+          "description": "Optional canonical tier code from the FHIR DrugTierVS vocabulary (e.g. 'generic', 'preferred-brand', 'specialty'). Complements the carrier-facing `drug_class`. Adopters may populate either or both; `drug_class` stays the human/source value, `tier_code` the canonical cross-walk target."
+        },
+        "description": {
+          "type": ["string", "null"]
+        }
+      },
+      "required": ["tier_id", "name"],
+      "additionalProperties": false
+    },
+    "pharmacy_network": {
+      "type": "object",
+      "properties": {
+        "network_id": {
+          "type": "string",
+          "description": "Plan-defined identifier (e.g., 'PREFERRED_RETAIL', 'MAIL_ORDER', 'SPECIALTY_PHARMACY')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name."
+        },
+        "network_type": {
+          "type": "string",
+          "description": "Recommended values: 'preferred_retail', 'standard_retail', 'mail_order', 'specialty_pharmacy', 'long_term_care'."
+        },
+        "default_day_supply": {
+          "type": ["integer", "null"],
+          "description": "Default day supply for this network (e.g., 30 retail, 90 mail-order)."
+        }
+      },
+      "required": ["network_id", "name"],
+      "additionalProperties": false
+    },
+    "coverage_stage": {
+      "type": "object",
+      "properties": {
+        "stage_id": {
+          "type": "string",
+          "description": "Plan-defined identifier. Medicare Part D canonical values (post-2025 redesign): 'DEDUCTIBLE', 'INITIAL', 'CATASTROPHIC'. 'COVERAGE_GAP' remains valid for plan years before 2025."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Deductible', 'Initial Coverage', 'Catastrophic Coverage')."
+        },
+        "stage_type": {
+          "type": "string",
+          "description": "Recommended Medicare Part D values (post-2025 redesign): 'deductible', 'initial', 'catastrophic'. 'coverage_gap' remains valid for plan years before 2025. Commercial plans may use other values."
+        },
+        "applies_before_total_drug_cost": {
+          "type": ["number", "null"],
+          "description": "Total-drug-cost ceiling at which this stage ends (Medicare Part D)."
+        },
+        "applies_after_total_out_of_pocket": {
+          "type": ["number", "null"],
+          "description": "Total-OOP threshold at which this stage begins (Medicare Part D catastrophic)."
+        }
+      },
+      "required": ["stage_id", "name"],
+      "additionalProperties": false
+    },
+    "quantity_limit_detail": {
+      "type": "object",
+      "description": "A pharmacy quantity limit. Shared shape, referenced by the per-benefit extension, by `formulary_item`, and by an indication-level `restrictions_override`.",
+      "properties": {
+        "value":  { "type": "number" },
+        "units":  { "type": "string", "description": "e.g., 'tablets', 'capsules', 'mL', 'doses', 'pens'. Optional since v0.2.3 (the Benefit Plan Standard 1.2.0 draft 9): the CMS Part D formulary files give a quantity limit as an amount and a number of days, with no unit. Absent means the source states no unit." },
+        "period": { "type": ["string", "null"], "description": "e.g., 'per_30_days', 'per_90_days', 'per_fill'" }
+      },
+      "required": ["value"],
+      "additionalProperties": false
+    },
+    "formulary_item": {
+      "type": "object",
+      "description": "A single drug placed on a formulary tier, with utilization-management flags and optional indication-dependent coverage.",
+      "properties": {
+        "rxcui":        { "type": "string", "description": "RxNorm Concept Unique Identifier. Primary drug identifier; required when the item is populated." },
+        "drug_name":    { "type": "string", "description": "Human-readable drug name. Optional since v0.2.3 (the Benefit Plan Standard 1.2.0 draft 9): the CMS Part D formulary files identify a drug by RXCUI and NDC and name none, and rxcui identifies the drug. Absent means the source names no drug." },
+        "ndc":          { "type": ["string", "null"], "description": "11-digit NDC, secondary identifier." },
+        "brand_name":   { "type": ["string", "null"] },
+        "generic_name": { "type": ["string", "null"] },
+        "dose_form":    { "type": ["string", "null"] },
+        "formulary_tier_id": { "type": "string", "description": "References pharmacy.formulary_tiers[].tier_id." },
+        "covered":      { "type": "boolean", "description": "Default coverage status when no coverage_exception matches." },
+        "prior_authorization": { "type": ["boolean", "null"], "default": false },
+        "step_therapy":        { "type": ["boolean", "null"], "default": false },
+        "step_therapy_drugs":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "Drugs required as prior steps." },
+        "quantity_limit":      { "$ref": "#/$defs/quantity_limit_detail" },
+        "specialty_pharmacy_required": { "type": ["boolean", "null"], "default": false },
+        "coverage_exceptions": { "type": "array", "items": { "$ref": "#/$defs/coverage_exception" }, "description": "Indication-dependent overrides on the default coverage. Empty/absent = the `covered` value applies in all indications." },
+        "alternatives":        { "type": "array", "items": { "$ref": "#/$defs/formulary_alternative" } },
+        "coverage_basis":      { "type": ["string", "null"], "description": "Which program pays for this drug (v0.2.3; the Benefit Plan Standard 1.2.0 draft 9), with the recommended values of benefits[].coverage_basis in the core schema: 'medicare_covered' for a drug covered under Medicare Part D (a row of the CMS Basic Drugs Formulary file), 'supplemental_mandatory' for a drug that Part D excludes and the plan covers as a supplemental benefit every member gets (a row of the CMS Excluded Drugs Formulary file, which enhanced alternative plans may elect to cover). Not enforced as enum. A plan can list the same rxcui twice, once per coverage_basis: the contract year 2027 CMS files have 43 such plan rows. Absent or null means the document does not make the distinction." },
+        "negotiation_selected_drug": { "type": ["boolean", "null"], "description": "true when the drug is one of the Part D drugs selected for negotiation under the Medicare Drug Price Negotiation Program, as the CMS Part D formulary files flag it (SELECTED_DRUG_YN) (v0.2.3; the Benefit Plan Standard 1.2.0 draft 9). Absent or null means the source does not say." },
+        "capped_benefit":      { "type": ["boolean", "null"], "description": "true when the source flags a capped benefit restriction on the drug, as the CMS Excluded Drugs Formulary file does (CAPPED_BENEFIT_YN) with no amount (v0.2.3; the Benefit Plan Standard 1.2.0 draft 9). Absent or null means the source does not say." },
+        "source_references":   { "type": "array", "items": { "$ref": "#/$defs/source_reference" }, "description": "Citations for this item's values, the shape of benefits[].source_references in the core schema (v0.2.3; the Benefit Plan Standard 1.2.0 draft 9). For an item read from a CMS formulary file: the row it was read from." }
+      },
+      "required": ["rxcui", "formulary_tier_id", "covered"],
+      "additionalProperties": false
+    },
+    "coverage_exception": {
+      "type": "object",
+      "description": "An indication-specific override on a formulary item's default coverage. Models the same drug having different coverage by clinical indication (e.g. a GLP-1 covered for type 2 diabetes, excluded for weight management, covered-with-restrictions for cardiovascular risk reduction). No equivalent exists in FHIR DaVinci FormularyItem.",
+      "properties": {
+        "indication_code":        { "type": ["string", "null"], "description": "ICD-10-CM code (or other code-system value) for the indication." },
+        "indication_description": { "type": "string", "description": "Human-readable indication name." },
+        "coverage_status":        { "type": "string", "enum": ["covered", "excluded", "conditional"], "description": "Coverage for this indication." },
+        "formulary_tier_id_override": { "type": ["string", "null"], "description": "A different pharmacy.formulary_tiers[].tier_id that applies for this indication." },
+        "restrictions_override":  { "type": ["object", "null"], "description": "PA/ST/QL flags that override the item-level defaults for this indication.",
+          "properties": {
+            "prior_authorization": { "type": ["boolean", "null"] },
+            "step_therapy":        { "type": ["boolean", "null"] },
+            "quantity_limit":      { "$ref": "#/$defs/quantity_limit_detail" }
+          },
+          "additionalProperties": false
+        },
+        "conditions": { "type": ["string", "null"], "description": "Human-readable coverage conditions (e.g. 'documented ASCVD; BMI criteria may apply')." }
+      },
+      "required": ["indication_description", "coverage_status"],
+      "additionalProperties": false
+    },
+    "formulary_alternative": {
+      "type": "object",
+      "description": "A suggested alternative drug for a formulary item (e.g. a preferred therapeutic equivalent).",
+      "properties": {
+        "rxcui":     { "type": "string", "description": "RxNorm Concept Unique Identifier of the alternative drug." },
+        "drug_name": { "type": "string", "description": "Human-readable name of the alternative drug." },
+        "formulary_tier_id": { "type": ["string", "null"], "description": "References pharmacy.formulary_tiers[].tier_id, if the alternative is on this plan's formulary." }
+      },
+      "required": ["rxcui", "drug_name"],
+      "additionalProperties": false
+    },
+    "formulary_reference": {
+      "type": "object",
+      "description": "Provenance and identity metadata for the plan's formulary data.",
+      "properties": {
+        "formulary_id":   { "type": ["string", "null"] },
+        "formulary_url":  { "type": ["string", "null"], "format": "uri" },
+        "formulary_version": { "type": ["string", "null"], "description": "The version of the formulary the items were read from, as its source names it (v0.2.3; the Benefit Plan Standard 1.2.0 draft 9). The CMS Part D formulary files give each FORMULARY_ID a FORMULARY_VERSION, and the list under 1 id can change from 1 monthly file to the next. Absent or null means the source names no version." },
+        "formulary_items_url": { "type": ["string", "null"], "format": "uri-reference", "description": "Where the plan's drug list is published as a formulary list document (schema/v1.2.0/formulary.schema.json), for a list that many plans share and that is written once (v0.2.3; the Benefit Plan Standard 1.2.0 draft 9). A URI, or a reference relative to this document. The plan's drug list is then the list's formulary_items together with this document's own pharmacy.formulary_items, and an item here replaces a list item with the same rxcui and coverage_basis. The list carries no tiers: its formulary_tier_id values name tiers in this document's pharmacy.formulary_tiers. Absent or null means the plan's drug list, if it has one, is pharmacy.formulary_items alone." },
+        "pharmacy_benefit_manager": { "type": ["string", "null"] },
+        "completeness":   { "type": "string", "enum": ["none", "tier_structure_only", "partial", "full_formulary"] },
+        "source_plan_identifiers": {
+          "type": ["object", "null"],
+          "description": "Public identifiers used to join external formulary data to this plan. They name the plan the formulary file was read for, which can differ from the document's own plan_identifiers, so they stay pharmacy-scoped.",
+          "properties": {
+            "hios_id":         { "type": ["string", "null"], "description": "14-char marketplace/QHP HIOS plan ID." },
+            "cms_contract_id": { "type": ["string", "null"], "description": "Medicare Contract ID." },
+            "cms_pbp_id":      { "type": ["string", "null"], "description": "Medicare PBP ID." }
+          },
+          "additionalProperties": false
+        },
+        "data_sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source_type":      { "type": "string", "enum": ["sbc_extraction", "spd_extraction", "cms_qhp_formulary", "cms_part_d_formulary", "fhir_davinci_formulary", "carrier_formulary_document", "carrier_api", "manual_entry"], "description": "Origin of this data source. `sbc_extraction` / `spd_extraction`: extracted from the plan's SBC or SPD. `cms_qhp_formulary` / `cms_part_d_formulary`: a CMS machine-readable formulary file. `fhir_davinci_formulary`: a payer Da Vinci PDex Formulary API. `carrier_formulary_document` (v0.2.1): a carrier-published formulary document such as a medication guide, a prior-authorization program list, a program drug list, or a pharmacy policy bulletin; identify the document with `source_url` and `file_date`. `carrier_api`: a carrier or PBM API other than FHIR. `manual_entry`: keyed in by a person." },
+              "source_url":       { "type": ["string", "null"] },
+              "import_timestamp": { "type": "string" },
+              "file_date":        { "type": ["string", "null"] },
+              "extraction_stage": { "type": ["string", "null"] },
+              "notes":            { "type": ["string", "null"] }
+            },
+            "required": ["source_type", "import_timestamp"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

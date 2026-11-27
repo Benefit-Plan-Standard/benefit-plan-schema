@@ -25,6 +25,12 @@
  * longer required; a copy of core's source_reference), if a new property becomes
  * required, or if schema/v1.2.0/formulary.schema.json stops validating a list of
  * core formulary items.
+ * v1.3.0 draft 1 (2026-11-27): fails if schema/v1.3.0 differs from v1.2.0 by anything but the 4
+ * combined_* accumulator slots, their example and the descriptions; if a combined slot takes a
+ * network_tier other than absent or null, or a per-network slot stops taking a tier id; if
+ * deductible_ref and moop_ref stop naming 'combined' or change type; if a document of v1.2.0
+ * (the examples, the pharmacy module examples, the formulary list) stops validating against
+ * v1.3.0; or if schema/v1.3.0/formulary.schema.json differs from v1.2.0's by more than its $id.
  * Needs a local copy of Ajv (npm install ajv ajv-formats).
  */
 
@@ -59,7 +65,10 @@ const minimal = (extra = {}, tier = {}) => ({
   schema_version: '1.2.0',
 });
 
-test('every document in examples/ validates against its own schema version and against v1.2.0', () => {
+const v130 = compile('1.3.0');
+const errorsOf130 = (doc) => (v130(doc) ? [] : v130.errors.map((e) => `${e.instancePath || '(root)'} ${e.message}`));
+
+test('every document in examples/ validates against its own schema version and against v1.3.0, and one of v1.2.0 or before also against v1.2.0', () => {
   const files = fs.readdirSync(EXAMPLES_DIR).filter((f) => f.endsWith('.json')).sort();
   assert.ok(files.length >= 22, `only ${files.length} documents in examples/`);
   const own = {};
@@ -67,7 +76,8 @@ test('every document in examples/ validates against its own schema version and a
     const doc = readJson(path.join(EXAMPLES_DIR, f));
     own[doc.schema_version] = own[doc.schema_version] || compile(doc.schema_version);
     assert.ok(own[doc.schema_version](doc), `${f} fails its own v${doc.schema_version}`);
-    assert.deepStrictEqual(errorsOf(doc), [], `${f} fails v1.2.0`);
+    assert.deepStrictEqual(errorsOf130(doc), [], `${f} fails v1.3.0`);
+    if (doc.schema_version !== '1.3.0') assert.deepStrictEqual(errorsOf(doc), [], `${f} fails v1.2.0`);
   }
 });
 
@@ -499,4 +509,138 @@ test('v1.2.0 draft 9: premium.drug_amount, the Part D part of a Medicare Advanta
   assert.ok(P.properties.drug_amount.description.includes('Absent or null means the document gives no Part D part'));
   assert.ok(P.description.includes('the monthly plan premium is then amount plus drug_amount'));
   assert.ok(CORE.description.includes('it adds 7 optional properties'));
+});
+
+// ---- v1.3.0 draft 1: amounts that cover both networks together -------------------------
+const V130 = readJson(path.join(REPO, 'schema', 'v1.3.0', 'benefit-plan.schema.json'));
+const V130_LIST = readJson(path.join(REPO, 'schema', 'v1.3.0', 'formulary.schema.json'));
+const COMBINED = {
+  combined_individual_deductible: 'deductible_accumulator',
+  combined_family_deductible: 'deductible_accumulator',
+  combined_individual_oop_max: 'oop_max_accumulator',
+  combined_family_oop_max: 'oop_max_accumulator',
+};
+const ACC130 = V130.properties.accumulators;
+const STEP130 = V130.properties.benefits.items.properties.network_cost_shares.items.properties.cost_shares.items;
+const minimal130 = (extra = {}) => ({ ...minimal(extra), schema_version: '1.3.0' });
+// H7849-002 (HealthSpring True Choice, PPO) as the 2027 PBP files state it: $525 in and out of
+// network, $4,450 in network, $6,700 in and out of network combined.
+const H7849 = {
+  individual_oop_max: { amount: 4450, currency: 'USD', network_tier: 'IN', applies_to: 'medical' },
+  combined_individual_deductible: { amount: 525, currency: 'USD', applies_to: 'medical' },
+  combined_individual_oop_max: { amount: 6700, currency: 'USD', applies_to: 'medical' },
+};
+
+test('v1.3.0 draft 1: the schema is v1.2.0 plus the 4 combined accumulator slots, their example and descriptions', () => {
+  const bare = (s) => {
+    const copy = JSON.parse(JSON.stringify(s));
+    for (const k of Object.keys(COMBINED)) delete copy.properties.accumulators.properties[k];
+    delete copy.properties.accumulators.examples;
+    const { $id, ...rest } = shape(copy);
+    return rest;
+  };
+  assert.deepStrictEqual(bare(V130), bare(CORE));
+  assert.strictEqual(V130.$id, 'https://benefitplanstandard.org/schema/v1.3.0/benefit-plan.schema.json');
+  // Every shape copied from the pharmacy module, and every other definition, is v1.2.0's, descriptions included.
+  for (const name of Object.keys(CORE.$defs)) {
+    if (name === 'deductible_accumulator' || name === 'oop_max_accumulator') continue;
+    assert.deepStrictEqual(V130.$defs[name], CORE.$defs[name], `$defs/${name}`);
+  }
+  assert.deepStrictEqual(Object.keys(V130.properties), Object.keys(CORE.properties), 'no new top-level property');
+  assert.deepStrictEqual(Object.keys(ACC130.properties),
+    [...Object.keys(CORE.properties.accumulators.properties), ...Object.keys(COMBINED)], 'the 4 slots follow the 8 of v1.2.0');
+  for (const [k, def] of Object.entries(COMBINED)) assert.strictEqual(ACC130.properties[k].$ref, `#/$defs/${def}`, `${k} is a ${def}`);
+  assert.strictEqual(ACC130.additionalProperties, false);
+  assert.strictEqual(ACC130.required, undefined, 'every slot stays optional');
+  assert.ok(V130.description.startsWith('Canonical JSON schema for representing normalized health benefit plans across carriers. DRAFT: v1.3.0'));
+  assert.ok(V130.description.includes('Draft 1, on 2026-11-27, lets an amount cover the in-network and out-of-network tiers together.'));
+  assert.ok(V130.description.endsWith(CORE.description.slice(CORE.description.indexOf('v1.2.0, released on 2026-11-13'))), 'the v1.2.0 description follows');
+});
+
+test('v1.3.0 draft 1: a combined slot takes network_tier absent or null, and nothing else; the per-network slots are unchanged', () => {
+  for (const k of Object.keys(COMBINED)) {
+    const at = `/accumulators/${k}`;
+    const doc = (slot) => minimal130({ accumulators: { [k]: { amount: 6700, currency: 'USD', applies_to: 'medical', ...slot } } });
+    assert.deepStrictEqual(errorsOf130(doc({})), [], `${k}, network_tier absent`);
+    assert.deepStrictEqual(errorsOf130(doc({ network_tier: null })), [], `${k}, network_tier null`);
+    for (const t of ['IN', 'OUT', 'POS', 'combined']) assert.ok(errorsOf130(doc({ network_tier: t })).includes(`${at}/network_tier must be null`), `${k}, ${t}`);
+    assert.ok(errorsOf130(doc({ amount: undefined })).includes(`${at} must have required property 'amount'`), `${k} needs an amount`);
+    assert.ok(errorsOf130(doc({ scope: 'both' })).includes(`${at} must NOT have additional properties`), `${k} has the shape's properties only`);
+    if (k.includes('family')) assert.deepStrictEqual(errorsOf130(doc({ embedded: true })), [], `${k} takes embedded`);
+    assert.ok(errorsOf(doc({})).some((e) => e.includes('additional properties')), `${k} is not in v1.2.0`);
+    assert.deepStrictEqual(shape(ACC130.properties[k].properties), { network_tier: { type: 'null' } });
+    assert.ok(ACC130.properties[k].properties.network_tier.description.includes('the only place where null has this meaning'));
+  }
+  for (const k of Object.keys(CORE.properties.accumulators.properties)) {
+    assert.deepStrictEqual(ACC130.properties[k], CORE.properties.accumulators.properties[k], k);
+    for (const t of ['IN', 'OUT', 'POS', null]) assert.deepStrictEqual(errorsOf130(minimal130({ accumulators: { [k]: { amount: 1, network_tier: t } } })), [], `${k}, ${t}`);
+  }
+  for (const def of ['deductible_accumulator', 'oop_max_accumulator']) {
+    assert.deepStrictEqual(shape(V130.$defs[def]), shape(CORE.$defs[def]), def);
+    assert.ok(V130.$defs[def].properties.network_tier.description.startsWith(CORE.$defs[def].properties.network_tier.description), `${def}: the v1.2.0 words stay`);
+  }
+  assert.ok(V130.$defs.deductible_accumulator.properties.network_tier.description.includes('The legacy slots default to the in-network tier, IN'));
+});
+
+test('v1.3.0 draft 1: the H7849-002 example validates, a combined slot sits beside the in-network one, and the descriptions say how they count', () => {
+  assert.deepStrictEqual(ACC130.examples, [H7849]);
+  assert.deepStrictEqual(errorsOf130(minimal130({ accumulators: H7849 })), []);
+  assert.ok(errorsOf(minimal({ accumulators: H7849 })).length > 0, 'v1.2.0 has no slot for the combined amounts');
+  const desc = (k) => ACC130.properties[k].description;
+  assert.ok(ACC130.description.includes('a combined maximum counts what the in-network maximum counts, unless the plan says otherwise'));
+  assert.ok(desc('combined_individual_oop_max').includes('A combined maximum counts what the in-network maximum counts, unless the plan says otherwise'));
+  assert.ok(desc('combined_individual_oop_max').includes('individual_oop_max $4,450 in network, combined_individual_oop_max $6,700'));
+  assert.ok(desc('combined_individual_deductible').includes('written here only, never also as individual_deductible'));
+  assert.ok(ACC130.description.includes('A document that has a combined slot may have no legacy slot for that amount'));
+  assert.ok(desc('combined_family_oop_max').includes('counts what the in-network family maximum counts'));
+});
+
+test("v1.3.0 draft 1: deductible_ref and moop_ref take 'combined' as a recommended value; medical and pharmacy keep their meaning", () => {
+  const plan = (cs, tier = 'OUT') => minimal130({
+    network_tiers: [{ tier_id: 'IN', name: 'In-Network' }, { tier_id: 'OUT', name: 'Out-of-Network' }],
+    accumulators: H7849,
+    benefits: [{
+      benefit_id: 'PBP_7D', category: 'PHYSICIAN_SERVICES', service_name: 'Specialist',
+      network_cost_shares: [{ tier_id: tier, covered: true, cost_shares: [{ type: 'coinsurance', sequence: 1, rate: 0.4, ...cs }] }],
+    }],
+  });
+  assert.deepStrictEqual(errorsOf130(plan({ applies_to_deductible: true, deductible_ref: 'combined', applies_to_moop: true, moop_ref: 'combined' })), [],
+    'an out-of-network step on a plan with no out-of-network maximum');
+  assert.deepStrictEqual(errorsOf130(plan({ applies_to_deductible: true, deductible_ref: 'combined', applies_to_moop: true }, 'IN')), [],
+    'an in-network step keeps the in-network maximum');
+  // Already strings in v1.2.0: a 1.2.0 validator accepts 'combined' too.
+  assert.deepStrictEqual(errorsOf({ ...plan({ deductible_ref: 'combined', moop_ref: 'combined' }), accumulators: {}, schema_version: '1.2.0' }), []);
+  for (const k of ['deductible_ref', 'moop_ref']) {
+    assert.deepStrictEqual(STEP130.properties[k], { ...STEP.properties[k], description: STEP130.properties[k].description }, `${k}: only the description changes`);
+    assert.ok(STEP130.properties[k].description.includes("since v1.3.0 'combined' (the combined_*"), k);
+    assert.ok(STEP130.properties[k].description.includes("'medical' and 'pharmacy' keep their meaning in v1.3.0"), k);
+    assert.ok(errorsOf130(plan({ [k]: 1 })).some((e) => e.includes(k)), `${k} stays a string`);
+  }
+  assert.ok(STEP130.properties.moop_ref.description.includes("an in-network step keeps 'medical' (or absent)"));
+  assert.deepStrictEqual(STEP130.properties.applies_to_moop, STEP.properties.applies_to_moop);
+  assert.deepStrictEqual(STEP130.properties.applies_to_deductible, STEP.properties.applies_to_deductible);
+});
+
+test('v1.3.0 draft 1: every v1.2.0 document stays valid (the pharmacy module examples, a formulary list), and formulary.schema.json is the v1.2.0 one with its own $id', () => {
+  for (const dir of [path.join(MODULE_DIR, 'examples'), path.join(MODULE_V022_DIR, 'examples'), path.join(MODULE_V021_DIR, 'examples')]) {
+    for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.json'))) {
+      assert.deepStrictEqual(errorsOf130(readJson(path.join(dir, f))), [], `${dir} ${f}`);
+    }
+  }
+  const { $id, ...list130 } = V130_LIST;
+  const { $id: id120, ...list120 } = readJson(path.join(REPO, 'schema', 'v1.2.0', 'formulary.schema.json'));
+  assert.deepStrictEqual(list130, list120);
+  assert.strictEqual($id, 'https://benefitplanstandard.org/schema/v1.3.0/formulary.schema.json');
+  assert.strictEqual(id120, 'https://benefitplanstandard.org/schema/v1.2.0/formulary.schema.json');
+  const Ajv2020 = require('ajv/dist/2020');
+  const ajv = new Ajv2020({ allErrors: true, strict: false });
+  require('ajv-formats')(ajv);
+  ajv.addSchema(V130);
+  const check = ajv.compile(V130_LIST);
+  const list = {
+    formulary_reference: { formulary_id: '00027000', formulary_version: '8', completeness: 'full_formulary' },
+    plan_year: 2027, formulary_items: [partDItem()], schema_version: '1.3.0',
+  };
+  assert.ok(check(list), JSON.stringify(check.errors));
+  assert.ok(!check({ ...list, formulary_items: [partDItem({ formulary_tier_id: undefined })] }), 'items have the v1.3.0 core shape');
 });

@@ -3690,5 +3690,5 @@
       "excerpt": "beneficiary cost file  20261031.txt: 30 rows for H1036-068-000, tiers 1, 2, 3, 4, 5. The same tiers as pharmacy.formulary_tiers, which the PBP files give; the file's cost cells are compared with the Part D benefits and not written (docs/specs/partd-formulary-importer.md sections 7.3 and 8)."
     }
   ],
-  "schema_version": "1.2.0"
+  "schema_version": "1.3.0"
 }

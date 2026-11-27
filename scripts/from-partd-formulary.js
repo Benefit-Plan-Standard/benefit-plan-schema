@@ -4,8 +4,8 @@
  *
  * Reads the CMS public use file "Prescription Drug Plan Formulary and Pharmacy
  * Network Information" (the monthly zip, unzipped) and writes the drug lists of
- * Medicare Part D plans in Benefit Plan Standard v1.2.0 (since draft 9): a formulary list
- * (schema/v1.2.0/formulary.schema.json) once per FORMULARY_ID, and a plan document
+ * Medicare Part D plans in Benefit Plan Standard v1.3.0 (v1.2.0 since draft 9): a formulary list
+ * (schema/v1.3.0/formulary.schema.json) once per FORMULARY_ID, and a plan document
  * that is the Medicare Advantage importer's document for the same plan
  * (scripts/from-pbp.js) with pharmacy.formulary_reference and the plan's own
  * formulary items added. Spec and mapping: docs/specs/partd-formulary-importer.md.
@@ -46,7 +46,7 @@ const PBP_DATA_DIR = path.join(REPO_ROOT, 'data', 'pbp');
 const EXAMPLES_DIR = path.join(REPO_ROOT, 'examples', 'partd-formulary');
 const FIXTURE_DIR = path.join(REPO_ROOT, 'test', 'fixtures', 'partd-formulary');
 const PBP_FIXTURE_DIR = path.join(REPO_ROOT, 'test', 'fixtures', 'pbp');
-const SCHEMA_VERSION = '1.2.0';
+const SCHEMA_VERSION = '1.3.0';
 const SPEC = 'docs/specs/partd-formulary-importer.md';
 
 // The 5 example plans (spec section 12): examples/partd-formulary/plans/<plan>.json and
@@ -636,7 +636,7 @@ function validatorsOnce() {
   try { require('ajv-formats')(ajv); } catch (e) { /* optional */ }
   const read = (f) => JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'schema', 'v' + SCHEMA_VERSION, f), 'utf8'));
   ajv.addSchema(read('benefit-plan.schema.json'));
-  const plan = ajv.getSchema('https://benefitplanstandard.org/schema/v1.2.0/benefit-plan.schema.json');
+  const plan = ajv.getSchema(`https://benefitplanstandard.org/schema/v${SCHEMA_VERSION}/benefit-plan.schema.json`);
   const list = ajv.compile(read('formulary.schema.json'));
   const run = (v) => (doc) => (v(doc) ? [] : v.errors.map((e) => `${e.instancePath || '(root)'} ${e.message}`));
   validators = { plan: run(plan), list: run(list) };

@@ -48,7 +48,7 @@ const pbpLike = (key, tierIds, definedStandard = !tierIds) => ({
   pharmacy: { deductible: { amount: 0, currency: 'USD' }, ...(tierIds ? { formulary_tiers: tierIds.map((t) => ({ tier_id: t, name: `Tier ${t.slice(1)}` })) } : {}) },
   benefits: [],
   source_references: definedStandard ? [{ excerpt: `Part D: pbp_mrx.txt mrx_drug_ben_yn "1" (Yes), ${m.DEFINED_STANDARD}.` }] : [],
-  schema_version: '1.2.0',
+  schema_version: '1.3.0',
 });
 const costTiers = (r, key) => [...new Set(r.cost.get(key).map((row) => Number(row.cells[4])))].sort((a, b) => a - b).map((n) => `T${n}`);
 

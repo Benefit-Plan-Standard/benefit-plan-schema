@@ -15,14 +15,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Humana Gold Plus H1036-068 (HMO)</b></p><p>Carrier: Humana. Plan type: HMO. Period: 2027 to 2027.</p><p>16 benefits are placed in CARIN SBC benefit categories. 22 benefits have no code in the SBC benefit category code system and 42 Part D benefits (benefits with a coverage stage, which the SBC profile has no place for) are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document HUMANA_GOLD_PLUS_H1036_068_HMO_H1036_068_000 (schema version 1.2.0).</p></div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Humana Gold Plus H1036-068 (HMO)</b></p><p>Carrier: Humana. Plan type: HMO. Period: 2027 to 2027.</p><p>16 benefits are placed in CARIN SBC benefit categories. 22 benefits have no code in the SBC benefit category code system and 42 Part D benefits (benefits with a coverage stage, which the SBC profile has no place for) are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>Converted from Benefit Plan Standard document HUMANA_GOLD_PLUS_H1036_068_HMO_H1036_068_000 (schema version 1.3.0).</p></div>"
         },
         "extension": [
           {
             "extension": [
               {
                 "url": "schemaVersion",
-                "valueString": "1.2.0"
+                "valueString": "1.3.0"
               },
               {
                 "url": "planYear",

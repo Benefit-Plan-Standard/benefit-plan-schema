@@ -18,10 +18,12 @@
  * Usage:
  *   npm install ajv ajv-formats        (one time)
  *   node scripts/validate.js examples/aetna_example.json
+ *   node scripts/validate.js plan.json                    (against v1.3.0, since the 1.3.0 draft 1;
+ *                                                         it was v1.2.0)
  *   node scripts/validate.js --schema schema/v1.2.0/benefit-plan.schema.json plan.json
  *   node scripts/validate.js --no-vocab plan.json          (layer 1 only)
  *   node scripts/validate.js --strict-vocab plan.json      (warnings also fail)
- *   node scripts/validate.js --schema schema/v1.2.0/formulary.schema.json list.json
+ *   node scripts/validate.js --schema schema/v1.3.0/formulary.schema.json list.json
  *                                       (a formulary list, v1.2.0 draft 9; the core
  *                                        schema beside it is loaded for its $refs)
  *
@@ -35,7 +37,7 @@ const fs = require('fs');
 const path = require('path');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
-const DEFAULT_SCHEMA = path.join(REPO_ROOT, 'schema', 'v1.2.0', 'benefit-plan.schema.json');
+const DEFAULT_SCHEMA = path.join(REPO_ROOT, 'schema', 'v1.3.0', 'benefit-plan.schema.json');
 const VOCAB_DIR = path.join(REPO_ROOT, 'vocabularies');
 
 function readJson(p) {

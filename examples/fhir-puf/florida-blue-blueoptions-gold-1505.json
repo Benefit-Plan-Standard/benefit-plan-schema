@@ -15,14 +15,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>BlueOptions Gold 1505 ($0 Virtual Visits / $20 PCP Visits / $15 Generic Meds / Rewards $$$)</b></p><p>Carrier: Florida Blue (BlueCross BlueShield FL). Plan type: EPO. Period: 2023-01-01 to 2023-12-31.</p><p>27 benefits are placed in CARIN SBC benefit categories. 25 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>9 benefits are not covered on any tier and are listed in the excluded-services extension, derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p><p>Converted from Benefit Plan Standard document FLORIDA_BLUE_BLUEOPTIONS_GOLD_1505 (schema version 1.2.0).</p></div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>BlueOptions Gold 1505 ($0 Virtual Visits / $20 PCP Visits / $15 Generic Meds / Rewards $$$)</b></p><p>Carrier: Florida Blue (BlueCross BlueShield FL). Plan type: EPO. Period: 2023-01-01 to 2023-12-31.</p><p>27 benefits are placed in CARIN SBC benefit categories. 25 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>9 benefits are not covered on any tier and are listed in the excluded-services extension, derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p><p>Converted from Benefit Plan Standard document FLORIDA_BLUE_BLUEOPTIONS_GOLD_1505 (schema version 1.3.0).</p></div>"
         },
         "extension": [
           {
             "extension": [
               {
                 "url": "schemaVersion",
-                "valueString": "1.2.0"
+                "valueString": "1.3.0"
               },
               {
                 "url": "planYear",
@@ -48,7 +48,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Plan Attributes PUF values with no Benefit Plan Standard v1.2.0 field, verbatim: CSRVariationType \"Standard Gold On Exchange Plan\"; PlanVariantMarketingName \"BlueOptions Gold 1505 ($0 Virtual Visits / $20 PCP Visits / $15 Generic Meds / Rewards $$$)\"; MetalLevel \"Gold\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"Yes\"; FirstTierUtilization \"0%\"; SecondTierUtilization \"100%\"; NetworkId \"FLN001\"; ServiceAreaId \"FLS001\"; FormularyId \"FLF008\"; NationalNetwork \"Yes\"; IsReferralRequiredForSpecialist \"No\"; OutOfCountryCoverage \"Yes\"; OutOfCountryCoverageDescription \"Covered services as outlined in the member contract.\"; OutOfServiceAreaCoverage \"Yes\"; OutOfServiceAreaCoverageDescription \"Covered services as outlined in the member contract.\"; InpatientCopaymentMaximumDays \"3\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.819239484\"; FormularyURL \"https://www.myprime.com/content/dam/prime/memberportal/WebDocs/2023/Formularies/HIM/2023_FL_7T_CareChoices.pdf\"; PlanBrochure \"https://www.floridablue.com/plan-brochure/bo\"."
+                "valueString": "Plan Attributes PUF values with no Benefit Plan Standard v1.3.0 field, verbatim: CSRVariationType \"Standard Gold On Exchange Plan\"; PlanVariantMarketingName \"BlueOptions Gold 1505 ($0 Virtual Visits / $20 PCP Visits / $15 Generic Meds / Rewards $$$)\"; MetalLevel \"Gold\"; DesignType \"Not Applicable\"; IsHSAEligible \"No\"; MultipleInNetworkTiers \"Yes\"; FirstTierUtilization \"0%\"; SecondTierUtilization \"100%\"; NetworkId \"FLN001\"; ServiceAreaId \"FLS001\"; FormularyId \"FLF008\"; NationalNetwork \"Yes\"; IsReferralRequiredForSpecialist \"No\"; OutOfCountryCoverage \"Yes\"; OutOfCountryCoverageDescription \"Covered services as outlined in the member contract.\"; OutOfServiceAreaCoverage \"Yes\"; OutOfServiceAreaCoverageDescription \"Covered services as outlined in the member contract.\"; InpatientCopaymentMaximumDays \"3\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.819239484\"; FormularyURL \"https://www.myprime.com/content/dam/prime/memberportal/WebDocs/2023/Formularies/HIM/2023_FL_7T_CareChoices.pdf\"; PlanBrochure \"https://www.floridablue.com/plan-brochure/bo\"."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
