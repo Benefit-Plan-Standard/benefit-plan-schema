@@ -203,8 +203,8 @@ function partBDeductible(d, fam, label, slotFn, errors) {
     if (amt !== null) errors.push(`pbp_d_${fam}_deduct_amt has a value but the plan charges the Medicare-defined Part B deductible`);
     return {
       slot: null,
-      note: `${label}: the plan charges the Medicare-defined Part B deductible amount, which the file does not state (${cells}); ` +
-        'the slot needs an amount, so none is written (schema gap, spec section 9.1).',
+      note: `${label}: the plan charges the Medicare-defined Part B deductible amount, which the file does not state (${cells}). ` +
+        'A Benefit Plan Standard deductible needs a dollar amount, so none is written.',
     };
   }
   if (partb === '2' && amt !== null) return { slot: slotFn(amt), note: null };
@@ -238,8 +238,14 @@ function annualDeductibleBothNetworks(d, c) {
   return !!c && q(c, 'pbp_c_oon_yn') === '1' && (bens[1] === '1' || bens[2] === '1');
 }
 
+// A deductible that applies in and out of network is written with network_tier null. On a
+// zero-dollar cost-sharing D-SNP the member pays no deductible in network, so zeroDollar()
+// writes it out of network only, and its note (zeroDollarNote) says so in place of the other.
+const ZERO_DOLLAR_DEDUCTIBLE = 'The plan is a zero-dollar cost-sharing D-SNP, so the member pays no deductible in network, and the amount ' +
+  'is written as oon_individual_deductible with network_tier OUT only.';
+
 function annualDeductible(d, c, errors) {
-  const cols = ['pbp_d_ann_deduct_yn', 'pbp_d_ann_deduct_amt_type', 'pbp_d_ann_deduct_amt', 'pbp_d_ann_deduct_bens',
+  const cols =['pbp_d_ann_deduct_yn', 'pbp_d_ann_deduct_amt_type', 'pbp_d_ann_deduct_amt', 'pbp_d_ann_deduct_bens',
     'pbp_d_ann_deduct_inn_mc_yn', 'pbp_d_ann_deduct_inn_nmc_yn', 'pbp_d_ann_deduct_oon_nmc_yn'];
   const cells = cols.map((col) => cell(d, col)).join(', ');
   const has = yn(d, 'pbp_d_ann_deduct_yn', errors, false);
@@ -255,8 +261,8 @@ function annualDeductible(d, c, errors) {
     if (amt !== null) errors.push(`annual deductible type ${type} (${DED_TYPES[type]}) carries an amount (${cells})`);
     return {
       slot: null,
-      notes: [`Annual plan deductible: type ${type} "${DED_TYPES[type]}", which the file does not state as a dollar amount (${cells}); ` +
-        'the slot needs an amount, so none is written (schema gap, spec section 9.1).'],
+      notes: [`Annual plan deductible: type ${type} "${DED_TYPES[type]}", which the file does not state as a dollar amount (${cells}). ` +
+        'A Benefit Plan Standard deductible needs a dollar amount, so none is written.'],
     };
   }
   if (amt === null) { errors.push(`annual deductible type 4 has no amount (${cells})`); return { slot: null, notes: [] }; }
@@ -265,24 +271,26 @@ function annualDeductible(d, c, errors) {
   const oonBit = bens[0] === '1';
   const innBit = bens[1] === '1' || bens[2] === '1';
   if (innBit && !oonBit && !annualDeductibleBothNetworks(d, c)) {
+    const lead = `Annual plan deductible: $${amt}, scope in network only (${cells}) on a plan that declares no out-of-network benefit`;
     return {
       slot: inNetworkSlot(amt),
-      notes: [`Annual plan deductible: $${amt}, scope in network only (${cells}) on a plan that declares no out-of-network benefit; ` +
-        'written as individual_deductible, network_tier IN.'],
+      notes: [`${lead}; written as individual_deductible, network_tier IN.`],
+      zeroDollarNote: `${lead}. The plan is a zero-dollar cost-sharing D-SNP, so the member pays no deductible in network, and none is written.`,
     };
   }
   if (innBit && !oonBit) {
     const scope = [cell(d, 'pbp_d_ann_deduct_inn_mc_cats'), cell(d, 'pbp_d_ann_deduct_inn_nmc_cats'), cell(d, 'pbp_d_ann_deduct_14a_yn'),
       cell(c, 'pbp_c_oon_mc_bendesc_cats')];
+    const tail = ` The file says: ${cells}. pbp_d_ann_deduct_bens names the in-network services it applies ` +
+      'to (position 2 Medicare-covered, position 3 non-Medicare-covered) and has no position for out-of-network Medicare-covered services, ' +
+      'which the deductible covers: pbp_d_ann_deduct_14a_yn asks whether 14a preventive services are part of "your OON Medicare-covered ' +
+      'Services Deductible", and the plan answers it. Out of network the deductible applies to the categories of the plan\'s ' +
+      'out-of-network benefit, less 14a when that answer is "2". The deductible\'s service categories, verbatim: ' +
+      `${scope.join('; ')}.`;
     return {
       slot: { amount: amt, currency: 'USD', network_tier: null, applies_to: 'medical' },
-      notes: [`Annual plan deductible: $${amt}, written as individual_deductible with network_tier null: it applies in and out of network ` +
-        `(docs/specs/pbp-importer.md section 7.3). The file says: ${cells}. pbp_d_ann_deduct_bens names the in-network services it applies ` +
-        'to (position 2 Medicare-covered, position 3 non-Medicare-covered) and has no position for out-of-network Medicare-covered services, ' +
-        'which the deductible covers: pbp_d_ann_deduct_14a_yn asks whether 14a preventive services are part of "your OON Medicare-covered ' +
-        'Services Deductible", and the plan answers it. Out of network the deductible applies to the categories of the plan\'s ' +
-        'out-of-network benefit, less 14a when that answer is "2". The deductible\'s service categories, verbatim: ' +
-        `${scope.join('; ')}.`],
+      notes: [`Annual plan deductible: $${amt}, written as individual_deductible with network_tier null: it applies in and out of network.${tail}`],
+      zeroDollarNote: `Annual plan deductible: $${amt}. It applies in and out of network. ${ZERO_DOLLAR_DEDUCTIBLE}${tail}`,
     };
   }
   if (annualDeductibleOutOnly(d, c)) {
@@ -291,8 +299,8 @@ function annualDeductible(d, c, errors) {
     return {
       slot: tierSlot('OUT')(amt),
       slotName: 'oon_individual_deductible',
-      notes: [`Annual plan deductible: $${amt}, written as oon_individual_deductible with network_tier OUT (decision 1, ` +
-        'docs/specs/pbp-importer.md section 7). The plan declares an out-of-network benefit (pbp_c_oon_yn "1") and the ' +
+      notes: [`Annual plan deductible: $${amt}, written as oon_individual_deductible with network_tier OUT. ` +
+        'The plan declares an out-of-network benefit (pbp_c_oon_yn "1") and the ' +
         `deductible names no in-network scope: ${cells}. The deductible's service categories, verbatim: ${scope.join('; ')}. ` +
         'pbp_d_ann_deduct_14a_yn asks whether 14a preventive services are part of the out-of-network Medicare-covered ' +
         'services deductible; the categories are those of the plan\'s out-of-network benefit, less 14a when that answer is "2". ' +
@@ -304,20 +312,24 @@ function annualDeductible(d, c, errors) {
   const why = bens === ''
     ? 'The file does not say which network or services the deductible applies to (pbp_d_ann_deduct_bens is blank) and the plan declares no out-of-network benefit'
     : 'The scope names in-network and out-of-network services, so no single network slot fits';
+  const tail = ` ${why}. The file says: ${cells}; ${cell(d, 'pbp_d_ann_deduct_14a_yn')} refers to an out-of-network Medicare-covered ` +
+    'services deductible.';
   return {
     slot: { amount: amt, currency: 'USD', network_tier: null, applies_to: 'medical' },
-    notes: [`Annual plan deductible: $${amt}, written as individual_deductible with network_tier null. ${why}. ` +
-      `The file says: ${cells}; ${cell(d, 'pbp_d_ann_deduct_14a_yn')} refers to an out-of-network Medicare-covered services ` +
-      'deductible (docs/specs/pbp-importer.md section 7).'],
+    notes: [`Annual plan deductible: $${amt}, written as individual_deductible with network_tier null.${tail}`],
+    zeroDollarNote: `Annual plan deductible: $${amt}. ${ZERO_DOLLAR_DEDUCTIBLE}${tail}`,
   };
 }
 
 function buildAccumulators(d, c, planType, errors) {
   const acc = {};
   const notes = [];
+  // The annual deductible's note as a zero-dollar cost-sharing D-SNP has it, and where it goes.
+  let zeroDollarNote = null;
   const add = (slotName, r) => {
     if (r.slot) acc[r.slotName || slotName] = r.slot;
     for (const n of [].concat(r.note || [], r.notes || [])) if (n) notes.push(n);
+    if (r.zeroDollarNote) zeroDollarNote = { index: notes.length - 1, text: r.zeroDollarNote };
   };
   const posPlan = planType === '02';
 
@@ -334,8 +346,8 @@ function buildAccumulators(d, c, planType, errors) {
     // describes the point-of-service option.
     const oonDed = partBDeductible(d, 'oon', 'Out-of-network deductible', posPlan ? tierSlot('POS') : outOfNetworkSlot, errors);
     if (posPlan && oonDed.slot) {
-      oonDed.note = 'Out-of-network deductible written as oon_individual_deductible with network_tier POS (decision 4, ' +
-        'docs/specs/pbp-importer.md section 7): the plan is an HMO-POS and declares a point-of-service option, not an ' +
+      oonDed.note = 'Out-of-network deductible written as oon_individual_deductible with network_tier POS: ' +
+        'the plan is an HMO-POS and declares a point-of-service option, not an ' +
         'out-of-network benefit. The file says: ' +
         ['pbp_d_oon_deduct_yn', 'pbp_d_oon_deduct_partb_yn', 'pbp_d_oon_deduct_amt', 'pbp_d_oon_deduct_bens', 'pbp_d_oon_deduct_m_yn',
           'pbp_d_oon_deduct_m_cats', 'pbp_d_oon_deduct_nm_yn', 'pbp_d_oon_deduct_nm_cats'].map((col) => cell(d, col)).join(', ') +
@@ -352,12 +364,13 @@ function buildAccumulators(d, c, planType, errors) {
       const disagree = dYes !== cYes ? !(dYes && q(d, 'pbp_d_oon_deduct_partb_yn') === '1' && !cYes) : (dYes && dAmt !== q(c, 'pbp_c_pos_ded_amt'));
       notes.push(`Point-of-service deductible as Section C states it, verbatim: ${posDed.join(', ')}.` +
         (disagree ? ` Section C and Section D disagree (${cell(d, 'pbp_d_oon_deduct_yn')}, ${cell(d, 'pbp_d_oon_deduct_amt')}); ` +
-          'Section D is written (decision A5, docs/specs/pbp-importer.md section 7.8).' : ''));
+          'Section D is written.' : ''));
     }
     const comb = yn(d, 'pbp_d_comb_deduct_yn', errors);
     const combAmt = amount(d, 'pbp_d_comb_deduct_amt', errors);
     if (comb === '1') {
-      notes.push('Combined in-network and out-of-network deductible, no Benefit Plan Standard slot (schema gap, spec section 9.1): ' +
+      notes.push('Combined in-network and out-of-network deductible: the Benefit Plan Standard has no field for a deductible that covers ' +
+        'both networks together; the plan files it as ' +
         ['pbp_d_comb_deduct_yn', 'pbp_d_comb_deduct_partb_yn', 'pbp_d_comb_deduct_amt'].map((c) => cell(d, c)).join(', ') + '.');
     } else if (comb === '2') {
       notes.push(`Combined in-network and out-of-network deductible: the plan says it has none (${cell(d, 'pbp_d_comb_deduct_yn')}).`);
@@ -373,7 +386,7 @@ function buildAccumulators(d, c, planType, errors) {
     if (moopAmt === null) errors.push('pbp_d_out_pocket_amt_yn "1" but no amount');
     else acc.individual_oop_max = inNetworkSlot(moopAmt);
     if (moopType !== '' && !MOOP_TYPES[moopType]) errors.push(`pbp_d_out_pocket_amt_type "${moopType}" is not a dictionary code`);
-    notes.push(`In-network out-of-pocket maximum type, no Benefit Plan Standard field (schema gap, spec section 9.1): ${cell(d, 'pbp_d_out_pocket_amt_type')}` +
+    notes.push(`In-network out-of-pocket maximum type: the Benefit Plan Standard has no field for it; the plan files ${cell(d, 'pbp_d_out_pocket_amt_type')}` +
       (MOOP_TYPES[moopType] ? ` (${MOOP_TYPES[moopType]})` : '') + '.');
   } else if (moop === '2') {
     notes.push(`In-network out-of-pocket maximum: the plan says it has none (${cell(d, 'pbp_d_out_pocket_amt_yn')}); no slot is written.`);
@@ -384,8 +397,8 @@ function buildAccumulators(d, c, planType, errors) {
   const combType = q(d, 'pbp_d_comb_max_enr_amt_type');
   if (comb === '1') {
     if (amount(d, 'pbp_d_comb_max_enr_amt', errors) === null) errors.push('pbp_d_comb_max_enr_amt_yn "1" but no amount');
-    notes.push('Combined in-network and out-of-network out-of-pocket maximum, no Benefit Plan Standard slot (schema gap, spec section 9.1): ' +
-      `${cell(d, 'pbp_d_comb_max_enr_amt')}; ${cell(d, 'pbp_d_comb_max_enr_amt_type')}` +
+    notes.push('Combined in-network and out-of-network out-of-pocket maximum: the Benefit Plan Standard has no field for a maximum that ' +
+      `covers both networks together; the plan files it as ${cell(d, 'pbp_d_comb_max_enr_amt')}, with ${cell(d, 'pbp_d_comb_max_enr_amt_type')}` +
       (MOOP_TYPES[combType] ? ` (${MOOP_TYPES[combType]})` : '') + '.');
   } else if (comb === '2') {
     notes.push(`Combined out-of-pocket maximum: the plan says it has none (${cell(d, 'pbp_d_comb_max_enr_amt_yn')}).`);
@@ -398,8 +411,8 @@ function buildAccumulators(d, c, planType, errors) {
     if (a === null) errors.push('pbp_d_oon_max_enr_oopc_yn "1" but no amount');
     else acc.oon_individual_oop_max = (posPlan ? tierSlot('POS') : outOfNetworkSlot)(a);
     if (posPlan && a !== null) {
-      notes.push('Out-of-network out-of-pocket maximum written as oon_individual_oop_max with network_tier POS (decision 4, ' +
-        'docs/specs/pbp-importer.md section 7). The file says: ' +
+      notes.push('Out-of-network out-of-pocket maximum written as oon_individual_oop_max with network_tier POS: the plan is an HMO-POS ' +
+        'and declares a point-of-service option, not an out-of-network benefit. The file says: ' +
         ['pbp_d_oon_max_enr_oopc_yn', 'pbp_d_oon_max_enr_oopc_amt', 'pbp_d_oon_max_enr_oopc_bens', 'pbp_d_oon_max_enr_m_yn',
           'pbp_d_oon_max_enr_nm_yn'].map((col) => cell(d, col)).join(', ') +
         '. To be confirmed against the Aetna H1609-028 Summary of Benefits.');
@@ -416,7 +429,7 @@ function buildAccumulators(d, c, planType, errors) {
     'oon_individual_deductible', 'oon_family_deductible', 'oon_individual_oop_max', 'oon_family_oop_max'];
   const accumulators = {};
   for (const k of order) if (acc[k]) accumulators[k] = acc[k];
-  return { accumulators, notes };
+  return { accumulators, notes, zeroDollarNote };
 }
 
 // Every non-blank Section D cell of the deductible and out-of-pocket families,
@@ -502,6 +515,8 @@ const READ_FILES = ['pbp_Section_A.txt', 'pbp_Section_C.txt', 'pbp_Section_C_OON
   ...B_FILES, ...MRX_FILES, 'PlanArea.txt', 'PlanRegionArea.txt'];
 const AMO = { 2: 'supplemental_mandatory', 3: 'supplemental_optional' };
 const AMO_LABELS = { 2: 'Mandatory', 3: 'Optional', 4: 'Both' };
+// A coverage basis of "4" (Both mandatory and optional) is not written, and its excerpt says why.
+const BOTH_BASES = "The Benefit Plan Standard's coverage_basis holds 1 value.";
 const WAIVER_UNITS = { 1: 'days', 2: 'hours' };
 const INTERVALS = { 1: 0, 2: 1, 3: 2, 4: 3 };
 const PEREAR = { 1: 'per_ear', 2: 'one_ear' };
@@ -637,8 +652,7 @@ function noCostShareStep(row, copaySpec, coinsSpec) {
   return {
     step: {
       type: 'copay', amount: 0,
-      notes: `The file states no copayment and no coinsurance for this service (${cells.join(', ')}); written as a $0 copay ` +
-        '(decision S1, docs/specs/pbp-importer.md section 7.12).',
+      notes: `The file states no copayment and no coinsurance for this service (${cells.join(', ')}); written as a $0 copay.`,
     },
     cells,
   };
@@ -808,7 +822,7 @@ function moopScopes(d, planType, accumulators) {
       scopes[outTier] = fromBens(q(d, 'pbp_d_comb_max_enr_oopc_bens'), 4, 1, 'pbp_d_comb_max_enr_oon_m_yn', 'pbp_d_comb_max_enr_oon_mcat_ex',
         'pbp_d_comb_max_enr_oon_nm_yn', 'pbp_d_comb_max_enr_oon_nmcatex');
       notes[outTier] = `applies_to_moop refers to the combined in-network and out-of-network maximum (${cell(d, 'pbp_d_comb_max_enr_amt')}), ` +
-        'which has no accumulator slot (spec section 9.1).';
+        'which has no field in the Benefit Plan Standard.';
     }
   }
   return { scopes, notes };
@@ -842,6 +856,10 @@ function groupTierRow(tierId, b, groups, errors, warn) {
   return { steps, notes: notes.join('; ') + '.' };
 }
 
+// A Medicare-defined cost share the file names but does not state: the note's last sentence
+// starts with these words and ends with the kind (copay or coinsurance).
+const MEDICARE_DEFINED_STEP = 'A Benefit Plan Standard step needs an amount or a rate, so this';
+
 // Section C Skilled Nursing Facility stay (2) for the out-of-network (oon) or
 // point-of-service (pos) tier: the pbp_c_<kind>_*_snf_* columns, which have no
 // benefit-type position string and 1 deductible amount.
@@ -854,7 +872,8 @@ function sectionCSnf(c, kind, errors) {
     out.cells.push(cell(c, yesCol));
     const mcCostCol = `${p}_${k}_snf_mc_cost_yn`;
     if (q(c, mcCostCol) === '1') {
-      out.notes.push(`The plan charges the Medicare-defined ${costKind} for the stay, which the file does not state (${cell(c, mcCostCol)}; spec section 9.1).`);
+      out.notes.push(`The plan charges the Medicare-defined ${costKind} for the stay, which the file does not state (${cell(c, mcCostCol)}). ` +
+        `${MEDICARE_DEFINED_STEP} ${costKind} is not written.`);
       continue;
     }
     const r = stayCostShares(c, costKind, {
@@ -883,7 +902,8 @@ function sectionCInpatient(c, kind, errors) {
     if (q(c, yesCol) !== '1' || !chosen(q(c, typeCol), 2)) return;
     out.cells.push(cell(c, yesCol), cell(c, typeCol));
     if (q(c, mcCostCol) === '1') {
-      out.notes.push(`The plan charges the Medicare-defined ${costKind} for the stay, which the file does not state (${cell(c, mcCostCol)}; spec section 9.1).`);
+      out.notes.push(`The plan charges the Medicare-defined ${costKind} for the stay, which the file does not state (${cell(c, mcCostCol)}). ` +
+        `${MEDICARE_DEFINED_STEP} ${costKind} is not written.`);
       return;
     }
     const r = stayCostShares(c, costKind, cols, errors);
@@ -960,7 +980,7 @@ function comboGroups(d, errors) {
       tail = ` The shared maximum is the dollars limit with shared_limit_id ${id}.`;
     } else if (!['', '2'].includes(max)) { errors.push(`${col('max_plan_ben_yn')} "${max}" is not 1 or 2`); continue; }
     group.sharesCount = q(d, col('share_visit_yn')) === '1';
-    if (group.sharesCount) tail += ' The shared visit or trip count is not written as a limit (spec section 5.9).';
+    if (group.sharesCount) tail += ' The shared visit or trip count is not written as a limit.';
     group.excerpt = `Combined supplemental benefit group ${n} of ${num} (pbp_Section_D.txt), verbatim: ` +
       `${cellsOf(d, ['pbp_d_combo_supp_ben_yn', 'pbp_d_combo_num_grps', ...COMBO_COLS.map(col)]).join('; ')}.${tail}`;
     groups.push(group);
@@ -1292,7 +1312,7 @@ function posMaximum(c, errors) {
   return {
     codes,
     note: `The point-of-service maximum plan benefit coverage, ${money(amt)} (${label.toLowerCase()}), covers this service under the ` +
-      'point-of-service option (benefit PBP_C_POS_MAXPLAN; docs/specs/pbp-importer.md section 5.12).',
+      'point-of-service option (benefit PBP_C_POS_MAXPLAN).',
     benefit: {
       benefit_id: 'PBP_C_POS_MAXPLAN',
       coverage_basis: null,
@@ -1335,15 +1355,14 @@ function flagSteps(steps, tierKey, b, ctx) {
 // supplemental benefits and Part D keep the cost sharing the file states.
 const ZERO_DOLLAR_QUESTION = 'Is this D-SNP plan a Medicare zero-dollar cost sharing plan (this does not apply to Part D Services)?';
 const ZERO_DOLLAR_IN = 'Zero-dollar cost-sharing D-SNP (pbp_Section_A pbp_a_dsnp_zerodollar "1"): the member pays $0 for this ' +
-  'Medicare-covered service in network: each step the file states is written as a $0 copay with its basis and day range ' +
-  '(docs/specs/pbp-importer.md section 5.11).';
+  'Medicare-covered service in network: each step the file states is written as a $0 copay with its basis and day range.';
 const ZERO_DOLLAR_OTHER = {
   OUT: 'Zero-dollar cost-sharing D-SNP (pbp_a_dsnp_zerodollar "1"): out of network the cost sharing is written as filed; a provider ' +
     'outside the plan\'s network who is not enrolled in the state\'s Medicaid may charge it, depending on the member\'s Medicaid ' +
-    'eligibility (docs/specs/pbp-importer.md section 5.11).',
+    'eligibility.',
   POS: 'Zero-dollar cost-sharing D-SNP (pbp_a_dsnp_zerodollar "1"): under the point-of-service option the cost sharing is written as ' +
     'filed; a provider outside the plan\'s network who is not enrolled in the state\'s Medicaid may charge it, depending on the ' +
-    'member\'s Medicaid eligibility (docs/specs/pbp-importer.md section 5.11).',
+    'member\'s Medicaid eligibility.',
 };
 const BASIS_WORDS = { per_stay: 'per stay', per_day: 'per day', per_visit: 'per visit', per_aid: 'per aid' };
 
@@ -1404,7 +1423,7 @@ function zeroDollarRow(tierId, steps, notes) {
 // filed: they cap what a member pays who is charged (out of network, or after losing Medicaid
 // eligibility). Every 2027 zero-dollar plan's in-network deductible covers Medicare-covered
 // services only; one that names non-Medicare-covered services is an error (0 plans).
-function zeroDollar(a, d, planType, accumulators, errors) {
+function zeroDollar(a, d, planType, accumulators, accNotes, zeroDollarNote, errors) {
   const v = q(a, 'pbp_a_dsnp_zerodollar');
   if (v === '' || v === '2') return { on: false, excerpt: null };
   if (v !== '1') { errors.push(`pbp_a_dsnp_zerodollar "${v}" is not 1 or 2`); return { on: false, excerpt: null }; }
@@ -1425,6 +1444,12 @@ function zeroDollar(a, d, planType, accumulators, errors) {
       said.push(`the in-network deductible the plan files, ${money(ded.amount)}, is not written, because in network the member pays none`);
     }
     delete accumulators.individual_deductible;
+    // The annual deductible's note says what is written now (H7355-003-000: OUT only).
+    if (zeroDollarNote) accNotes[zeroDollarNote.index] = zeroDollarNote.text;
+    else if (ded.network_tier === null) {
+      errors.push(`${cell(a, 'pbp_a_dsnp_zerodollar')}: no note for the annual deductible written with network_tier null`);
+      return { on: false, excerpt: null };
+    }
   }
   return {
     on: true,
@@ -1433,7 +1458,7 @@ function zeroDollar(a, d, planType, accumulators, errors) {
       'Medicare-covered benefit charges $0 (each step the file states as a $0 copay with its basis and day range), and its notes give ' +
       'the cost sharing the plan files' +
       (said.length ? `; ${said.join('; ')}` : '') + '. The out-of-pocket maximums are written as filed. Out-of-network and ' +
-      'point-of-service rows, supplemental benefits and Part D keep the cost sharing the plan files (docs/specs/pbp-importer.md section 5.11).',
+      'point-of-service rows, supplemental benefits and Part D keep the cost sharing the plan files.',
   };
 }
 
@@ -1622,7 +1647,7 @@ function inpatientInNetwork(b, row, ctx, errors) {
         // On every such plan the stay is charged the Medicare-defined cost share,
         // whose amounts the file does not state (spec section 7).
         notes.push(`The stay has a deductible with no amount in the file (${dedCells.join(', ')}), beside the Medicare-defined cost share ` +
-          `(${mcCost.map((col) => cell(row, col)).join(', ')}); no step is written (spec section 9.1).`);
+          `(${mcCost.map((col) => cell(row, col)).join(', ')}); no step is written, because a Benefit Plan Standard step needs an amount.`);
       } else errors.push(`${p}_ded_yn "1" but ${dedCells[1]}`);
     }
     for (const kind of ['copay', 'coinsurance']) {
@@ -1632,7 +1657,8 @@ function inpatientInNetwork(b, row, ctx, errors) {
       cells.push(cell(row, `${p}_${k}_yn`));
       const mcCost = `${p}_mc_${k}_cstshr_yn_t${t}`;
       if (q(row, mcCost) === '1') {
-        notes.push(`The plan charges the Medicare-defined ${kind} for the stay, which the file does not state (${cell(row, mcCost)}; spec section 9.1).`);
+        notes.push(`The plan charges the Medicare-defined ${kind} for the stay, which the file does not state (${cell(row, mcCost)}). ` +
+          `${MEDICARE_DEFINED_STEP} ${kind} is not written.`);
       } else {
         const stayCol = !ic.stay ? null : (kind === 'copay' ? `${p}_copay_mcs_amt_t${t}` : `${p}_coins_mcs_pct_t${t}`);
         const valName = kind === 'copay' ? 'amt' : 'pct';
@@ -1682,8 +1708,8 @@ const INN_DEDUCTIBLE_LISTS = ['pbp_d_ann_deduct_inn_mc_cats', 'pbp_d_inn_deduct_
 function attestationRow(b, row, d, ctx, errors) {
   const v = q(row, b.attest.col);
   if (v !== b.attest.value) { errors.push(`${cell(row, b.attest.col)} is not ${b.attest.value}, the dictionary's only code`); return null; }
-  const notes = [`${b.file} cells: ${cell(row, b.attest.col)}, whose dictionary text is "${b.attest.label}" ` +
-    'Written as a $0 copay that does not apply to the deductible (docs/specs/pbp-importer.md section 5.4).'];
+  const notes = [`${b.file} cells: ${cell(row, b.attest.col)}, whose dictionary text is "${b.attest.label}". ` +
+    'Written as a $0 copay that does not apply to the deductible.'];
   const ded = ctx.ded.scopes.IN;
   if (ded && ded(b.pbp_code, b.medicare_covered) === true) {
     const listed = INN_DEDUCTIBLE_LISTS.filter((col) => cats(q(d, col)).includes(b.pbp_code));
@@ -1727,7 +1753,7 @@ function buildBenefit(b, rows, ctx, errors, warn) {
         `(${b.file} has no "is this benefit offered" column), so this is not a filed "not covered" answer`;
     } else {
       coverage_basis = AMO[amo] || null;
-      if (amo === '4') refs.push(`Coverage basis not written: ${cell(row, b.amo)} (Both mandatory and optional; question H1).`);
+      if (amo === '4') refs.push(`Coverage basis not written: ${cell(row, b.amo)} (Both mandatory and optional). ${BOTH_BASES}`);
       else if (!AMO[amo]) { errors.push(`${b.amo} "${amo}" is not 2, 3 or 4`); return null; }
     }
   } else if (!b.medicare_covered) {
@@ -1746,7 +1772,7 @@ function buildBenefit(b, rows, ctx, errors, warn) {
     } else {
       const amo = q(row, b.amo);
       coverage_basis = AMO[amo] || null;
-      if (amo === '4') refs.push(`Coverage basis not written: ${cell(row, b.amo)} (Both mandatory and optional; question H1).`);
+      if (amo === '4') refs.push(`Coverage basis not written: ${cell(row, b.amo)} (Both mandatory and optional). ${BOTH_BASES}`);
       else if (!AMO[amo]) { errors.push(`${b.amo} "${amo}" is not 2, 3 or 4`); return null; }
     }
   }
@@ -1821,7 +1847,7 @@ function buildBenefit(b, rows, ctx, errors, warn) {
   if (b.in_network_only_note && others.length && ncs.length === 1 && ncs[0].tier_id === 'IN') {
     const groupFile = others.map((t) => GROUP_COLS[t].file).join(' or ');
     ncs[0].notes = `${ncs[0].notes ? ncs[0].notes + ' ' : ''}${b.file} prices ${b.pbp_code} once, with no network, and no ${groupFile} group ` +
-      `lists ${b.pbp_code}, so the cost share is written on the in-network tier only (decision 5, docs/specs/pbp-importer.md section 7.13).`;
+      `lists ${b.pbp_code}, so the cost share is written on the in-network tier only.`;
   }
   benefit.network_cost_shares = ncs;
   benefit.limits = withComboLimits(limits, combo);
@@ -1829,8 +1855,8 @@ function buildBenefit(b, rows, ctx, errors, warn) {
   const quoted = cellsOf(row, b.quote || []);
   if (quoted.length) refs.push(`Values with no Benefit Plan Standard field, verbatim: ${quoted.join('; ')}.`);
   for (const g of combo) refs.push(g.excerpt);
-  benefit.source_references = [{ excerpt: `PBP service category ${b.pbp_label} (${b.file}), mapped by fhir/pbp-crosswalk.json` +
-    `${b.canonical_key ? '' : '; no canonical key, carried by name (spec section 9.1)'}.` }, ...refs.map((excerpt) => ({ excerpt }))];
+  benefit.source_references = [{ excerpt: `PBP service category ${b.pbp_label} (${b.file}), mapped by the Benefit Plan Standard's PBP crosswalk` +
+    `${b.canonical_key ? '' : NO_KEY}.` }, ...refs.map((excerpt) => ({ excerpt }))];
   return benefit;
 }
 
@@ -1982,7 +2008,7 @@ const RX_TIER_LABELS = {
 };
 
 const INCURRED_COSTS = '42 CFR 423.100, incurred costs';
-const NO_KEY = '; no canonical key, carried by name (spec section 9.1)';
+const NO_KEY = '; the Benefit Plan Standard has no canonical key for it, so it is identified by its name';
 const Q3_SUMMARY = 'the 2027 Summary of Benefits of S5884-105-000, Humana Basic Rx Plan (PDP), an Actuarially Equivalent Standard plan ' +
   '(document S5884_SB_PD_PDP_105000_2027_M, page 4), prints a $700 deductible with no tier exception and says "You pay the full cost ' +
   'of your drugs until you reach $700"';
@@ -2049,7 +2075,7 @@ function partDDeductible(mrx, btLabel, tierIds, tiered, params, year, errors, wa
     if (q(mrx, 'mrx_alt_ded_amount') !== '') errors.push(`${amountCell} but mrx_alt_ded_charge "3" (No Deductible)`);
     out.planCells = [coded(mrx, 'mrx_alt_ded_charge', MRX_DED_CHARGE)];
     out.excerpt = `Part D deductible: ${cells}. No deductible: no pharmacy.deductible and no DEDUCTIBLE coverage stage are written, and ` +
-      'applies_to_deductible is false on every Part D step (docs/specs/pbp-part-d-mapping.md section 5.4).';
+      'applies_to_deductible is false on every Part D step.';
     return out;
   }
   if (amt === null) {
@@ -2070,12 +2096,12 @@ function partDDeductible(mrx, btLabel, tierIds, tiered, params, year, errors, wa
     out.planCells = [btLabel, cell(mrx, 'mrx_alt_ded_type_yn')];
     out.rowNote = `The Part D deductible applies to every tier of the ${MRX_BENEFIT_TYPES[q(mrx, 'mrx_benefit_type')]} benefit ` +
       `(mrx_benefit_type "${q(mrx, 'mrx_benefit_type')}"; mrx_alt_ded_type_yn blank, as the file leaves it for the standard benefit types); ` +
-      'confirmed on the 2027 Summary of Benefits of S5884-105-000 (docs/specs/pbp-part-d-mapping.md section 6.4, Question Q3).';
+      'confirmed on the 2027 Summary of Benefits of S5884-105-000.';
     out.excerpt = `Part D deductible: ${cells}. The file leaves mrx_alt_ded_charge and mrx_alt_ded_type_yn blank for the standard benefit type ` +
       `(${btLabel}). Written as pharmacy.deductible ${amt} USD ${tiered ? 'for every tier' : 'for every drug (the plan has no tier rows)'} ` +
       '(applies_to_tiers not written), with a DEDUCTIBLE coverage stage' +
-      `${tiered ? ', and applies_to_deductible true with deductible_ref "pharmacy" on every initial coverage step' : ''}: ${Q3_SUMMARY} ` +
-      `(docs/specs/pbp-part-d-mapping.md section 5.4, Question Q3). The ${standard(amt).slice(4)}.`;
+      `${tiered ? ', and applies_to_deductible true with deductible_ref "pharmacy" on every initial coverage step' : ''}: ${Q3_SUMMARY}. ` +
+      `The ${standard(amt).slice(4)}.`;
     return out;
   }
   if (charge === '1') notStandard(amt);
@@ -2129,7 +2155,7 @@ function buildPartD(rows, source, errors, warn) {
     if (tiers.length || posts.length) errors.push(`${offerCell} but the plan has ${rowCounts}`);
     const others = otherCells(/^(mrx_|part_d_)/);
     out.refs.push(`Part D: pbp_mrx.txt ${offerCell}: the plan offers no Medicare prescription drug (Part D) benefit, so no pharmacy object and no ` +
-      `Part D benefit is written (docs/specs/pbp-part-d-mapping.md section 3).${others.length ? ` Other non-blank pbp_mrx.txt cells, verbatim: ${others.join('; ')}.` : ''}`);
+      `Part D benefit is written.${others.length ? ` Other non-blank pbp_mrx.txt cells, verbatim: ${others.join('; ')}.` : ''}`);
     return out;
   }
   const btype = q(mrx, 'mrx_benefit_type');
@@ -2147,7 +2173,7 @@ function buildPartD(rows, source, errors, warn) {
     const demo = otherCells(/^part_d_/);
     out.refs.push(`Part D: pbp_mrx.txt ${offerCell}, and mrx_benefit_type is blank: the PBP files hold no Part D design for this plan ` +
       `(${cell(a, 'pbp_a_eghp_yn')}; no other mrx_ column is filled, and the plan has no pbp_mrx_tier.txt or pbp_mrx_p.txt row), so no pharmacy ` +
-      `object and no Part D benefit is written (docs/specs/pbp-part-d-mapping.md section 3).${demo.length ? ` Other non-blank pbp_mrx.txt cells, verbatim: ${demo.join('; ')}.` : ''}`);
+      `object and no Part D benefit is written.${demo.length ? ` Other non-blank pbp_mrx.txt cells, verbatim: ${demo.join('; ')}.` : ''}`);
     return out;
   }
   if (!MRX_BENEFIT_TYPES[btype]) { errors.push(`${cell(mrx, 'mrx_benefit_type')} is not a dictionary code`); return out; }
@@ -2315,8 +2341,7 @@ function buildPartD(rows, source, errors, warn) {
             const s = q(mrx, oonCol);
             notes.push(`Out of network: ${oonCell}.` + (s === '2' || s === '4' ? ' The differential has no amount in the file and no Benefit Plan ' +
               `Standard field; it counts toward the Part D out-of-pocket threshold (${INCURRED_COSTS}, "any price differential"), so applies_to_moop ` +
-              'stays true.' : '') + ' tier_id IN is the document\'s tier for every Part D row; the pharmacy is pharmacy_network_id OUT_OF_NETWORK ' +
-              '(docs/specs/pbp-part-d-mapping.md section 6.7).');
+              'stays true.' : '') + ' tier_id IN is the document\'s tier for every Part D row; the pharmacy is pharmacy_network_id OUT_OF_NETWORK.');
             planCells.push(oonCell);
           }
           const row = { tier_id: 'IN', covered: true, cost_shares: [orderStep(step)] };
@@ -2357,7 +2382,7 @@ function buildPartD(rows, source, errors, warn) {
     const ira = Object.keys(t).filter((c) => c.startsWith('mrx_tier_ira_') && t[c] !== '');
     ira.forEach((c) => read.add(c));
     if (ira.length) {
-      insulin.push(`Insulin cost sharing for Tier ${n} (${label}), no Benefit Plan Standard benefit written (docs/specs/pbp-part-d-mapping.md section 10): ` +
+      insulin.push(`Insulin cost sharing for Tier ${n} (${label}), no Benefit Plan Standard benefit written: ` +
         `${positions(mrx, 'mrx_alt_ira_covg_tier', MRX_TIERS_7)}, ${ira.map((c) => cell(t, c)).join(', ')}.`);
     }
     const rest = Object.keys(t).filter((c) => !read.has(c) && t[c] !== '');
@@ -2398,7 +2423,7 @@ function buildPartD(rows, source, errors, warn) {
       if (includes === '1') {
         warn('part-d-post-threshold-cost-share', `pbp_mrx_p.txt ${cell(p, 'mrx_tier_post_id')}: ${amountCells.join(', ')} on a tier of Part D drugs only`);
         step.notes = `The file's post-threshold amount for this tier, ${amountCells.join(', ')} (${context}), is not written: the tier holds only ` +
-          'Part D drugs, whose cost sharing after the out-of-pocket threshold is $0 (42 CFR 423.104(d)(5)(i); warning part-d-post-threshold-cost-share).';
+          'Part D drugs, whose cost sharing after the out-of-pocket threshold is $0 (42 CFR 423.104(d)(5)(i)).';
       } else {
         step.notes = `The file's post-threshold amount for this tier, ${amountCells.join(', ')} (${context}), applies to the drugs on the tier that ` +
           `are excluded from Part D, which do not count toward the out-of-pocket threshold (${INCURRED_COSTS}). The $0 of this step is the ` +
@@ -2411,9 +2436,9 @@ function buildPartD(rows, source, errors, warn) {
       coded(p, 'mrx_tier_post_type_id', MRX_POST_TYPES), positions(p, 'mrx_tier_post_drug_type', MRX_DRUG_TYPES),
       coded(p, 'mrx_tier_post_includes', MRX_POST_INCLUDES), coded(p, 'mrx_tier_post_cost_struct', MRX_COST_STRUCTURES), ...amountCells].join(', '),
     excludedOnly
-      ? 'The step is read from this row: the tier holds only drugs excluded from Part D (docs/specs/pbp-part-d-mapping.md section 6.6)'
+      ? 'The step is read from this row: the tier holds only drugs excluded from Part D'
       : 'The step\'s $0 is not read from this row: it is the cost sharing for a covered Part D drug after the out-of-pocket threshold, ' +
-        '42 CFR 423.104(d)(5)(i) (docs/specs/pbp-part-d-mapping.md section 6.6)',
+        '42 CFR 423.104(d)(5)(i)',
     `pbp_mrx.txt: ${coded(mrx, postCol, MRX_STAGE_COLUMNS[postCol])}`];
     const b = { benefit_id: `RX_T${n}_CATASTROPHIC`, benefit_type: 'pharmacy', category: 'PHARMACY', service_name: `Tier ${n} (${label}), catastrophic coverage` };
     if (key) b.canonical_key = key;
@@ -2435,21 +2460,21 @@ function buildPartD(rows, source, errors, warn) {
   // Plan-level references (mapping section 8).
   const head = [offerCell, btLabel, ...cellsOf(mrx, ['mrx_formulary_tiers_num', 'mrx_form_model_type', 'mrx_form_model_desc'])].join(', ');
   out.refs.push(tiered
-    ? `Part D: pbp_mrx.txt ${head}. Written: pharmacy and ${out.benefits.length} Part D benefits (docs/specs/pbp-part-d-mapping.md).`
+    ? `Part D: pbp_mrx.txt ${head}. Written: pharmacy and ${out.benefits.length} Part D benefits.`
     : `Part D: pbp_mrx.txt ${head}. Written: pharmacy with the deductible, the out-of-pocket threshold and the coverage stages, and no ` +
       'formulary_tiers, pharmacy_networks or Part D benefit: a Defined Standard plan has no pbp_mrx_tier.txt or pbp_mrx_p.txt row, and the file ' +
-      'states no initial coverage cost share for it (the defined standard\'s 25 percent, Table V-6, is a Medicare-defined amount the importer ' +
-      'does not fill; docs/specs/pbp-part-d-mapping.md section 5.7). Its location, days and insulin cells (mrx_partd_network_loc, mrx_gen_*) are ' +
+      'states no initial coverage cost share for it (the defined standard\'s 25 percent, Table V-6, is a Medicare-defined amount, and this ' +
+      'document does not fill it in). Its location, days and insulin cells (mrx_partd_network_loc, mrx_gen_*) are ' +
       'in the last pbp_mrx.txt entry.');
   out.refs.push(ded.excerpt);
   out.refs.push(`pharmacy.out_of_pocket_max and the CATASTROPHIC stage's applies_after_total_out_of_pocket are ${threshold} USD, the contract ` +
     `year ${source.year} Part D annual out-of-pocket threshold. No PBP column states it; source: ${params.source}.` +
     (tiered ? ' Each CATASTROPHIC benefit\'s cost share is $0, the cost sharing for a covered Part D drug after the threshold, also not read ' +
-      `from a PBP cell: ${params.post_threshold_source} (docs/specs/pbp-part-d-mapping.md section 6.6).` : ''));
+      `from a PBP cell: ${params.post_threshold_source}.` : ''));
   if (tiered) {
     out.refs.push(`Pharmacy networks: ${positions(mrx, 'mrx_partd_network_loc', MRX_NETWORK_LOC)}, the locations the tier rows use; written as ` +
       `pharmacy_networks ${networks.map((x) => x.network_id).join(', ')}. Out-of-network cost-sharing structure: ${oonCell}. default_day_supply ` +
-      'is not written: the file states days per tier, location and supply, and each benefit carries its day_supply (docs/specs/pbp-part-d-mapping.md section 5.2).');
+      'is not written: the file states days per tier, location and supply, and each benefit carries its day_supply.');
   }
   const stageCells = Object.keys(MRX_STAGE_COLUMNS).filter((c) => q(mrx, c) !== '').map((c) => coded(mrx, c, MRX_STAGE_COLUMNS[c]));
   out.refs.push(`Coverage stages: ${stageCells.length ? stageCells.join(', ') : 'pbp_mrx.txt fills no stage column for this benefit type'}. Written as ` +
@@ -2458,10 +2483,10 @@ function buildPartD(rows, source, errors, warn) {
     'between them.' + (tiered ? ' Part D benefits are written for INITIAL (pbp_mrx_tier.txt) and CATASTROPHIC (pbp_mrx_p.txt); what the ' +
       'deductible does is carried by applies_to_deductible and deductible_ref on the INITIAL steps.' : '') +
     (q(mrx, 'mrx_alt_ded_tier_cstshr_yn') === '2' ? ` The cost share for drugs to which the deductible does not apply differs from the initial ` +
-      `coverage one (${dedStageCells.join(', ')}) and has no field (warning part-d-deductible-stage-cost-share; docs/specs/pbp-part-d-mapping.md section 5.3).` : ''));
+      `coverage one (${dedStageCells.join(', ')}) and has no field in the Benefit Plan Standard.` : ''));
   out.refs.push(...insulin);
   if (leftovers.length) {
-    out.refs.push(`pbp_mrx_tier.txt cells no rule of docs/specs/pbp-part-d-mapping.md reads, verbatim: ${leftovers.join('; ')}.`);
+    out.refs.push(`pbp_mrx_tier.txt cells that are not mapped to any field, verbatim: ${leftovers.join('; ')}.`);
   }
   out.refs.push('Every non-blank pbp_mrx.txt cell, verbatim, in file order: ' +
     Object.keys(mrx).filter((c) => !MRX_KEY_COLS.includes(c) && mrx[c] !== '').map((c) => cell(mrx, c)).join('; ') + '.');
@@ -2504,9 +2529,9 @@ function buildServiceArea(areaRows, regionRows, year, errors) {
       'Each county as county_code, county, stcd, and the partial_flag and eghp_flag values on its rows: ' +
       list.map((c) => `${c.code} ${c.name} ${c.state} partial_flag ${[...c.partial].map((v) => `"${v}"`).join('/')} ` +
         `eghp_flag ${[...c.eghp].map((v) => `"${v}"`).join('/')}`).join('; ') + '.');
-    if (states.length > 1) parts.push('The service area spans more than 1 state; service_area.state holds 1 state, so it is null (schema gap, spec section 9.1).');
+    if (states.length > 1) parts.push('The service area spans more than 1 state; the Benefit Plan Standard\'s service_area.state holds 1 state, so it is null.');
   }
-  if (regions.length) parts.push(`Service area from PlanRegionArea.txt (regions, no counties; schema gap, spec section 9.1): ${regions.join('; ')}.`);
+  if (regions.length) parts.push(`Service area from PlanRegionArea.txt (regions, no counties; the Benefit Plan Standard's service area holds counties, not regions): ${regions.join('; ')}.`);
   return { service_area, planYear, excerpt: parts.join(' ') || null };
 }
 
@@ -2565,7 +2590,7 @@ function isWebAddress(s) {
 
 function whyNotWebAddress(s) {
   return /^[A-Za-z][A-Za-z0-9+.-]*:/.test(s) ? 'it is not an http or https address the schema accepts as a URI' :
-    'it has no scheme, so it is not a URI, and the importer does not add one';
+    'it has no scheme, so it is not a URI, and no scheme is added to it';
 }
 
 // The member services phone columns of Section A, with their dictionary titles: a
@@ -2650,9 +2675,9 @@ function buildDocument(rows, source) {
   if (!d) errors.push('no pbp_Section_D.txt row');
   if (errors.length) return { doc: null, errors, warnings };
 
-  const { accumulators, notes: accNotes } = buildAccumulators(d, rows.c, planType, errors);
+  const { accumulators, notes: accNotes, zeroDollarNote } = buildAccumulators(d, rows.c, planType, errors);
   // v1.2.1 (spec section 5.11): before the deductible scopes, which read the accumulators.
-  const zero = zeroDollar(a, d, planType, accumulators, errors);
+  const zero = zeroDollar(a, d, planType, accumulators, accNotes, zeroDollarNote, errors);
   const network_tiers = buildTiers(rows.c, rows.oonGroups.length > 0, rows.posGroups.length > 0, rows.hospital, errors);
   const area = buildServiceArea(rows.area, rows.region, source.year, errors);
   const partD = buildPartD(rows, source, errors, warn);
@@ -2726,11 +2751,11 @@ function buildDocument(rows, source) {
     ...accNotes,
     zero.excerpt,
     'Every non-blank Section D deductible and out-of-pocket cell, verbatim, in file order: ' + accumulatorCells(d).join('; ') + '.',
-    `Benefits: the ${CROSSWALK.benefits.length} service categories in fhir/pbp-crosswalk.json (the workgroup MVP), ${benefits.length} written. ` +
-      'Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8).' +
+    `Benefits: the ${CROSSWALK.benefits.length} service categories of the Benefit Plan Standard's PBP crosswalk, ${benefits.length} written. ` +
+      'Other PBP service categories are not imported yet.' +
       (rics.length ? ` Then ${rics.length} Reductions in Cost Sharing ${rics.length === 1 ? 'entry' : 'entries'} from Section D ` +
-        `(${rics.map((b) => b.benefit_id).join(', ')}; section 5.10).` : '') +
-      (posMax.length ? ' Then 1 point-of-service maximum plan benefit coverage entry from Section C (PBP_C_POS_MAXPLAN; section 5.12).' : ''),
+        `(${rics.map((b) => b.benefit_id).join(', ')}).` : '') +
+      (posMax.length ? ' Then 1 point-of-service maximum plan benefit coverage entry from Section C (PBP_C_POS_MAXPLAN).' : ''),
     ctx.skipped.length
       ? `Medicare-covered categories with no copay or coinsurance answer in the file, not written (${cell(a, 'pbp_a_ben_cov')}): ${ctx.skipped.join('; ')}.`
       : null,
@@ -2775,7 +2800,7 @@ function buildPdpDocument(rows, source, key, keyText, errors, warnings, warn) {
     tier_id: 'IN',
     name: 'In-Network',
     description: 'A stand-alone Part D plan has no medical provider network. Its Part D cost shares are written on this tier; the pharmacy each ' +
-      "applies at is the benefit's pharmacy_network_id (docs/specs/pbp-part-d-mapping.md section 6).",
+      "applies at is the benefit's pharmacy_network_id.",
     tier_class: 'network',
   }];
   if (contacts.directory) network_tiers[0].provider_directory_url = contacts.directory;
@@ -2803,7 +2828,7 @@ function buildPdpDocument(rows, source, key, keyText, errors, warnings, warn) {
     contacts.excerpt,
     area.excerpt,
     'Premium: not written. The PDP premium is in no PBP file: pbp_Section_D.txt, which holds the Medicare Advantage premium, has no row for a ' +
-      'PDP, and pbp_mrx.txt, pbp_mrx_tier.txt and pbp_mrx_p.txt have no premium column (docs/specs/pbp-part-d-mapping.md section 4).',
+      'PDP, and pbp_mrx.txt, pbp_mrx_tier.txt and pbp_mrx_p.txt have no premium column.',
     ...partD.refs,
   ];
   doc.source_references = excerpts.filter(Boolean).map((excerpt) => ({ excerpt }));

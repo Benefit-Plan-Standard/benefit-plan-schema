@@ -141,13 +141,15 @@ const GOLDEN_SHA256 = {
 // Bundle's inpatient hospital benefit gains 1 BenefitLimitation for the unlimited
 // additional days, with limitText and limitType and no limitValue; and 2026-11-11 when the
 // importer began noting that a premium leaves out the Part D part (schema 1.2.0 draft 9): each
-// Bundle's premium entry gains a comment.
+// Bundle's premium entry gains a comment; and 2026-11-26 when the importer's notes and excerpts
+// lost their internal references (repository paths, spec sections, decision names): each
+// Bundle's notes, excerpts and comments change in their text only.
 const PBP_BUNDLE_SHA256 = {
-  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': '9c9e39c24c46612213713cd66d470cd08ec42f16b1c491c7fc4a8cbd546bcc90',
-  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': '7a57408469065ccd2a87c52072c5c85caf6eef294999a62b5e5bfbe30d3eb76f',
-  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '02d1a2c04593b79e8c012444a3709638dad0cf864bf695d049c3f0a0a16fb1fa',
-  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': 'aa341ba7ed69cbe87e412c321d05889e5d5aad8978944c977e30093c65e3f553',
-  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': '9c75dc00b2ad5f6e54f6109de605e5fa398e356264be9030f1733152fc2ae2c3',
+  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': 'a8e6ac111f35c13be0d1c643e282c94cdf2f9b798d74166836ab89d2513b47bb',
+  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': 'a24e2af2cf368248d8d9f89f2976fa21a75674841269de311deef075f0794019',
+  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '33faec06cdfad7f9e684e27fa9dd61787267a2bc62cdd99a70a87d979b4f5328',
+  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': 'a08dc0e5be84685dbb71b70b31a51d67795de7303c5a8ab785d0d21ffe4d7c17',
+  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': '3d85cc64c21a36138b9707f54d7a21b097d9b86b99d02bc6ed1d0eb84abeaa32',
 };
 
 test('the 10 golden files are byte-identical to the pinned versions, and the converter reproduces them', () => {

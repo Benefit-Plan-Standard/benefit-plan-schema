@@ -197,7 +197,7 @@ Merging saves 9 benefits on the Humana plan and 10 at the MA-PD median (P18, whi
 | `coverage_basis` | Not written: its values describe Medicare-covered and supplemental Part C services. | Not written |
 | `category` | `PHARMACY` (`vocabularies/categories.json`) | `PHARMACY` |
 | `service_name` | `Tier <n> (<label>), <network name, lowercase>, <days>-day supply, initial coverage`: `Tier 3 (Preferred Brand), preferred mail order, 100-day supply, initial coverage` | `Tier <n> (<label>), catastrophic coverage` |
-| `canonical_key` | From the label (section 9); omitted when the label has none, and the benefit's excerpt then says "no canonical key, carried by name (spec section 9.1)", the medical rule for rows with no key. | The same |
+| `canonical_key` | From the label (section 9); omitted when the label has none, and the benefit's excerpt then says "the Benefit Plan Standard has no canonical key for it, so it is identified by its name", the medical rule for rows with no key. | The same |
 | `raw_label` | The label verbatim | `mrx_tier_post_label_list` verbatim |
 | `network_cost_shares` | 1 row: `tier_id` `IN`, `covered` true, 1 step (6.3), and `notes` where 6.5 or 6.7 add one | The same |
 | `limits`, `conditions` | `[]` | `[]` |
@@ -321,7 +321,7 @@ The full cell-to-benefit listings, with index, `benefit_id`, `day_supply`, the s
 
 Its step: `{"type": "coinsurance", "sequence": 1, "rate": 0.07, "basis": "per_prescription", "applies_to_deductible": false, "deductible_ref": "pharmacy", "applies_to_moop": true, "moop_ref": "pharmacy"}`. The Humana document prints 7% in the 100-day preferred mail column for Tier 3 (page 11).
 
-A 1-month benefit also quotes the cells of its location that have no field: the daily copay (`mrx_tier_<part>_copay_daily`, filled on 11,733 tier rows) and the average expected coinsurance dollars (`mrx_tier_<part>_coins_avg_1m`, 13,710 rows; P14). A catastrophic benefit quotes `pbp_mrx_p.txt` with the key, `mrx_tier_post_label_list`, `mrx_tier_post_id`, `mrx_tier_post_includes`, `mrx_tier_post_cost_struct` and the amount, and names the regulation its $0 comes from (6.6). A benefit with no canonical key adds "no canonical key, carried by name (spec section 9.1)".
+A 1-month benefit also quotes the cells of its location that have no field: the daily copay (`mrx_tier_<part>_copay_daily`, filled on 11,733 tier rows) and the average expected coinsurance dollars (`mrx_tier_<part>_coins_avg_1m`, 13,710 rows; P14). A catastrophic benefit quotes `pbp_mrx_p.txt` with the key, `mrx_tier_post_label_list`, `mrx_tier_post_id`, `mrx_tier_post_includes`, `mrx_tier_post_cost_struct` and the amount, and names the regulation its $0 comes from (6.6). A benefit with no canonical key adds "the Benefit Plan Standard has no canonical key for it, so it is identified by its name".
 
 **The plan level** has no `source_references` inside `pharmacy` (the schema gives the object none), so its references are root entries, after the medical ones and in this order (the existing entries keep their positions):
 

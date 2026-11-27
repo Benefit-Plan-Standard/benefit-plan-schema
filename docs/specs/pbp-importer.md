@@ -128,7 +128,9 @@ Every entry is an `excerpt`, in this order:
 9. **Benefits.** How many crosswalk rows were written, and that other categories are not imported yet; then the Reductions in Cost Sharing entries (5.10) and the point-of-service maximum entry (5.12), when there are any.
 10. **Part D** (since 2026-10-24): the entries of `pbp-part-d-mapping.md` section 8, after the 9 above: the Part D answer and benefit type, the deductible reading, the threshold and its source, the pharmacy networks, the stages, 1 insulin entry per tier with insulin cells, and every non-blank `pbp_mrx.txt` cell. An MA plan with no Part D benefit gets 1 entry that quotes the answer. A PDP's document has entries 1 to 5 as above (its service area entry gives its Part D regions), an entry that says the PDP premium is in no PBP file, and the Part D entries; it has no Section D entries.
 
-Each benefit has its own `source_references` (v1.2.0): the PBP category, file and crosswalk; "no canonical key, carried by name" when that applies; the crosswalk's `quote` columns that are not blank; and the coverage-basis note for `4 Both`.
+Each benefit has its own `source_references` (v1.2.0): the PBP category, file and crosswalk; "the Benefit Plan Standard has no canonical key for it, so it is identified by its name" when that applies; the crosswalk's `quote` columns that are not blank; and the coverage-basis note for `4 Both`.
+
+**The words (since 2026-11-26, importer 1.2.1).** Every note, excerpt, tier description and `raw_text` is written for whoever reads the document. It names no file of this repository, no section of this spec and no decision by its label, and it does not name the importer. A gap in the Standard is said as a gap: "the Benefit Plan Standard has no field for a maximum that covers both networks together; the plan files it as pbp_d_comb_max_enr_amt "6700.00", ...". Every cell is quoted as `column "value"`, exactly as the file has it, in the sentence that states it.
 
 ### 4.5 County codes
 
