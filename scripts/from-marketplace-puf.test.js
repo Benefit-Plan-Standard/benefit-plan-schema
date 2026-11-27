@@ -176,10 +176,10 @@ test('buildDocument: deterministic', () => {
 });
 
 // ---- medical MVP gaps closed on 2026-10-20 (docs/specs/rtb-medical-mvp/README.md) -------------
-test('buildDocument: schema 1.2.0 with plan_identifiers (gap G7); no contacts, since the files give no plan website', () => {
+test('buildDocument: schema 1.3.0 (1.2.0 until 2026-11-27) with plan_identifiers (gap G7); no contacts, since the files give no plan website', () => {
   const { plan, header, rows, network } = syntheticPlan();
   const { doc } = buildDocument(plan, header, rows, SOURCE, network);
-  assert.strictEqual(doc.schema_version, '1.2.0');
+  assert.strictEqual(doc.schema_version, '1.3.0');
   assert.deepStrictEqual(doc.plan_identifiers, [{ system: 'hios_plan_id', value: '99999TX0010001-01' }, { system: 'hios_id', value: '99999TX0010001' }]);
   assert.deepStrictEqual(Object.keys(doc).slice(0, 3), ['plan_id', 'plan_identifiers', 'plan_name']);
   assert.ok(doc.source_references[0].excerpt.includes('PlanId "99999TX0010001-01", StandardComponentId "99999TX0010001", written in plan_identifiers'));
@@ -229,10 +229,63 @@ test('buildDocument: the provider directory link from the Network PUF, on the IN
 test('buildDocument: the out-of-area and out-of-country descriptions are quoted when filled (gap G8)', () => {
   const { plan, header, rows, network } = syntheticPlan();
   const attrs = buildDocument(plan, header, rows, SOURCE, network).doc.source_references
-    .find((s) => s.excerpt.startsWith('Plan Attributes PUF values with no Benefit Plan Standard v1.2.0 field')).excerpt;
+    .find((s) => s.excerpt.startsWith('Plan Attributes PUF values with no Benefit Plan Standard v1.3.0 field')).excerpt;
   assert.ok(attrs.includes('OutOfServiceAreaCoverage "Yes"; OutOfServiceAreaCoverageDescription "Emergency care only."'), attrs);
   assert.ok(attrs.includes('OutOfCountryCoverage "No"') && !attrs.includes('OutOfCountryCoverageDescription'), 'a blank description is left out');
   assert.ok(!attrs.includes('StandardComponentId'), 'StandardComponentId has a field now');
+});
+
+// ---- schema 1.3.0 draft 1: the CombInnOon columns (spec 4.3) ---------------------------------
+test('buildDocument: the CombInnOon cells of the family the other slots use are the 4 combined slots, with no network_tier; the cells stay quoted', () => {
+  const { plan, header, rows, network } = syntheticPlan();
+  const comb = {
+    MEHBDedCombInnOonIndividual: '$3,000', MEHBDedCombInnOonFamilyPerPerson: '$3000 per person', MEHBDedCombInnOonFamilyPerGroup: '$6000 per group',
+    TEHBCombInnOonIndividualMOOP: '$12,000', TEHBCombInnOonFamilyPerGroupMOOP: '$24000 per group',
+    TEHBCombInnOonFamilyPerPersonMOOP: 'per person not applicable',
+    // The other family's cells are not read: the deductibles come from MEHB, the maximums from TEHB.
+    TEHBDedCombInnOonIndividual: '$9,999', MEHBCombInnOonIndividualMOOP: '$9,999',
+  };
+  const p = { ...plan, ...comb };
+  const h = [...header, ...Object.keys(comb)];
+  const { doc, errors } = buildDocument(p, h, rows, SOURCE, network);
+  assert.deepStrictEqual(errors, []);
+  assert.deepStrictEqual(validateDocument(doc), []);
+  assert.deepStrictEqual(Object.keys(doc.accumulators), ['individual_deductible', 'family_deductible', 'individual_oop_max', 'family_oop_max',
+    'combined_individual_deductible', 'combined_family_deductible', 'combined_individual_oop_max', 'combined_family_oop_max'], 'schema order');
+  assert.deepStrictEqual(doc.accumulators.combined_individual_deductible, { amount: 3000, currency: 'USD', applies_to: 'medical' });
+  assert.deepStrictEqual(doc.accumulators.combined_family_deductible, { amount: 6000, currency: 'USD', applies_to: 'medical', embedded: true });
+  assert.deepStrictEqual(doc.accumulators.combined_individual_oop_max, { amount: 12000, currency: 'USD', applies_to: 'integrated' });
+  assert.deepStrictEqual(doc.accumulators.combined_family_oop_max, { amount: 24000, currency: 'USD', applies_to: 'integrated', embedded: false });
+  const acc = doc.source_references.find((s) => s.excerpt.startsWith('Accumulators from the Plan Attributes PUF.')).excerpt;
+  for (const [k, v] of Object.entries(comb)) assert.ok(acc.includes(`${k} "${v.trim()}"`), k);
+  // Not Applicable or blank writes no slot, as on the other slots; an unreadable cell is an error that quotes it.
+  const none = buildDocument({ ...plan, MEHBDedCombInnOonIndividual: 'Not Applicable', TEHBCombInnOonIndividualMOOP: '' }, [...header, 'MEHBDedCombInnOonIndividual', 'TEHBCombInnOonIndividualMOOP'], rows, SOURCE, network).doc;
+  assert.ok(!Object.keys(none.accumulators).some((k) => k.startsWith('combined_')));
+  const bad = buildDocument({ ...plan, MEHBDedCombInnOonIndividual: '$3,000 in and out' }, [...header, 'MEHBDedCombInnOonIndividual'], rows, SOURCE, network);
+  assert.strictEqual(bad.doc, null);
+  assert.ok(bad.errors.some((e) => e.startsWith('MEHBDedCombInnOonIndividual: ') && e.includes('"$3,000 in and out"')), bad.errors.join('; '));
+  // The family rule reads the in-network and out-of-network cells only, as before.
+  const onlyComb = buildDocument({ ...plan, MEHBDedInnTier1Individual: '', MEHBDedInnTier1FamilyPerGroup: '', MEHBDedInnTier1FamilyPerPerson: '',
+    TEHBDedCombInnOonIndividual: '$5,000' }, [...header, 'TEHBDedCombInnOonIndividual'], rows, SOURCE, network).doc;
+  assert.strictEqual(onlyComb.accumulators.combined_individual_deductible, undefined, 'a CombInnOon value in the family not used is quoted only (0 plans in 2026 and 2027)');
+  assert.ok(onlyComb.source_references.some((x) => x.excerpt.includes('TEHBDedCombInnOonIndividual "$5,000"')));
+});
+
+test('the BCBS Louisiana golden file writes the 4 combined slots beside the 8 per-network slots, each from its family', () => {
+  const doc = readJson(path.join(EXAMPLES_DIR, 'blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.puf.json'));
+  assert.deepStrictEqual(Object.fromEntries(Object.entries(doc.accumulators).filter(([k]) => k.startsWith('combined_'))), {
+    combined_individual_deductible: { amount: 13200, currency: 'USD', applies_to: 'medical' },
+    combined_family_deductible: { amount: 39600, currency: 'USD', applies_to: 'medical', embedded: true },
+    combined_individual_oop_max: { amount: 39600, currency: 'USD', applies_to: 'integrated' },
+    combined_family_oop_max: { amount: 79200, currency: 'USD', applies_to: 'integrated', embedded: true },
+  });
+  assert.strictEqual(Object.keys(doc.accumulators).length, 12);
+  const acc = doc.source_references.find((s) => s.excerpt.startsWith('Accumulators from the Plan Attributes PUF.')).excerpt;
+  assert.ok(acc.includes('MEHBDedCombInnOonIndividual "$13,200"') && acc.includes('TEHBCombInnOonFamilyPerGroupMOOP "$79200 per group"'));
+  for (const f of goldenFiles().filter((x) => !x.startsWith('blue-cross-and-blue-shield-of-louisiana'))) {
+    const other = readJson(path.join(EXAMPLES_DIR, f));
+    assert.ok(!Object.keys(other.accumulators).some((k) => k.startsWith('combined_')), `${f} files no CombInnOon value`);
+  }
 });
 
 // ---- reading the files ---------------------------------------------------------------------
@@ -282,13 +335,14 @@ test('the committed examples are the golden set', () => {
 });
 
 for (const file of goldenFiles()) {
-  test(`${file}: valid against the v1.2.0 schema`, () => {
+  test(`${file}: valid against the v1.3.0 schema`, () => {
     assert.deepStrictEqual(validateDocument(readJson(path.join(EXAMPLES_DIR, file))), []);
   });
-  test(`${file}: every accumulator's network_tier is a tier_id of the document, IN or OUT`, () => {
+  test(`${file}: every per-network accumulator's network_tier is a tier_id of the document, IN or OUT, and a combined slot has none`, () => {
     const doc = readJson(path.join(EXAMPLES_DIR, file));
     const ids = doc.network_tiers.map((t) => t.tier_id);
     for (const [slot, a] of Object.entries(doc.accumulators)) {
+      if (slot.startsWith('combined_')) { assert.ok(!('network_tier' in a), slot); continue; }
       assert.ok(ids.includes(a.network_tier), `${slot}: network_tier "${a.network_tier}" is not 1 of ${ids.join(', ')}`);
       assert.strictEqual(a.network_tier, slot.startsWith('oon_') ? 'OUT' : 'IN', slot);
     }

@@ -1,17 +1,17 @@
 # Spec: CMS Marketplace public use files to BPS importer
 
-**Status:** Draft, 2026-10-05; updated 2026-10-20 (schema 1.2.0, `plan_identifiers`, the Network PUF, `ImportDate` and the out-of-area descriptions: the medical MVP gaps G5 to G8, [`rtb-medical-mvp/README.md`](rtb-medical-mvp/README.md)) and 2026-10-21 (accumulator `network_tier` written as the tier ids `IN` and `OUT`, section 4.3, medical MVP specification 0.3)
+**Status:** Draft, 2026-10-05; updated 2026-10-20 (schema 1.2.0, `plan_identifiers`, the Network PUF, `ImportDate` and the out-of-area descriptions: the medical MVP gaps G5 to G8, [`rtb-medical-mvp/README.md`](rtb-medical-mvp/README.md)) and 2026-10-21 (accumulator `network_tier` written as the tier ids `IN` and `OUT`, section 4.3, medical MVP specification 0.3) and 2026-11-27 (schema 1.3.0 draft 1: the `CombInnOon` columns written as the 4 `combined_*` accumulator slots, section 4.3)
 **Reads with:** [`insuranceplan-converter.md`](insuranceplan-converter.md) (the exporter this importer feeds), [`marketplace-puf-parse-report.md`](marketplace-puf-parse-report.md) (every cost-share string in the PY2026 file and how it is read), [`marketplace-puf-vs-sbc-flblue-505.md`](marketplace-puf-vs-sbc-flblue-505.md) (the importer's Florida Blue output against the SBC example)
 **Map:** this importer, the Medicare Advantage importer and the converter in one diagram, with every command: [How the data flows](https://benefitplanstandard.org/docs/specification/data-flow)
 
-This spec defines the first importer for the Benefit Plan Standard (BPS): the CMS Health Insurance Exchange public use files (PUFs) in, one BPS v1.2.0 document per plan out (v1.1.0 until 2026-10-20). It follows the pattern of the FHIR converter: the benefit mapping lives in a data file, the output is deterministic, 5 golden files are committed, and a test checks them.
+This spec defines the first importer for the Benefit Plan Standard (BPS): the CMS Health Insurance Exchange public use files (PUFs) in, one BPS v1.3.0 document per plan out (v1.2.0 from 2026-10-20 to 2026-11-27, v1.1.0 before). It follows the pattern of the FHIR converter: the benefit mapping lives in a data file, the output is deterministic, 5 golden files are committed, and a test checks them.
 
 ---
 
 ## 1. Scope
 
 - One direction: public files to BPS. The importer writes BPS JSON only. It never writes FHIR; FHIR comes from `scripts/to-insuranceplan.js` reading the importer's output unchanged.
-- One plan in, one BPS v1.2.0 document out. A plan is one plan variant (a 17-character HIOS plan ID, section 5.1).
+- One plan in, one BPS v1.3.0 document out. A plan is one plan variant (a 17-character HIOS plan ID, section 5.1).
 - Medical plans only. A stand-alone dental plan (`DentalOnlyPlan` "Yes") is refused.
 - The importer never adds a value the public files do not contain. It invents no period, basis, network, identifier or cost share. A string it cannot read stops the import for that plan, with the string quoted (section 6). Nothing is guessed.
 - Nothing is dropped silently. A value with no BPS field is carried verbatim in `source_references` or in tier `notes`, and benefits with no canonical key are listed by name (section 8).
@@ -90,11 +90,16 @@ The Plan Attributes PUF has 3 column families: medical (`MEHB...`), drug (`DEHB.
 | `oon_family_deductible` | `DedOutOfNetFamilyPerGroup` | `OUT` |
 | `oon_individual_oop_max` | `OutOfNetIndividualMOOP` | `OUT` |
 | `oon_family_oop_max` | `OutOfNetFamilyPerGroupMOOP` | `OUT` |
+| `combined_individual_deductible` | `DedCombInnOonIndividual` | none (schema 1.3.0) |
+| `combined_family_deductible` | `DedCombInnOonFamilyPerGroup` | none (schema 1.3.0) |
+| `combined_individual_oop_max` | `CombInnOonIndividualMOOP` | none (schema 1.3.0) |
+| `combined_family_oop_max` | `CombInnOonFamilyPerGroupMOOP` | none (schema 1.3.0) |
 
 - **Values.** `"$6,000 "`, `"$12000 per group"` and `"$0 per person"` are read as amounts (`$0` is a real $0 deductible and is written). `Not Applicable`, `per group not applicable`, `per person not applicable` and blank mean no value; the slot is omitted. Any other cell is an error.
-- **Fields.** `amount`, `currency` `USD`, `network_tier`, the `tier_id` of the slot's tier in `network_tiers` (`IN` or `OUT`, as the PBP importer writes it; `in-network` and `out-of-network` before 2026-10-21), and `applies_to`: `medical` for the `MEHB` family, `integrated` for `TEHB`. `period` is not written: the file does not say plan year or calendar year.
-- **`embedded`.** On a family slot: `true` when the matching `FamilyPerPerson` cell has a dollar amount (each family member has their own amount inside the family total); `false` when it reads `per person not applicable`; omitted when blank.
-- **Not in slots.** Tier 2 accumulators, combined in-and-out-of-network accumulators (`CombInnOon`), the drug family when it is separate, and the default coinsurance cells (`DedInnTier1Coinsurance` and so on). All are carried verbatim in `source_references` (4.4).
+- **Fields.** `amount`, `currency` `USD`, `network_tier`, the `tier_id` of the slot's tier in `network_tiers` (`IN` or `OUT`, as the PBP importer writes it; `in-network` and `out-of-network` before 2026-10-21), and `applies_to`. A `combined_*` slot has no `network_tier`: it counts what the member pays in and out of network together (schema 1.3.0). `applies_to` is `medical` for the `MEHB` family, `integrated` for `TEHB`. `period` is not written: the file does not say plan year or calendar year.
+- **`embedded`.** On a family slot (`combined_family_*` included): `true` when the matching `FamilyPerPerson` cell has a dollar amount (each family member has their own amount inside the family total); `false` when it reads `per person not applicable`; omitted when blank.
+- **The combined slots (schema 1.3.0 draft 1, 2026-11-27).** The `CombInnOon` columns, "combined in-network and out-of-network", are written as the 4 `combined_*` slots, from the same family (`MEHB` or `TEHB`) as the plan's other slots, with `applies_to` set the same way; the family rule reads the in-network and out-of-network cells only, as before. The values, the `Not Applicable` forms and the errors are those of the other slots. A plan may have a combined slot beside the in-network and out-of-network ones: in the 2026 and 2027 files every plan with a combined deductible also has an in-network one. Measured on 2026-11-27 over the medical plans (each cost-sharing variant a plan, stand-alone dental plans left out): 2026, 3,498 of 20,670 (1,866 standard components; 3,479 with a combined deductible, 3,268 a combined maximum); 2027, 2,558 of 18,698 (1,438; 2,545 and 2,384). No combined amount sits in the family the importer does not use. Before 1.3.0 the cells were quoted only.
+- **Not in slots.** Tier 2 accumulators, the drug family when it is separate, and the default coinsurance cells (`DedInnTier1Coinsurance` and so on). All are carried verbatim in `source_references` (4.4), as the `CombInnOon` cells still are.
 
 ### 4.4 Source references
 
@@ -262,7 +267,7 @@ Each case takes the reading that loses no information.
 |---|---|---|
 | Benefit rows with no canonical key | Listed by name and coverage in `source_references` | Name and coverage only; their cost shares, limits and text are not carried |
 | CSR variation, metal level, HSA eligibility, network, service area and formulary IDs, referral flags, plan-level exclusions, out-of-area and out-of-country answers and descriptions, AV numbers, URLs, the network's name | `source_references` text (4.4) | Yes, as text |
-| Tier 2, combined in-and-out, drug-only and coinsurance accumulator cells | `source_references` text (4.3) | Yes, as text |
+| Tier 2, drug-only and coinsurance accumulator cells | `source_references` text (4.3) | Yes, as text. The combined in-and-out cells are written as the `combined_*` slots since schema 1.3.0, and still quoted |
 | Verbatim cost-share strings | Tier `notes` | Yes |
 | `IsEHB`, `EHBVarReason` | Not carried | No |
 | `QuantLimitOnSvc` | Not carried; it is implied by `limits[]` | Yes, by inference |
@@ -274,7 +279,7 @@ Each case takes the reading that loses no information.
 
 ### 9.1 In the public files, not in BPS
 
-Written against v1.1.0 on 2026-10-05; the importer writes v1.2.0 since 2026-10-20, and the first and seventh rows say what that changed.
+Written against v1.1.0 on 2026-10-05; the importer writes v1.2.0 since 2026-10-20, and the first and seventh rows say what that changed, and v1.3.0 since 2026-11-27, which closed the sixth row.
 
 | Public-file field | Gap | Workaround here |
 |---|---|---|
@@ -283,7 +288,7 @@ Written against v1.1.0 on 2026-10-05; the importer writes v1.2.0 since 2026-10-2
 | `CSRVariationType` | No plan variant field | `source_references` |
 | `IsHSAEligible` | No HSA eligibility field | `source_references` |
 | Tier 2 accumulators (`...InnTier2...`) | Accumulator slots exist for in-network and out-of-network only | `source_references` |
-| Combined in-and-out-of-network accumulators (`CombInnOon`) | No slot | `source_references` |
+| Combined in-and-out-of-network accumulators (`CombInnOon`) | No slot before schema 1.3.0. Closed in 1.3.0 draft 1 (2026-11-27): the 4 `combined_*` slots | The slots (4.3); the cells still quoted in `source_references` |
 | Separate drug deductible and MOOP (`DEHB...`) | No pharmacy accumulator in v1.1.0. v1.2.0 has `pharmacy.deductible` and `pharmacy.out_of_pocket_max`, which the importer does not write yet (medical MVP README, Follow-ups) | `source_references` |
 | Family per-person amount without a family total | Family slots need an `amount`; `embedded` is a boolean with no per-person amount | `source_references` |
 | Default plan coinsurance (`...DedInnTier1Coinsurance`) | No plan-level coinsurance field | `source_references` |
@@ -389,7 +394,8 @@ Known data issue in PY2023: 33 plan variants of 1 Wyoming issuer (HIOS issuer 11
 - `buildDocument` on a small synthetic plan: the mapping rules, tier 2 detection, an unreadable string stopping the import, determinism. Since 2026-10-20: schema 1.2.0 with `plan_identifiers` and no `contacts`; each file's `ImportDate` and both download dates in the first excerpt; the Network PUF join on 5 columns (another issuer's or another market's row is not joined; no row, a blank address, an address with no scheme, 2 rows); the 2 descriptions quoted when filled.
 - `pufFiles` requires the Network PUF; `downloadDates` reads the Network PUF's own date, and `--downloaded` sets all 3.
 - Crosswalk: unique names, keys and categories in the vocabularies, counts.
-- The 5 golden files validate against v1.2.0.
+- The 5 golden files validate against v1.3.0 (v1.2.0 until 2026-11-27); a per-network slot's `network_tier` is `IN` or `OUT` and a combined slot has none.
+- Since 2026-11-27, the combined slots: the `CombInnOon` cells of the family the other slots use, in schema order, `embedded` on the family slots, the cells still quoted, `Not Applicable` writing none, an unreadable cell an error, a value in the family not used quoted only; and the BCBS Louisiana golden file's 4 combined slots.
 - With the public files present: each golden plan is re-imported and compared byte for byte (after CRLF normalization), imported twice with identical output, and checked that every benefit row is either a benefit or listed as unmapped. Without the files these 5 tests are skipped and say why.
 
 The golden plans:
@@ -397,7 +403,7 @@ The golden plans:
 | File | Plan | Year | Why |
 |---|---|---|---|
 | `florida-blue-blueoptions-gold-1505.puf.json` | Florida Blue, BlueOptions Gold 1505, 16842FL0070120-01, Gold EPO | 2023 | The comparison with the BlueOptions 505 SBC example. No PY2023 row matches 505 (the comparison document gives the search). Has tier 2. |
-| `blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.puf.json` | Blue Cross and Blue Shield of Louisiana, Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits, 97176LA0340010-01, Silver PPO | 2026 | Separate medical deductible, out-of-network values, limits, long explanation text. |
+| `blue-cross-and-blue-shield-of-louisiana-blue-max-copay-50-50.puf.json` | Blue Cross and Blue Shield of Louisiana, Blue Max Copay (PCP) 50/50 $3300 with 2 $0 PCP Virtual Visits, 97176LA0340010-01, Silver PPO | 2026 | Separate medical deductible, out-of-network values, limits, long explanation text. Since schema 1.3.0 the 1 golden plan with `CombInnOon` values: the 4 combined slots, the deductibles from `MEHB` ($13,200 and $39,600) and the maximums from `TEHB` ($39,600 and $79,200). |
 | `unitedhealthcare-uhc-gold-standard.puf.json` | UnitedHealthcare, UHC Gold Standard, 40220TX0080024-01, Texas, Gold HMO | 2026 | Integrated medical and drug accumulators, 100% out-of-network coinsurance, per-month drug limits. |
 | `unitedhealthcare-uhc-bronze-essential.puf.json` | UnitedHealthcare, UHC Bronze Essential ($0 Virtual Urgent Care), 68398FL0030058-01, Florida, Bronze HMO | 2026 | The first Bronze plan, HSA-eligible. Hearing Aids, Routine Eye Exam (Adult) and Routine Foot Care are Not Covered, so they are written with `covered` false. |
 | `avmed-avmed-entrust-gold-125.puf.json` | AvMed, AvMed Entrust Gold 125 (2026), 19898FL0340001-01, Florida, Gold HMO | 2026 | Has tier 2 (PY2026). Hearing Aids, Routine Eye Exam (Adult) and Routine Foot Care are Not Covered, so they are written with `covered` false. |
