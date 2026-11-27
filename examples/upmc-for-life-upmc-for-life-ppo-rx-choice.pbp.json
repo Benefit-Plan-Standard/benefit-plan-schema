@@ -75,6 +75,11 @@
       "currency": "USD",
       "network_tier": "IN",
       "applies_to": "medical"
+    },
+    "combined_individual_oop_max": {
+      "amount": 9000,
+      "currency": "USD",
+      "applies_to": "medical"
     }
   },
   "pharmacy": {
@@ -211,10 +216,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 107 (label \"7a\", pbp_c_oon_out_mc_bendesc_cats \"7a;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 107 (label \"7a\", pbp_c_oon_out_mc_bendesc_cats \"7a;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -260,10 +266,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 110 (label \"7d\", pbp_c_oon_out_mc_bendesc_cats \"7d;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 110 (label \"7d\", pbp_c_oon_out_mc_bendesc_cats \"7d;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -358,10 +365,11 @@
               "rate": 0.4,
               "basis": "per_stay",
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C (pbp_c_oon_mc_bendesc_cats lists 1a): pbp_c_oon_coins_ihs_yn \"1\", pbp_c_oon_coins_ihs_ben_type \"11\", pbp_c_oon_coins_iha_pct \"40\", pbp_c_oon_coins_iha_intrvl_num \"1\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C (pbp_c_oon_mc_bendesc_cats lists 1a): pbp_c_oon_coins_ihs_yn \"1\", pbp_c_oon_coins_ihs_ben_type \"11\", pbp_c_oon_coins_iha_pct \"40\", pbp_c_oon_coins_iha_intrvl_num \"1\"."
         }
       ],
       "limits": [
@@ -421,10 +429,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 125 (label \"9a1\", pbp_c_oon_out_mc_bendesc_cats \"9a1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 125 (label \"9a1\", pbp_c_oon_out_mc_bendesc_cats \"9a1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -476,10 +485,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 126 (label \"9a2\", pbp_c_oon_out_mc_bendesc_cats \"9a2;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 126 (label \"9a2\", pbp_c_oon_out_mc_bendesc_cats \"9a2;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -531,10 +541,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 127 (label \"9b\", pbp_c_oon_out_mc_bendesc_cats \"9b;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 127 (label \"9b\", pbp_c_oon_out_mc_bendesc_cats \"9b;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -658,10 +669,11 @@
               "amount_min": 50,
               "amount_max": 340,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 131 (label \"10a1\", pbp_c_oon_out_mc_bendesc_cats \"10a1;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"50.00\", pbp_c_oon_outpt_copay_max_amt \"340.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 131 (label \"10a1\", pbp_c_oon_out_mc_bendesc_cats \"10a1;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"50.00\", pbp_c_oon_outpt_copay_max_amt \"340.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -712,10 +724,11 @@
               "sequence": 1,
               "amount": 340,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 132 (label \"10a2\", pbp_c_oon_out_mc_bendesc_cats \"10a2;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"340.00\", pbp_c_oon_outpt_copay_max_amt \"340.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 132 (label \"10a2\", pbp_c_oon_out_mc_bendesc_cats \"10a2;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"340.00\", pbp_c_oon_outpt_copay_max_amt \"340.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -767,10 +780,11 @@
               "sequence": 1,
               "amount": 50,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 120 (label \"8a1\", pbp_c_oon_out_mc_bendesc_cats \"8a1;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"50.00\", pbp_c_oon_outpt_copay_max_amt \"50.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 120 (label \"8a1\", pbp_c_oon_out_mc_bendesc_cats \"8a1;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"50.00\", pbp_c_oon_outpt_copay_max_amt \"50.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -822,10 +836,11 @@
               "sequence": 1,
               "amount": 50,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 121 (label \"8a2\", pbp_c_oon_out_mc_bendesc_cats \"8a2;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"50.00\", pbp_c_oon_outpt_copay_max_amt \"50.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 121 (label \"8a2\", pbp_c_oon_out_mc_bendesc_cats \"8a2;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"50.00\", pbp_c_oon_outpt_copay_max_amt \"50.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -876,10 +891,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 122 (label \"8b1\", pbp_c_oon_out_mc_bendesc_cats \"8b1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 122 (label \"8b1\", pbp_c_oon_out_mc_bendesc_cats \"8b1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -930,10 +946,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 123 (label \"8b2\", pbp_c_oon_out_mc_bendesc_cats \"8b2;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 123 (label \"8b2\", pbp_c_oon_out_mc_bendesc_cats \"8b2;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -984,10 +1001,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 124 (label \"8b3\", pbp_c_oon_out_mc_bendesc_cats \"8b3;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 124 (label \"8b3\", pbp_c_oon_out_mc_bendesc_cats \"8b3;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -1038,10 +1056,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 118 (label \"7i\", pbp_c_oon_out_mc_bendesc_cats \"7i;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 118 (label \"7i\", pbp_c_oon_out_mc_bendesc_cats \"7i;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -1092,10 +1111,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 109 (label \"7c\", pbp_c_oon_out_mc_bendesc_cats \"7c;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 109 (label \"7c\", pbp_c_oon_out_mc_bendesc_cats \"7c;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -1146,10 +1166,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 108 (label \"7b\", pbp_c_oon_out_mc_bendesc_cats \"7b;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 108 (label \"7b\", pbp_c_oon_out_mc_bendesc_cats \"7b;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -1225,10 +1246,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 113 (label \"7f\", pbp_c_oon_out_mc_bendesc_cats \"7f;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 113 (label \"7f\", pbp_c_oon_out_mc_bendesc_cats \"7f;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -1275,10 +1297,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": false
+              "applies_to_moop": false,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 114 (label \"7f_2\", pbp_c_oon_out_nmc_bendesc_cats \"7f_2;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\", pbp_c_oon_outpt_maxplan_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 114 (label \"7f_2\", pbp_c_oon_out_nmc_bendesc_cats \"7f_2;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\", pbp_c_oon_outpt_maxplan_yn \"2\"."
         }
       ],
       "limits": [
@@ -1363,10 +1386,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 176 (label \"18a\", pbp_c_oon_out_mc_bendesc_cats \"18a;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 176 (label \"18a\", pbp_c_oon_out_mc_bendesc_cats \"18a;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -1413,10 +1437,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": false
+              "applies_to_moop": false,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 178 (label \"18a1\", pbp_c_oon_out_nmc_bendesc_cats \"18a1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 178 (label \"18a1\", pbp_c_oon_out_nmc_bendesc_cats \"18a1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [
@@ -1471,10 +1496,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 167 (label \"17a\", pbp_c_oon_out_mc_bendesc_cats \"17a;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 167 (label \"17a\", pbp_c_oon_out_mc_bendesc_cats \"17a;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -1521,10 +1547,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": false
+              "applies_to_moop": false,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 169 (label \"17a1\", pbp_c_oon_out_nmc_bendesc_cats \"17a1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 169 (label \"17a1\", pbp_c_oon_out_nmc_bendesc_cats \"17a1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [
@@ -1582,10 +1609,11 @@
               "sequence": 1,
               "amount": 5000,
               "applies_to_deductible": false,
-              "applies_to_moop": false
+              "applies_to_moop": false,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 181 (label \"18b1\", pbp_c_oon_out_nmc_bendesc_cats \"18b1;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"5000.00\", pbp_c_oon_outpt_copay_max_amt \"5000.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 181 (label \"18b1\", pbp_c_oon_out_nmc_bendesc_cats \"18b1;\"): pbp_c_oon_outpt_copay_yn \"1\", pbp_c_oon_outpt_copay_min_amt \"5000.00\", pbp_c_oon_outpt_copay_max_amt \"5000.00\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [
@@ -1644,10 +1672,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 111 (label \"7e1\", pbp_c_oon_out_mc_bendesc_cats \"7e1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 111 (label \"7e1\", pbp_c_oon_out_mc_bendesc_cats \"7e1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -1695,10 +1724,11 @@
               "amount": 0,
               "applies_to_deductible": false,
               "applies_to_moop": true,
+              "moop_ref": "combined",
               "notes": "The file states no copayment and no coinsurance for this service (pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"2\"); written as a $0 copay."
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 106 (label \"6\", pbp_c_oon_out_mc_bendesc_cats \"6;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 106 (label \"6\", pbp_c_oon_out_mc_bendesc_cats \"6;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -1767,10 +1797,11 @@
               "rate": 0.4,
               "basis": "per_stay",
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C (pbp_c_oon_mc_bendesc_cats lists 2): pbp_c_oon_coins_snf_yn \"1\", pbp_c_oon_coins_snf_pct \"40\", pbp_c_oon_coins_snf_intrvl_num \"1\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C (pbp_c_oon_mc_bendesc_cats lists 2): pbp_c_oon_coins_snf_yn \"1\", pbp_c_oon_coins_snf_pct \"40\", pbp_c_oon_coins_snf_intrvl_num \"1\"."
         }
       ],
       "limits": [],
@@ -1822,10 +1853,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": false
+              "applies_to_moop": false,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 159 (label \"16b4\", pbp_c_oon_out_nmc_bendesc_cats \"16b4;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 159 (label \"16b4\", pbp_c_oon_out_nmc_bendesc_cats \"16b4;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [
@@ -1884,10 +1916,11 @@
               "sequence": 1,
               "rate": 0.5,
               "applies_to_deductible": false,
-              "applies_to_moop": false
+              "applies_to_moop": false,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 161 (label \"16c1\", pbp_c_oon_out_nmc_bendesc_cats \"16c1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"50\", pbp_c_oon_outpt_coins_max_pct \"50\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 161 (label \"16c1\", pbp_c_oon_out_nmc_bendesc_cats \"16c1;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"50\", pbp_c_oon_outpt_coins_max_pct \"50\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [
@@ -1948,10 +1981,11 @@
               "amount": 0,
               "applies_to_deductible": false,
               "applies_to_moop": false,
+              "moop_ref": "combined",
               "notes": "The file states no copayment and no coinsurance for this service (pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"2\"); written as a $0 copay."
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 174 (label \"17b2\", pbp_c_oon_out_nmc_bendesc_cats \"17b2;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 174 (label \"17b2\", pbp_c_oon_out_nmc_bendesc_cats \"17b2;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [
@@ -2012,10 +2046,11 @@
               "amount": 0,
               "applies_to_deductible": false,
               "applies_to_moop": false,
+              "moop_ref": "combined",
               "notes": "The file states no copayment and no coinsurance for this service (pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"2\"); written as a $0 copay."
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 140 (label \"13b\", pbp_c_oon_out_nmc_bendesc_cats \"13b;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\", pbp_c_oon_outpt_maxplan_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 140 (label \"13b\", pbp_c_oon_out_nmc_bendesc_cats \"13b;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"2\", pbp_c_oon_outpt_ded_yn \"2\", pbp_c_oon_outpt_maxplan_yn \"2\"."
         }
       ],
       "limits": [
@@ -2139,10 +2174,11 @@
               "sequence": 2,
               "rate": 0.5,
               "applies_to_deductible": false,
-              "applies_to_moop": false
+              "applies_to_moop": false,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 143 (label \"14c4\", pbp_c_oon_out_nmc_bendesc_cats \"14c4;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"50\", pbp_c_oon_outpt_coins_max_pct \"50\", pbp_c_oon_outpt_ded_yn \"1\", pbp_c_oon_outpt_ded_amt \"500.00\", pbp_c_oon_outpt_maxplan_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 143 (label \"14c4\", pbp_c_oon_out_nmc_bendesc_cats \"14c4;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"50\", pbp_c_oon_outpt_coins_max_pct \"50\", pbp_c_oon_outpt_ded_yn \"1\", pbp_c_oon_outpt_ded_amt \"500.00\", pbp_c_oon_outpt_maxplan_yn \"2\"."
         }
       ],
       "limits": [
@@ -2195,10 +2231,11 @@
               "sequence": 1,
               "rate": 0.4,
               "applies_to_deductible": false,
-              "applies_to_moop": true
+              "applies_to_moop": true,
+              "moop_ref": "combined"
             }
           ],
-          "notes": "pbp_Section_C_OON.txt group 141 (label \"14a\", pbp_c_oon_out_mc_bendesc_cats \"14a;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\". applies_to_moop refers to the combined in-network and out-of-network maximum (pbp_d_comb_max_enr_amt \"9000.00\"), which has no field in the Benefit Plan Standard."
+          "notes": "pbp_Section_C_OON.txt group 141 (label \"14a\", pbp_c_oon_out_mc_bendesc_cats \"14a;\"): pbp_c_oon_outpt_copay_yn \"2\", pbp_c_oon_outpt_coins_yn \"1\", pbp_c_oon_outpt_coins_min_pct \"40\", pbp_c_oon_outpt_coins_max_pct \"40\", pbp_c_oon_outpt_ded_yn \"2\"."
         }
       ],
       "limits": [],
@@ -4705,7 +4742,7 @@
       "excerpt": "In-network out-of-pocket maximum type: the Benefit Plan Standard has no field for it; the plan files pbp_d_out_pocket_amt_type \"3\" (Intermediate)."
     },
     {
-      "excerpt": "Combined in-network and out-of-network out-of-pocket maximum: the Benefit Plan Standard has no field for a maximum that covers both networks together; the plan files it as pbp_d_comb_max_enr_amt \"9000.00\", with pbp_d_comb_max_enr_amt_type \"\"."
+      "excerpt": "Combined in-network and out-of-network out-of-pocket maximum, written as combined_individual_oop_max: 1 maximum that counts what the member pays in and out of network together. The plan files it as pbp_d_comb_max_enr_amt \"9000.00\", with pbp_d_comb_max_enr_amt_type \"\"; the Benefit Plan Standard has no field for the type."
     },
     {
       "excerpt": "Every non-blank Section D deductible and out-of-pocket cell, verbatim, in file order: pbp_d_ann_deduct_yn \"2\"; pbp_d_nmc_deduct_yn \"2\"; pbp_d_out_pocket_amt_yn \"1\"; pbp_d_out_pocket_amt_type \"3\"; pbp_d_out_pocket_amt \"5500.00\"; pbp_d_inn_max_enr_oopc_bens \"01\"; pbp_d_inn_max_enr_m_yn \"1\"; pbp_d_inn_max_enr_m_cat_ex \"1a;1b;2;3-1;3-2;3-3;3-4;4a;4b;5a;5b;6;7a;7b;7c;7d;7e1;7e2;7f;7g;7h1;7h2;7i;7j;7k;8a1;8a2;8b1;8b2;8b3;9a1;9a2;9b;9c1;9c2;9d;10a1;10a2;11a;11b1;11b2;11c1;11c2;11c3;12;14a;14d;14e1;14e2;14e4;14e5;15-1-I;15-2;15-3;16a;17a;17b;18a;\"; pbp_d_comb_max_enr_amt_yn \"1\"; pbp_d_comb_max_enr_amt \"9000.00\"; pbp_d_comb_max_enr_oopc_bens \"0101\"; pbp_d_comb_max_enr_inn_m_yn \"1\"; pbp_d_comb_max_enr_inn_mcat_ex \"1a;1b;2;3-1;3-2;3-3;3-4;4a;4b;5a;5b;6;7a;7b;7c;7d;7e1;7e2;7f;7g;7h1;7h2;7i;7j;7k;8a1;8a2;8b1;8b2;8b3;9a1;9a2;9b;9c1;9c2;9d;10a1;10a2;11a;11b1;11b2;11c1;11c2;11c3;12;14a;14d;14e1;14e2;14e4;14e5;15-1-I;15-2;15-3;16a;17a;17b;18a;\"; pbp_d_comb_max_enr_oon_m_yn \"1\"; pbp_d_comb_max_enr_oon_mcat_ex \"1a;1b;2;3-1;3-2;3-3;3-4;5a;5b;6;7a;7b;7c;7d;7e1;7e2;7f;7g;7h1;7h2;7i;7k;8a1;8a2;8b1;8b2;8b3;9a1;9a2;9b;9c1;9c2;9d;10a1;10a2;11a;11b1;11b2;11c1;11c2;11c3;12;14a;14d;14e1;14e2;14e4;14e5;15-1-I;15-2;15-3;16a;17a;17b;18a;\"; pbp_d_oon_max_enr_oopc_yn \"2\"."
@@ -4744,5 +4781,5 @@
       "excerpt": "Every non-blank pbp_mrx.txt cell, verbatim, in file order: mrx_form_model_type \"5F\"; mrx_drug_ben_yn \"1\"; mrx_benefit_type \"4\"; mrx_partd_network_loc \"101101\"; mrx_ltc_attest_flag \"1\"; mrx_first_fill \"2\"; mrx_otc_meds_pay_ump_yn \"2\"; mrx_formulary_tiers_num \"5\"; mrx_tier_form_ex \"4\"; mrx_tier_form_ex_2_yn \"2\"; mrx_form_model_desc \"Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier\"; mrx_alt_ded_charge \"1\"; mrx_alt_ded_amount \"700.00\"; mrx_alt_ded_type_yn \"2\"; mrx_alt_no_ded_tier \"0110000\"; mrx_alt_ded_tier_cstshr_yn \"1\"; mrx_alt_oon_cstshr_struct \"2\"; mrx_alt_red_cost_sharing \"1\"; mrx_alt_red_cost_sharing_items \"101\"; mrx_alt_excl_drugs_yn \"2\"; mrx_alt_pre_icl_cost_share \"3\"; mrx_alt_ira_covg_tier \"0111100\"; mrx_alt_cstshr_post_oopt \"1\"; mrx_avg_exp_cost_share_attest \"1\"; mrx_vaccine_attest \"1\"; mrx_insulin_attest \"1\"."
     }
   ],
-  "schema_version": "1.2.0"
+  "schema_version": "1.3.0"
 }

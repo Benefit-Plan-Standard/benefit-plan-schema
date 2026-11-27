@@ -2758,5 +2758,5 @@
       "excerpt": "Every non-blank pbp_mrx.txt cell, verbatim, in file order: mrx_form_model_type \"5H4\"; mrx_drug_ben_yn \"1\"; mrx_benefit_type \"4\"; mrx_partd_network_loc \"101101\"; mrx_ltc_attest_flag \"1\"; mrx_first_fill \"2\"; mrx_otc_meds_pay_ump_yn \"2\"; mrx_formulary_tiers_num \"6\"; mrx_tier_form_ex \"3\"; mrx_tier_form_ex_2_yn \"2\"; mrx_form_model_desc \"Generic, Preferred Brand, Non-Preferred Drug, Injectable Drugs, Specialty Tier, Select Care Drugs\"; mrx_alt_ded_charge \"1\"; mrx_alt_ded_amount \"700.00\"; mrx_alt_ded_type_yn \"2\"; mrx_alt_no_ded_tier \"0100001\"; mrx_alt_ded_tier_cstshr_yn \"1\"; mrx_alt_oon_cstshr_struct \"2\"; mrx_alt_red_cost_sharing \"1\"; mrx_alt_red_cost_sharing_items \"101\"; mrx_alt_excl_drugs_yn \"2\"; mrx_alt_pre_icl_cost_share \"3\"; mrx_alt_ira_covg_tier \"0011000\"; mrx_alt_cstshr_post_oopt \"1\"; mrx_avg_exp_cost_share_attest \"1\"; mrx_vaccine_attest \"1\"; mrx_insulin_attest \"1\"."
     }
   ],
-  "schema_version": "1.2.0"
+  "schema_version": "1.3.0"
 }
