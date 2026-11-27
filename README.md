@@ -7,6 +7,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
   </a>
   <img src="https://img.shields.io/badge/Schema-v1.2.0-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Status-Stable-blueviolet?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Draft-v1.3.0--draft.1-orange?style=for-the-badge" />
   <img src="https://img.shields.io/github/license/Benefit-Plan-Standard/benefit-plan-schema?style=for-the-badge" />
 </p>
 
@@ -16,6 +17,7 @@ The canonical, vendor-neutral JSON Schema for representing U.S. health insurance
 
 - Documentation: https://benefitplanstandard.org  
 - Canonical schema file (current, v1.2.0): `schema/v1.2.0/benefit-plan.schema.json`, and `schema/v1.2.0/formulary.schema.json` for a drug list that many plans share; tagged `v1.2.0`, after 9 published drafts tagged `v1.2.0-draft.1` through `v1.2.0-draft.9`  
+- Draft (v1.3.0 draft 1, 2026-11-27): `schema/v1.3.0/benefit-plan.schema.json`, 4 optional accumulator slots for an amount that covers both networks together (`combined_individual_deductible`, `combined_family_deductible`, `combined_individual_oop_max`, `combined_family_oop_max`), and `schema/v1.3.0/formulary.schema.json`, which is v1.2.0's; tags `v1.3.0-draft.N`. The importers write it, and `scripts/validate.js` checks against it by default  
 - Previous schemas: v1.1.0, `schema/v1.1.0/benefit-plan.schema.json`, and v1.0.0, `schema/v1.0.0/benefit-plan.schema.json`  
 - Example plans: `examples/`, 22 plans: 10 read from plan documents, 5 imported from the CMS Marketplace public use files, 7 from the CMS PBP files (5 Medicare Advantage plans with drug coverage and 2 stand-alone Part D plans)  
 - Vocabularies (canonical benefits, categories, markets, plan types): `vocabularies/`  
@@ -50,7 +52,7 @@ It is designed to support:
 
 This repository contains:
 
-- The **canonical JSON Schema (v1.2.0)**, backward-compatible with v1.1.0 and v1.0.0  
+- The **canonical JSON Schema (v1.2.0)**, backward-compatible with v1.1.0 and v1.0.0, and the **v1.3.0 draft**, backward-compatible with v1.2.0  
 - 22 example plans: 10 read from plan documents across 9 carriers, 5 imported from the CMS Marketplace public use files, 7 from the CMS PBP files (5 Medicare Advantage, 2 stand-alone Part D)  
 - Recommended vocabularies (canonical benefits, categories, markets, plan types)  
 - FHIR R4 `InsurancePlan` alignment guide  
@@ -73,9 +75,12 @@ schema/
   │   └── benefit-plan.schema.json
   ├── v1.1.0/
   │   └── benefit-plan.schema.json
-  └── v1.2.0/
-      ├── benefit-plan.schema.json   ← current (tag v1.2.0; its 9 drafts are tags v1.2.0-draft.N)
-      └── formulary.schema.json      ← since draft 9: a drug list written once for the plans that share it
+  ├── v1.2.0/
+  │   ├── benefit-plan.schema.json   ← current release (tag v1.2.0; its 9 drafts are tags v1.2.0-draft.N)
+  │   └── formulary.schema.json      ← since draft 9: a drug list written once for the plans that share it
+  └── v1.3.0/
+      ├── benefit-plan.schema.json   ← draft 1: the combined in- and out-of-network accumulator slots
+      └── formulary.schema.json      ← v1.2.0's, with its own $id
 docs/
   ├── carin-dic-reconciliation.md
   ├── changelog.md
@@ -138,7 +143,7 @@ test/
       └── validate/                  ← 1 document per pharmacy warning, for scripts/validate.test.js
 vocabularies/
   ├── canonical-benefits.json        ← v1.4.0, 124 keys
-  ├── categories.json
+  ├── categories.json              ← v1.3.0, 39 codes
   ├── markets.json                   ← v1.2.0, 13 codes
   ├── plan-types.json
   └── README.md
@@ -165,7 +170,9 @@ The schema follows **semantic versioning**:
 
 Current version: **v1.2.0** (backward-compatible with v1.1.0 and v1.0.0), released on 2026-11-13
 
-Drafts: v1.2.0 was published as 9 drafts before its release, each a git tag on this repository (`v1.2.0-draft.1` through `v1.2.0-draft.9`), so any draft can still be checked out by its tag; the release is tagged `v1.2.0`. Under the release rule in `docs/governance.md`, a draft becomes final after two independent adopters implement and validate it; the adopters on record are in `ADOPTERS.md`. The importers write v1.2.0 documents.
+Drafts: v1.2.0 was published as 9 drafts before its release, each a git tag on this repository (`v1.2.0-draft.1` through `v1.2.0-draft.9`), so any draft can still be checked out by its tag; the release is tagged `v1.2.0`. Under the release rule in `docs/governance.md`, a draft becomes final after two independent adopters implement and validate it; the adopters on record are in `ADOPTERS.md`.
+
+Next version: **v1.3.0**, a draft. Draft 1 (2026-11-27, tag `v1.3.0-draft.1`) adds 4 optional accumulator slots for an amount that counts what a member pays in and out of network together, and the value `combined` for `deductible_ref` and `moop_ref`; nothing in v1.2.0 changes meaning, and a v1.2.0 document is valid against it. The unreleased 1.2.1 importer changes ship in it ([`docs/changelog.md`](docs/changelog.md), with the migration guidance). The importers write v1.3.0 documents, and `scripts/validate.js` checks against v1.3.0 when no `--schema` is given.
 
 Validation uses:
 
@@ -259,14 +266,15 @@ The included script runs both:
 npm install ajv ajv-formats     # one time
 
 node scripts/validate.js examples/aetna_example.json
-# PASS  examples/aetna_example.json — valid against schema/v1.2.0/benefit-plan.schema.json
+# PASS  examples/aetna_example.json — valid against schema/v1.3.0/benefit-plan.schema.json
 #       vocabulary: all category/canonical_key/market/plan_type values are canonical
 
 node scripts/validate.js myplan.json                    # your own file
 node scripts/validate.js --no-vocab myplan.json         # layer 1 only
 node scripts/validate.js --strict-vocab myplan.json     # vocabulary warnings also fail
-node scripts/validate.js --schema schema/v1.1.0/benefit-plan.schema.json myplan.json   # the previous version
-node scripts/validate.js --schema schema/v1.2.0/formulary.schema.json mylist.json   # a formulary list
+node scripts/validate.js --schema schema/v1.2.0/benefit-plan.schema.json myplan.json   # the release, v1.2.0
+node scripts/validate.js --schema schema/v1.1.0/benefit-plan.schema.json myplan.json   # an earlier version
+node scripts/validate.js --schema schema/v1.3.0/formulary.schema.json mylist.json   # a formulary list
 ```
 
 ### Validate a plan file using Ajv CLI
@@ -303,7 +311,7 @@ if (!validate(plan)) {
 
 ### Converting a plan to FHIR InsurancePlan
 
-`scripts/to-insuranceplan.js` converts a BPS file (v1.1.0 or v1.2.0) into a FHIR R4 collection `Bundle` holding one `InsurancePlan` and the `Organization` it references. The `InsurancePlan` targets the CARIN Digital Insurance Card SBC InsurancePlan profile (`sbc-insurance-plan`, package `hl7.fhir.us.insurance-card#2.0.0-ballot`, draft). The converter makes no network calls and keeps no state, and the same input always gives the same output.
+`scripts/to-insuranceplan.js` converts a BPS file (v1.1.0, v1.2.0 or v1.3.0) into a FHIR R4 collection `Bundle` holding one `InsurancePlan` and the `Organization` it references. The `InsurancePlan` targets the CARIN Digital Insurance Card SBC InsurancePlan profile (`sbc-insurance-plan`, package `hl7.fhir.us.insurance-card#2.0.0-ballot`, draft). The converter makes no network calls and keeps no state, and the same input always gives the same output.
 
 ```bash
 node scripts/to-insuranceplan.js examples/aetna_example.json > aetna.insuranceplan.json
@@ -322,7 +330,7 @@ Two limits to know. The SBC benefit category binding has 29 codes, so benefits o
 
 The two importers and the converter in one diagram, with every command from download to validation: https://benefitplanstandard.org/docs/specification/data-flow
 
-`scripts/from-marketplace-puf.js` reads the CMS Health Insurance Exchange public use files (Plan Attributes PUF, Benefits and Cost Sharing PUF and Network PUF) and writes one BPS v1.2.0 document per plan; the FHIR converter above reads that output unchanged. The public files are not in the repository: download them into `data/puf/<year>/` (git-ignored). Benefit names map to canonical keys through `fhir/marketplace-puf-crosswalk.json`; a cost-share string the parser cannot read stops the import instead of being guessed. Spec: [`docs/specs/marketplace-puf-importer.md`](docs/specs/marketplace-puf-importer.md); examples: `examples/*.puf.json`.
+`scripts/from-marketplace-puf.js` reads the CMS Health Insurance Exchange public use files (Plan Attributes PUF, Benefits and Cost Sharing PUF and Network PUF) and writes one BPS v1.3.0 document per plan (v1.2.0 until the 1.3.0 draft 1), with the plan's combined in- and out-of-network amounts in the combined slots; the FHIR converter above reads that output unchanged. The public files are not in the repository: download them into `data/puf/<year>/` (git-ignored). Benefit names map to canonical keys through `fhir/marketplace-puf-crosswalk.json`; a cost-share string the parser cannot read stops the import instead of being guessed. Spec: [`docs/specs/marketplace-puf-importer.md`](docs/specs/marketplace-puf-importer.md); examples: `examples/*.puf.json`.
 
 ```bash
 node scripts/from-marketplace-puf.js --year 2026 --issuer 40220 --state TX          # list an issuer's plans
@@ -330,7 +338,7 @@ node scripts/from-marketplace-puf.js --year 2026 --plan 40220TX0080024-01 --out 
 node --test scripts/from-marketplace-puf.test.js
 ```
 
-`scripts/from-pbp.js` reads the CMS Medicare Advantage Plan Benefit Package (PBP) Benefits files and writes one BPS v1.2.0 document per plan; the FHIR converter above reads that output unchanged (it maps the point-of-service tier of HMO-POS plans to out-of-network with a text-only qualifier). Since October 24, 2026 it also reads the Part D files: a Medicare Advantage plan with drug coverage gets its `pharmacy` object (deductible, out-of-pocket threshold, coverage stages, formulary tiers, pharmacy networks) and 1 Part D benefit per tier, pharmacy network and day supply, and a stand-alone Medicare Prescription Drug Plan gets a document of its own ([`docs/specs/pbp-part-d-mapping.md`](docs/specs/pbp-part-d-mapping.md)). The converter lists the Part D benefits as unmapped and does not convert a stand-alone Part D plan. The PBP files are not in the repository: download them into `data/pbp/<year>/` (git-ignored). Service categories map to canonical keys through `fhir/pbp-crosswalk.json`; a value the reader cannot read stops the import instead of being guessed. The test runs on the golden plans' rows committed in `test/fixtures/pbp/`, so it needs no download. Spec: [`docs/specs/pbp-importer.md`](docs/specs/pbp-importer.md); examples: `examples/*.pbp.json`.
+`scripts/from-pbp.js` reads the CMS Medicare Advantage Plan Benefit Package (PBP) Benefits files and writes one BPS v1.3.0 document per plan (v1.2.0 until the 1.3.0 draft 1), with a deductible that applies in both networks and the combined maximum in the combined slots; the FHIR converter above reads that output unchanged (it maps the point-of-service tier of HMO-POS plans to out-of-network with a text-only qualifier). Since October 24, 2026 it also reads the Part D files: a Medicare Advantage plan with drug coverage gets its `pharmacy` object (deductible, out-of-pocket threshold, coverage stages, formulary tiers, pharmacy networks) and 1 Part D benefit per tier, pharmacy network and day supply, and a stand-alone Medicare Prescription Drug Plan gets a document of its own ([`docs/specs/pbp-part-d-mapping.md`](docs/specs/pbp-part-d-mapping.md)). The converter lists the Part D benefits as unmapped and does not convert a stand-alone Part D plan. The PBP files are not in the repository: download them into `data/pbp/<year>/` (git-ignored). Service categories map to canonical keys through `fhir/pbp-crosswalk.json`; a value the reader cannot read stops the import instead of being guessed. The test runs on the golden plans' rows committed in `test/fixtures/pbp/`, so it needs no download. Spec: [`docs/specs/pbp-importer.md`](docs/specs/pbp-importer.md); examples: `examples/*.pbp.json`.
 
 ```bash
 node scripts/from-pbp.js --year 2027 --contract H2406                                # list a contract's plans
@@ -338,7 +346,7 @@ node scripts/from-pbp.js --year 2027 --plan H2406-013-000 --out plan.json
 node --test scripts/from-pbp.test.js
 ```
 
-`scripts/from-partd-formulary.js` (since the schema 1.2.0 draft 9) reads the CMS monthly public use file "Prescription Drug Plan Formulary and Pharmacy Network Information" and writes the drug lists of Medicare Part D plans: a formulary list (`schema/v1.2.0/formulary.schema.json`) once for every plan that shares it, with each drug's tier, prior authorization, step therapy, quantity limit and negotiation flag quoting its row, and a plan document that is `scripts/from-pbp.js`'s document for the plan with `pharmacy.formulary_reference` and the plan's own items: the drugs Part D excludes that the plan covers, and drugs covered for named indications only. Every drug's tier is a tier the PBP importer writes for the plan, or, for a Defined Standard plan, for which the PBP files hold no tier rows, a tier of the file's Beneficiary Cost rows. The monthly zip is not in the repository: unzip it into `data/partd-formulary/<release>/txt/` (git-ignored) with a `download.json`; the pharmacy network files in it are not read. The test runs on rows committed in `test/fixtures/partd-formulary/`. Spec: [`docs/specs/partd-formulary-importer.md`](docs/specs/partd-formulary-importer.md); examples: `examples/partd-formulary/`.
+`scripts/from-partd-formulary.js` (since the schema 1.2.0 draft 9) reads the CMS monthly public use file "Prescription Drug Plan Formulary and Pharmacy Network Information" and writes the drug lists of Medicare Part D plans: a formulary list (`schema/v1.3.0/formulary.schema.json`, which is v1.2.0's) once for every plan that shares it, with each drug's tier, prior authorization, step therapy, quantity limit and negotiation flag quoting its row, and a plan document that is `scripts/from-pbp.js`'s document for the plan with `pharmacy.formulary_reference` and the plan's own items: the drugs Part D excludes that the plan covers, and drugs covered for named indications only. Every drug's tier is a tier the PBP importer writes for the plan, or, for a Defined Standard plan, for which the PBP files hold no tier rows, a tier of the file's Beneficiary Cost rows. The monthly zip is not in the repository: unzip it into `data/partd-formulary/<release>/txt/` (git-ignored) with a `download.json`; the pharmacy network files in it are not read. The test runs on rows committed in `test/fixtures/partd-formulary/`. Spec: [`docs/specs/partd-formulary-importer.md`](docs/specs/partd-formulary-importer.md); examples: `examples/partd-formulary/`.
 
 ```bash
 node scripts/from-partd-formulary.js --release 2027_20261008 --plan H2406-013-000 --out plan.json   # 1 plan, its list inline

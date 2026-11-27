@@ -9,7 +9,10 @@
  * the crosswalk names a column the files do not have, or if a Summary of Benefits
  * check (H2406-013-000, H1036-068-000, S5921-383-000) finds a difference. Since schema
  * 1.2.0 draft 8 it also fails if a "no maximum" or "unlimited" answer stops being a
- * no-limit limits entry, or if a blank answer starts writing one. The golden plans
+ * no-limit limits entry, or if a blank answer starts writing one. Since schema 1.3.0 draft 1 it
+ * also fails if a deductible for both networks, the combined maximum or the HMO-POS combined
+ * deductible stops being its combined_* slot, or a step stops naming it with deductible_ref or
+ * moop_ref "combined". The golden plans
  * are built from the rows committed in test/fixtures/pbp/2027/, so the test runs
  * without the full PBP files; when data/pbp/2027/ is present the golden plans are
  * also built from the full files. Regenerate on purpose with:

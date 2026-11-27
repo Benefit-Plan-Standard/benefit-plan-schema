@@ -1,9 +1,9 @@
 # Part D drug lists
 
-The drug lists of 5 Medicare Part D plans for contract year 2027, in the Benefit Plan Standard 1.2.0 draft 9, from the CMS monthly public use file "Prescription Drug Plan Formulary and Pharmacy Network Information", release `2027_20261008` (posted October 8, 2026). Each plan is also in [`../`](../) as a PBP example; the documents here are those plans with their drug lists added.
+The drug lists of 5 Medicare Part D plans for contract year 2027, in the Benefit Plan Standard 1.3.0 draft 1 (1.2.0 since its draft 9 until 2026-11-27), from the CMS monthly public use file "Prescription Drug Plan Formulary and Pharmacy Network Information", release `2027_20261008` (posted October 8, 2026). Each plan is also in [`../`](../) as a PBP example; the documents here are those plans with their drug lists added.
 
-- `formularies/<FORMULARY_ID>.json`: a formulary list (`schema/v1.2.0/formulary.schema.json`), written once for every plan that uses it: each drug by RXCUI and NDC, its tier, prior authorization, step therapy, quantity limit and the Medicare Drug Price Negotiation Program flag, each quoting its row of the Basic Drugs Formulary file.
-- `plans/<contract-plan-segment>.json`: the plan (`schema/v1.2.0/benefit-plan.schema.json`). `pharmacy.formulary_reference.formulary_items_url` names its list, and `pharmacy.formulary_items` holds only what is the plan's alone: the drugs Part D excludes that the plan covers as a supplemental benefit (`coverage_basis` "supplemental_mandatory").
+- `formularies/<FORMULARY_ID>.json`: a formulary list (`schema/v1.3.0/formulary.schema.json`), written once for every plan that uses it: each drug by RXCUI and NDC, its tier, prior authorization, step therapy, quantity limit and the Medicare Drug Price Negotiation Program flag, each quoting its row of the Basic Drugs Formulary file.
+- `plans/<contract-plan-segment>.json`: the plan (`schema/v1.3.0/benefit-plan.schema.json`). `pharmacy.formulary_reference.formulary_items_url` names its list, and `pharmacy.formulary_items` holds only what is the plan's alone: the drugs Part D excludes that the plan covers as a supplemental benefit (`coverage_basis` "supplemental_mandatory").
 
 | Plan | Kind | Formulary | Drugs on the list | Plans on the list | Prior authorization | Step therapy | Quantity limit | The plan's own items |
 |---|---|---|---|---|---|---|---|---|
