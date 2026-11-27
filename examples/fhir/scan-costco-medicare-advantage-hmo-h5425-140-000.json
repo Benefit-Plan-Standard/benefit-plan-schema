@@ -74,7 +74,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Contacts and the provider directory from Section A: pbp_a_curmbr_phone \"(800)559-3500\" (Customer Service Contact Phone Number for Current Medicare Beneficiaries), written as contacts.member_services_phone; pbp_a_org_website \"www.scanhealthplan.com\", not written as contacts.website: it has no scheme, so it is not a URI, and the importer does not add one; pbp_a_phys_web_addr \"www.scanhealthplan.com\", not written as network_tiers[tier_id=IN].provider_directory_url: it has no scheme, so it is not a URI, and the importer does not add one. Section A gives 1 provider directory address per plan, so it belongs to the in-network tier only."
+                "valueString": "Contacts and the provider directory from Section A: pbp_a_curmbr_phone \"(800)559-3500\" (Customer Service Contact Phone Number for Current Medicare Beneficiaries), written as contacts.member_services_phone; pbp_a_org_website \"www.scanhealthplan.com\", not written as contacts.website: it has no scheme, so it is not a URI, and no scheme is added to it; pbp_a_phys_web_addr \"www.scanhealthplan.com\", not written as network_tiers[tier_id=IN].provider_directory_url: it has no scheme, so it is not a URI, and no scheme is added to it. Section A gives 1 provider directory address per plan, so it belongs to the in-network tier only."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -110,7 +110,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "In-network out-of-pocket maximum type, no Benefit Plan Standard field (schema gap, spec section 9.1): pbp_d_out_pocket_amt_type \"1\" (Lower)."
+                "valueString": "In-network out-of-pocket maximum type: the Benefit Plan Standard has no field for it; the plan files pbp_d_out_pocket_amt_type \"1\" (Lower)."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -128,7 +128,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Benefits: the 41 service categories in fhir/pbp-crosswalk.json (the workgroup MVP), 38 written. Other PBP service categories are not imported yet (docs/specs/pbp-importer.md section 8)."
+                "valueString": "Benefits: the 41 service categories of the Benefit Plan Standard's PBP crosswalk, 38 written. Other PBP service categories are not imported yet."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -137,7 +137,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Part D: pbp_mrx.txt mrx_drug_ben_yn \"1\" (Yes), mrx_benefit_type \"4\" (Enhanced Alternative), mrx_formulary_tiers_num \"5\", mrx_form_model_type \"5F\", mrx_form_model_desc \"Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier\". Written: pharmacy and 67 Part D benefits (docs/specs/pbp-part-d-mapping.md)."
+                "valueString": "Part D: pbp_mrx.txt mrx_drug_ben_yn \"1\" (Yes), mrx_benefit_type \"4\" (Enhanced Alternative), mrx_formulary_tiers_num \"5\", mrx_form_model_type \"5F\", mrx_form_model_desc \"Preferred Generic, Generic, Preferred Brand, Non-Preferred Drug, Specialty Tier\". Written: pharmacy and 67 Part D benefits."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -155,7 +155,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "pharmacy.out_of_pocket_max and the CATASTROPHIC stage's applies_after_total_out_of_pocket are 2400 USD, the contract year 2027 Part D annual out-of-pocket threshold. No PBP column states it; source: CMS, \"Announcement of Calendar Year (CY) 2027 Medicare Advantage (MA) Capitation Rates and Part C and Part D Payment Policies\", April 6, 2026, Attachment V, Table V-2 (page 95) and Table V-6 (page 99), https://www.cms.gov/files/document/2027-announcement.pdf. Each CATASTROPHIC benefit's cost share is $0, the cost sharing for a covered Part D drug after the threshold, also not read from a PBP cell: 42 CFR 423.104(d)(5)(i) (eCFR, version of 2026-10-01): \"After an enrollee's incurred costs exceed the annual out-of-pocket threshold ... for 2024 and each subsequent year, cost-sharing equal to $0\"; 42 CFR 423.104(e)(2) holds alternative prescription drug coverage to \"cost-sharing no greater than\" that once the threshold is met, and 42 CFR 423.104(f) holds enhanced alternative coverage to paragraph (e) (docs/specs/pbp-part-d-mapping.md section 6.6)."
+                "valueString": "pharmacy.out_of_pocket_max and the CATASTROPHIC stage's applies_after_total_out_of_pocket are 2400 USD, the contract year 2027 Part D annual out-of-pocket threshold. No PBP column states it; source: CMS, \"Announcement of Calendar Year (CY) 2027 Medicare Advantage (MA) Capitation Rates and Part C and Part D Payment Policies\", April 6, 2026, Attachment V, Table V-2 (page 95) and Table V-6 (page 99), https://www.cms.gov/files/document/2027-announcement.pdf. Each CATASTROPHIC benefit's cost share is $0, the cost sharing for a covered Part D drug after the threshold, also not read from a PBP cell: 42 CFR 423.104(d)(5)(i) (eCFR, version of 2026-10-01): \"After an enrollee's incurred costs exceed the annual out-of-pocket threshold ... for 2024 and each subsequent year, cost-sharing equal to $0\"; 42 CFR 423.104(e)(2) holds alternative prescription drug coverage to \"cost-sharing no greater than\" that once the threshold is met, and 42 CFR 423.104(f) holds enhanced alternative coverage to paragraph (e)."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -164,7 +164,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Pharmacy networks: mrx_partd_network_loc \"101101\" (Long-Term Care; Standard/Preferred Retail; Out-of-Network; Standard/Preferred Mail-Order), the locations the tier rows use; written as pharmacy_networks RETAIL_STANDARD, RETAIL_PREFERRED, MAIL_ORDER_STANDARD, MAIL_ORDER_PREFERRED, OUT_OF_NETWORK, LONG_TERM_CARE. Out-of-network cost-sharing structure: mrx_alt_oon_cstshr_struct \"2\" (Standard Retail Copay/Coinsurance plus a differential between the OON billed charge and the Standard Retail allowable). default_day_supply is not written: the file states days per tier, location and supply, and each benefit carries its day_supply (docs/specs/pbp-part-d-mapping.md section 5.2)."
+                "valueString": "Pharmacy networks: mrx_partd_network_loc \"101101\" (Long-Term Care; Standard/Preferred Retail; Out-of-Network; Standard/Preferred Mail-Order), the locations the tier rows use; written as pharmacy_networks RETAIL_STANDARD, RETAIL_PREFERRED, MAIL_ORDER_STANDARD, MAIL_ORDER_PREFERRED, OUT_OF_NETWORK, LONG_TERM_CARE. Out-of-network cost-sharing structure: mrx_alt_oon_cstshr_struct \"2\" (Standard Retail Copay/Coinsurance plus a differential between the OON billed charge and the Standard Retail allowable). default_day_supply is not written: the file states days per tier, location and supply, and each benefit carries its day_supply."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -182,7 +182,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Insulin cost sharing for Tier 3 (Preferred Brand), no Benefit Plan Standard benefit written (docs/specs/pbp-part-d-mapping.md section 10): mrx_alt_ira_covg_tier \"0001100\" (Tier 3; Tier 4), mrx_tier_ira_rstd_copay_1m \"35.00\", mrx_tier_ira_rstd_copay_2m \"70.00\", mrx_tier_ira_rstd_copay_3m \"85.00\", mrx_tier_ira_rspfd_copay_1m \"35.00\", mrx_tier_ira_rspfd_copay_2m \"70.00\", mrx_tier_ira_rspfd_copay_3m \"85.00\", mrx_tier_ira_mostd_copay_1m \"35.00\", mrx_tier_ira_mostd_copay_2m \"70.00\", mrx_tier_ira_mostd_copay_3m \"85.00\", mrx_tier_ira_mopfd_copay_1m \"35.00\", mrx_tier_ira_mopfd_copay_2m \"70.00\", mrx_tier_ira_mopfd_copay_3m \"85.00\", mrx_tier_ira_oonp_copay_1m \"35.00\", mrx_tier_ira_ltcp_copay_1m \"35.00\", mrx_tier_ira_rstd_coins_1m \"25\", mrx_tier_ira_rstd_coins_2m \"25\", mrx_tier_ira_rstd_coins_3m \"25\", mrx_tier_ira_rspfd_coins_1m \"25\", mrx_tier_ira_rspfd_coins_2m \"25\", mrx_tier_ira_rspfd_coins_3m \"25\", mrx_tier_ira_mostd_coins_1m \"25\", mrx_tier_ira_mostd_coins_2m \"25\", mrx_tier_ira_mostd_coins_3m \"25\", mrx_tier_ira_mopfd_coins_1m \"25\", mrx_tier_ira_mopfd_coins_2m \"25\", mrx_tier_ira_mopfd_coins_3m \"25\", mrx_tier_ira_oonp_coins_1m \"25\", mrx_tier_ira_ltcp_coins_1m \"25\"."
+                "valueString": "Insulin cost sharing for Tier 3 (Preferred Brand), no Benefit Plan Standard benefit written: mrx_alt_ira_covg_tier \"0001100\" (Tier 3; Tier 4), mrx_tier_ira_rstd_copay_1m \"35.00\", mrx_tier_ira_rstd_copay_2m \"70.00\", mrx_tier_ira_rstd_copay_3m \"85.00\", mrx_tier_ira_rspfd_copay_1m \"35.00\", mrx_tier_ira_rspfd_copay_2m \"70.00\", mrx_tier_ira_rspfd_copay_3m \"85.00\", mrx_tier_ira_mostd_copay_1m \"35.00\", mrx_tier_ira_mostd_copay_2m \"70.00\", mrx_tier_ira_mostd_copay_3m \"85.00\", mrx_tier_ira_mopfd_copay_1m \"35.00\", mrx_tier_ira_mopfd_copay_2m \"70.00\", mrx_tier_ira_mopfd_copay_3m \"85.00\", mrx_tier_ira_oonp_copay_1m \"35.00\", mrx_tier_ira_ltcp_copay_1m \"35.00\", mrx_tier_ira_rstd_coins_1m \"25\", mrx_tier_ira_rstd_coins_2m \"25\", mrx_tier_ira_rstd_coins_3m \"25\", mrx_tier_ira_rspfd_coins_1m \"25\", mrx_tier_ira_rspfd_coins_2m \"25\", mrx_tier_ira_rspfd_coins_3m \"25\", mrx_tier_ira_mostd_coins_1m \"25\", mrx_tier_ira_mostd_coins_2m \"25\", mrx_tier_ira_mostd_coins_3m \"25\", mrx_tier_ira_mopfd_coins_1m \"25\", mrx_tier_ira_mopfd_coins_2m \"25\", mrx_tier_ira_mopfd_coins_3m \"25\", mrx_tier_ira_oonp_coins_1m \"25\", mrx_tier_ira_ltcp_coins_1m \"25\"."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -191,7 +191,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Insulin cost sharing for Tier 4 (Non-Preferred Drug), no Benefit Plan Standard benefit written (docs/specs/pbp-part-d-mapping.md section 10): mrx_alt_ira_covg_tier \"0001100\" (Tier 3; Tier 4), mrx_tier_ira_rstd_copay_1m \"35.00\", mrx_tier_ira_rstd_copay_2m \"70.00\", mrx_tier_ira_rstd_copay_3m \"105.00\", mrx_tier_ira_rspfd_copay_1m \"35.00\", mrx_tier_ira_rspfd_copay_2m \"70.00\", mrx_tier_ira_rspfd_copay_3m \"105.00\", mrx_tier_ira_mostd_copay_1m \"35.00\", mrx_tier_ira_mostd_copay_2m \"70.00\", mrx_tier_ira_mostd_copay_3m \"105.00\", mrx_tier_ira_mopfd_copay_1m \"35.00\", mrx_tier_ira_mopfd_copay_2m \"70.00\", mrx_tier_ira_mopfd_copay_3m \"105.00\", mrx_tier_ira_oonp_copay_1m \"35.00\", mrx_tier_ira_ltcp_copay_1m \"35.00\", mrx_tier_ira_rstd_coins_1m \"25\", mrx_tier_ira_rstd_coins_2m \"25\", mrx_tier_ira_rstd_coins_3m \"25\", mrx_tier_ira_rspfd_coins_1m \"25\", mrx_tier_ira_rspfd_coins_2m \"25\", mrx_tier_ira_rspfd_coins_3m \"25\", mrx_tier_ira_mostd_coins_1m \"25\", mrx_tier_ira_mostd_coins_2m \"25\", mrx_tier_ira_mostd_coins_3m \"25\", mrx_tier_ira_mopfd_coins_1m \"25\", mrx_tier_ira_mopfd_coins_2m \"25\", mrx_tier_ira_mopfd_coins_3m \"25\", mrx_tier_ira_oonp_coins_1m \"25\", mrx_tier_ira_ltcp_coins_1m \"25\"."
+                "valueString": "Insulin cost sharing for Tier 4 (Non-Preferred Drug), no Benefit Plan Standard benefit written: mrx_alt_ira_covg_tier \"0001100\" (Tier 3; Tier 4), mrx_tier_ira_rstd_copay_1m \"35.00\", mrx_tier_ira_rstd_copay_2m \"70.00\", mrx_tier_ira_rstd_copay_3m \"105.00\", mrx_tier_ira_rspfd_copay_1m \"35.00\", mrx_tier_ira_rspfd_copay_2m \"70.00\", mrx_tier_ira_rspfd_copay_3m \"105.00\", mrx_tier_ira_mostd_copay_1m \"35.00\", mrx_tier_ira_mostd_copay_2m \"70.00\", mrx_tier_ira_mostd_copay_3m \"105.00\", mrx_tier_ira_mopfd_copay_1m \"35.00\", mrx_tier_ira_mopfd_copay_2m \"70.00\", mrx_tier_ira_mopfd_copay_3m \"105.00\", mrx_tier_ira_oonp_copay_1m \"35.00\", mrx_tier_ira_ltcp_copay_1m \"35.00\", mrx_tier_ira_rstd_coins_1m \"25\", mrx_tier_ira_rstd_coins_2m \"25\", mrx_tier_ira_rstd_coins_3m \"25\", mrx_tier_ira_rspfd_coins_1m \"25\", mrx_tier_ira_rspfd_coins_2m \"25\", mrx_tier_ira_rspfd_coins_3m \"25\", mrx_tier_ira_mostd_coins_1m \"25\", mrx_tier_ira_mostd_coins_2m \"25\", mrx_tier_ira_mostd_coins_3m \"25\", mrx_tier_ira_mopfd_coins_1m \"25\", mrx_tier_ira_mopfd_coins_2m \"25\", mrx_tier_ira_mopfd_coins_3m \"25\", mrx_tier_ira_oonp_coins_1m \"25\", mrx_tier_ira_ltcp_coins_1m \"25\"."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -2164,7 +2164,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 7a: Primary Care Physician Services (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 7a: Primary Care Physician Services (pbp_b7_health_prof.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -2265,7 +2265,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 7d: Physician Specialist Services (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 7d: Physician Specialist Services (pbp_b7_health_prof.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -2388,7 +2388,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 1a: Inpatient Hospital-Acute (pbp_b1a_inpat_hosp.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 1a: Inpatient Hospital-Acute (pbp_b1a_inpat_hosp.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -2490,7 +2490,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 9a1: Outpatient Hospital Services (pbp_b9_outpat_hosp.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 9a1: Outpatient Hospital Services (pbp_b9_outpat_hosp.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -2579,7 +2579,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 9b: Ambulatory Surgical Center (ASC) Services (pbp_b9_outpat_hosp.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 9b: Ambulatory Surgical Center (ASC) Services (pbp_b9_outpat_hosp.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -2655,7 +2655,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 4a: Emergency Services (pbp_b4_emerg_urgent.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 4a: Emergency Services (pbp_b4_emerg_urgent.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -2730,7 +2730,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 4b: Urgently Needed Services (pbp_b4_emerg_urgent.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 4b: Urgently Needed Services (pbp_b4_emerg_urgent.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -2818,7 +2818,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 10a1: Ground Ambulance Services (pbp_b10_amb_trans.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 10a1: Ground Ambulance Services (pbp_b10_amb_trans.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -2894,7 +2894,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 10a2: Air Ambulance Services (pbp_b10_amb_trans.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 10a2: Air Ambulance Services (pbp_b10_amb_trans.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -2996,7 +2996,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 8a1: Diagnostic Procedures/Tests (pbp_b8_clin_diag_ther.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 8a1: Diagnostic Procedures/Tests (pbp_b8_clin_diag_ther.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -3085,7 +3085,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 8a2: Lab Services (pbp_b8_clin_diag_ther.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 8a2: Lab Services (pbp_b8_clin_diag_ther.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -3174,7 +3174,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 8b3: Outpatient X-Ray Services (pbp_b8_clin_diag_ther.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 8b3: Outpatient X-Ray Services (pbp_b8_clin_diag_ther.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -3276,7 +3276,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 8b1: Diagnostic Radiological Services (pbp_b8_clin_diag_ther.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 8b1: Diagnostic Radiological Services (pbp_b8_clin_diag_ther.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -3378,7 +3378,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 7c: Occupational Therapy Services (pbp_b7_health_prof.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 7c: Occupational Therapy Services (pbp_b7_health_prof.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -3480,7 +3480,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 2: Skilled Nursing Facility (SNF) (pbp_b2_snf.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 2: Skilled Nursing Facility (SNF) (pbp_b2_snf.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -3582,7 +3582,7 @@
                     "extension": [
                       {
                         "url": "excerpt",
-                        "valueString": "PBP service category 14a: Medicare-covered Zero Dollar Preventive Services (pbp_b14_preventive.txt), mapped by fhir/pbp-crosswalk.json."
+                        "valueString": "PBP service category 14a: Medicare-covered Zero Dollar Preventive Services (pbp_b14_preventive.txt), mapped by the Benefit Plan Standard's PBP crosswalk."
                       }
                     ],
                     "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"
@@ -3785,7 +3785,7 @@
                               },
                               {
                                 "url": "note",
-                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b7a_copay_yn \"2\", pbp_b7a_coins_yn \"2\"); written as a $0 copay (decision S1, docs/specs/pbp-importer.md section 7.12)."
+                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b7a_copay_yn \"2\", pbp_b7a_coins_yn \"2\"); written as a $0 copay."
                               },
                               {
                                 "url": "note",
@@ -3896,7 +3896,7 @@
                               },
                               {
                                 "url": "note",
-                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b7d_copay_yn \"2\", pbp_b7d_coins_yn \"2\"); written as a $0 copay (decision S1, docs/specs/pbp-importer.md section 7.12)."
+                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b7d_copay_yn \"2\", pbp_b7d_coins_yn \"2\"); written as a $0 copay."
                               },
                               {
                                 "url": "note",
@@ -4481,7 +4481,7 @@
                               },
                               {
                                 "url": "note",
-                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b4b_copay_yn \"2\", pbp_b4b_coins_yn \"2\"); written as a $0 copay (decision S1, docs/specs/pbp-importer.md section 7.12)."
+                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b4b_copay_yn \"2\", pbp_b4b_coins_yn \"2\"); written as a $0 copay."
                               },
                               {
                                 "url": "note",
@@ -4793,7 +4793,7 @@
                               },
                               {
                                 "url": "note",
-                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b8a_copay_yn \"2\", pbp_b8a_coins_yn \"2\"); written as a $0 copay (decision S1, docs/specs/pbp-importer.md section 7.12)."
+                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b8a_copay_yn \"2\", pbp_b8a_coins_yn \"2\"); written as a $0 copay."
                               },
                               {
                                 "url": "note",
@@ -4891,7 +4891,7 @@
                               },
                               {
                                 "url": "note",
-                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b8a_copay_yn \"2\", pbp_b8a_coins_yn \"2\"); written as a $0 copay (decision S1, docs/specs/pbp-importer.md section 7.12)."
+                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b8a_copay_yn \"2\", pbp_b8a_coins_yn \"2\"); written as a $0 copay."
                               },
                               {
                                 "url": "note",
@@ -4989,7 +4989,7 @@
                               },
                               {
                                 "url": "note",
-                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b8b_copay_yn \"1\", pbp_b8b_copay_ehc \"010\", pbp_b8b_coins_yn \"1\", pbp_b8b_coins_ehc \"001\"); written as a $0 copay (decision S1, docs/specs/pbp-importer.md section 7.12)."
+                                "valueString": "The file states no copayment and no coinsurance for this service (pbp_b8b_copay_yn \"1\", pbp_b8b_copay_ehc \"010\", pbp_b8b_coins_yn \"1\", pbp_b8b_coins_ehc \"001\"); written as a $0 copay."
                               },
                               {
                                 "url": "note",
@@ -5472,7 +5472,7 @@
                               },
                               {
                                 "url": "note",
-                                "valueString": "pbp_b14_preventive.txt cells: pbp_b14a_mc_prevent_attest \"1\", whose dictionary text is \"I attest that there is no coinsurance, copayment, or deductible for all Original Medicare preventive services that are offered at zero dollar cost sharing.\" Written as a $0 copay that does not apply to the deductible (docs/specs/pbp-importer.md section 5.4)."
+                                "valueString": "pbp_b14_preventive.txt cells: pbp_b14a_mc_prevent_attest \"1\", whose dictionary text is \"I attest that there is no coinsurance, copayment, or deductible for all Original Medicare preventive services that are offered at zero dollar cost sharing.\". Written as a $0 copay that does not apply to the deductible."
                               }
                             ],
                             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-cost-share"

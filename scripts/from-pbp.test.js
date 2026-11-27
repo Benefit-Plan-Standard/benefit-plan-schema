@@ -182,7 +182,8 @@ test('decision 1: H2406-013 PPO deductible on OUT, quoted scope; no in-network d
   const doc = await docFor('H2406-013-000');
   assert.deepStrictEqual(doc.accumulators.oon_individual_deductible, { amount: 1000, currency: 'USD', network_tier: 'OUT', applies_to: 'medical' });
   assert.strictEqual(doc.accumulators.individual_deductible, undefined);
-  assert.ok(doc.source_references.some((s) => s.excerpt.includes('decision 1') && s.excerpt.includes('pbp_c_oon_mc_bendesc_cats "1a;')));
+  assert.ok(doc.source_references.some((s) => s.excerpt.startsWith('Annual plan deductible: $1000, written as oon_individual_deductible with ' +
+    'network_tier OUT. The plan declares an out-of-network benefit') && s.excerpt.includes('pbp_c_oon_mc_bendesc_cats "1a;')));
   assert.strictEqual(benefit(doc, 'PRIMARY_CARE').network_cost_shares[1].cost_shares[0].applies_to_deductible, true);
   assert.strictEqual(benefit(doc, 'PRIMARY_CARE').network_cost_shares[0].cost_shares[0].applies_to_deductible, false);
 });
@@ -209,7 +210,7 @@ test('decision 5: emergency on the in-network tier only, with the note', async (
   assert.deepStrictEqual(em.network_cost_shares.map((t) => t.tier_id), ['IN']);
   assert.match(em.network_cost_shares[0].notes, /prices 4a once, with no network, and no pbp_Section_C_OON\.txt group lists 4a/);
   const hmo = benefit(await docFor('H1036-068-000'), 'EMERGENCY');
-  assert.ok(!(hmo.network_cost_shares[0].notes || '').includes('decision 5'), 'an HMO has no other tier, so no note');
+  assert.ok(!(hmo.network_cost_shares[0].notes || '').includes('prices 4a once'), 'an HMO has no other tier, so no note');
 });
 
 test('hospital cost tiers: H5533-019 inpatient rows per tier, no IN row', async () => {
@@ -227,7 +228,7 @@ test('shared 18a maximum and decision S1: H5425-140', async () => {
   const pcp = benefit(doc, 'PRIMARY_CARE').network_cost_shares[0].cost_shares;
   assert.strictEqual(pcp.length, 1);
   assert.deepStrictEqual([pcp[0].type, pcp[0].amount], ['copay', 0]);
-  assert.match(pcp[0].notes, /pbp_b7a_copay_yn "2", pbp_b7a_coins_yn "2".*decision S1/);
+  assert.match(pcp[0].notes, /pbp_b7a_copay_yn "2", pbp_b7a_coins_yn "2"\); written as a \$0 copay\.$/);
 });
 
 test('decision 2: a deductible answered "No" writes no slot', async () => {
@@ -277,7 +278,7 @@ test('combined groups: H5425-140 writes the $125 13b maximum once, with group 2\
   assert.deepStrictEqual(trips.limits.map((l) => [l.type, l.value, l.shared_limit_id]), [['trips', 12, undefined], ['dollars', null, undefined]]);
   const refs = comboRefs(trips);
   assert.strictEqual(refs.length, 1);
-  assert.match(refs[0].excerpt, /^Combined supplemental benefit group 1 of 2 \(pbp_Section_D\.txt\), verbatim: .*pbp_d_combo_max_plan_ben_yn_1 "2"; pbp_d_combo_share_visit_yn_1 "1"; pbp_d_combo_share_visit_amt_1 "12"; .* The shared visit or trip count is not written as a limit \(spec section 5\.9\)\.$/);
+  assert.match(refs[0].excerpt, /^Combined supplemental benefit group 1 of 2 \(pbp_Section_D\.txt\), verbatim: .*pbp_d_combo_max_plan_ben_yn_1 "2"; pbp_d_combo_share_visit_yn_1 "1"; pbp_d_combo_share_visit_amt_1 "12"; .* The shared visit or trip count is not written as a limit\.$/);
   assert.deepStrictEqual(comboLimits(doc), ['OTC_ITEMS']);
 });
 
@@ -553,7 +554,7 @@ test('draft 9, Reductions in Cost Sharing: 1 entry per group after the medical b
       'pbp_d_rics_grp_name_1 "RICS Benefit 1"; pbp_d_rics_cats_ehc_1 "01"; pbp_d_rics_mc_cats_1 "1a;7d;"; pbp_d_rics_max_bene_amt_1 "450.00"; ' +
       'pbp_d_rics_period_1 "5"; pbp_d_rics_comb_shr_yn_1 "2"; pbp_d_rics_app_ded_yn_1 "2"; pbp_d_rics_mod_1 "010".' }],
   });
-  assert.ok(excerptStarting(r.doc, 'Benefits: ').endsWith(' Then 1 Reductions in Cost Sharing entry from Section D (PBP_D_RICS_1; section 5.10).'));
+  assert.ok(excerptStarting(r.doc, 'Benefits: ').endsWith(' Then 1 Reductions in Cost Sharing entry from Section D (PBP_D_RICS_1).'));
 
   // Shared with the combined group of that name, whose maximum states the same amount and period: its shared_limit_id.
   const shared = await alteredPart('H1036-068-000', 'd', { ...RICS_1, pbp_d_rics_cats_ehc_1: '11', pbp_d_rics_nmc_cats_1: '13b;', pbp_d_rics_max_bene_amt_1: '90.00',
@@ -654,7 +655,7 @@ test('v1.2.1, spec 5.11: a zero-dollar D-SNP charges $0 in network for Medicare-
     for (const t of b.network_cost_shares) {
       assert.ok(allZero(b, t.tier_id), `${b.benefit_id} ${t.tier_id}: ${JSON.stringify(t.cost_shares)}`);
       assert.ok(t.notes.startsWith(tier(was, t.tier_id).notes.split(' applies_to_')[0]), `${b.benefit_id}: the cells stay quoted`);
-      assert.match(t.notes, /Zero-dollar cost-sharing D-SNP \(pbp_Section_A pbp_a_dsnp_zerodollar "1"\): the member pays \$0 .* section 5\.11\)\. The cost sharing the file states for this row, which the member does not pay in network: .+\.$/);
+      assert.match(t.notes, /Zero-dollar cost-sharing D-SNP \(pbp_Section_A pbp_a_dsnp_zerodollar "1"\): the member pays \$0 .* with its basis and day range\. The cost sharing the file states for this row, which the member does not pay in network: .+\.$/);
     }
     assert.deepStrictEqual(b.limits, was.limits, b.benefit_id);
   });
@@ -702,7 +703,7 @@ test('v1.2.1, spec 5.11: out-of-network and point-of-service rows of a zero-doll
   assert.deepStrictEqual(tier(spec, 'POS').cost_shares, tier(benefit(posBase, 'SPECIALIST'), 'POS').cost_shares);
   assert.ok(tier(spec, 'POS').notes.endsWith('Zero-dollar cost-sharing D-SNP (pbp_a_dsnp_zerodollar "1"): under the point-of-service option the cost ' +
     'sharing is written as filed; a provider outside the plan\'s network who is not enrolled in the state\'s Medicaid may charge it, depending on the ' +
-    'member\'s Medicaid eligibility (docs/specs/pbp-importer.md section 5.11).'));
+    'member\'s Medicaid eligibility.'));
   // PPO: OUT rows as filed; decision 1's out-of-network deductible as filed.
   const ppoBase = await docFor('H2406-013-000');
   const ppo = await alteredParts('H2406-013-000', { a: ZERO });
@@ -723,6 +724,16 @@ test('v1.2.1, spec 5.11: out-of-network and point-of-service rows of a zero-doll
   assert.strictEqual(tier(benefit(both.doc, 'PRIMARY_CARE'), 'OUT').cost_shares[0].applies_to_deductible, true);
   assert.ok(excerptStarting(both.doc, 'Zero-dollar cost-sharing D-SNP:').includes('the annual deductible, $1000, which applies in and out of network, ' +
     'is written as oon_individual_deductible with network_tier OUT, because in network the member pays none'));
+  // Its own excerpt says the same: written out of network only, not with network_tier null (H7355-003-000 and 5 more in 2027).
+  const annual = excerptStarting(both.doc, 'Annual plan deductible:');
+  assert.ok(annual.startsWith('Annual plan deductible: $1000. It applies in and out of network. The plan is a zero-dollar cost-sharing D-SNP, so ' +
+    'the member pays no deductible in network, and the amount is written as oon_individual_deductible with network_tier OUT only. The file says: ' +
+    'pbp_d_ann_deduct_yn "1", '), annual);
+  assert.ok(!excerpts(both.doc).some((e) => e.includes('network_tier null')), 'no excerpt names a network_tier null deductible');
+  const bothBase = await alteredParts('H2406-013-000', { d: SCOPE_010 });
+  assert.deepStrictEqual(annual.slice(annual.indexOf(' The file says: ')),
+    excerptStarting(bothBase.doc, 'Annual plan deductible:').slice(excerptStarting(bothBase.doc, 'Annual plan deductible:').indexOf(' The file says: ')),
+    'the quoted cells are those of the plan with no zero-dollar flag');
 });
 
 const POS_MAX = { pbp_c_pos_maxplan_yn: '1', pbp_c_pos_maxplan_bens: '11', pbp_c_pos_maxplan_mc_subcats: '7d;8a2;', pbp_c_pos_maxplan_nmc_subcats: '14b;',
@@ -752,14 +763,14 @@ test('v1.2.1, spec 5.12: the POS maximum plan benefit coverage is 1 entry after 
       'pbp_c_pos_maxplan_bens "11"; pbp_c_pos_maxplan_mc_subcats "7d;8a2;"; pbp_c_pos_maxplan_nmc_subcats "14b;"; pbp_c_pos_maxplan_amt "1000.00"; pbp_c_pos_maxplan_per "3".' }],
   });
   const note = 'The point-of-service maximum plan benefit coverage, $1000 (every year), covers this service under the point-of-service option ' +
-    '(benefit PBP_C_POS_MAXPLAN; docs/specs/pbp-importer.md section 5.12).';
+    '(benefit PBP_C_POS_MAXPLAN).';
   assert.ok(tier(benefit(r.doc, 'SPECIALIST'), 'POS').notes.endsWith(note));
   assert.deepStrictEqual(tier(benefit(r.doc, 'SPECIALIST'), 'POS').cost_shares, tier(benefit(base, 'SPECIALIST'), 'POS').cost_shares);
   for (const b of r.doc.benefits) {
     const pos = b.benefit_id === 'SPECIALIST' || b.benefit_id === 'LAB_SERVICES' ? null : (b.network_cost_shares || []).find((t) => t.tier_id === 'POS');
     if (pos) assert.ok(!pos.notes.includes('PBP_C_POS_MAXPLAN'), `${b.benefit_id} is not listed`);
   }
-  assert.ok(excerptStarting(r.doc, 'Benefits: ').endsWith(' Then 1 point-of-service maximum plan benefit coverage entry from Section C (PBP_C_POS_MAXPLAN; section 5.12).'));
+  assert.ok(excerptStarting(r.doc, 'Benefits: ').endsWith(' Then 1 point-of-service maximum plan benefit coverage entry from Section C (PBP_C_POS_MAXPLAN).'));
   assert.deepStrictEqual(r.doc.benefits.filter((b) => b.benefit_id !== 'PBP_C_POS_MAXPLAN').map((b) => b.benefit_id), base.benefits.map((b) => b.benefit_id));
   // "2" (the golden plan) and blank write nothing; bad cells are errors that quote them.
   assert.deepStrictEqual((await alteredParts('H1609-028-000', { c: { pbp_c_pos_maxplan_yn: '' } })).doc, base);
@@ -929,13 +940,14 @@ test('part-d PDP: document shape', async () => {
     tier_id: 'IN',
     name: 'In-Network',
     description: 'A stand-alone Part D plan has no medical provider network. Its Part D cost shares are written on this tier; the pharmacy each ' +
-      "applies at is the benefit's pharmacy_network_id (docs/specs/pbp-part-d-mapping.md section 6).",
+      "applies at is the benefit's pharmacy_network_id.",
     tier_class: 'network',
   }]);
   for (const k of ['accumulators', 'service_area', 'premium', 'part_b_premium_reduction']) assert.strictEqual(doc[k], undefined, k);
   assert.strictEqual(doc.benefits.length, 41);
   assert.ok(doc.benefits.every((b) => b.benefit_type === 'pharmacy'));
-  assert.ok(excerpts(doc).includes('Service area from PlanRegionArea.txt (regions, no counties; schema gap, spec section 9.1): 11 "Florida" (region_type "PD").'));
+  assert.ok(excerpts(doc).includes('Service area from PlanRegionArea.txt (regions, no counties; the Benefit Plan Standard\'s service area holds ' +
+    'counties, not regions): 11 "Florida" (region_type "PD").'));
   assert.ok(excerpts(doc).some((e) => e.startsWith('Premium: not written. The PDP premium is in no PBP file')));
   assert.ok(excerpts(doc).includes('Plan type: pbp_a_plan_type "29" (Medicare Prescription Drug Plan), written as plan_type "PDP".'));
   assert.ok(!excerpts(doc).some((e) => e.startsWith('Benefits: the ') || e.startsWith('Premium from Section D')), 'no medical entries');
@@ -1024,7 +1036,7 @@ test('part-d tiers: an unknown label is written by name with the warning part-d-
   const rx = partD(r.doc).filter((b) => b.formulary_tier_id === 'T4');
   assert.strictEqual(rx.length, 9);
   assert.ok(rx.every((b) => b.canonical_key === undefined && b.raw_label === 'Brand Plus'));
-  assert.ok(rx.every((b) => b.source_references[0].excerpt.endsWith('; no canonical key, carried by name (spec section 9.1).')));
+  assert.ok(rx.every((b) => b.source_references[0].excerpt.endsWith('; the Benefit Plan Standard has no canonical key for it, so it is identified by its name.')));
 });
 
 test('part-d networks: the networks the location flags use, in order, and mrx_partd_network_loc must agree', async () => {
@@ -1100,7 +1112,7 @@ test('part-d deductible: code 3, the standard benefit types, all tiers, and the 
     const s = firstStep(b);
     if (b.coverage_stage_id === 'INITIAL') {
       assert.deepStrictEqual([s.applies_to_deductible, s.deductible_ref], [true, 'pharmacy'], b.benefit_id);
-      assert.match(b.network_cost_shares[0].notes, /Actuarially Equivalent Standard benefit \(mrx_benefit_type "2"; mrx_alt_ded_type_yn blank.*S5884-105-000.*Question Q3/);
+      assert.match(b.network_cost_shares[0].notes, /Actuarially Equivalent Standard benefit \(mrx_benefit_type "2"; mrx_alt_ded_type_yn blank.*confirmed on the 2027 Summary of Benefits of S5884-105-000\.(?: |$)/);
     } else assert.deepStrictEqual([s.applies_to_deductible, s.deductible_ref], [false, undefined], b.benefit_id);
   }
   assert.ok(excerpts(ae.doc).find((e) => e.startsWith('Part D deductible:')).includes('S5884_SB_PD_PDP_105000_2027_M'));
@@ -1320,15 +1332,15 @@ test('part-d canonical keys: keys from the label table; no key carried by name',
   });
   assert.deepStrictEqual(single.warnings, [], 'Single Tier is a known label');
   const t4 = partD(single.doc).filter((b) => b.formulary_tier_id === 'T4');
-  assert.ok(t4.every((b) => b.canonical_key === undefined && b.source_references[0].excerpt.endsWith('; no canonical key, carried by name (spec section 9.1).')));
+  assert.ok(t4.every((b) => b.canonical_key === undefined && b.source_references[0].excerpt.endsWith('; the Benefit Plan Standard has no canonical key for it, so it is identified by its name.')));
 });
 
 test('part-d insulin: the mrx_tier_ira cells quoted once per tier, no insulin benefit', async () => {
   const doc = await docFor('H1036-068-000');
   const ins = excerpts(doc).filter((e) => e.startsWith('Insulin cost sharing for Tier '));
   assert.strictEqual(ins.length, 5);
-  assert.ok(ins[0].startsWith('Insulin cost sharing for Tier 1 (Preferred Generic), no Benefit Plan Standard benefit written ' +
-    '(docs/specs/pbp-part-d-mapping.md section 10): mrx_alt_ira_covg_tier "0111110" (Tier 1; Tier 2; Tier 3; Tier 4; Tier 5), '), ins[0]);
+  assert.ok(ins[0].startsWith('Insulin cost sharing for Tier 1 (Preferred Generic), no Benefit Plan Standard benefit written: ' +
+    'mrx_alt_ira_covg_tier "0111110" (Tier 1; Tier 2; Tier 3; Tier 4; Tier 5), '), ins[0]);
   assert.ok(ins[0].includes('mrx_tier_ira_mostd_copay_1m "10.00"') && ins[0].includes('mrx_tier_ira_mostd_coins_1m "25"'), ins[0]);
   assert.ok(!doc.benefits.some((b) => /insulin/i.test(b.benefit_id + b.service_name)));
   assert.strictEqual(excerpts(await docFor('S5921-383-000')).filter((e) => e.startsWith('Insulin cost sharing for Tier ')).length, 3);
@@ -1345,7 +1357,7 @@ test('part-d references: the plan-level entries in order, after the medical ones
   const rest = excerpts(doc).slice(n);
   assert.strictEqual(rest.length, starts.length, rest.join('\n'));
   starts.forEach((s, i) => assert.ok(rest[i].startsWith(s), `${i}: ${rest[i]}`));
-  assert.ok(rest[0].includes('Written: pharmacy and 42 Part D benefits (docs/specs/pbp-part-d-mapping.md).'), rest[0]);
+  assert.ok(rest[0].endsWith('Written: pharmacy and 42 Part D benefits.'), rest[0]);
   assert.ok(!rest[10].includes('pbp_a_hnumber') && !rest[10].includes('bid_id') && rest[10].includes('mrx_vaccine_attest "1"'), rest[10]);
 });
 
