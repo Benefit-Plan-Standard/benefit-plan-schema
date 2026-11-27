@@ -16,8 +16,8 @@ Validation record: [`VALIDATION.md`](VALIDATION.md).
 
 | File | BPS source | BPS schema | Benefits placed | Benefits listed as unmapped (outside the SBC codes, and Part D) | `Not stated in the BPS document` entries |
 |---|---|---|---|---|---|
-| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | `unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json` | 1.2.0 | 16 | 55 (22 and 33 Part D) | 2 |
-| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | `aetna-medicare-aetna-medicare-select-extra.pbp.json` | 1.2.0 | 16 | 89 (22 and 67 Part D) | 4 |
+| `aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json` | `unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json` | 1.3.0 | 16 | 55 (22 and 33 Part D) | 2 |
+| `aetna-medicare-select-extra-hmo-pos-h1609-028-000.json` | `aetna-medicare-aetna-medicare-select-extra.pbp.json` | 1.3.0 | 16 | 89 (22 and 67 Part D) | 4 |
 | `aetna-ppo-1500-80-50.json` | `aetna_example.json` | 1.1.0 | 26 | 1 | 0 |
 | `aetna-ppo-5000-80-50.json` | `aetna_ppo5000_example.json` | 1.1.0 | 26 | 1 | 0 |
 | `ambetter-ca-silver-94-hmo.json` | `ambetter_example.json` | 1.1.0 | 27 | 3 | 2 |
@@ -25,12 +25,12 @@ Validation record: [`VALIDATION.md`](VALIDATION.md).
 | `flblue-blueoptions-505.json` | `bluecross_example.json` | 1.1.0 | 27 | 4 | 0 |
 | `gatorcare-prime-epo.json` | `gatorcare_example.json` | 1.2.0 | 36 | 11 | 9 |
 | `humana-gold-plus-h1036-025-hmo.json` | `humana_example.json` | 1.2.0 | 26 | 46 | 9 |
-| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | `humana-humana-gold-plus-h1036-068.pbp.json` | 1.2.0 | 16 | 64 (22 and 42 Part D) | 14 |
+| `humana-gold-plus-h1036-068-hmo-h1036-068-000.json` | `humana-humana-gold-plus-h1036-068.pbp.json` | 1.3.0 | 16 | 64 (22 and 42 Part D) | 14 |
 | `kaiser-ca-gold-80-hmo.json` | `kaiser_example.json` | 1.1.0 | 28 | 3 | 0 |
 | `scan-classic-hmo-los-angeles.json` | `scan_example.json` | 1.2.0 | 22 | 49 | 20 |
-| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | 1.2.0 | 16 | 89 (22 and 67 Part D) | 14 |
+| `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | `scan-health-plan-scan-costco-medicare-advantage.pbp.json` | 1.3.0 | 16 | 89 (22 and 67 Part D) | 14 |
 | `uhc-choice-plus-hsa-gold-1700.json` | `united_example.json` | 1.1.0 | 26 | 3 | 0 |
-| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | 1.2.0 | 16 | 89 (22 and 67 Part D) | 2 |
+| `upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json` | `upmc-for-life-upmc-for-life-ppo-rx-choice.pbp.json` | 1.3.0 | 16 | 89 (22 and 67 Part D) | 2 |
 
 The 5 files whose BPS source is a `.pbp.json` file are the PBP Bundles, described below. The 2 other `.pbp.json` files, stand-alone Part D plans, are not converted (converter spec section 8.4).
 
@@ -44,7 +44,7 @@ A Summary of Benefits is not an SBC. These two files conform structurally to the
 
 ## Medicare Advantage files from the CMS PBP public files
 
-Added 2026-10-06. Each is the converter's output for 1 of the PBP importer's 5 golden files (`examples/*.pbp.json`, BPS 1.2.0, written by `scripts/from-pbp.js` from the CMS CY 2027 PBP Benefits files; spec [`../../docs/specs/pbp-importer.md`](../../docs/specs/pbp-importer.md) section 13). They are golden-tested like the 10 above and, since 2026-10-15, published to the docs site with them. Their label in the site's `index.json`: Medicare Advantage, imported from the CMS PBP benefits files for contract year 2027, validates against v1.2.0, not v1.1.0. The `POS` tier of the HMO-POS plan maps to out-of-network with the text-only qualifier `Point-of-service option` (converter spec 6.3). Since 2026-10-24 each document carries its Part D benefit, and the converter lists every Part D benefit (a benefit with a `coverage_stage_id`) in `bps-unmapped-benefit`, whatever its key, because the SBC profile has no coverage stage, pharmacy network or day supply; the Part D deductible and out-of-pocket threshold are `plan.generalCost` entries (converter spec section 8.4). Since 2026-11-04 (schema 1.2.0 draft 8) each inpatient hospital benefit carries the plan's unlimited additional days as a `BenefitLimitation` with `limitText` and `limitType` `days` and no `limitValue` (converter spec 6.6); the HL7 validator's twelfth run gave the counts of the eighth (`VALIDATION.md`). Their rows are in the Files table above. The 5 plans, as the Bundles name them:
+Added 2026-10-06. Each is the converter's output for 1 of the PBP importer's 5 golden files (`examples/*.pbp.json`, BPS 1.3.0 since 2026-11-27 and 1.2.0 before, written by `scripts/from-pbp.js` from the CMS CY 2027 PBP Benefits files; spec [`../../docs/specs/pbp-importer.md`](../../docs/specs/pbp-importer.md) section 13). They are golden-tested like the 10 above and, since 2026-10-15, published to the docs site with them. Their label in the site's `index.json`: Medicare Advantage, imported from the CMS PBP benefits files for contract year 2027, validates against v1.2.0, not v1.1.0. The `POS` tier of the HMO-POS plan maps to out-of-network with the text-only qualifier `Point-of-service option` (converter spec 6.3). Since 2026-10-24 each document carries its Part D benefit, and the converter lists every Part D benefit (a benefit with a `coverage_stage_id`) in `bps-unmapped-benefit`, whatever its key, because the SBC profile has no coverage stage, pharmacy network or day supply; the Part D deductible and out-of-pocket threshold are `plan.generalCost` entries (converter spec section 8.4). Since 2026-11-04 (schema 1.2.0 draft 8) each inpatient hospital benefit carries the plan's unlimited additional days as a `BenefitLimitation` with `limitText` and `limitType` `days` and no `limitValue` (converter spec 6.6); the HL7 validator's twelfth run gave the counts of the eighth (`VALIDATION.md`). Their rows are in the Files table above. The 5 plans, as the Bundles name them:
 
 | Plan | Contract-plan-segment |
 |---|---|

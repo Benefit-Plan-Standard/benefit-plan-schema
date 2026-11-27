@@ -47,8 +47,8 @@
         "id": "Extension.extension:slot",
         "path": "Extension.extension",
         "sliceName": "slot",
-        "short": "BPS accumulator slot name (e.g. oon_individual_deductible, pharmacy.deductible, pharmacy.deductible.family_amount).",
-        "definition": "BPS accumulator slot name (e.g. oon_individual_deductible, pharmacy.deductible, pharmacy.deductible.family_amount).",
+        "short": "BPS accumulator slot name (e.g. oon_individual_deductible, combined_individual_oop_max, pharmacy.deductible, pharmacy.deductible.family_amount). A combined_* slot (BPS v1.3.0) counts what the member pays in and out of network together and has no networkTier.",
+        "definition": "BPS accumulator slot name (e.g. oon_individual_deductible, combined_individual_oop_max, pharmacy.deductible, pharmacy.deductible.family_amount). A combined_* slot (BPS v1.3.0) counts what the member pays in and out of network together and has no networkTier.",
         "min": 0,
         "max": "1"
       },

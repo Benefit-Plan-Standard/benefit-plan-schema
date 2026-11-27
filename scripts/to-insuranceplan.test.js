@@ -143,13 +143,16 @@ const GOLDEN_SHA256 = {
 // importer began noting that a premium leaves out the Part D part (schema 1.2.0 draft 9): each
 // Bundle's premium entry gains a comment; and 2026-11-26 when the importer's notes and excerpts
 // lost their internal references (repository paths, spec sections, decision names): each
-// Bundle's notes, excerpts and comments change in their text only.
+// Bundle's notes, excerpts and comments change in their text only; and 2026-11-27 when the
+// importer moved to schema 1.3.0 draft 1: each Bundle's schemaVersion and narrative say 1.3.0,
+// and the 3 plans with a combined maximum (H2406-013, H1609-028, H5533-019) gain its generalCost
+// entry and moopRef "combined" on the out-of-network or point-of-service entries it caps.
 const PBP_BUNDLE_SHA256 = {
-  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': 'a8e6ac111f35c13be0d1c643e282c94cdf2f9b798d74166836ab89d2513b47bb',
-  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': 'a24e2af2cf368248d8d9f89f2976fa21a75674841269de311deef075f0794019',
-  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': '33faec06cdfad7f9e684e27fa9dd61787267a2bc62cdd99a70a87d979b4f5328',
-  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': 'a08dc0e5be84685dbb71b70b31a51d67795de7303c5a8ab785d0d21ffe4d7c17',
-  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': '3d85cc64c21a36138b9707f54d7a21b097d9b86b99d02bc6ed1d0eb84abeaa32',
+  'aarp-medicare-advantage-from-uhc-fl-0021-ppo-h2406-013-000.json': 'c4f1b09980ef3b0b96d6d6a8326c20e1aa0a68c8d7a632cd993f5881818b7350',
+  'aetna-medicare-select-extra-hmo-pos-h1609-028-000.json': '2160af398e584da7d3c586761930e40717172de15f42d9fe7de1b798a942a056',
+  'humana-gold-plus-h1036-068-hmo-h1036-068-000.json': 'c2eec76b6e1e888d19d1bdacbacbcc71439972913f3c731e67ae82929a971d5c',
+  'scan-costco-medicare-advantage-hmo-h5425-140-000.json': '30c524c2d2a21833babb310bb90b7b0919918afcfd50afdc143fda5e78aa4cac',
+  'upmc-for-life-ppo-rx-choice-ppo-h5533-019-000.json': 'b1fb07cdc4589bef805ccb10554452270a037a28587a05eab3d9308f4567a91a',
 };
 
 test('the 10 golden files are byte-identical to the pinned versions, and the converter reproduces them', () => {
@@ -307,9 +310,10 @@ test('the POS tier (Aetna H1609-028 golden) maps to out-of-network with the "Poi
   const primary = benefits.find((b) => b.type.coding[1].code === 'primary_care').cost;
   assert.deepStrictEqual(primary.map((c) => c.type.text || c.type.coding[0].code), ['copay', 'Not stated in the BPS document']);
   // The deductible written to the POS tier reaches generalCost with its tier as text; the premium (since 2026-10-20) and the
-  // Part D deductible and out-of-pocket threshold (since 2026-10-24) follow.
-  assert.deepStrictEqual(plan.plan[0].generalCost.map((g) => g.type.text), ['Individual out-of-pocket maximum, IN', 'Individual deductible, POS', 'Premium',
-    'Pharmacy deductible', 'Pharmacy out-of-pocket maximum']);
+  // Part D deductible and out-of-pocket threshold (since 2026-10-24) follow. Since schema 1.3.0 the combined maximum
+  // ($10,100, in network and under the point-of-service option together) has its own entry.
+  assert.deepStrictEqual(plan.plan[0].generalCost.map((g) => g.type.text), ['Individual out-of-pocket maximum, IN', 'Individual deductible, POS',
+    'Individual out-of-pocket maximum, in and out of network combined', 'Premium', 'Pharmacy deductible', 'Pharmacy out-of-pocket maximum']);
 });
 
 test('only tier_id POS is the point-of-service tier: a network tier named "Point-of-Service" under another id still fails', () => {
@@ -473,6 +477,43 @@ test('draft 8: a no-limit entry is a BenefitLimitation with limitText and limitT
   assert.deepStrictEqual(dollars.extension.map((e) => [e.url, Object.values(e)[1]]), [
     ['limitText', 'No maximum.'],
     ['limitType', { coding: [{ system: 'http://hl7.org/fhir/us/insurance-card/CodeSystem/limit-type', code: 'dollars', display: 'Dollars' }] }],
+  ]);
+});
+
+// ---- schema 1.3.0 draft 1: the combined slots (spec 6.4 and 6.7) ----------------------------
+test('1.3.0: a combined slot is a generalCost entry labelled in and out of network combined, with its slot and no networkTier; a step\'s combined ref goes in bps-cost-share', () => {
+  const bps = readJson(path.join(EXAMPLES_DIR, 'unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json'));
+  assert.strictEqual(bps.schema_version, '1.3.0');
+  const plan = toInsurancePlanBundle(bps).entry[0].resource;
+  const general = plan.plan[0].generalCost;
+  const comb = general.find((g) => g.type.text === 'Individual out-of-pocket maximum, in and out of network combined');
+  assert.ok(comb, general.map((g) => g.type.text).join('; '));
+  assert.deepStrictEqual(comb.type.coding.map((c) => c.code), ['maxoutofpocket']);
+  assert.deepStrictEqual(comb.cost, { value: 10750, currency: 'USD' });
+  assert.strictEqual(comb.comment, 'in and out of network combined');
+  const ext = comb.extension.find((e) => e.url.endsWith('/bps-accumulator'));
+  assert.deepStrictEqual(ext.extension.map((e) => [e.url, Object.values(e)[1]]), [['slot', 'combined_individual_oop_max'], ['appliesTo', 'medical']]);
+  assert.ok(general.some((g) => g.type.text === 'Individual out-of-pocket maximum, IN'), 'beside the in-network maximum');
+  // Every OUT entry whose step counts toward the combined maximum says so in bps-cost-share; DeductibleApplies is kept.
+  const out = plan.plan[0].specificCost.flatMap((sc) => sc.benefit).flatMap((b) => b.cost || []).filter((c) => c.applicability.coding[0].code === 'out-of-network');
+  const costShare = (c) => (c.extension || []).find((e) => e.url.endsWith('/bps-cost-share'));
+  const refs = out.filter(costShare).map((c) => subValue(costShare(c), 'moopRef')).filter(Boolean);
+  assert.ok(refs.length > 5 && refs.every((r) => r === 'combined'), JSON.stringify(refs));
+  assert.ok(out.filter((c) => subValue(costShare(c) || { extension: [] }, 'moopRef') === 'combined')
+    .every((c) => c.extension.some((e) => e.url.endsWith('/deductible-applies'))), 'DeductibleApplies stays on a step with moopRef combined');
+  // The 4 labels; a family slot's comment adds embedded.
+  const all = { ...bps, accumulators: {
+    combined_individual_deductible: { amount: 525, currency: 'USD', applies_to: 'medical' },
+    combined_family_deductible: { amount: 1050, currency: 'USD', applies_to: 'medical', embedded: true },
+    combined_individual_oop_max: { amount: 6700, currency: 'USD', applies_to: 'medical' },
+    combined_family_oop_max: { amount: 13400, currency: 'USD', applies_to: 'medical' },
+  } };
+  const g4 = toInsurancePlanBundle(all).entry[0].resource.plan[0].generalCost.slice(0, 4);
+  assert.deepStrictEqual(g4.map((g) => [g.type.text, g.type.coding[0].code, g.comment]), [
+    ['Individual deductible, in and out of network combined', 'deductible', 'in and out of network combined'],
+    ['Family deductible, in and out of network combined', 'deductible', 'in and out of network combined; embedded'],
+    ['Individual out-of-pocket maximum, in and out of network combined', 'maxoutofpocket', 'in and out of network combined'],
+    ['Family out-of-pocket maximum, in and out of network combined', 'maxoutofpocket', 'in and out of network combined'],
   ]);
 });
 

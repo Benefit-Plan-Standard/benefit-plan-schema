@@ -24,6 +24,7 @@ const { spawnSync } = require('child_process');
 
 const REPO = path.join(__dirname, '..');
 const V120 = path.join('schema', 'v1.2.0', 'benefit-plan.schema.json');
+const V130 = path.join('schema', 'v1.3.0', 'benefit-plan.schema.json');
 const FIXTURES = path.join('test', 'fixtures', 'validate');
 
 function run(...args) {
@@ -73,21 +74,36 @@ test('no document in examples/ and no pharmacy module example of v0.2.1, v0.2.2 
   const list = (dir) => fs.readdirSync(path.join(REPO, dir)).filter((f) => f.endsWith('.json')).map((f) => path.join(dir, f));
   const files = [...list('examples'), ...['v0.2.1', 'v0.2.2', 'v0.2.3'].flatMap((v) => list(path.join('modules', 'pharmacy', v, 'examples')))];
   assert.ok(files.length >= 28);
-  const { status, lines } = run('--no-vocab', '--schema', V120, ...files);
+  const { status, lines } = run('--no-vocab', '--schema', V130, ...files);
   assert.strictEqual(status, 0);
   assert.deepStrictEqual(warnings(lines), []);
 });
 
-test('v1.2.0 draft 9: a formulary list validates against formulary.schema.json, with the core schema loaded beside it', () => {
-  const LIST = path.join('schema', 'v1.2.0', 'formulary.schema.json');
-  const LISTS = path.join('test', 'fixtures', 'validate-formulary');
-  const ok = run('--no-vocab', '--schema', LIST, path.join(LISTS, 'formulary-list.json'));
-  assert.strictEqual(ok.status, 0, ok.lines.join('\n'));
-  assert.ok(ok.lines[0].startsWith('PASS'), ok.lines[0]);
-  const bad = run('--no-vocab', '--schema', LIST, path.join(LISTS, 'formulary-list-item-without-tier.json'));
-  assert.strictEqual(bad.status, 1);
-  assert.ok(bad.lines.some((l) => l.includes("formulary_tier_id")), bad.lines.join('\n'));
-  // A plan is not a list, and a list is not a plan.
-  assert.strictEqual(run('--no-vocab', '--schema', LIST, path.join('examples', 'unitedhealthcare-aarp-medicare-rx-preferred-from-uhc.pbp.json')).status, 1);
-  assert.strictEqual(run('--no-vocab', '--schema', V120, path.join(LISTS, 'formulary-list.json')).status, 1);
+test('1.3.0 draft 1: with no --schema the document is checked against v1.3.0; --schema v1.2.0 keeps the 1.2.0 check', () => {
+  const combined = path.join('examples', 'unitedhealthcare-aarp-medicare-advantage-from-uhc-fl-0021.pbp.json');
+  const old = path.join('examples', 'humana_example.json');
+  const byDefault = run('--no-vocab', combined, old);
+  assert.strictEqual(byDefault.status, 0, byDefault.lines.join('\n'));
+  assert.deepStrictEqual(byDefault.lines.filter((l) => l.startsWith('PASS')).length, 2);
+  assert.ok(byDefault.lines.some((l) => l.includes('v1.3.0')), byDefault.lines.join('\n'));
+  const v120 = run('--no-vocab', '--schema', V120, combined);
+  assert.strictEqual(v120.status, 1, 'v1.2.0 has no combined slot');
+  assert.ok(v120.lines.some((l) => l.includes('/accumulators')), v120.lines.join('\n'));
+  assert.strictEqual(run('--no-vocab', '--schema', V120, old).status, 0, 'a 1.2.0 document still passes v1.2.0');
+});
+
+test('v1.2.0 draft 9: a formulary list validates against formulary.schema.json, with the core schema loaded beside it (v1.2.0 and v1.3.0)', () => {
+  for (const v of ['v1.2.0', 'v1.3.0']) {
+    const LIST = path.join('schema', v, 'formulary.schema.json');
+    const LISTS = path.join('test', 'fixtures', 'validate-formulary');
+    const ok = run('--no-vocab', '--schema', LIST, path.join(LISTS, 'formulary-list.json'));
+    assert.strictEqual(ok.status, 0, ok.lines.join('\n'));
+    assert.ok(ok.lines[0].startsWith('PASS'), ok.lines[0]);
+    const bad = run('--no-vocab', '--schema', LIST, path.join(LISTS, 'formulary-list-item-without-tier.json'));
+    assert.strictEqual(bad.status, 1);
+    assert.ok(bad.lines.some((l) => l.includes("formulary_tier_id")), bad.lines.join('\n'));
+    // A plan is not a list, and a list is not a plan.
+    assert.strictEqual(run('--no-vocab', '--schema', LIST, path.join('examples', 'unitedhealthcare-aarp-medicare-rx-preferred-from-uhc.pbp.json')).status, 1);
+    assert.strictEqual(run('--no-vocab', '--schema', path.join('schema', v, 'benefit-plan.schema.json'), path.join(LISTS, 'formulary-list.json')).status, 1);
+  }
 });

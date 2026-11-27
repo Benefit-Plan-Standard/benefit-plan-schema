@@ -82,13 +82,13 @@ test('a root with no release folders: 1 release with no name, entries by plan ke
   assert.deepStrictEqual(r.index.plans, [
     {
       id: '68398FL0030058-01', plan_name: 'UHC Bronze Essential ($0 Virtual Urgent Care)', carrier: 'UnitedHealthcare', plan_type: 'HMO', plan_year: 2026,
-      program: 'Marketplace', bps_schema_version: '1.2.0', document: '68398FL0030058-01.json', bundle: '68398FL0030058-01.bundle.json',
+      program: 'Marketplace', bps_schema_version: '1.3.0', document: '68398FL0030058-01.json', bundle: '68398FL0030058-01.bundle.json',
       service_areas: null, release: null, data_date: '2026-10-05', benefits_placed: 27, benefits_unmapped: 25,
       label: 'Marketplace, imported from the CMS Health Insurance Exchange public use files for plan year 2026.',
     },
     {
       id: 'H1609-028-000', plan_name: 'Aetna Medicare Select Extra (HMO-POS)', carrier: 'Aetna Medicare', plan_type: 'HMO_POS', plan_year: 2027,
-      program: 'Medicare Advantage', bps_schema_version: '1.2.0', document: 'H1609-028-000.json', bundle: 'H1609-028-000.bundle.json',
+      program: 'Medicare Advantage', bps_schema_version: '1.3.0', document: 'H1609-028-000.json', bundle: 'H1609-028-000.bundle.json',
       service_areas: null, release: null, data_date: '2026-10-06', benefits_placed: 16, benefits_unmapped: 89,
       label: 'Medicare Advantage, imported from the CMS PBP Benefits files for contract year 2027.',
     },

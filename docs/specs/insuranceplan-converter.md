@@ -29,8 +29,8 @@ This spec defines a converter from a Benefit Plan Standard (BPS) document to a F
 
 ## 3. Inputs
 
-- BPS documents declaring `schema_version` `1.1.0` or `1.2.0`. Any other value is an error.
-- The CLI checks the input against the schema its `schema_version` names (`schema/v1.1.0` or `schema/v1.2.0`), using the same local Ajv setup as `scripts/validate.js`. A document that fails the schema is rejected. Nothing is converted.
+- BPS documents declaring `schema_version` `1.1.0`, `1.2.0` or `1.3.0` (since 2026-11-27, the 1.3.0 draft 1). Any other value is an error.
+- The CLI checks the input against the schema its `schema_version` names (`schema/v1.1.0`, `schema/v1.2.0` or `schema/v1.3.0`), using the same local Ajv setup as `scripts/validate.js`. A document that fails the schema is rejected. Nothing is converted.
 - Absent v1.2.0 fields take their v1.1.0 meaning. For example, a tier with no `tier_class` is a `network` tier.
 - The 10 `examples/*_example.json` files are the original test corpus. 7 of the 8 SBC examples declare v1.1.0. GatorCare, since it gained its pharmacy side on 2026-10-31, and the 2 Medicare Advantage examples (`humana_example.json`, `scan_example.json`) declare v1.2.0.
 - The PBP importer's 5 Medicare Advantage golden files (`examples/*.pbp.json`, v1.2.0) are converted too, since 2026-10-06; their Bundles sit in `examples/fhir/` beside the 10 (section 12) and are published with them since 2026-10-15 (section 13). Since 2026-10-24 the importer also writes 2 stand-alone Part D plans (`plan_type` `PDP`) among its golden files; they are not converted (section 8.4).
@@ -167,6 +167,7 @@ The PBP importer's check of this document is in `docs/specs/pbp-sob-checks/H1609
 | `amount`, `currency` | `cost` (Money) |
 | `network_tier`, `period` | `comment` (readable, for example "out-of-network; per_year") and `bps-accumulator` **[BPS ext]** |
 | `embedded`, `applies_to`, slot name | `bps-accumulator` **[BPS ext]** |
+| `combined_individual_deductible`, `combined_family_deductible`, `combined_individual_oop_max`, `combined_family_oop_max` (v1.3.0 draft 1) | A `generalCost[]` entry like any slot, `type.text` "Individual deductible, in and out of network combined" (and so on), `comment` "in and out of network combined", the slot name in `bps-accumulator` and no `networkTier`. CARIN's `generalCost` has no network element, so an amount that counts what the member pays in and out of network together is said in the text and the extension only; it sits beside the per-network entries (H2406-013: "Individual out-of-pocket maximum, IN" $7,150 and "Individual out-of-pocket maximum, in and out of network combined" $10,750) |
 | `pharmacy.deductible`, `pharmacy.out_of_pocket_max` (v1.2.0) | `generalCost[]` with the same `type` codes, `text` "Pharmacy deductible" or "Pharmacy out-of-pocket maximum"; `applies_to_tiers` goes in `bps-accumulator` |
 | `pharmacy.deductible.family_amount` (v1.2.0 draft 7) | A second `generalCost[]` entry with the same `type` code and `comment`, `text` "Pharmacy deductible, family", slot `pharmacy.deductible.family_amount`. The entry for `amount` then reads "Pharmacy deductible, individual"; with no family amount it reads "Pharmacy deductible", as before |
 | `pharmacy.coverage_stages` (v1.2.0) | Not carried (7) |
@@ -213,6 +214,7 @@ Two BPS benefits that share an SBC row code (for example `diagnostic_lab`, `imag
 | `amount` | `value` = `{value, unit: "USD", system: "urn:iso:std:iso:4217", code: "USD"}` |
 | `rate` | `value` = `{value: rate x 100, unit: "%", system: "http://unitsofmeasure.org", code: "%"}` |
 | `applies_to_deductible` | `DeductibleApplies` **[ballot]**, one-to-one. **Exception:** when `deductible_ref` is `pharmacy`, `DeductibleApplies` is omitted. It means "accrues to the plan deductible", and emitting it would misstate a Part D deductible. The flag and the reference go in `bps-cost-share`. |
+| `deductible_ref` or `moop_ref` `combined` (v1.3.0 draft 1: the step refers to a `combined_*` slot) | `bps-cost-share` (`deductibleRef`, `moopRef`). `DeductibleApplies` is kept: the combined deductible is a plan deductible. Only `pharmacy` withholds it |
 | `sequence`, `basis`, `applies_to_moop`, `moop_ref`, `amount_min`/`amount_max`, `rate_min`/`rate_max`, `min_amount`/`min_basis`, `max_amount`/`max_basis`, `unit_range`, `deductible_ref`, `notes`, row-level `notes`, `tier_id` | `bps-cost-share` **[BPS ext]** |
 
 A floor or a cap does not change `value`, which stays the rate: GatorCare Tier 1 at 34 days is `value` 25% with `minAmount` 10 and `maxAmount` 20. `minAmount` and `minBasis` render as `maxAmount` and `maxBasis` do.
@@ -226,6 +228,7 @@ A floor or a cap does not change `value`, which stays the rate: GatorCare Tier 1
 | `conditions[]` | `requirement` (text) plus `bps-condition` (structured) | Yes |
 | `applies_to_moop`, `moop_ref`, `basis`, `sequence`, floors, caps, ranges, unit ranges | `bps-cost-share` | Yes |
 | `embedded`, accumulator `period` and `network_tier` | `bps-accumulator` (plus `comment`) | Yes |
+| The `combined_*` slots (v1.3.0 draft 1) | A `generalCost[]` entry with the slot in `bps-accumulator` and the combination in `type.text` and `comment` (6.4) | Yes |
 | `raw_label`, `benefit_type`, `place_of_service`, `coverage_basis`, `alternative_group`, `moop_applicability`, `formulary_tier_id`, `day_supply` | `bps-benefit` | Yes |
 | `network_cost_shares[].covered_under`, `not_covered_reason` (v1.2.0 draft 7) | `bps-cost-share` on the `Not covered` entry of a placed benefit. On a benefit outside the 29 codes they are not carried (8.3) | Yes on a placed benefit, no otherwise |
 | `pharmacy.deductible.family_amount` (v1.2.0 draft 7) | A second `generalCost[]` entry (6.4) | Yes |

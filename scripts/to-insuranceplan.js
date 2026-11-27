@@ -2,7 +2,7 @@
 /**
  * Benefit Plan Standard to FHIR R4 InsurancePlan (CARIN SBC profile) converter
  *
- * Converts one BPS document (v1.1.0 or v1.2.0) into a FHIR collection Bundle
+ * Converts one BPS document (v1.1.0, v1.2.0 or v1.3.0) into a FHIR collection Bundle
  * holding one InsurancePlan and the Organization it references. The target
  * profile is the CARIN Digital Insurance Card SBC InsurancePlan profile, which
  * exists only in hl7.fhir.us.insurance-card#2.0.0-ballot (draft, experimental).
@@ -67,7 +67,7 @@ const UCUM = 'http://unitsofmeasure.org';
 // Fixed namespace for the name-based (v5) UUIDs used as Bundle fullUrls.
 const UUID_NAMESPACE = '5f2d3c1e-8a4b-5c6d-9e0f-1a2b3c4d5e6f';
 
-const SUPPORTED_VERSIONS = ['1.1.0', '1.2.0'];
+const SUPPORTED_VERSIONS = ['1.1.0', '1.2.0', '1.3.0'];
 
 // ---- vocabularies -------------------------------------------------------------
 const SBC_PLAN_TYPES = {
@@ -100,7 +100,14 @@ const ACCUMULATOR_LABELS = {
   oon_family_deductible: 'Family deductible',
   oon_individual_oop_max: 'Individual out-of-pocket maximum',
   oon_family_oop_max: 'Family out-of-pocket maximum',
+  // Schema 1.3.0: 1 amount that counts what the member pays in and out of network together. It has no
+  // network_tier, and CARIN's generalCost has no network element, so the text and comment say so.
+  combined_individual_deductible: 'Individual deductible, in and out of network combined',
+  combined_family_deductible: 'Family deductible, in and out of network combined',
+  combined_individual_oop_max: 'Individual out-of-pocket maximum, in and out of network combined',
+  combined_family_oop_max: 'Family out-of-pocket maximum, in and out of network combined',
 };
+const COMBINED_COMMENT = 'in and out of network combined';
 const CANONICAL_LABELS = Object.fromEntries(CANONICAL_BENEFITS.benefits.map((b) => [b.canonical_key, b.label]));
 
 const TEXT_NOT_COVERED = 'Not covered';
@@ -432,7 +439,7 @@ function benefitCosts(b, tiers) {
 
 // ---- plan-level costs ---------------------------------------------------------
 function accumulatorCost(slot, a, label, typeCode, typeDisplay) {
-  const comment = [a.network_tier, a.period, a.embedded ? 'embedded' : null,
+  const comment = [a.network_tier || (slot.startsWith('combined_') ? COMBINED_COMMENT : null), a.period, a.embedded ? 'embedded' : null,
     a.applies_to_tiers ? 'applies to ' + a.applies_to_tiers.join(', ') : null].filter(Boolean).join('; ');
   const out = {};
   const ext = complexExt(bpsExt('bps-accumulator'), [

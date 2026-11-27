@@ -15,14 +15,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>UHC Bronze Essential ($0 Virtual Urgent Care)</b></p><p>Carrier: UnitedHealthcare. Plan type: HMO. Period: 2026-01-01.</p><p>27 benefits are placed in CARIN SBC benefit categories. 25 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>9 benefits are not covered on any tier and are listed in the excluded-services extension, derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p><p>Converted from Benefit Plan Standard document UNITEDHEALTHCARE_UHC_BRONZE_ESSENTIAL (schema version 1.2.0).</p></div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>UHC Bronze Essential ($0 Virtual Urgent Care)</b></p><p>Carrier: UnitedHealthcare. Plan type: HMO. Period: 2026-01-01.</p><p>27 benefits are placed in CARIN SBC benefit categories. 25 benefits have no code in the SBC benefit category code system and are listed, by identity only, in the bps-unmapped-benefit extension.</p><p>9 benefits are not covered on any tier and are listed in the excluded-services extension, derived from the coverage flags in the CMS Benefits and Cost Sharing PUF.</p><p>Converted from Benefit Plan Standard document UNITEDHEALTHCARE_UHC_BRONZE_ESSENTIAL (schema version 1.3.0).</p></div>"
         },
         "extension": [
           {
             "extension": [
               {
                 "url": "schemaVersion",
-                "valueString": "1.2.0"
+                "valueString": "1.3.0"
               },
               {
                 "url": "planYear",
@@ -48,7 +48,7 @@
             "extension": [
               {
                 "url": "excerpt",
-                "valueString": "Plan Attributes PUF values with no Benefit Plan Standard v1.2.0 field, verbatim: CSRVariationType \"Standard Bronze On Exchange Plan\"; PlanVariantMarketingName \"UHC Bronze Essential ($0 Virtual Urgent Care)\"; MetalLevel \"Bronze\"; DesignType \"Not Applicable\"; IsHSAEligible \"Yes\"; MultipleInNetworkTiers \"No\"; FirstTierUtilization \"100%\"; NetworkId \"FLN011\"; ServiceAreaId \"FLS011\"; FormularyId \"FLF038\"; NationalNetwork \"No\"; IsReferralRequiredForSpecialist \"Yes\"; SpecialistRequiringReferral \"All, except OBGYN and as state mandated.\"; PlanLevelExclusions \"Some exclusions may apply. See the applicable Certificate of Coverage for details.\"; OutOfCountryCoverage \"No\"; OutOfServiceAreaCoverage \"Yes\"; OutOfServiceAreaCoverageDescription \"Plan covers eligible expenses provided by a Network Physician or other provider or facility within the Network Area. The Network Area may include select Network providers located in a neighboring state. The plan also covers emergency health care services received outside the service area.\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.584594755\"; FormularyURL \"https://www.uhc.com/xfldruglist2026\"; PlanBrochure \"https://www.uhc.com/flplanbrochure2026\"."
+                "valueString": "Plan Attributes PUF values with no Benefit Plan Standard v1.3.0 field, verbatim: CSRVariationType \"Standard Bronze On Exchange Plan\"; PlanVariantMarketingName \"UHC Bronze Essential ($0 Virtual Urgent Care)\"; MetalLevel \"Bronze\"; DesignType \"Not Applicable\"; IsHSAEligible \"Yes\"; MultipleInNetworkTiers \"No\"; FirstTierUtilization \"100%\"; NetworkId \"FLN011\"; ServiceAreaId \"FLS011\"; FormularyId \"FLF038\"; NationalNetwork \"No\"; IsReferralRequiredForSpecialist \"Yes\"; SpecialistRequiringReferral \"All, except OBGYN and as state mandated.\"; PlanLevelExclusions \"Some exclusions may apply. See the applicable Certificate of Coverage for details.\"; OutOfCountryCoverage \"No\"; OutOfServiceAreaCoverage \"Yes\"; OutOfServiceAreaCoverageDescription \"Plan covers eligible expenses provided by a Network Physician or other provider or facility within the Network Area. The Network Area may include select Network providers located in a neighboring state. The plan also covers emergency health care services received outside the service area.\"; InpatientCopaymentMaximumDays \"0\"; BeginPrimaryCareCostSharingAfterNumberOfVisits \"0\"; BeginPrimaryCareDeductibleCoinsuranceAfterNumberOfCopays \"0\"; AVCalculatorOutputNumber \"0.584594755\"; FormularyURL \"https://www.uhc.com/xfldruglist2026\"; PlanBrochure \"https://www.uhc.com/flplanbrochure2026\"."
               }
             ],
             "url": "https://benefitplanstandard.org/fhir/StructureDefinition/bps-source-reference"

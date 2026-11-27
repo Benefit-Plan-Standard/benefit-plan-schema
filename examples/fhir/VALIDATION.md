@@ -388,3 +388,9 @@ The other 19 give the counts of their last run: the 5 Marketplace Bundles those 
 | `scan-costco-medicare-advantage-hmo-h5425-140-000.json` | 0 | 0 | 197 |
 
 **Warnings and information.** Every count is the twelfth run's, file by file: 183 warnings and 2,906 information messages across the 20. A `comment` on a `generalCost` entry raises no message.
+
+## 2026-11-27, the 5 PBP Bundles after the 1.3.0 draft 1: not run
+
+**What changed.** The Medicare Advantage importer writes schema 1.3.0 (`docs/changelog.md`, [1.3.0] draft 1). Each of the 5 PBP Bundles changes in its `bps-plan-metadata` `schemaVersion` and narrative (1.3.0), and in the text of the notes and excerpts that name the combined maximum and the confirmed readings. The 3 plans that file a combined maximum gain 1 `generalCost` entry, "Individual out-of-pocket maximum, in and out of network combined", with `bps-accumulator` `slot` `combined_individual_oop_max` and `comment` "in and out of network combined" (H2406-013 $10,750, H1609-028 $10,100, H5533-019 $9,000), and `moopRef` "combined" in `bps-cost-share` on their out-of-network or point-of-service entries (converter spec 6.4 and 6.7). The `bps-accumulator` and `bps-cost-share` definitions change in 3 descriptions only (`slot`, `deductibleRef`, `moopRef`). The 15 other Bundles are byte-identical.
+
+**Result:** the HL7 validator was not run: the machine that rebuilt the Bundles has no Java. Nothing new reaches an element the profile constrains: a `generalCost` entry of the same shape as the others, and a `moopRef` value in a BPS extension. Run it before the 1.3.0 final, with the command of the tenth run.
